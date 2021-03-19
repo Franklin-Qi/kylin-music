@@ -1,4 +1,5 @@
 #include "musicDataBase.h"
+#include<iostream>
 #include<QSqlQuery>
 #include<QMessageBox>
 #include<QApplication>
@@ -6,8 +7,58 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QSqlRecord>
-MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
+// ph-code
+Q_DECLARE_OPAQUE_POINTER(sqlite3*)
+Q_DECLARE_METATYPE(sqlite3*)
+
+using namespace std;
+
+int callback(void *NotUsed, int argc, char **argv, char **azColName) {
+    // int argc: holds the number of results
+    // (array) azColName: holds each column returned
+    // (array) argv: holds each value
+    for (int i = 0; i < argc; i++) {
+      // Show column name, value, and newline
+      std::cout << azColName[i] << ": " << argv[i] << std::endl;
+    }
+    if (argc > 0) {
+      std::cout << endl;
+    }
+    // Return successful
+    return 0;
+  }
+
+
+QString outPutStringHandle(const QString& output)
 {
+    QString temp = output;
+    QByteArray text = temp.toUtf8();
+    text = QByteArray::fromBase64(text);
+    QString outOrigin;
+    outOrigin.prepend(text.data());
+    return outOrigin;
+}
+
+int m_sqlite_call_back(void* resList, int argc, char **argv, char **azColName)
+{
+    QList<musicDataStruct>* qresList = (QList<musicDataStruct>*)resList;
+    if(argc >= 8)
+    {
+        musicDataStruct temp;
+        temp.filepath      = outPutStringHandle(argv[2]);
+        temp.title         = outPutStringHandle(argv[3]);
+        temp.singer        = outPutStringHandle(argv[4]);
+        temp.album         = outPutStringHandle(argv[5]);
+        temp.filetype      = outPutStringHandle(argv[6]);
+        temp.size          = outPutStringHandle(argv[7]);
+        temp.time          = outPutStringHandle(argv[8]);
+        qresList->append(temp);
+    }
+    return 0;
+}
+
+  MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
+  {
     qDebug() << QSqlDatabase::drivers();//当前环境支持哪些数据库
     QMutexLocker lockData( &m_mutex);  //加锁，函数执行完后自动解锁
     m_database=QSqlDatabase::addDatabase("QSQLITE");
@@ -20,6 +71,31 @@ MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
         qDebug() << "存在旧版本数据库" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
     }
     m_database.setDatabaseName(dirPath + "mymusic.db");
+
+        // ph-code
+        // 使用simple的分词器创建续表并执行
+//                qDebug() << rc;
+//                qDebug() << addVTable.toLocal8Bit().data();
+//                QString insert1 = "insert into AuxIndexLocalMusicContent(id,title,singer,album,contentSpell) values(1, '终点是天下', '呼啦啦', '本二', 'spelling')";
+//                rc = sqlite3_exec(handle, insert1.toLocal8Bit().data(), NULL, 0, NULL);
+//                qDebug() << rc;
+//                qDebug() << insert1.toLocal8Bit().data();
+//                QString insert2 = "insert into AuxIndexLocalMusicContent(id,title,singer,album,contentSpell) values(2, '看这里', '皱计良', '专辑same', 'spelling')";
+//                rc = sqlite3_exec(handle, insert2.toLocal8Bit().data(), NULL, 0, NULL);
+//                qDebug() << rc;
+//                qDebug() << insert2.toLocal8Bit().data();
+//                QString insert3 = "insert into AuxIndexLocalMusicContent(id,title,singer,album,contentSpell) values(3, '龙凤', '周杰伦', 'crime', 'spelling')";
+//                rc = sqlite3_exec(handle, insert3.toLocal8Bit().data(), NULL, 0, NULL);
+//                qDebug() << rc;
+//                qDebug() << insert3.toLocal8Bit().data();
+//                // 连续插入
+//                QString research = "select * from AuxIndexLocalMusicContent where AuxIndexLocalMusicContent match simple_query('zjl')";
+
+//                rc = sqlite3_exec(handle, research.toLocal8Bit().data(), callback, 0, NULL);
+//                qDebug() << rc;
+//                qDebug() << research.toLocal8Bit().data();
+                // 检索查看，用callback函数展示
+
 }
 
 MusicDataBase::~MusicDataBase()
@@ -50,8 +126,10 @@ MusicDataBase* MusicDataBase::getInstance()
     return dbInstance;
 }
 
+
 int MusicDataBase::initDataBase()
 {
+
     if(!m_database.open())
     {
         m_databaseOpenFlag = true;
@@ -59,6 +137,38 @@ int MusicDataBase::initDataBase()
         QMessageBox::warning(0, QObject::tr("Database Error"),
                                      m_database.lastError().text());
         return DB_UNCONNECT;
+    }
+
+    QVariant v = m_database.driver()->handle();
+    if(v.isValid() && qstrcmp(v.typeName(), "sqlite3*") == 0)
+    {
+        qDebug() << "ph----------test1";
+//        sqlite3 *handle = m_database.driver()->handle().value<sqlite3*>();
+        m_handle = *static_cast<sqlite3 **>(v.data());
+        qDebug() << m_handle;
+        if(m_handle)
+        {
+            if(SQLITE_OK == sqlite3_open("/home/phdreamer/.config/.kylin_music_ver1.1_mymusic.db", &m_handle));
+            else
+                qDebug() << "sqlite error";
+            qDebug() << "after sqlite3_open";
+            qDebug() << m_handle;
+            // 打开链接
+//            rc = sqlite3_enable_load_extension(handle, 1);
+            if(SQLITE_OK == sqlite3_db_config(m_handle, SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION, 1, NULL));
+            else
+                qDebug() << "sqlite error";
+            //允许加载扩展
+            if(SQLITE_OK == sqlite3_load_extension(m_handle, "libsimple", NULL, NULL));// 加载扩展
+            else
+                qDebug() << "sqlite error";
+
+            QString addVTable = "create virtual table if not exists AuxIndexLocalMusicContent"
+                                " using fts5(id UNINDEXED, title, singer, album, contentSpell, tokenize='simple');";
+            if(SQLITE_OK == sqlite3_exec(m_handle, addVTable.toLocal8Bit().data(), NULL, 0, NULL));
+            else
+                qDebug() << "sqlite create vt fail";
+        }
     }
 
     bool queryRes = true;
@@ -90,6 +200,30 @@ int MusicDataBase::initDataBase()
 
     queryRes &= queryInit.exec(QString("create table if not exists ListOfPlayList (title varchar primary key)"));//创建播放列表名称列表
 
+
+    // ph-code
+
+//    qDebug() << "before exec fts5" << queryRes;
+//    queryRes &= queryInit.exec(QString("create virtual table if not exists AuxIndexLocalMusicContent"
+//                                       " using fts5(id UNINDEXED, title, singer, album, contentSpell, tokenize='simple')"));
+    // 为localMusic本地音乐表创建辅助的全文索引虚拟表fts5
+//    qDebug() << "after exec fts5" << queryRes;
+//    queryRes &= queryInit.exec(QString("create trigger local_music_add after insert on LocalMusic begin"
+//                                       " insert into AuxIndexLocalMusicContent values(new.id, new.title); end"));
+    // 存在问题：利用触发器插入时需要额外操作（包括对新值处理从中文到拼音、从编码格式到不编码格式）。即便表中存储的并非base64，我们也需要处理从中文到拼音，包括取old变量值到转换
+
+//    queryRes &= queryInit.exec(QString("create trigger if not exists local_music_delete before delete on LocalMusic begin"
+//                                       " delete from AuxIndexLocalMusicContent where id=old.id;"
+//                                       " end"));
+//    QString addTrigger = "create trigger if not exists local_music_delete before delete on LocalMusic begin"
+//                         " delete from AuxIndexLocalMusicContent where id=old.id;"
+//                         " end";
+//    if(SQLITE_OK == sqlite3_exec(m_handle, addTrigger.toLocal8Bit().data(), NULL, NULL, NULL));
+//    else
+//    {
+//        qDebug() << "trigger create failed";
+//    }
+    // 创建触发器，根据id删除虚拟表记录
 
     if(true == queryRes)
     {
@@ -131,7 +265,7 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
     {
         if(true == m_database.isValid())
         {
-            //查询历史列表中是否已有该歌曲，已有的话，返回添加失败
+            //查询是否已有该歌曲，已有的话，返回添加失败
             int checkLocalRes = checkIfSongExistsInLocalMusic(fileData.filepath);
 
             //历史列表中已经有这首歌，重复添加了
@@ -142,6 +276,7 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             }
 
             QSqlQuery addSongToLocal(m_database);
+
             QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time) values('%1','%2','%3','%4','%5','%6','%7')").
                     arg(inPutStringHandle(fileData.filepath)).
                     arg(inPutStringHandle(fileData.title)).
@@ -157,6 +292,22 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             QSqlQuery setSongIDFromLocal(m_database);
             QString setIndex = QString("update LocalMusic set idIndex='%1' WHERE filepath='%2'").arg(tempIndex).arg(inPutStringHandle(fileData.filepath));
             setRes &= setSongIDFromLocal.exec(setIndex);
+
+            // ph-code
+            // 每插入一条记录，都要更新辅助的虚拟表AuxIndexLocalMusicContent
+            QSqlQuery addSongToIndexTable(m_database);
+            QString addSongIndex = QString("insert into AuxIndexLocalMusicContent(id,title,singer,album,contentSpell) values(%1, '%2', '%3', '%4', '%5')")
+                    .arg(QString::number(tempIndex),
+                         fileData.title,
+                         fileData.singer,
+                         fileData.album,
+                         QString("Spelling"));   // 暂时设为Spelling
+//            setVTableRes &= addSongToIndexTable.exec(addSongIndex);
+            int setVTableRes = sqlite3_exec(m_handle, addSongIndex.toLocal8Bit().data(), NULL, NULL, NULL);
+
+
+            qDebug() << "ph-test setVTable";
+            qDebug() << setVTableRes;
 
             if(true == (queryRes&setRes))
             {
@@ -195,10 +346,39 @@ int MusicDataBase::delMusicFromLocalMusic(const QString& filePath)
             int checkRes = checkIfSongExistsInLocalMusic(filePath);
             if(checkRes == DB_OP_SUCC)
             {
+
+                QSqlQuery findDelSong(m_database);
+                QString findDelSongString = QString("select id from LocalMusic where filepath = '%1'").
+                                        arg(inPutStringHandle(filePath));
+                queryRes &= findDelSong.exec(findDelSongString);
+                findDelSong.first();
+                int targetId = findDelSong.value(0).toInt();
+                qDebug() << "targetId:" << targetId;
+
                 QSqlQuery delSongFromLocal(m_database);
-                QString delSongString = QString("delete from LocalMusic where filepath = '%1'").
-                        arg(inPutStringHandle(filePath));
-                queryRes = delSongFromLocal.exec(delSongString);
+                QString delSongString = QString("delete from LocalMusic where id = %1").
+                                        arg(targetId);
+                queryRes &= delSongFromLocal.exec(delSongString);
+
+
+                // 原版
+//                QSqlQuery delSongFromLocal(m_database);
+//                QString delSongString = QString("delete from LocalMusic where filepath = '%1'").
+//                        arg(inPutStringHandle(filePath));
+//                queryRes = delSongFromLocal.exec(delSongString);
+
+
+                // ph-code
+                // 使用触发器依旧无法在这里删除，错误信息是因为找不到simple这个tokenize,使用QSqlDatabases时的这个链接无法处理同一个事务内的触发操作导致错误。
+                qDebug() << delSongFromLocal.lastError().text();
+                QString delSongStringFromAux = QString("delete from AuxIndexLocalMusicContent where id = %1")
+                                                    .arg(targetId);
+                if(SQLITE_OK == sqlite3_exec(m_handle, delSongStringFromAux.toLocal8Bit().data(), NULL, NULL, NULL));
+                else
+                {
+                    qDebug() << "delete auxIndexTable failed";
+                }
+
 
                 if(true == queryRes)
                 {
@@ -545,6 +725,77 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
     {
         return DB_OP_SUCC;
     }
+}
+
+int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
+{
+    // ph-code
+    if(true == keyword.isEmpty())
+    {
+        // 空keyword不处理
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
+        QString getSongListStringByKeyword = QString("select * from LocalMusic where `id` in ("
+                                                     "select id from AuxIndexLocalMusicContent where title match simple_query('%1') "
+                                                     "or singer match simple_query('%1') "
+                                                     "or album match simple_query('%1'))")
+                                                    .arg(keyword);
+//        getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
+        getRes = !sqlite3_exec(m_handle, getSongListStringByKeyword.toLocal8Bit().data(), m_sqlite_call_back, (void *)&resList, NULL);
+
+        qDebug() << "ph-test!!!!";
+        qDebug() << getRes;
+
+        if(true == getRes)
+        {
+            while(getSongListFromLocalMusicByKeyword.next())
+            {
+//                musicDataStruct temp;
+//                temp.filepath      = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(2).toString());
+//                temp.title         = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(3).toString());
+//                temp.singer        = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(4).toString());
+//                temp.album         = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(5).toString());
+//                temp.filetype      = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(6).toString());
+//                temp.size          = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(7).toString());
+//                temp.time          = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(8).toString());
+
+//                resList.append(temp);
+
+                // ph-code 优化写法之后再看。
+//                int curRes = getSongInfoFromLocalMusic(temp.filepath, temp);
+
+//                if(DB_OP_SUCC == curRes)
+//                {
+//                    resList.append(temp);
+//                }
+//                else
+//                {
+//                    return curRes;
+//                }
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getSongInfoListFromLocalCacheByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
+{
+
 }
 
 int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QString& filePath,const QString& playListName)
@@ -1696,4 +1947,26 @@ QString MusicDataBase::outPutStringHandle(const QString& output)
     QString outOrigin;
     outOrigin.prepend(text.data());
     return outOrigin;
+}
+
+QString MusicDataBase::characterToSpelling(const QString &character)
+{
+    //ph-code
+}
+
+void MusicDataBase::testSearch()
+{
+    // ph-code
+    // 测试功能是否生效。
+    qDebug() << "ph-debug----------------------";
+    const QString keyword = "测试";
+    QList<musicDataStruct> resList;
+    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
+    qDebug() << resList.size() << resList.length();
+    for(int i = 0; i < resList.size(); i++)
+    {
+        musicDataStruct temp = resList.at(i);
+        qDebug() << temp.title << temp.time << temp.singer << temp.album;
+    }
+
 }

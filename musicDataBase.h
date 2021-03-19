@@ -1,12 +1,15 @@
 #ifndef MUSICDATABASE_H
 #define MUSICDATABASE_H
 #include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QObject>
 #include <QFile>
 #include <QList>
 #include <QString>
 #include<QThread>
 #include<QMutexLocker>
+#include <sqlite3.h>
+
 
 const QString ALLMUSIC = "LocalMusic";              //本地总表
 const QString HISTORY = "HistoryPlayList";          //历史记录
@@ -66,7 +69,8 @@ public:
     int renamePlayList(const QString& oldPlayListName, const QString& newPlayListName);
     //从所有歌单中删除一首歌
     int delSongFromEveryWhere(const QString& filePath);
-
+    // ph-code 测试
+    void testSearch();
 
     /**************************新建歌曲增删改查****************************/
     //添加歌曲到新建歌单，使用歌曲filePath,歌单名title值，输入数据必须有效，
@@ -91,6 +95,10 @@ public:
     int getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList);
     //更换本地歌单中某首歌曲的位置(从选中的位置更换到目的歌曲的位置的后面)
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
+    //通过输入关键字从本地歌单中模糊检索列表歌曲信息，输入数据必须有效
+    int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
+    //通过输入关键字从本地给出临时提示歌曲列表信息，输入数据必须有效
+    int getSongInfoListFromLocalCacheByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
 
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
@@ -114,6 +122,7 @@ private:
     void msgHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 
     QSqlDatabase m_database;//数据库
+    sqlite3 *m_handle;
     QMutex m_mutex;
     bool m_databaseOpenFlag = false;
     //检查歌曲是否在总表中存在
@@ -134,6 +143,11 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
+
+    // ph-code
+    // 汉字转拼音
+    QString characterToSpelling(const QString& character);
+//    int m_sqlite_call_back(void* resList, int argc, char **argv, char **azColName);
 };
 
 #endif // MUSICDATABASE_H
