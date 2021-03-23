@@ -66,6 +66,8 @@ public:
     int renamePlayList(const QString& oldPlayListName, const QString& newPlayListName);
     //从所有歌单中删除一首歌
     int delSongFromEveryWhere(const QString& filePath);
+    //测试
+    void testSearch();
 
 
     /**************************新建歌曲增删改查****************************/
@@ -91,6 +93,8 @@ public:
     int getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList);
     //更换本地歌单中某首歌曲的位置(从选中的位置更换到目的歌曲的位置的后面)
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
+    //关键字搜索
+    int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
 
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
@@ -116,6 +120,8 @@ private:
     QSqlDatabase m_database;//数据库
     QMutex m_mutex;
     bool m_databaseOpenFlag = false;
+    QStringList listSimpleSpell; // 简拼列表
+    QStringList listSpell; // 拼音列表
     //检查歌曲是否在总表中存在
     int checkIfSongExistsInLocalMusic(const QString& filePath);
     //检查歌曲是否在历史歌单中存在
@@ -134,6 +140,14 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
+    // 转全拼音
+    QString characterToSpell(const QString& character_str);
+    // 转拼音首字母
+    QString characterToSpellFirstLetter(const QString& character_str);
+    // 初始化拼音列表
+    void initSpellList();
+    // 组合存储spell字段
+    QString composeContentSpell(const QString& xtitle, const QString& xsinger, const QString& xalbum);
 };
 
 #endif // MUSICDATABASE_H
