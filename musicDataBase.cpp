@@ -604,6 +604,12 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
     }
 }
 
+int MusicDataBase::getSongInfoListFromCacheMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
+{
+    // 获取
+    //
+}
+
 int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QString& filePath,const QString& playListName)
 {
 

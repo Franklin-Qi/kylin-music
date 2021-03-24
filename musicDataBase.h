@@ -95,6 +95,8 @@ public:
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
     //关键字搜索
     int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
+    //关键字输入获得提示，从缓存中取
+    int getSongInfoListFromCacheMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
 
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
