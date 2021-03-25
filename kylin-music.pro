@@ -98,11 +98,13 @@ HEADERS += \
     myapplication.h \
     mytoolbutton.h \
     playsongarea.h \
+    qsql_sqlite_p.h \
     qtsingleapplication/qtlocalpeer.h \
     qtsingleapplication/qtsingleapplication.h \
     sidebar.h \
     sliderwidget.h \
     songitem.h \
+    sqlite3.h \
     titlebar.h \
 #    connection.h \
     slider.h \

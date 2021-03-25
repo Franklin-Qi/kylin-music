@@ -8,8 +8,7 @@
 #include <QString>
 #include<QThread>
 #include<QMutexLocker>
-#include <sqlite3.h>
-
+#include "sqlite3.h"
 
 const QString ALLMUSIC = "LocalMusic";              //本地总表
 const QString HISTORY = "HistoryPlayList";          //历史记录
@@ -122,7 +121,6 @@ private:
     void msgHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 
     QSqlDatabase m_database;//数据库
-    sqlite3 *m_handle;
     QMutex m_mutex;
     bool m_databaseOpenFlag = false;
     //检查歌曲是否在总表中存在
@@ -144,10 +142,6 @@ private:
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
 
-    // ph-code
-    // 汉字转拼音
-    QString characterToSpelling(const QString& character);
-//    int m_sqlite_call_back(void* resList, int argc, char **argv, char **azColName);
 };
 
 #endif // MUSICDATABASE_H
