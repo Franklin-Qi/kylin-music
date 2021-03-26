@@ -150,6 +150,7 @@ private:
     void initSpellList();
     // 组合存储spell字段
     QString composeContentSpell(const QString& xtitle, const QString& xsinger, const QString& xalbum);
+    QString composeContentSpellSimple(const QString& xtitle, const QString& xsinger, const QString& xalbum);
 };
 
 #endif // MUSICDATABASE_H

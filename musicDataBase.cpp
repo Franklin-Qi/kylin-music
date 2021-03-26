@@ -79,7 +79,8 @@ int MusicDataBase::initDataBase()
                                        "xtitle varchar,"
                                        "xsinger varchar,"
                                        "xalbum varchar,"
-                                       "xspelling varchar)"
+                                       "xspelling varchar,"
+                                       "xspellingsimple varchar)"
                                        ));//创建音乐总表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
 
     queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
@@ -148,8 +149,8 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             }
 
             QSqlQuery addSongToLocal(m_database);
-            QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time,xtitle,xsinger,xalbum,xspelling) "
-                                            "values('%1','%2','%3','%4','%5','%6','%7','%8','%9','%10','%11')").
+            QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time,xtitle,xsinger,xalbum,xspelling,xspellingsimple) "
+                                            "values('%1','%2','%3','%4','%5','%6','%7','%8','%9','%10','%11','%12')").
                     arg(inPutStringHandle(fileData.filepath)).
                     arg(inPutStringHandle(fileData.title)).
                     arg(inPutStringHandle(fileData.singer)).
@@ -160,7 +161,8 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
                     arg(fileData.title).
                     arg(fileData.singer).
                     arg(fileData.album).
-                    arg(composeContentSpell(fileData.title, fileData.singer, fileData.album));
+                    arg(composeContentSpell(fileData.title, fileData.singer, fileData.album)).
+                    arg(composeContentSpellSimple(fileData.title, fileData.singer, fileData.album));
             queryRes &= addSongToLocal.exec(addSongString);
             //插入歌曲时自增id和idIndex无法赋值，插入后取得自增id，给idIndex赋值
             int tempIndex = addSongToLocal.lastInsertId().toInt();
@@ -567,10 +569,14 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
 
         QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
         // 未考虑优化的版本
+//        QString getSongListStringByKeyword = QString("select * from LocalMusic"
+//                                                     " where xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%'"
+//                                                     " or xspelling like '%%2%' or xspellingsimple like '%%3%'")
+//                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
         QString getSongListStringByKeyword = QString("select * from LocalMusic"
                                                      " where xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%'"
-                                                     " or xspelling like '%%2%' or xspelling like '%%3%'")
-                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
+                                                     " or xspelling like '%%1%' or xspellingsimple like '%%1%'")
+                                                    .arg(keyword);
         getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
 
         if(true == getRes)
@@ -1746,7 +1752,7 @@ void MusicDataBase::testSearch()
 {
     // 测试方法
     QList<musicDataStruct> resList;
-    const QString keyword = "wz";
+    const QString keyword = "bd";
     getSongInfoListFromLocalMusicByKeyword(resList, keyword);
     int len = resList.size();
     for(int i = 0; i < len; i++)
@@ -2097,15 +2103,19 @@ QString MusicDataBase::composeContentSpell(const QString &xtitle, const QString 
     QString xtitleSpell = characterToSpell(xtitle);
     QString xsingerSpell = characterToSpell(xsinger);
     QString xalbumSpell = characterToSpell(xalbum);
-    // 全拼部分
 
+    QString res = QString("%1 %2 %3").arg(xtitleSpell, xsingerSpell, xalbumSpell);
+    // 以空格隔开
+    return res;
+}
+
+QString MusicDataBase::composeContentSpellSimple(const QString &xtitle, const QString &xsinger, const QString &xalbum)
+{
     QString xtitleSpellSimple = characterToSpellFirstLetter(xtitle);
     QString xsingerSpellSimple = characterToSpellFirstLetter(xsinger);
     QString xalbumSpellSimple = characterToSpellFirstLetter(xalbum);
-    // 简拼部分
 
-    QString res = QString("%1;%2;%3;%4;%5;%6").arg(xtitleSpell, xsingerSpell, xalbumSpell, xtitleSpellSimple, xsingerSpellSimple, xalbumSpellSimple);
-    // 以分号隔开
-
+    QString res = QString("%1 %2 %3").arg(xtitleSpellSimple, xsingerSpellSimple, xalbumSpellSimple);
+    // 以空格隔开
     return res;
 }
