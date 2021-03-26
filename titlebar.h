@@ -28,6 +28,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <QListWidgetItem>
+#include<QList>
 
 #include "changelistwid.h"
 #include "allpupwindow.h"
