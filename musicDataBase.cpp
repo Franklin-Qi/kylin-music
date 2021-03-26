@@ -565,6 +565,13 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
     // ph-code
     if(true == m_database.isValid())
     {
+        if(keyword.isEmpty())
+        {
+            // 后端增加判空保险处理
+            getSongInfoListFromLocalMusic(resList);
+            return DB_OP_SUCC;
+        }
+
         bool getRes = true;
 
         QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
@@ -575,8 +582,14 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
 //                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
         QString getSongListStringByKeyword = QString("select * from LocalMusic"
                                                      " where xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%'"
-                                                     " or xspelling like '%%1%' or xspellingsimple like '%%1%'")
-                                                    .arg(keyword);
+                                                     " or xspelling like '%%1%' or xspellingsimple like '%%1%'"
+                                                     " or xspelling like '%%2%' or xspellingsimple like '%%3%'"
+                                                     " order by (case"
+                                                     " when xtitle='%1' or xsinger='%1' or xalbum='%1' or xspelling='%1%' or xspellingsimple='%1' then 1"
+                                                     " when xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%' or xspelling like '%%1%' or xspellingsimple like '%%1%' then 2"
+                                                     " when xspelling like '%%2%' or xspellingsimple like '%%3%' then 3"
+                                                     " else 4 end)")
+                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
         getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
 
         if(true == getRes)
@@ -1752,7 +1765,7 @@ void MusicDataBase::testSearch()
 {
     // 测试方法
     QList<musicDataStruct> resList;
-    const QString keyword = "bd";
+    const QString keyword = "chenyix";
     getSongInfoListFromLocalMusicByKeyword(resList, keyword);
     int len = resList.size();
     for(int i = 0; i < len; i++)
