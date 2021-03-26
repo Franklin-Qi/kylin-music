@@ -23,6 +23,10 @@ SongItem::SongItem(QWidget *parent):QWidget(parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
 
 //    setStyleSheet("background:red;");
+
+    //test:lx
+    //setStyleSheet("background:yellow;");
+
     initItem();
 
 }

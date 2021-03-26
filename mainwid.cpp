@@ -3960,8 +3960,43 @@ void MainWid::showSearchResultWidget()
     myTitleBar->searchWidget->hide();
     myTitleBar->searchResultWidget->musicInfoWidget->clear();
     QString enterStr = myTitleBar->searchEdit->text().trimmed();
+
+
     if(enterStr != "")
     {
+        //test:lx
+        QList<musicDataStruct> musicFromDb;
+        g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+        QListIterator<musicDataStruct> i(musicFromDb);
+        while(i.hasNext()){
+            musicDataStruct music = i.next ();
+
+            QString Path = music.filepath;
+            QString Title = music.title;
+            QString Album = music.album;
+            QString Time = music.time;
+            QString Name=music.singer;
+
+            QListWidgetItem *resultitem=new QListWidgetItem(myTitleBar->searchResultWidget->musicInfoWidget);
+            SongItem *songitem1 = new SongItem;
+            myTitleBar->searchResultWidget->musicInfoWidget->setItemWidget(resultitem,songitem1);
+            songitem1->songNameLabel->setText (Title);
+            songitem1->songTimeLabel->setText (Time);
+            songitem1->singerLabel->setText (Name);
+            songitem1->albumLabel->setText (Album);
+
+            myTitleBar->searchResultWidget->PlayList->addMedia(QUrl::fromLocalFile(Path));
+            //test:lx
+            //songitem1->setStyleSheet ("backgound-color:yellow;");
+
+            myTitleBar->searchResultWidget->musicInfoWidget->show();
+        }
+
+
+
+
+
+        /*
         QSqlQuery searchQuery;
         QString searchStr = QString("select * from LocalMusic where musicname LIKE '%%1%'").arg(enterStr);
         searchQuery.exec(searchStr);
@@ -3989,12 +4024,15 @@ void MainWid::showSearchResultWidget()
 
     //        searchResultWidget->musicInfoWidget->show();
         }
+        */
         myTitleBar->searchResultWidget->songNumberLabel->setText(tr("A total of")+QString::number(myPlaySongArea->mybeforeList->beforePlayList->count())+tr("The first"));
 
         myTitleBar->searchResultWidget->show();
         myTitleBar->searchResultWidget->raise();
         rightlayout->replaceWidget(mySideBar->rightChangeWid,myTitleBar->searchResultWidget);
         mySideBar->rightChangeWid->hide();
+        //test:lx
+        //myTitleBar->searchResultWidget->setStyleSheet ("background:blue;");
     }
 }
 
