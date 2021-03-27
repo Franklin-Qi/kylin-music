@@ -520,7 +520,8 @@ void MusicListWid::get_localmusic_information(QString tableName)
     QList<musicDataStruct> resList;
     if(tableName == "LocalMusic") {
         ret = g_db->getSongInfoListFromLocalMusic(resList);
-    } else {
+    }
+    else {
         ret = g_db->getSongInfoListFromPlayList(resList, tableName);
     }
     if(ret == DB_OP_SUCC)

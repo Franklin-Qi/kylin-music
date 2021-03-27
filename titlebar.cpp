@@ -224,7 +224,10 @@ void TitleBar::initTitle()
 
 
 //    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
+
+    //test:lx
     connect(searchEdit,&QLineEdit::textChanged,this,&TitleBar::searchMusic);
+    connect(searchEdit,&QLineEdit::editingFinished,this,&TitleBar::hideSearchEdit);
 
 
     LayoutRight->setSpacing(0);
@@ -249,6 +252,8 @@ void TitleBar::initTitle()
     titleLayout->setContentsMargins(0,4,4,0);
 
 }
+
+
 
 void TitleBar::searchMusic()
 {
@@ -300,6 +305,11 @@ void TitleBar::searchMusic()
     */
 }
 
+
+//test:lx
+void TitleBar::hideSearchEdit (){
+    this->searchWidget->hide ();
+}
 
 void TitleBar::titlecolor()
 {

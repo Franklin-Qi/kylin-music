@@ -29,6 +29,8 @@ SideBar::SideBar(QWidget *parent) : QFrame(parent)
 
     initTopWidget();
     sidecolor();
+    //test:lx
+    this->songListWidget-> setStyleSheet ("background:red;");
 }
 
 void SideBar::sidecolor()
@@ -753,6 +755,8 @@ void SideBar::createSongList()
         musicListChangeWid[i]->setContextMenuPolicy(Qt::CustomContextMenu);
         connect(musicListChangeWid[i],SIGNAL(customContextMenuRequested(const QPoint&)),
             this,SLOT(on_musicListChangeWid_customContextMenuRequested(const QPoint&)));
+
+        //test:lx
 
     }
     newSonglistPup->pupDialog->hide();

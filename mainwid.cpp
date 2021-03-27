@@ -41,12 +41,19 @@ MainWid::MainWid(QString str, QWidget *parent)
     initAction();//初始化事件
     initSystemTray();//初始化托盘
 
+    //test:lx
+    //qDebug()<<"test lx rightchangewid: "<<mySideBar->rightChangeWid->count ();
+
     if(argName != "")
     {
         kylin_music_play_request(argName);
     }
     initStyle();//初始化样式
     qDebug() << "Mainwindow displayed at " << QDateTime::currentDateTime().toString("    yyyy-MM-dd hh:mm:ss.zzz"); //设置显示格式
+
+    //test:lx
+    mySideBar->rightChangeWid->setCurrentIndex (2);
+
     qDebug()<<"--------------------程序初始化完成--------------------";
     isFirstObject = false;//可以接收外部命令
 }
@@ -3955,6 +3962,8 @@ void MainWid::clear_HistoryPlayList()
 
 }
 
+
+//task:lx
 void MainWid::showSearchResultWidget()
 {
     myTitleBar->searchWidget->hide();
@@ -4024,8 +4033,16 @@ void MainWid::showSearchResultWidget()
 
     //        searchResultWidget->musicInfoWidget->show();
         }
+
+        myTitleBar->searchResultWidget->songNumberLabel->
+                setText(tr("A total of")+QString::number(myPlaySongArea->mybeforeList->beforePlayList->count())+tr("The first"));
         */
-        myTitleBar->searchResultWidget->songNumberLabel->setText(tr("A total of")+QString::number(myPlaySongArea->mybeforeList->beforePlayList->count())+tr("The first"));
+        //test:lx
+        myTitleBar->searchResultWidget->songNumberLabel->
+                setText(tr("A total of")+QString::number(musicFromDb.count ())+tr("The first"));
+
+        //test:lx
+        myTitleBar->searchResultWidget->songNumberLabel->setStyleSheet ("background:red;");
 
         myTitleBar->searchResultWidget->show();
         myTitleBar->searchResultWidget->raise();
