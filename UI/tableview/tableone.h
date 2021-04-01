@@ -20,9 +20,9 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-#include "base/musicDataBase.h"
-#include "scoreinfomodel.h"
-#include "player/player.h"
+#include "UIControl/base/musicDataBase.h"
+#include "UIControl/tableview/scoreinfomodel.h"
+#include "UIControl/player/player.h"
 #include "tableviewdelegate.h"
 #include "tablebaseview.h"
 
@@ -78,6 +78,7 @@ signals:
 //    void hoverIndexChanged(QModelIndex index);
 
 public slots:
+    void selectListChanged(QString listname);
 };
 
 #endif // TableOne_H

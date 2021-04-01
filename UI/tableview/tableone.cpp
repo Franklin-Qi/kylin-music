@@ -319,6 +319,17 @@ QList<musicDataStruct> TableOne::getMusicList()
 
     return resList;
 }
+void TableOne::selectListChanged(QString listname)
+{
+
+    qDebug() << "歌单名" <<listname;
+    m_model->clear();
+    nowListName = listname;
+    getMusicList();
+    changeNumber();
+    listTitleLabel->setText(listname);
+
+}
 
 //void TableOne::mouseMoveEvent(QMouseEvent *event)
 //{

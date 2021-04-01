@@ -1,6 +1,6 @@
 #include "sidebarwidget.h"
-#include "base/musicDataBase.h"
-#include "base/widgetstyle.h"
+#include "UIControl/base/musicDataBase.h"
+#include "UI/base/widgetstyle.h"
 
 SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
 {

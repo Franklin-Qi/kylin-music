@@ -1,5 +1,5 @@
 #include "playbackmodewidget.h"
-#include "base/widgetstyle.h"
+#include "UI/base/widgetstyle.h"
 
 PlayBackModeWidget::PlayBackModeWidget(QWidget *parent) : QDialog(parent)
 {

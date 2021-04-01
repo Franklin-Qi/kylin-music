@@ -1,7 +1,7 @@
 #include "playsongarea.h"
-#include "base/widgetstyle.h"
+#include "UI/base/widgetstyle.h"
 //#include "xatom-helper.h"
-#include "base/musicDataBase.h"
+#include "UIControl/base/musicDataBase.h"
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
 {

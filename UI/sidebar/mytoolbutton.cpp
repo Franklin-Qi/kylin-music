@@ -1,5 +1,5 @@
 #include "mytoolbutton.h"
-#include "base/widgetstyle.h"
+#include "UI/base/widgetstyle.h"
 #include <QDebug>
 
 MyToolButton::MyToolButton()

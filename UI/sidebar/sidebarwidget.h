@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QScrollArea>
-#include <base/allpupwindow.h>
+#include <UI/base/allpupwindow.h>
 
 #include "mytoolbutton.h"
 

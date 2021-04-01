@@ -9,13 +9,13 @@
 #include <QToolButton>
 #include <QStackedWidget>
 
-#include "musicDataBase.h"
-#include "tableview/tableone.h"
-#include "tableview/scoreinfomodel.h"
-#include "tableview/tablebaseview.h"
-#include "widgetstyle.h"
-#include "sidebar/sidebarwidget.h"
-#include "player/playsongarea.h"
+#include "UIControl/base/musicDataBase.h"
+#include "UI/tableview/tableone.h"
+#include "UIControl/tableview/scoreinfomodel.h"
+#include "UI/tableview/tablebaseview.h"
+#include "UI/base/widgetstyle.h"
+#include "UI/sidebar/sidebarwidget.h"
+#include "UI/player/playsongarea.h"
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -26,7 +26,6 @@ public:
 public slots:
 
 private slots:
-    void selectListChanged(QString listname);
 private:
 
     QVBoxLayout *mainVBoxLayout;
@@ -43,10 +42,6 @@ private:
     void initGSettings();
     QGSettings *themeData = nullptr;
     SideBarWidget *sideBarWid;
-    void playListAdded(QString listname);
-    void playListRemoved(QString listname);
-    void playListRenamed(QString oldName, QString newName);
-
     PlaySongArea *playSongArea;
 };
 #endif // WIDGET_H
