@@ -83,6 +83,8 @@ public:
 
 public slots:
     void searchMusic();
+    //test:lx
+    void hideSearchEdit();
 
 //    void showAboutWidget();
 

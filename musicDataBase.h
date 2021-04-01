@@ -68,7 +68,7 @@ public:
     int renamePlayList(const QString& oldPlayListName, const QString& newPlayListName);
     //从所有歌单中删除一首歌
     int delSongFromEveryWhere(const QString& filePath);
-    // ph-code 测试
+    //测试
     void testSearch();
 
     /**************************新建歌曲增删改查****************************/
@@ -123,6 +123,8 @@ private:
     QSqlDatabase m_database;//数据库
     QMutex m_mutex;
     bool m_databaseOpenFlag = false;
+    QStringList listSimpleSpell; // 简拼列表
+    QStringList listSpell; // 拼音列表
     //检查歌曲是否在总表中存在
     int checkIfSongExistsInLocalMusic(const QString& filePath);
     //检查歌曲是否在历史歌单中存在
@@ -141,7 +143,6 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
-
 };
 
 #endif // MUSICDATABASE_H

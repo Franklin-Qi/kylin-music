@@ -26,6 +26,8 @@ MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
         qDebug() << "存在旧版本数据库" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
     }
     m_database.setDatabaseName(dirPath + "mymusic.db");
+    initSpellList();
+    // 初始化拼音转换的列表
 }
 
 MusicDataBase::~MusicDataBase()
@@ -103,7 +105,12 @@ int MusicDataBase::initDataBase()
                                        "album varchar,"
                                        "filetype varchar,"
                                        "size varchar,"
-                                       "time varchar)"
+                                       "time varchar,"
+                                       "xtitle varchar,"
+                                       "xsinger varchar,"
+                                       "xalbum varchar,"
+                                       "xspelling varchar,"
+                                       "xspellingsimple varchar)"
                                        ));//创建音乐总表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
 
     queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
@@ -188,7 +195,6 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             }
 
             QSqlQuery addSongToLocal(m_database);
-
             QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time) values('%1','%2','%3','%4','%5','%6','%7')").
                     arg(inPutStringHandle(fileData.filepath)).
                     arg(inPutStringHandle(fileData.title)).
@@ -1802,6 +1808,24 @@ int MusicDataBase::delSongFromEveryWhere(const QString& filePath)
     }
     //从历史歌单，总歌单，各新建歌单中都删除后，返回成功。
     return DB_OP_SUCC;
+}
+
+void MusicDataBase::testSearch()
+{
+    // 测试方法
+    QList<musicDataStruct> resList;
+    const QString keyword = "chenyix";
+    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
+    int len = resList.size();
+    for(int i = 0; i < len; i++)
+    {
+        musicDataStruct temp = resList.at(i);
+        qDebug() << temp.title << temp.singer << temp.album;
+    }
+    QString PY = characterToSpell(keyword);
+    qDebug() << "PY: " << PY;
+    QString JP = characterToSpellFirstLetter(keyword);
+    qDebug() << "JP: " << JP;
 }
 
 QString MusicDataBase::inPutStringHandle(const QString& input)

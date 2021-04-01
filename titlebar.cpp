@@ -30,12 +30,14 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
     searchResultWidget = new MusicListWid(parent);
 //    searchResultWidget->songListLabel->setText("搜索结果");
     searchResultWidget->songListLabel->setText(tr("The search results"));
+    //test:lx
+    //searchResultWidget->setStyleSheet ("background:red");
 
-    searchResultWidget->hide();
+    //searchResultWidget->hide();
 
     searchWidget->setGeometry(270,42,200,180);
 
-    searchWidget->hide();
+    //searchWidget->hide();
 
     titlecolor();
 }
@@ -84,7 +86,7 @@ void TitleBar::initTitle()
     searchEdit->setPlaceholderText(tr("Search for music, singers"));
 
 //    searchEdit->setContentsMargins(0,4,0,0);
-    searchEdit->hide();
+    //searchEdit->hide();
     searchBtn = new QPushButton(searchEdit);
 
     searchBtn->setFixedSize(16,16);
@@ -106,7 +108,7 @@ void TitleBar::initTitle()
     LayoutLeft->addWidget(rightBtn);
     LayoutLeft->addSpacing(30);
     //搜索框暂时隐藏
-    //LayoutLeft->addWidget(searchEdit);
+    LayoutLeft->addWidget(searchEdit);
     LayoutLeft->setSpacing(8);
     LayoutLeft->setContentsMargins(30,0,0,0);
 
@@ -222,7 +224,10 @@ void TitleBar::initTitle()
 
 
 //    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
+
+    //test:lx
     connect(searchEdit,&QLineEdit::textChanged,this,&TitleBar::searchMusic);
+    connect(searchEdit,&QLineEdit::editingFinished,this,&TitleBar::hideSearchEdit);
 
 
     LayoutRight->setSpacing(0);
@@ -248,22 +253,38 @@ void TitleBar::initTitle()
 
 }
 
+
+
 void TitleBar::searchMusic()
 {
 
     QString enterStr = searchEdit->text().trimmed();
     qDebug() << "搜索" <<"输入栏" << enterStr;
     //    searchEdit->clear();
+
     if(enterStr == "")
     {
         searchWidget->close();
         return;
     }
+
     searchWidget->show();
     searchWidget->raise();
 
     searchWidget->clear();
 
+    QList<musicDataStruct> musicFromDb;
+    g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+    QListIterator<musicDataStruct> i(musicFromDb);
+    while(i.hasNext()){
+        musicDataStruct music = i.next ();
+        QListWidgetItem *item1 = new QListWidgetItem(searchWidget);
+        item1->setText (music.title+" "+music.singer+" "+music.album);
+        searchWidget->addItem (item1);
+
+    }
+
+    /*
     QSqlQuery searchQuery;
     QString searchStr = QString("select * from LocalMusic where musicname LIKE '%%1%'").arg(enterStr);
     qDebug() << "搜索" <<"数据库" << searchStr;
@@ -281,8 +302,14 @@ void TitleBar::searchMusic()
         QListWidgetItem *item1 = new QListWidgetItem(searchWidget);
         item1->setText(songName+" "+Title+" "+Album);
     }
+    */
 }
 
+
+//test:lx
+void TitleBar::hideSearchEdit (){
+    this->searchWidget->hide ();
+}
 
 void TitleBar::titlecolor()
 {
