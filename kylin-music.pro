@@ -25,42 +25,44 @@ PKGCONFIG += gsettings-qt
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    base/allpupwindow.cpp \
-    base/main.cpp \
-    base/musicDataBase.cpp \
-    base/widget.cpp \
-    base/widgetstyle.cpp \
-    player/musicslider.cpp \
-    player/playbackmodewidget.cpp \
-    player/player.cpp \
-    player/playsongarea.cpp \
-    player/sliderwidget.cpp \
-#    player/xatom-helper.cpp \
-    sidebar/mytoolbutton.cpp \
-    sidebar/sidebarwidget.cpp \
-    tableview/scoreinfomodel.cpp \
-    tableview/tablebaseview.cpp \
-    tableview/tableone.cpp \
-    tableview/tableviewdelegate.cpp
+    UI/base/allpupwindow.cpp \
+    UI/base/widgetstyle.cpp \
+    UI/player/musicslider.cpp \
+    UI/player/playbackmodewidget.cpp \
+    UI/player/playsongarea.cpp \
+    UI/player/sliderwidget.cpp \
+#    UI/player/xatom-helper.cpp \
+    UI/sidebar/mytoolbutton.cpp \
+    UI/sidebar/sidebarwidget.cpp \
+    UI/tableview/tablebaseview.cpp \
+    UI/tableview/tableone.cpp \
+    UI/tableview/tableviewdelegate.cpp \
+    UIControl/base/musicDataBase.cpp \
+    UIControl/player/player.cpp \
+    UIControl/tableview/scoreinfomodel.cpp \
+    main.cpp \
+    mainwidget.cpp
+
 
 
 HEADERS += \
-    base/allpupwindow.h \
-    base/musicDataBase.h \
-    base/widget.h \
-    base/widgetstyle.h \
-    player/musicslider.h \
-    player/playbackmodewidget.h \
-    player/player.h \
-    player/playsongarea.h \
-    player/sliderwidget.h \
-#    player/xatom-helper.h \
-    sidebar/mytoolbutton.h \
-    sidebar/sidebarwidget.h \
-    tableview/scoreinfomodel.h \
-    tableview/tablebaseview.h \
-    tableview/tableone.h \
-    tableview/tableviewdelegate.h
+    UI/base/allpupwindow.h \
+    UI/base/widgetstyle.h \
+    UI/player/musicslider.h \
+    UI/player/playbackmodewidget.h \
+    UI/player/playsongarea.h \
+    UI/player/sliderwidget.h \
+#    UI/player/xatom-helper.h \
+    UI/sidebar/mytoolbutton.h \
+    UI/sidebar/sidebarwidget.h \
+    UI/tableview/tablebaseview.h \
+    UI/tableview/tableone.h \
+    UI/tableview/tableviewdelegate.h \
+    UIControl/base/musicDataBase.h \
+    UIControl/player/player.h \
+    UIControl/tableview/scoreinfomodel.h \
+    mainwidget.h
+
 
 
 # Default rules for deployment.

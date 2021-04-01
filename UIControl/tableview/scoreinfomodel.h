@@ -6,7 +6,7 @@
 #include <QTableView>
 #include <QList>
 #include <QDebug>
-#include "base/musicDataBase.h"
+#include "UIControl/base/musicDataBase.h"
 
 class ScoreInfoModel : public QObject
 {

@@ -6,8 +6,8 @@
 #include <QHeaderView>
 #include <QStandardItemModel>
 #include <QStandardItemModel>
-#include "scoreinfomodel.h"
-#include "base/musicDataBase.h"
+#include "UIControl/tableview/scoreinfomodel.h"
+#include "UIControl/base/musicDataBase.h"
 
 class TableBaseView : public QTableView
 {

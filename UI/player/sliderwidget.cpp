@@ -1,6 +1,6 @@
 #include "sliderwidget.h"
-#include "base/widgetstyle.h"
-#include "xatom-helper.h"
+#include "UI/base/widgetstyle.h"
+//#include "UI/player/xatom-helper.h" 
 
 SliderWidget::SliderWidget(QWidget *parent) : QDialog(parent)
 {

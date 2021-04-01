@@ -1,4 +1,4 @@
-#include "widget.h"
+#include "mainwidget.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -33,16 +33,6 @@ void Widget::initAllComponent()
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
-//    QStringList listNameList;
-//    int ret = g_db->getPlayList(listNameList);
-//    for(QString name : listNameList)
-//    {
-//        TableOne *table = new TableOne(name,this);
-//        mainVBoxLayout->addWidget(table);
-//        table->hide();
-//    }
-//    mainVBoxLayout->setSpacing(0);
-//    mainVBoxLayout->setMargin(0);
     mainHBoxLayout = new QHBoxLayout();
     sideBarWid = new SideBarWidget(this);
     sideBarWid->setFixedWidth(210);
@@ -60,9 +50,7 @@ void Widget::initAllComponent()
 void Widget::allConnect()
 {
 
-    connect(sideBarWid,&SideBarWidget::playListBtnCliced,this,&Widget::selectListChanged);
-    connect(sideBarWid,&SideBarWidget::playListAdded,this,&Widget::playListAdded);
-    connect(sideBarWid,&SideBarWidget::playListRemoved,this,&Widget::playListRemoved);
+    connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
 }
 
 
@@ -101,63 +89,4 @@ void Widget::initGSettings()//初始化GSettings
     }
     qDebug()<<"初始化GSettings成功";
 }
-void Widget::selectListChanged(QString listname)
-{
 
-    qDebug() << "歌单名" <<listname;
-    musicListTable->m_model->clear();
-    musicListTable->nowListName = listname;
-    musicListTable->getMusicList();
-    musicListTable->changeNumber();
-    musicListTable->listTitleLabel->setText(listname);
-//    QList<TableOne *> list = this->findChildren<TableOne *>();
-//    for(TableOne *tmp : list)
-//    {
-//        tmp->hide();
-//        if(tmp->listTitleLabel->text() == listname)
-//        {
-//            tmp->show();
-//        }
-//    }
-
-}
-void Widget::playListAdded(QString listname)
-{
-//    TableOne *table = new TableOne(listname,this);
-//    mainVBoxLayout->addWidget(table);
-//    table->hide();
-}
-
-void Widget::playListRemoved(QString listname)
-{
-//    QList<TableOne *> list = this->findChildren<TableOne *>();
-//    for(int i = 0; i < list.size();i++)
-//    {
-//        list[i]->hide();
-//        if(list[i]->listTitleLabel->text() == listname)
-//        {
-//            if(i = list.size()-1)
-//            {
-//                list[i-1]->show();
-//                list[i]->deleteLater();
-//            }
-//            else
-//            {
-//                list[i+1]->show();
-//                list[i]->deleteLater();
-//            }
-//        }
-//    }
-}
-void Widget::playListRenamed(QString oldName,QString newName)
-{
-//    QList<TableOne *> list = this->findChildren<TableOne *>();
-//    for(TableOne *tmp : list)
-//    {
-//        tmp->hide();
-//        if(tmp->listTitleLabel->text() == oldName)
-//        {
-//            tmp->listTitleLabel->setText(newName);
-//        }
-//    }
-}

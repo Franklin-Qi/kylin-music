@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QFocusEvent>
+#include <QX11Info>
 
 class SliderWidget : public QDialog
 {
