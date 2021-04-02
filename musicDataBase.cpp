@@ -26,7 +26,7 @@ MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
         qDebug() << "存在旧版本数据库" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
     }
     m_database.setDatabaseName(dirPath + "mymusic.db");
-    initSpellList();
+//    initSpellList();
     // 初始化拼音转换的列表
 }
 
@@ -105,12 +105,7 @@ int MusicDataBase::initDataBase()
                                        "album varchar,"
                                        "filetype varchar,"
                                        "size varchar,"
-                                       "time varchar,"
-                                       "xtitle varchar,"
-                                       "xsinger varchar,"
-                                       "xalbum varchar,"
-                                       "xspelling varchar,"
-                                       "xspellingsimple varchar)"
+                                       "time varchar)"
                                        ));//创建音乐总表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
 
     queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
@@ -1810,23 +1805,23 @@ int MusicDataBase::delSongFromEveryWhere(const QString& filePath)
     return DB_OP_SUCC;
 }
 
-void MusicDataBase::testSearch()
-{
-    // 测试方法
-    QList<musicDataStruct> resList;
-    const QString keyword = "chenyix";
-    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
-    int len = resList.size();
-    for(int i = 0; i < len; i++)
-    {
-        musicDataStruct temp = resList.at(i);
-        qDebug() << temp.title << temp.singer << temp.album;
-    }
-    QString PY = characterToSpell(keyword);
-    qDebug() << "PY: " << PY;
-    QString JP = characterToSpellFirstLetter(keyword);
-    qDebug() << "JP: " << JP;
-}
+//void MusicDataBase::testSearch()
+//{
+//    // 测试方法
+//    QList<musicDataStruct> resList;
+//    const QString keyword = "chenyix";
+//    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
+//    int len = resList.size();
+//    for(int i = 0; i < len; i++)
+//    {
+//        musicDataStruct temp = resList.at(i);
+//        qDebug() << temp.title << temp.singer << temp.album;
+//    }
+//    QString PY = characterToSpell(keyword);
+//    qDebug() << "PY: " << PY;
+//    QString JP = characterToSpellFirstLetter(keyword);
+//    qDebug() << "JP: " << JP;
+//}
 
 QString MusicDataBase::inPutStringHandle(const QString& input)
 {
@@ -1852,14 +1847,27 @@ void MusicDataBase::testSearch()
     // ph-code
     // 测试功能是否生效。
     qDebug() << "ph-debug----------------------testsearch";
-    const QString keyword = "cs";
+    const QString keyword = "zhouji";
     QList<musicDataStruct> resList;
     getSongInfoListFromLocalMusicByKeyword(resList, keyword);
-    qDebug() << resList.size() << resList.length();
-    for(int i = 0; i < resList.size(); i++)
+    QSqlQuery testSql(m_database);
+    QString sql = QString("select *, simple_highlight(AuxIndexLocalMusicContent, 1, '[', ']') from AuxIndexLocalMusicContent"
+                          " where AuxIndexLocalMusicContent match simple_query('%1')").arg(keyword);
+    bool res = testSql.exec(sql);
+    qDebug() << testSql.lastQuery();
+    qDebug() << res << testSql.lastError().text();
+    while(testSql.next())
     {
-        musicDataStruct temp = resList.at(i);
-        qDebug() << temp.title << temp.time << temp.singer << temp.album;
+        musicDataStruct temp;
+        temp.title  = testSql.value(1).toString();
+        temp.singer = testSql.value(2).toString();
+        temp.album  = testSql.value(3).toString();
+        qDebug() << testSql.value(0).toString() << temp.title << temp.singer << temp.album;
     }
+//    for(int i = 0; i < resList.size(); i++)
+//    {
+//        musicDataStruct temp = resList.at(i);
+//        qDebug() << temp.title << temp.time << temp.singer << temp.album;
+//    }
 
 }
