@@ -33,6 +33,8 @@ void Widget::initAllComponent()
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
+    mainVBoxLayout->setMargin(0);
+    mainVBoxLayout->setSpacing(0);
     mainHBoxLayout = new QHBoxLayout();
     sideBarWid = new SideBarWidget(this);
     sideBarWid->setFixedWidth(210);
@@ -49,10 +51,29 @@ void Widget::initAllComponent()
 
 void Widget::allConnect()
 {
-
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
 }
 
+void Widget::keyPressEvent(QKeyEvent *event)
+{
+    // F1快捷键打开用户手册
+    if (event->key() == Qt::Key_F1) {
+        if (!mDaemonIpcDbus->daemonIsNotRunning()){
+            // F1快捷键打开用户手册，如kylin-music
+            //由于是小工具类，下面的showGuide参数要填写"tools/kylin-recorder"
+            mDaemonIpcDbus->showGuide("kylin-music");
+        }
+    }
+    else if(event->key() == Qt::Key_Right)
+    {
+        return;
+    }
+    else if(event->key() == Qt::Key_Left)
+    {
+        return;
+    }
+    QWidget::keyPressEvent(event);
+}
 
 void Widget::showHistroryPlayList()
 {

@@ -40,6 +40,7 @@ SOURCES += \
     UIControl/base/musicDataBase.cpp \
     UIControl/player/player.cpp \
     UIControl/tableview/scoreinfomodel.cpp \
+    daemonipcdbus.cpp \
     main.cpp \
     mainwidget.cpp
 
@@ -61,6 +62,7 @@ HEADERS += \
     UIControl/base/musicDataBase.h \
     UIControl/player/player.h \
     UIControl/tableview/scoreinfomodel.h \
+    daemonipcdbus.h \
     mainwidget.h
 
 

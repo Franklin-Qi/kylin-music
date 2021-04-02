@@ -16,6 +16,8 @@
 #include "UI/base/widgetstyle.h"
 #include "UI/sidebar/sidebarwidget.h"
 #include "UI/player/playsongarea.h"
+#include "daemonipcdbus.h"
+
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -26,8 +28,17 @@ public:
 public slots:
 
 private slots:
-private:
 
+protected:
+    // 键盘响应事件
+    void keyPressEvent(QKeyEvent *event);
+private:
+    void initAllComponent();
+    void allConnect();
+    void showHistroryPlayList();
+
+    void initGSettings();
+private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
 
@@ -35,13 +46,10 @@ private:
     TableOne *musicListTable;
 //    TableOne *historyListTable;
 
-    void initAllComponent();
-    void allConnect();
-    void showHistroryPlayList();
-
-    void initGSettings();
     QGSettings *themeData = nullptr;
     SideBarWidget *sideBarWid;
     PlaySongArea *playSongArea;
+    // 用户手册功能
+    DaemonIpcDbus *mDaemonIpcDbus;
 };
 #endif // WIDGET_H
