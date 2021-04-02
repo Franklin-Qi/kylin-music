@@ -104,7 +104,6 @@ HEADERS += \
     sidebar.h \
     sliderwidget.h \
     songitem.h \
-    sqlite3.h \
     titlebar.h \
 #    connection.h \
     slider.h \
@@ -124,16 +123,10 @@ RESOURCES += \
 DISTFILES += \
     data/org.kylin-music-data.gschema.xml
 
-LIBS += -L$$PWD/../../../../usr/local/bin/ -lsimple
 
-INCLUDEPATH += $$PWD/../../../../usr/local/bin
-DEPENDPATH += $$PWD/../../../../usr/local/bin
-
-LIBS += -L$$PWD/../../../../usr/local/lib/ -lsqlite3
-
-INCLUDEPATH += $$PWD/../../../../usr/local/include
-DEPENDPATH += $$PWD/../../../../usr/local/include
-
-PRE_TARGETDEPS += $$PWD/../../../../usr/local/lib/libsqlite3.a
 
 LIBS +=-ldl
+
+unix|win32: LIBS += -lsimple
+
+unix|win32: LIBS += -lsqlite3
