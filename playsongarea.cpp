@@ -321,6 +321,9 @@ void PlaySongArea::initWidget()
     h_mainLayout->setSpacing(10);
     h_mainLayout->setContentsMargins(0,0,30,0);
 //    connect(playBtn,SIGNAL(clicked(bool)),this,SLOT(playSong(bool)));   //播放歌曲
+    //test:lx进行buffer播放器和播放列表的初始化
+    searchBufferPlayer = new QMediaPlayer(this) ;
+    searchBufferPlaylist = new QMediaPlaylist(this);
 
 }
 //void PlaySongArea::playSong(bool)

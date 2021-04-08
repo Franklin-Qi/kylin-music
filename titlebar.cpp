@@ -28,6 +28,8 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 
     searchWidget = new QListWidget(parent);
     searchResultWidget = new MusicListWid(parent);
+    //test:lx
+    searchResultWidget->PlayList=NULL;
 //    searchResultWidget->songListLabel->setText("搜索结果");
     searchResultWidget->songListLabel->setText(tr("The search results"));
     //test:lx

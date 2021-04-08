@@ -34,6 +34,7 @@
 #include "widgetstyle.h"
 #include "menumodule.h"
 
+
 const QString main_style = "QFrame{background:#FFFFFF;border-top-right-radius:12px;}";
 
 #pragma pack(push)

@@ -180,6 +180,8 @@ MusicListWid::MusicListWid(QWidget *parent):QWidget(parent)
     initMusicListWid();
     localModel = new QSqlTableModel(this);
     musiclistcolor();
+    //test:lx
+
 }
 
 //歌曲不为零时的切换页面
@@ -289,9 +291,12 @@ void MusicListWid::initMusicListWid()
 
     PlayList = new QMediaPlaylist(this);
 
+
     //Music = new QMediaPlayer(this);
     Music = nullptr;
     this->setLayout(vMainLayout);
+
+
 }
 void MusicListWid::initialQMediaPlayer()
 {

@@ -30,7 +30,7 @@ SideBar::SideBar(QWidget *parent) : QFrame(parent)
     initTopWidget();
     sidecolor();
     //test:lx
-    this->songListWidget-> setStyleSheet ("background:red;");
+    //this->songListWidget-> setStyleSheet ("background:red;");
 }
 
 void SideBar::sidecolor()
@@ -296,7 +296,18 @@ void SideBar::on_musicListChangeWid_customContextMenuRequested(const QPoint &pos
             }
             else
             {
-                listaction->setText(listName);
+                //test:lx
+                QString* str_lx=new QString;
+                *str_lx = listName;
+                if(listName.startsWith("NewSongList")){
+                    *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+                    listaction->setText(*str_lx);
+                }
+                else{
+                    listaction->setText(listName);
+                }
+                str_lx = NULL;
+                delete str_lx;
             }
             menu5->addAction(listaction);
         }
@@ -683,6 +694,8 @@ void SideBar::initDefaultMusicList()
     myMusicListWid->Music->setPlaylist(myMusicListWid->PlayList);
     myMusicListWid->musicInfoWidget->setCurrentRow(0);
     myMusicListWid->songNumberLabel->setText(tr("A total of")+QString::number(myMusicListWid->musicInfoWidget->count())+tr("The first"));
+    //test:lx
+    //myMusicListWid->songNumberLabel->setStyleSheet ("background:red;");
 
 }
 void SideBar::createSongList()
@@ -715,7 +728,17 @@ void SideBar::createSongList()
             }
             else
             {
-                newSongListBtn[i]->setText(listName);
+                //test:lx
+                QString* str_lx=new QString;
+                *str_lx = listName;
+                if(listName.startsWith("NewSongList")){
+                    *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+                }
+                newSongListBtn[i]->setText(*str_lx);
+                str_lx = NULL;
+                delete str_lx;
+
+                //newSongListBtn[i]->setText(listName);
             }
 
         }
@@ -723,11 +746,49 @@ void SideBar::createSongList()
         songListWidget->setItemWidget(newSongList[i],newSongListBtn[i]);
         musicListChangeWid[i] = new MusicListWid(this);
         musicListChangeWid[i]->top_addSongBtn->hide();
+        //test:lx
+        /*
+        QString* str_lx=new QString;
+        *str_lx = listName;
+        if(listName.startsWith("NewSongList")){
+            *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+        }
+        musicListChangeWid[i]->songListLabel->setText(*str_lx);
+        str_lx = NULL;
+        delete str_lx;
+        musicListChangeWid[i]->songListLabel->setStyleSheet ("backgound:red;");
+        */
+        //test:lx
+        //musicListChangeWid[i]->songListLabel->setText("lxxxxx");
+
         musicListChangeWid[i]->songListLabel->setText(listName);
         musicListChangeWid[i]->get_localmusic_information(listName);
         musicListChangeWid[i]->songNumberLabel->setText(tr("A total of")+QString::number(musicListChangeWid[i]->musicInfoWidget->count())+tr("The first"));
 
         QString listNameLab = "";
+        //test:lx
+
+        if(listName.length() > 9)
+        {
+            QString* str_lx=new QString;
+            *str_lx = listName;
+            if(listName.startsWith("NewSongList")){
+                *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+                musicListChangeWid[i]->songListLabel->setText(*str_lx);
+                musicListChangeWid[i]->songListLabel->setToolTip(listName);
+            }else{
+                listNameLab = listName.mid(0,8);
+                listNameLab.append("...");
+                musicListChangeWid[i]->songListLabel->setText(listNameLab);
+                musicListChangeWid[i]->songListLabel->setToolTip(listName);
+            }
+
+            str_lx = NULL;
+            delete str_lx;
+
+        }
+        //testend:lx
+        /*
         if(listName.length() > 9)
         {
             listNameLab = listName.mid(0,8);
@@ -735,6 +796,7 @@ void SideBar::createSongList()
             musicListChangeWid[i]->songListLabel->setText(listNameLab);
             musicListChangeWid[i]->songListLabel->setToolTip(listName);
         }
+        */
         else
         {
             if(listName == "我喜欢")
@@ -798,23 +860,23 @@ void SideBar::addItemToSongList()
     }
     else
     {
-        QStringList filterResult = playListName.filter("新建歌单");
-
+        //test:lx
+        QStringList filterResult = playListName.filter("NewSongList");
         if (filterResult.size() == 0) {
-            listName = "新建歌单";
+            listName = "NewSongList";
         } else {
 
             for (i = 0; i < filterResult.size(); i++) {
-                if (filterResult.at(i) == "新建歌单") {
+                if (filterResult.at(i) == "NewSongList") {
                     break;
                 }
             }
             if (i >= filterResult.size()) {
-                listName = "新建歌单";
+                listName = "NewSongList";
             } else {
                 j = 1;
                 for (i = 0; i < filterResult.size(); i++) {
-                    listName = "新建歌单" + QString::number(j);
+                    listName = "NewSongList" + QString::number(j);
                     ret = filterResult.indexOf(listName, 0);
                     if (ret == -1) {
                         break;
@@ -823,12 +885,21 @@ void SideBar::addItemToSongList()
                 }
             }
         }
+        qDebug()<<"lx make a listName is:"<<listName;
+
     }
 
     newSongList[num] = new QListWidgetItem(songListWidget);  //我喜欢 这一item占有一个索引，所以num作为控制新建歌单数组的下标变量时应该减去1
     newSongListBtn[num] = new MyToolButton;
-
-    newSongListBtn[num]->setText(listName);
+    //test:lx
+    QString* str_lx=new QString;
+    *str_lx = listName;
+    if(listName.startsWith("NewSongList")){
+        *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+    }
+    newSongListBtn[num]->setText(*str_lx);
+    str_lx = NULL;
+    delete str_lx;
     newSongListBtn[num]->setFixedSize(180,32);
     newSongList[num]->setSizeHint(QSize(180,32));
     songListWidget->setItemWidget(newSongList[num],newSongListBtn[num]);
@@ -844,10 +915,35 @@ void SideBar::addItemToSongList()
 
     musicListChangeWid[num] = new MusicListWid(this);    //歌曲列表界面占据一个 所以此处应该是num
     musicListChangeWid[num]->top_addSongBtn->hide();
+    //test:lx
+    //musicListChangeWid[num]->songListLabel->setText("lx");
     musicListChangeWid[num]->songListLabel->setText(listName);
 //    musicListChangeWid[num]->tableName = listName;
     musicListChangeWid[num]->musicInfoWidget->clear();
     QString listNameLab = "";
+    //test:lx
+
+    if(listName.length() > 9)
+    {
+        QString* str_lx=new QString;
+        *str_lx = listName;
+        if(listName.startsWith("NewSongList")){
+            *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
+            musicListChangeWid[num]->songListLabel->setText(*str_lx);
+            musicListChangeWid[num]->songListLabel->setToolTip(listName);
+        }else{
+            listNameLab = listName.mid(0,8);
+            listNameLab.append("...");
+            musicListChangeWid[num]->songListLabel->setText(listNameLab);
+            musicListChangeWid[num]->songListLabel->setToolTip(listName);
+        }
+
+        str_lx = NULL;
+        delete str_lx;
+
+    }
+    //testend:lx
+    /*
     if(listName.length() > 9)
     {
         listNameLab = listName.mid(0,8);
@@ -855,6 +951,7 @@ void SideBar::addItemToSongList()
         musicListChangeWid[num]->songListLabel->setText(listNameLab);
         musicListChangeWid[num]->songListLabel->setToolTip(listName);
     }
+    */
     else
     {
         musicListChangeWid[num]->songListLabel->setText(listName);

@@ -181,6 +181,7 @@ public slots:
     void play_Song();   //播放和暂停
     void pause();
     void play();
+    void on_musicInfoWidget_customContextMenuRequested_lx(const QPoint&);   //test:lx 搜索歌曲框右键菜单
     void on_musicInfoWidget_customContextMenuRequested(const QPoint &pos);  //歌曲列表右键菜单
     void on_sidebarWidget_customContextMenuRequested(const QPoint &pos);    //侧边栏歌单区域右键菜单
 //    void on_historyWidget_customContextMenuRequested(const QPoint &pos);    //历史列表右键菜单
@@ -191,6 +192,7 @@ public slots:
 
     void getSongInfoAct();    //歌曲信息
     void on_listWidget_doubleClicked(QListWidgetItem *item);         //双击本地音乐播放playlist
+    void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
     void on_musicListChangeWid_doubleClicked(QListWidgetItem *item); //双击歌单播放
     void on_historyWidget_doubleClicked(QListWidgetItem *item);      //双击历史列表播放
     void Music_stateChang(QMediaPlayer::State state);//播放状态改变
@@ -246,6 +248,9 @@ public slots:
     void add_nullMusicWidgetAddFile();
     void clear_HistoryPlayList();  //清除历史记录
     void showSearchResultWidget(); //显示搜索页面
+    //test:lx
+    void onPlaylistIndexChanged();
+    void showSearchResultWidget_lx();
     void hideSearchResultWidget(); //隐藏搜索页面
 
     void local_currentIndexChanged(int currentIndex);    //获取歌曲列表正在播放title

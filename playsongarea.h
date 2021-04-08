@@ -62,12 +62,16 @@ public:
     QStringList sqlFilenameList;
     QMediaPlaylist *PlayList;
     QMediaPlayer *Music;
+
 //    int playMode = 0;
 
     QString MusicName;
     QLabel *songNameofNowPlaying;
 
     BeforePlayList *mybeforeList;
+    //test:lx
+    QMediaPlaylist* searchBufferPlaylist;
+    QMediaPlayer* searchBufferPlayer;
     SliderWidget *sliderWid;
     void playcolor(bool isplay);
     void songText(QString songName);   // 正在播放

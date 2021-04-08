@@ -31,6 +31,10 @@
 #include "myapplication.h"
 #include "kylinmuisc.h"
 
+
+//myTitleBar->searchResultWidget->Music
+//myPlaySongArea->searchBufferPlayer
+//myPlaySongArea->searchBufferPlaylist
 void msgHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     static FILE *fp = NULL; // 使用静态变量，进行数据持久保持
