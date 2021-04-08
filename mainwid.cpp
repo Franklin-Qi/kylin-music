@@ -348,7 +348,7 @@ void MainWid::initAction()//初始化事件
 
     connect(myPlaySongArea->mybeforeList->beforePlayList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_historyWidget_doubleClicked(QListWidgetItem*)));
     //test:lx 播放歌曲
-    connect(myPlaySongArea->searchBufferPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistIndexChanged()));
+
     //connect(myTitleBar->searchResultWidget->PlayList,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistChanged(int)));
     //connect(myTitleBar->searchResultWidget->Music,SIGNAL(currentMediaChanged(QMediaContent)),this, SLOT(currenMusicChanged_lx(MediaContent)));
     connect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,
@@ -2347,6 +2347,7 @@ void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
         delete myPlaySongArea->searchBufferPlaylist;
         myPlaySongArea->searchBufferPlaylist = myTitleBar->searchResultWidget->PlayList;
         myPlaySongArea->searchBufferPlayer->setPlaylist (myPlaySongArea->searchBufferPlaylist);
+        connect(myPlaySongArea->searchBufferPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistIndexChanged()));
     }
     qDebug()<<"myPlaySongArea->searchBufferPlaylist->mediaCount:"<<myPlaySongArea->searchBufferPlaylist->mediaCount ();
     qDebug()<<"myPlaySongArea->searchBufferPlaylist->currentIndex:"<<myPlaySongArea->searchBufferPlaylist->currentIndex ();
