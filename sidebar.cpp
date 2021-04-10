@@ -306,8 +306,8 @@ void SideBar::on_musicListChangeWid_customContextMenuRequested(const QPoint &pos
                 else{
                     listaction->setText(listName);
                 }
-                str_lx = NULL;
                 delete str_lx;
+                str_lx = NULL;
             }
             menu5->addAction(listaction);
         }
@@ -735,8 +735,8 @@ void SideBar::createSongList()
                     *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
                 }
                 newSongListBtn[i]->setText(*str_lx);
-                str_lx = NULL;
                 delete str_lx;
+                str_lx = NULL;
 
                 //newSongListBtn[i]->setText(listName);
             }
@@ -783,8 +783,8 @@ void SideBar::createSongList()
                 musicListChangeWid[i]->songListLabel->setToolTip(listName);
             }
 
-            str_lx = NULL;
             delete str_lx;
+            str_lx = NULL;
 
         }
         //testend:lx
@@ -898,8 +898,8 @@ void SideBar::addItemToSongList()
         *str_lx = tr("NewSongList")+str_lx->right (str_lx->length ()-11);
     }
     newSongListBtn[num]->setText(*str_lx);
-    str_lx = NULL;
     delete str_lx;
+    str_lx = NULL;
     newSongListBtn[num]->setFixedSize(180,32);
     newSongList[num]->setSizeHint(QSize(180,32));
     songListWidget->setItemWidget(newSongList[num],newSongListBtn[num]);
@@ -938,8 +938,8 @@ void SideBar::addItemToSongList()
             musicListChangeWid[num]->songListLabel->setToolTip(listName);
         }
 
-        str_lx = NULL;
         delete str_lx;
+        str_lx = NULL;
 
     }
     //testend:lx

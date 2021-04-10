@@ -228,8 +228,8 @@ void TitleBar::initTitle()
 //    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
 
     //test:lx
-    connect(searchEdit,&QLineEdit::textChanged,this,&TitleBar::searchMusic);
-    connect(searchEdit,&QLineEdit::editingFinished,this,&TitleBar::hideSearchEdit);
+    //connect(searchEdit,&QLineEdit::textChanged,this,&TitleBar::searchMusic);
+    //connect(searchEdit,&QLineEdit::editingFinished,this,&TitleBar::hideSearchEdit);
 
 
     LayoutRight->setSpacing(0);

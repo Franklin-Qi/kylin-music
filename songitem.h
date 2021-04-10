@@ -35,6 +35,8 @@
 #include <widgetstyle.h>
 #include "mytoolbutton.h"
 
+
+//test:lx 由于在搜索页面维护一个musicid的列表需要数据库的表名，所以我干脆在这里定义一个public的filepath_lx，初始化搜索页面的时候就给他赋值
 class SongItem : public QWidget
 {
     Q_OBJECT
@@ -63,6 +65,7 @@ public:
     QString itemSongName;
     QString itemSinger;
     QString itemAlbum;
+    QString filepath_lx;//test:lx
 public slots:
 
 

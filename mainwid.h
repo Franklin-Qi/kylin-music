@@ -87,6 +87,9 @@
 #include "musicslider.h"
 //音量弹窗
 #include "sliderwidget.h"
+//test:lx
+#include<typeinfo>
+
 
 struct MusicPath
 {
@@ -108,6 +111,8 @@ public:
     ~MainWid();
 //    MainWid(QWidget *);
 //    QString getMp3FileName(QString sqlName);
+    //test:lx
+    void testLx(QListWidgetItem* ,QListWidgetItem* );
     void promptMessage();
     void updatalistwidget(int value);//更新listWidget
     void updataplaylistwidget(int value);//更新playlistWidget
@@ -181,7 +186,7 @@ public slots:
     void play_Song();   //播放和暂停
     void pause();
     void play();
-    void on_musicInfoWidget_customContextMenuRequested_lx(const QPoint&);   //test:lx 搜索歌曲框右键菜单
+    void on_musicInfoWidget_customContextMenuRequested_lx(const QPoint& pos);   //test:lx 搜索歌曲框右键菜单
     void on_musicInfoWidget_customContextMenuRequested(const QPoint &pos);  //歌曲列表右键菜单
     void on_sidebarWidget_customContextMenuRequested(const QPoint &pos);    //侧边栏歌单区域右键菜单
 //    void on_historyWidget_customContextMenuRequested(const QPoint &pos);    //历史列表右键菜单
@@ -191,8 +196,13 @@ public slots:
     void playNextSongAct();   //右键下一首
 
     void getSongInfoAct();    //歌曲信息
+    //test:lx歌曲信息
+    void getSongInfoAct_lx();
     void on_listWidget_doubleClicked(QListWidgetItem *item);         //双击本地音乐播放playlist
     void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
+    //test:lx 预测搜索框
+    void onSearchPredict();
+    void hideSearchEdit();
     void on_musicListChangeWid_doubleClicked(QListWidgetItem *item); //双击歌单播放
     void on_historyWidget_doubleClicked(QListWidgetItem *item);      //双击历史列表播放
     void Music_stateChang(QMediaPlayer::State state);//播放状态改变
@@ -208,9 +218,12 @@ public slots:
     void playlist_durationChange(qint64 duration);
 //    void playlist_currentMediaChanged(QMediaContent content);
 
-
+    //test:lx 添加到歌单
+    void add_music_to_songlist_lx(QAction *listact);
     void add_music_to_songlist(QAction *listact);    //添加到歌单
     void deleteMusicFromLocalList(); //从本地音乐删除
+    //test:lx 从本地音乐删除
+    void deleteMusicFromLocalList_lx();
 //    void deleteMusicFromSongList();  //从歌单删除音乐
     void deleteThisSongList();       //删除歌单弹窗
     void showRenameDlg();

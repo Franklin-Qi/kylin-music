@@ -16,7 +16,6 @@
  */
 
 #include "songitem.h"
-
 SongItem::SongItem(QWidget *parent):QWidget(parent)
 {
     setFixedHeight(40);
