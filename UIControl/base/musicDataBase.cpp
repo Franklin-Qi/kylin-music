@@ -1112,6 +1112,51 @@ int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resLi
     }
 }
 
+//清空历史歌单
+int MusicDataBase::emptyHistoryMusic()
+{
+    bool delRes = true;
+
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+        QSqlQuery getSongListFromHistoryMusic(m_database);
+        QString getSongListString = QString("select idIndex from HistoryPlayList");
+        getRes = getSongListFromHistoryMusic.exec(getSongListString);
+
+        if(true == getRes)
+        {
+            while(getSongListFromHistoryMusic.next())
+            {
+                QSqlQuery delSongFromHistoryPlayList(m_database);
+
+                QString delSongString = QString("delete from HistoryPlayList where idIndex = '%1'").
+                        arg(getSongListFromHistoryMusic.value(0).toString());
+                delRes &= delSongFromHistoryPlayList.exec(delSongString);
+            }
+            if(true != delRes)
+            {
+                return EMPTYT_HIS_FAILED;
+            }
+            else
+            {
+                return DB_OP_SUCC;
+            }
+        }
+        else
+        {
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+        return DB_UNCONNECT;
+    }
+
+}
+
 int MusicDataBase::checkIfSongExistsInLocalMusic(const QString& filePath)
 {
     bool queryRes = true;
