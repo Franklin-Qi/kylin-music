@@ -1115,37 +1115,42 @@ int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resLi
 //清空历史歌单
 int MusicDataBase::emptyHistoryMusic()
 {
-    bool delRes = true;
-
     if(true == m_database.isValid())
     {
-        bool getRes = true;
-        QSqlQuery getSongListFromHistoryMusic(m_database);
-        QString getSongListString = QString("select idIndex from HistoryPlayList");
-        getRes = getSongListFromHistoryMusic.exec(getSongListString);
+        bool delRes = true;
 
-        if(true == getRes)
+        QSqlQuery delPlayList(m_database);
+        QString delPlayListString = QString("DROP TABLE HistoryPlayList");
+        delRes &= delPlayList.exec(delPlayListString);
+
+        if(true == delRes)
         {
-            while(getSongListFromHistoryMusic.next())
-            {
-                QSqlQuery delSongFromHistoryPlayList(m_database);
+            bool queryRes = true;
+            QSqlQuery queryInit(m_database);
 
-                QString delSongString = QString("delete from HistoryPlayList where idIndex = '%1'").
-                        arg(getSongListFromHistoryMusic.value(0).toString());
-                delRes &= delSongFromHistoryPlayList.exec(delSongString);
-            }
-            if(true != delRes)
+            queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
+                                               "id integer primary key autoincrement,"
+                                               "idIndex integer unique,"
+                                               "filepath varchar unique not NULL,"
+                                               "title varchar,"
+                                               "singer varchar,"
+                                               "album varchar,"
+                                               "filetype varchar,"
+                                               "size varchar,"
+                                               "time varchar)"
+                                               ));//创建历史播放列表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
+            if(true == queryRes)
             {
-                return EMPTYT_HIS_FAILED;
+                return DB_OP_SUCC;
             }
             else
             {
-                return DB_OP_SUCC;
+                return CREATE_HIS_FAILED;
             }
         }
         else
         {
-            return DB_OP_GET_FAILED;
+            return EMPTYT_HIS_FAILED;
         }
 
     }

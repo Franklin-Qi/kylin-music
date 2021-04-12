@@ -36,6 +36,7 @@ enum DB_RETURN_STATUS{              //数据库操作结果返回表
     LIST_NOT_EMPTY      = (-20),    //歌单不为空
     LIST_IS_EMPTY       = (-21),    //歌单为空
     EMPTYT_HIS_FAILED   = (-22),    //清空历史列表失败
+    CREATE_HIS_FAILED   = (-23),    //创建历史列表失败
     OUT_OF_RESULT              ,    //结果边界
 };
 
