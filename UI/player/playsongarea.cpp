@@ -166,14 +166,15 @@ void PlaySongArea::initWidget()
 
 void PlaySongArea::initConnect()
 {
-//    connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
-//    connect(volumeBtn,&QPushButton::clicked,this,&PlaySongArea::slotVolSliderWidget);
-//    connect(favBtn,&QPushButton::clicked,this,&PlaySongArea::slotFav);
-//    connect(playModeBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
-//    connect(m_playBackModeWid->loopBtn,&QToolButton::clicked,this,&PlaySongArea::slotLoopClicked);
-//    connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
-//    connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
-//    connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
+    connect(listBtn,&QPushButton::clicked,this,&PlaySongArea::listBtnClicked);
+    connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
+    connect(volumeBtn,&QPushButton::clicked,this,&PlaySongArea::slotVolSliderWidget);
+    connect(favBtn,&QPushButton::clicked,this,&PlaySongArea::slotFav);
+    connect(playModeBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
+    connect(m_playBackModeWid->loopBtn,&QToolButton::clicked,this,&PlaySongArea::slotLoopClicked);
+    connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
+    connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
+    connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -296,6 +297,12 @@ void PlaySongArea::movePlayModeWid()
     int newPosY = modePos.y() + 25 + size.height() - modeSize.height() / 2 + 1;
     m_playBackModeWid->changePlayModePos(newPosX, newPosY, modeSize.width(), modeSize.height());
     m_playBackModeWid->move(modePos);
+}
+
+void PlaySongArea::listBtnClicked()
+{
+    emit showHistoryListBtnClicked();
+    qDebug() << "void PlaySongArea::listBtnClicked()";
 }
 
 void PlaySongArea::playcolor()
