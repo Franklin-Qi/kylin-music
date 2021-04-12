@@ -60,9 +60,9 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
     connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
-    connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::close);
-    connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::showMinimized);
-    connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::showMaximized);
+    connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
+    connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
+    connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
 }
 
 
@@ -106,10 +106,65 @@ void Widget::resizeEvent(QResizeEvent *event)
     int x = this->width()-320;
     int y = this->height()-playSongArea->height()-historyListTable->height();
     historyListTable->move(x,y);
+    if(this->isMaximized() == true)
+    {
+        m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+        Minimize = true;
+        m_titleBar->maximumBtn->setToolTip(tr("reduction"));
+    }
+    else if(this->isMaximized() == false)
+    {
+        Minimize = false;
+        m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+        m_titleBar->maximumBtn->setToolTip(tr("maximize"));
+    }
+    QWidget::resizeEvent(event);
 }
 
-void Widget::mousePressEvent(QResizeEvent *event)
+//void Widget::mousePressEvent(QResizeEvent *event)
+//{
+//    qDebug() << QCursor::pos();
+//}
+
+void Widget::slotClose()
 {
-    qDebug() << QCursor::pos();
+    this->close();
 }
 
+void Widget::slotShowMinimized()
+{
+    this->showMinimized();
+    if(Minimize == true)
+    {
+        this->showMaximized();
+    }
+    else
+    {
+        this->showNormal();
+    }
+}
+
+void Widget::slotShowMaximized()
+{
+    if(Minimize)
+    {
+        showNormal();
+        Minimize = false;
+        m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+        m_titleBar->maximumBtn->setToolTip(tr("maximize"));
+        m_titleBar->maximumBtn->setProperty("isWindowButton", 0x1);
+        m_titleBar->maximumBtn->setProperty("useIconHighlightEffect", 0x2);
+        m_titleBar->maximumBtn->setFlat(true);
+    }
+    else
+    {
+        showMaximized();
+        Minimize = true;
+        m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+//                maximumBtn->setToolTip(tr("还原"));
+        m_titleBar->maximumBtn->setToolTip(tr("reduction"));
+        m_titleBar->maximumBtn->setProperty("isWindowButton", 0x1);
+        m_titleBar->maximumBtn->setProperty("useIconHighlightEffect", 0x2);
+        m_titleBar->maximumBtn->setFlat(true);
+    }
+}
