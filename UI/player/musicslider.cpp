@@ -12,7 +12,7 @@ MusicSlider::MusicSlider(QWidget *parent):QSlider(parent)
 
 void MusicSlider::initStyle()
 {
-    this->setFixedSize(750,12);
+    this->setFixedHeight(12);
     this->installEventFilter(this);
     this->setOrientation(Qt::Horizontal);
     this->setStyleSheet("QSlider::groove:horizontal{padding-left:0px;height: 2px;background:#3790FA;}"

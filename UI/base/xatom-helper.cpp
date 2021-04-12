@@ -116,7 +116,7 @@ UnityCorners XAtomHelper::getWindowBorderRadius(int winId)
                 corners.bottomLeft = static_cast<ulong>(data[2*sizeof (ulong)]);
                 corners.bottomRight = static_cast<ulong>(data[3*sizeof (ulong)]);
             }
-//            XFree(data);
+            XFree(data);
         }
     }
 
@@ -183,7 +183,7 @@ MotifWmHints XAtomHelper::getWindowMotifHint(int winId)
         return hints;
     } else {
         hints = *(MotifWmHints *)data;
-//        XFree(data);
+        XFree(data);
     }
     return hints;
 }

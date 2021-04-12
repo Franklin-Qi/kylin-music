@@ -6,6 +6,7 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QSqlRecord>
+
 MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
 {
     qDebug() << QSqlDatabase::drivers();//当前环境支持哪些数据库

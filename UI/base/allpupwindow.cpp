@@ -17,10 +17,8 @@
 
 #include "allpupwindow.h"
 #include "widgetstyle.h"
-//#include "xatom-helper.h"
+#include "xatom-helper.h"
 
-#include <QDebug>
-#include <QMessageBox>
 
 
 AllPupWindow::AllPupWindow(QWidget *parent) : QWidget(parent)
@@ -40,11 +38,13 @@ void AllPupWindow::inpupdialog()
     pupDialog = new QDialog(this);
     pupDialog->resize(424,172);
 //    pupDialog->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-//    MotifWmHints hints;
-//    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-//    hints.functions = MWM_FUNC_ALL;
-//    hints.decorations = MWM_DECOR_BORDER;
-//    XAtomHelper::getInstance()->setWindowMotifHint(pupDialog->winId(), hints);
+
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(pupDialog->winId(), hints);
+
     pupDialog->setWindowModality(Qt::ApplicationModal); //弹出自定义对话框时主界面不可操作
 //    pupDialog->setModal(true);
     testLayout = new QVBoxLayout();

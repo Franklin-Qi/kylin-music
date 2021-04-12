@@ -224,3 +224,8 @@ playController::~playController(/* args */)
         m_player->deleteLater();
     }
 }
+
+bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
+{
+
+}

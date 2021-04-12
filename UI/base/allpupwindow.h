@@ -23,20 +23,17 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QStackedWidget>
-#include <QTableWidget>
-#include <QTableWidgetItem>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QDialog>
-#include <QLineEdit>
-#include <QGraphicsDropShadowEffect>
 #include <QPainter>
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QApplication>
 #include <QScreen>
 #include <QDesktopWidget>
-#include <QDialog>
+#include <QDebug>
+#include <QMessageBox>
 
 class AllPupWindow :public QWidget
 {
