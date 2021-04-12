@@ -332,9 +332,6 @@ void MainWid::onPlaylistChanged(int index)
 }
 void MainWid::initAction()//初始化事件
 {
-    //test:lx 测试一下换行
-//    connect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,
-//            SLOT(testLx(QListWidgetItem*,QListWidgetItem*)));
     connect(myPlaySongArea->sliderWid->vSlider,&QSlider::valueChanged,this,&MainWid::changeVolume);
 
     connect(myTitleBar->miniBtn,&QPushButton::clicked,this,&MainWid::slot_showMiniWidget);
@@ -351,7 +348,8 @@ void MainWid::initAction()//初始化事件
 
     connect(myPlaySongArea->mybeforeList->beforePlayList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(on_historyWidget_doubleClicked(QListWidgetItem*)));
     //test:lx 搜索歌曲相关
-    connect(myTitleBar->searchEdit,SIGNAL(textChanged(QString)),this,SLOT(onSearchPredict()));
+    connect(myTitleBar->searchEdit,SIGNAL(textChanged(QString)),this,SLOT(onSearchPredict_lx()));
+    //connect(myTitleBar->searchEdit,SIGNAL(textChanged(QString)),this,SLOT(onSearchPredict()));
     connect(myTitleBar->searchEdit,SIGNAL(editingFinished()),this,SLOT(hideSearchEdit()));
 
     //test:lx 播放歌曲
@@ -502,12 +500,6 @@ void MainWid::initAction()//初始化事件
     connect(myPlaySongArea->mybeforeList->PlayList,&QMediaPlaylist::currentIndexChanged,this,&MainWid::history_currentIndexChanged);
 }
 
-//test:lx 尝试双击变换字体颜色
-void MainWid::testLx(QListWidgetItem* item,QListWidgetItem* lastitem){
-    qDebug()<<"call testLx function";
-    SongItem* item1 = dynamic_cast<SongItem*>(myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item));
-    item1->setStyleSheet ("background:blue;");
-}
 
 void MainWid::songListOutHightStyle(int cur)
 {
@@ -1309,6 +1301,65 @@ void MainWid::onSearchPredict (){
 
     }
 }
+
+//预测搜索框里输入的字段
+void MainWid::onSearchPredict_lx(){
+    qDebug()<<"call onSearchPredict_lx;";
+    QString enterStr = myTitleBar->searchEdit->text().trimmed();
+    if(enterStr == "")
+    {
+        //myTitleBar->predictMenu->close();
+        return;
+    }
+
+/*
+    QScrollArea* scroll = new QScrollArea(myTitleBar);
+    myTitleBar->predictMenu->clear();
+
+    QList<musicDataStruct> musicFromDb;
+    g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+    QListIterator<musicDataStruct> i(musicFromDb);
+    int time = 0;
+    while(i.hasNext()){
+        time++;
+        if(time == 10){
+            break;
+        }
+        musicDataStruct music = i.next ();
+        QAction* getSearchResult = new QAction(myTitleBar->predictMenu);
+        getSearchResult->setText (music.title);
+        myTitleBar->predictMenu->addAction(getSearchResult);
+    }
+
+    //QVBoxLayout* layout = new QVBoxLayout(myTitleBar->searchWidget);
+    //layout->addWidget (myTitleBar->predictMenu);
+    //myTitleBar->searchWidget->setLayout (layout);
+//    myTitleBar->searchWidget->show();
+//    myTitleBar->searchWidget->raise();
+    //scroll->setWidget (myTitleBar->searchWidget);
+    //scroll->show ();
+    myTitleBar->predictMenu->show ();
+    */
+
+    myTitleBar->predictSingerLiswid->clear ();
+    QList<musicDataStruct> musicFromDb;
+    g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+    QListIterator<musicDataStruct> i(musicFromDb);
+    int time = 0;
+    while(i.hasNext()){
+        time++;
+        if(time == 5){
+            break;
+        }
+        musicDataStruct music = i.next ();
+        QListWidgetItem* item1 = new QListWidgetItem(myTitleBar->predictSingerLiswid);
+        item1->setText (music.title);
+        myTitleBar->predictSingerLiswid->addItem (item1);
+    }
+    myTitleBar->predictWid->raise ();
+    myTitleBar->predictWid->show ();
+}
+
 void MainWid::hideSearchEdit(){
     myTitleBar->searchWidget->hide ();
 }
@@ -2670,7 +2721,7 @@ void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
         //不要放在函数里多次调用connect,这个可以多次
         connect(myPlaySongArea->searchBufferPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistIndexChanged()));
     }
-    onPlaylistIndexChanged();
+    //onPlaylistIndexChanged();
     int row;
     row = myTitleBar->searchResultWidget->musicInfoWidget->currentRow () ;
     myPlaySongArea->searchBufferPlaylist->setCurrentIndex (row);
@@ -2678,6 +2729,8 @@ void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
     myPlaySongArea->playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                            "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                            "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
+
+    onPlaylistIndexChanged();
     //qDebug()<<"myPlaySongArea->searchBufferPlaylist->currentIndex:"<<myPlaySongArea->searchBufferPlaylist->currentIndex ();
     //myTitleBar->searchResultWidget->musicInfoWidget->
     //item->textColor ()
@@ -4828,6 +4881,26 @@ void MainWid::onPlaylistIndexChanged(){
                                                    "QPushButton::pressed{border-image:url(:/img/clicked/love1.png);}");
         }
     }
+    //更新一下
+    if(myTitleBar->searchResultWidget->musicInfoWidget->count ()>0){
+        for(int i=0;i<myTitleBar->searchResultWidget->musicInfoWidget->count ();i++){
+            QListWidgetItem* item1 = myTitleBar->searchResultWidget->musicInfoWidget->item(i);
+            SongItem* songitem_lx = dynamic_cast<SongItem*>(myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1));
+            QString filepath_in_item = songitem_lx->filepath_lx;
+            if(filepath_in_item==filepath){
+                songitem_lx->songNameLabel->setStyleSheet ("color:blue;");
+                songitem_lx->singerLabel->setStyleSheet ("color:blue;");
+                songitem_lx->albumLabel->setStyleSheet ("color:blue;");
+                songitem_lx->songTimeLabel->setStyleSheet ("color:blue;");
+            }
+            else{
+                songitem_lx->songNameLabel->setStyleSheet ("color:black;");
+                songitem_lx->singerLabel->setStyleSheet ("color:black;");
+                songitem_lx->albumLabel->setStyleSheet ("color:black;");
+                songitem_lx->songTimeLabel->setStyleSheet ("color:black;");
+            }
+        }
+    }
 }
 
 void MainWid::showSearchResultWidget_lx(){
@@ -4899,9 +4972,8 @@ void MainWid::showSearchResultWidget_lx(){
         }
     }
     //加入右键菜单
-    connect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),this,
-            SLOT(testLx(QListWidgetItem*,QListWidgetItem*)));
     qDebug()<<"the count of mytitlebar`s musicinfowidget: "<<myTitleBar->searchResultWidget->musicInfoWidget->count();
+    onPlaylistIndexChanged();
 //    myTitleBar->searchResultWidget->musicInfoWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 //    connect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(customContextMenuRequested(const QPoint&)),
 //            this,SLOT(on_musicInfoWidget_customContextMenuRequested_lx(const QPoint&)));

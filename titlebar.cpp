@@ -41,6 +41,20 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 
     //searchWidget->hide();
 
+    //test:lx
+
+    predictWid = new QWidget(parent);
+    predictWid->setGeometry (270,42,400,200);
+    predictWid->setFixedHeight (400);
+    predictSingerLab = new QLabel(predictWid);
+    predictSingerLiswid = new QListWidget(predictWid);
+    predictLayout = new QVBoxLayout(predictWid);
+    predictLayout->addWidget (predictSingerLab);
+    predictLayout->addWidget (predictSingerLiswid);
+    predictWid->setLayout (predictLayout);
+    predictSingerLab->setText ("Singer");
+
+
     titlecolor();
 }
 

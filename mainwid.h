@@ -111,8 +111,6 @@ public:
     ~MainWid();
 //    MainWid(QWidget *);
 //    QString getMp3FileName(QString sqlName);
-    //test:lx
-    void testLx(QListWidgetItem* ,QListWidgetItem* );
     void promptMessage();
     void updatalistwidget(int value);//更新listWidget
     void updataplaylistwidget(int value);//更新playlistWidget
@@ -201,6 +199,7 @@ public slots:
     void on_listWidget_doubleClicked(QListWidgetItem *item);         //双击本地音乐播放playlist
     void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
     //test:lx 预测搜索框
+    void onSearchPredict_lx();
     void onSearchPredict();
     void hideSearchEdit();
     void on_musicListChangeWid_doubleClicked(QListWidgetItem *item); //双击歌单播放

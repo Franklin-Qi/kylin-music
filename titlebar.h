@@ -28,6 +28,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <QListWidgetItem>
+#include<QScrollArea>
 
 #include "changelistwid.h"
 #include "allpupwindow.h"
@@ -70,6 +71,12 @@ public:
     QSqlTableModel *searchModel;
     QListWidget *searchWidget;
     MusicListWid *searchResultWidget;
+    //test:lx
+    QMenu* predictMenu;
+    QWidget* predictWid;
+    QLabel* predictSingerLab;
+    QListWidget* predictSingerLiswid;
+    QVBoxLayout* predictLayout;
 
     //设置菜单
     QMenu *settingMenu;
