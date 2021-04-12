@@ -7,8 +7,8 @@
 #include <QList>
 #include <QString>
 #include<QThread>
-#include<QMutexLocker>
-#include "sqlite3.h"
+#include <QMutexLocker>
+#include <sqlite3.h>
 
 const QString ALLMUSIC = "LocalMusic";              //本地总表
 const QString HISTORY = "HistoryPlayList";          //历史记录
@@ -96,8 +96,12 @@ public:
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
     //通过输入关键字从本地歌单中模糊检索列表歌曲信息，输入数据必须有效
     int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
-    //通过输入关键字从本地给出临时提示歌曲列表信息，输入数据必须有效
-    int getSongInfoListFromLocalCacheByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
+    //通过输入关键字，Number用于限制展示条数，从本地给出临时提示歌曲列表信息，输入数据必须有效
+    int getCurtEstimatedListByKeyword(const QString& keyword, int Number, QList<musicDataStruct>& titleSongsList, QList<QString>& singersList, QList<QString>& albumsList);
+    //通过标准专辑名key:album，获取该专辑歌曲信息
+    int getSongInfoListByAlbum(QList<musicDataStruct>& resList, const QString& album);
+    //通过标准歌手名key:singer，获取歌曲信息
+    int getSongInfoListBySinger(QList<musicDataStruct>& resList, const QString& singer);
 
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
