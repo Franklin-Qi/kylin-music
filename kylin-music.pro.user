@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
 <!-- Written by QtCreator 4.11.0, 2021-04-10T15:06:17. -->
+=======
+<!-- Written by QtCreator 4.11.0, 2021-04-08T20:56:29. -->
+>>>>>>> fulltext_beta
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -282,8 +286,13 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+<<<<<<< HEAD
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/liangxin/QtDemo/hezuo/kylin-music/kylin-music.pro</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/liangxin/QtDemo/hezuo/kylin-music/kylin-music.pro</value>
+=======
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/phdreamer/ph-content/kylin-music/kylin-music.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/phdreamer/ph-content/kylin-music/kylin-music.pro</value>
+>>>>>>> fulltext_beta
     <value type="QString" key="RunConfiguration.Arguments"></value>
     <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
@@ -294,7 +303,11 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
+<<<<<<< HEAD
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/liangxin/QtDemo/hezuo/build-kylin-music-unknown-Debug</value>
+=======
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/phdreamer/ph-content/build-kylin-music-fsn-Debug</value>
+>>>>>>> fulltext_beta
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

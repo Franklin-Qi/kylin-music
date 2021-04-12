@@ -1,12 +1,14 @@
 #ifndef MUSICDATABASE_H
 #define MUSICDATABASE_H
 #include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QObject>
 #include <QFile>
 #include <QList>
 #include <QString>
 #include<QThread>
-#include<QMutexLocker>
+#include <QMutexLocker>
+#include <sqlite3.h>
 
 const QString ALLMUSIC = "LocalMusic";              //本地总表
 const QString HISTORY = "HistoryPlayList";          //历史记录
@@ -69,7 +71,6 @@ public:
     //测试
     void testSearch();
 
-
     /**************************新建歌曲增删改查****************************/
     //添加歌曲到新建歌单，使用歌曲filePath,歌单名title值，输入数据必须有效，
     int addMusicToPlayList(const QString& filePath,const QString& playListName);
@@ -93,10 +94,14 @@ public:
     int getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList);
     //更换本地歌单中某首歌曲的位置(从选中的位置更换到目的歌曲的位置的后面)
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
-    //关键字搜索
+    //通过输入关键字从本地歌单中模糊检索列表歌曲信息，输入数据必须有效
     int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
-    //关键字输入获得提示，从缓存中取
-    int getSongInfoListFromCacheMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
+    //通过输入关键字，Number用于限制展示条数，从本地给出临时提示歌曲列表信息，输入数据必须有效
+    int getCurtEstimatedListByKeyword(const QString& keyword, int Number, QList<musicDataStruct>& titleSongsList, QList<QString>& singersList, QList<QString>& albumsList);
+    //通过标准专辑名key:album，获取该专辑歌曲信息
+    int getSongInfoListByAlbum(QList<musicDataStruct>& resList, const QString& album);
+    //通过标准歌手名key:singer，获取歌曲信息
+    int getSongInfoListBySinger(QList<musicDataStruct>& resList, const QString& singer);
 
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
@@ -142,15 +147,6 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
-    // 转全拼音
-    QString characterToSpell(const QString& character_str);
-    // 转拼音首字母
-    QString characterToSpellFirstLetter(const QString& character_str);
-    // 初始化拼音列表
-    void initSpellList();
-    // 组合存储spell字段
-    QString composeContentSpell(const QString& xtitle, const QString& xsinger, const QString& xalbum);
-    QString composeContentSpellSimple(const QString& xtitle, const QString& xsinger, const QString& xalbum);
 };
 
 #endif // MUSICDATABASE_H

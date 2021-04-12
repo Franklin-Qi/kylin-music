@@ -17,6 +17,8 @@ LIBS += -ltag -ltag_c
 LIBS +=-lpthread
 LIBS +=-lX11
 
+
+
 INCLUDEPATH += qtsingleapplication
 DEPENDPATH += qtsingleapplication
 
@@ -96,6 +98,7 @@ HEADERS += \
     myapplication.h \
     mytoolbutton.h \
     playsongarea.h \
+    qsql_sqlite_p.h \
     qtsingleapplication/qtlocalpeer.h \
     qtsingleapplication/qtsingleapplication.h \
     sidebar.h \
@@ -119,3 +122,11 @@ RESOURCES += \
 
 DISTFILES += \
     data/org.kylin-music-data.gschema.xml
+
+
+
+LIBS +=-ldl
+
+unix|win32: LIBS += -lsimple
+
+unix|win32: LIBS += -lsqlite3

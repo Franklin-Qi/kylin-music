@@ -1,4 +1,5 @@
 #include "musicDataBase.h"
+#include<iostream>
 #include<QSqlQuery>
 #include<QMessageBox>
 #include<QApplication>
@@ -6,6 +7,12 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QSqlRecord>
+
+// ph-code
+//Q_DECLARE_OPAQUE_POINTER(sqlite3*)
+//Q_DECLARE_METATYPE(sqlite3*)
+
+
 MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
 {
     qDebug() << QSqlDatabase::drivers();//当前环境支持哪些数据库
@@ -20,7 +27,7 @@ MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
         qDebug() << "存在旧版本数据库" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
     }
     m_database.setDatabaseName(dirPath + "mymusic.db");
-    initSpellList();
+//    initSpellList();
     // 初始化拼音转换的列表
 }
 
@@ -29,6 +36,7 @@ MusicDataBase::~MusicDataBase()
     qDebug() << "析构";
     if(true == m_databaseOpenFlag)
     {
+        sqlite3_shutdown();
         m_database.close();
     }
 }
@@ -52,8 +60,10 @@ MusicDataBase* MusicDataBase::getInstance()
     return dbInstance;
 }
 
+
 int MusicDataBase::initDataBase()
 {
+
     if(!m_database.open())
     {
         m_databaseOpenFlag = true;
@@ -61,6 +71,27 @@ int MusicDataBase::initDataBase()
         QMessageBox::warning(0, QObject::tr("Database Error"),
                                      m_database.lastError().text());
         return DB_UNCONNECT;
+    }
+
+    QVariant v = m_database.driver()->handle(); // 获得低级handle包
+    if(v.isValid() && qstrcmp(v.typeName(), "sqlite3*") == 0)
+    {
+        sqlite3_initialize();
+        // 显式地初始化一下。
+        sqlite3 *m_handle = *static_cast<sqlite3 **>(v.data());
+        if(m_handle)
+        {
+            sqlite3_enable_load_extension(m_handle, 1); //允许加载扩展
+//            QSqlQueryModel sql;
+//            sql.setQuery("SELECT load_extension('libsimple')", m_database);
+            QSqlQuery loadExtension(m_database);
+            bool loadRes = loadExtension.exec("SELECT load_extension('libsimple')"); // 使用sql函数加载libsimple
+            if(!loadRes)
+            {
+                qDebug() << "无法加载分词器扩展" << loadExtension.lastError().text();
+                // 加载不成功先不return
+            }
+        }
     }
 
     bool queryRes = true;
@@ -75,12 +106,7 @@ int MusicDataBase::initDataBase()
                                        "album varchar,"
                                        "filetype varchar,"
                                        "size varchar,"
-                                       "time varchar,"
-                                       "xtitle varchar,"
-                                       "xsinger varchar,"
-                                       "xalbum varchar,"
-                                       "xspelling varchar,"
-                                       "xspellingsimple varchar)"
+                                       "time varchar)"
                                        ));//创建音乐总表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
 
     queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
@@ -97,6 +123,22 @@ int MusicDataBase::initDataBase()
 
     queryRes &= queryInit.exec(QString("create table if not exists ListOfPlayList (title varchar primary key)"));//创建播放列表名称列表
 
+
+    // ph-code
+
+    qDebug() << "before exec fts5" << queryRes;
+    queryRes &= queryInit.exec(QString("create virtual table if not exists AuxIndexLocalMusicContent"
+                                       " using fts5(id UNINDEXED, title, singer, album, filepath UNINDEXED, time UNINDEXED, tokenize='simple')"));
+    // 为localMusic本地音乐表创建辅助的全文索引虚拟表fts5
+    qDebug() << "after exec fts5" << queryRes;
+//    queryRes &= queryInit.exec(QString("create trigger local_music_add after insert on LocalMusic begin"
+//                                       " insert into AuxIndexLocalMusicContent values(new.id, new.title); end"));
+    // 存在问题：利用触发器插入时需要额外操作（包括对新值处理从中文到拼音、从编码格式到不编码格式）。即便表中存储的并非base64，我们也需要处理从中文到拼音，包括取old变量值到转换
+
+    queryRes &= queryInit.exec(QString("create trigger if not exists local_music_delete before delete on LocalMusic begin"
+                                       " delete from AuxIndexLocalMusicContent where id=old.id;"
+                                       " end"));
+    // 创建触发器，根据id删除虚拟表记录
 
     if(true == queryRes)
     {
@@ -138,7 +180,7 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
     {
         if(true == m_database.isValid())
         {
-            //查询历史列表中是否已有该歌曲，已有的话，返回添加失败
+            //查询是否已有该歌曲，已有的话，返回添加失败
             int checkLocalRes = checkIfSongExistsInLocalMusic(fileData.filepath);
 
             //历史列表中已经有这首歌，重复添加了
@@ -149,20 +191,14 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             }
 
             QSqlQuery addSongToLocal(m_database);
-            QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time,xtitle,xsinger,xalbum,xspelling,xspellingsimple) "
-                                            "values('%1','%2','%3','%4','%5','%6','%7','%8','%9','%10','%11','%12')").
+            QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time) values('%1','%2','%3','%4','%5','%6','%7')").
                     arg(inPutStringHandle(fileData.filepath)).
                     arg(inPutStringHandle(fileData.title)).
                     arg(inPutStringHandle(fileData.singer)).
                     arg(inPutStringHandle(fileData.album)).
                     arg(inPutStringHandle(fileData.filetype)).
                     arg(inPutStringHandle(fileData.size)).
-                    arg(inPutStringHandle(fileData.time)).
-                    arg(fileData.title).
-                    arg(fileData.singer).
-                    arg(fileData.album).
-                    arg(composeContentSpell(fileData.title, fileData.singer, fileData.album)).
-                    arg(composeContentSpellSimple(fileData.title, fileData.singer, fileData.album));
+                    arg(inPutStringHandle(fileData.time));
             queryRes &= addSongToLocal.exec(addSongString);
             //插入歌曲时自增id和idIndex无法赋值，插入后取得自增id，给idIndex赋值
             int tempIndex = addSongToLocal.lastInsertId().toInt();
@@ -170,6 +206,23 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             QSqlQuery setSongIDFromLocal(m_database);
             QString setIndex = QString("update LocalMusic set idIndex='%1' WHERE filepath='%2'").arg(tempIndex).arg(inPutStringHandle(fileData.filepath));
             setRes &= setSongIDFromLocal.exec(setIndex);
+
+            // ph-code
+            // 每插入一条记录，都要更新辅助的虚拟表AuxIndexLocalMusicContent
+            QSqlQuery addSongToIndexTable(m_database);
+            QString addSongIndex = QString("insert into AuxIndexLocalMusicContent(id,title,singer,album,filepath,time) values(%1, '%2', '%3', '%4', '%5', '%6')")
+                    .arg(QString::number(tempIndex),
+                         fileData.title,
+                         fileData.singer,
+                         fileData.album,
+                         fileData.filepath,
+                         fileData.time);
+            bool setVTableRes = addSongToIndexTable.exec(addSongIndex);
+
+            qDebug() << "ph-test setVTable";
+            qDebug() << setVTableRes;
+
+            testSearch();
 
             if(true == (queryRes&setRes))
             {
@@ -212,6 +265,7 @@ int MusicDataBase::delMusicFromLocalMusic(const QString& filePath)
                 QString delSongString = QString("delete from LocalMusic where filepath = '%1'").
                         arg(inPutStringHandle(filePath));
                 queryRes = delSongFromLocal.exec(delSongString);
+
 
                 if(true == queryRes)
                 {
@@ -563,33 +617,23 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
 int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
 {
     // ph-code
+    if(true == keyword.isEmpty())
+    {
+        // 空keyword不处理
+        return INVALID_INPUT;
+    }
     if(true == m_database.isValid())
     {
-        if(keyword.isEmpty())
-        {
-            // 后端增加判空保险处理
-            getSongInfoListFromLocalMusic(resList);
-            return DB_OP_SUCC;
-        }
-
         bool getRes = true;
 
         QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
-        // 未考虑优化的版本
-//        QString getSongListStringByKeyword = QString("select * from LocalMusic"
-//                                                     " where xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%'"
-//                                                     " or xspelling like '%%2%' or xspellingsimple like '%%3%'")
-//                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
-        QString getSongListStringByKeyword = QString("select * from LocalMusic"
-                                                     " where xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%'"
-                                                     " or xspelling like '%%1%' or xspellingsimple like '%%1%'"
-                                                     " or xspelling like '%%2%' or xspellingsimple like '%%3%'"
-                                                     " order by (case"
-                                                     " when xtitle='%1' or xsinger='%1' or xalbum='%1' or xspelling='%1%' or xspellingsimple='%1' then 1"
-                                                     " when xtitle like '%%1%' or xsinger like '%%1%' or xalbum like '%%1%' or xspelling like '%%1%' or xspellingsimple like '%%1%' then 2"
-                                                     " when xspelling like '%%2%' or xspellingsimple like '%%3%' then 3"
-                                                     " else 4 end)")
-                                                    .arg(keyword, characterToSpell(keyword), characterToSpellFirstLetter(keyword));
+//        QString getSongListStringByKeyword = QString("select * from LocalMusic where `id` in ("
+//                                                     "select id from AuxIndexLocalMusicContent where AuxIndexLocalMusicContent match simple_query('%1') order by rank) ")
+//                                                    .arg(keyword);
+        // 直接在虚表中存取，不再根据id回表。
+        QString getSongListStringByKeyword = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where AuxIndexLocalMusicContent match simple_query('%1') order by rank")
+                                                    .arg(keyword);
         getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
 
         if(true == getRes)
@@ -597,22 +641,20 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
             while(getSongListFromLocalMusicByKeyword.next())
             {
                 musicDataStruct temp;
-                temp.filepath    = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(2).toString());
-                temp.title       = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(3).toString());
-                temp.singer      = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(4).toString());
-                temp.album       = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(5).toString());
-                temp.filetype    = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(6).toString());
-                temp.size        = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(7).toString());
-                temp.time        = outPutStringHandle(getSongListFromLocalMusicByKeyword.value(8).toString());
+                temp.title      = getSongListFromLocalMusicByKeyword.value(1).toString();
+                temp.singer     = getSongListFromLocalMusicByKeyword.value(2).toString();
+                temp.album      = getSongListFromLocalMusicByKeyword.value(3).toString();
+                temp.filepath   = getSongListFromLocalMusicByKeyword.value(4).toString();
+                temp.time       = getSongListFromLocalMusicByKeyword.value(5).toString();
 
                 resList.append(temp);
-
             }
 
             return DB_OP_SUCC;
         }
         else
         {
+            qDebug() << "执行错误信息：" << getSongListFromLocalMusicByKeyword.lastError().text();
             return DB_OP_GET_FAILED;
         }
 
@@ -623,10 +665,190 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
     }
 }
 
-int MusicDataBase::getSongInfoListFromCacheMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
+int MusicDataBase::getCurtEstimatedListByKeyword(const QString& keyword,
+                                                 int Number,
+                                                 QList<musicDataStruct>& titleSongsList,
+                                                 QList<QString>& singersList,
+                                                 QList<QString>& albumsList)
 {
-    // 获取
-    //
+    if(true == keyword.isEmpty())
+    {
+        // 空keyword不处理
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getTitle = true;
+        bool getSinger = true;
+        bool getAlbum = true;
+
+        QSqlQuery getCurtEstimatedTitleList(m_database);
+
+        QString getCurtEstimatedTitleListString = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where title match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getTitle &= getCurtEstimatedTitleList.exec(getCurtEstimatedTitleListString);
+
+        QSqlQuery getCurtEstimatedSingerList(m_database);
+        QString getCurtEstimatedSingerListString = QString("select distinct singer from AuxIndexLocalMusicContent"
+                                                     " where singer match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getSinger &= getCurtEstimatedSingerList.exec(getCurtEstimatedSingerListString);
+
+        QSqlQuery getCurtEstimatedAlbumList(m_database);
+        QString getCurtEstimatedAlbumListString = QString("select distinct album from AuxIndexLocalMusicContent"
+                                                     " where album match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getAlbum &= getCurtEstimatedAlbumList.exec(getCurtEstimatedAlbumListString);
+
+        if(getTitle)
+        {
+            while(getCurtEstimatedTitleList.next())
+            {
+                musicDataStruct temp;
+                temp.title      = getCurtEstimatedTitleList.value(1).toString();
+                temp.singer     = getCurtEstimatedTitleList.value(2).toString();
+                temp.album      = getCurtEstimatedTitleList.value(3).toString();
+                temp.filepath   = getCurtEstimatedTitleList.value(4).toString();
+                temp.time       = getCurtEstimatedTitleList.value(5).toString();
+                titleSongsList.append(temp);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedTitleList.lastError().text();
+            qDebug() << getCurtEstimatedTitleList.lastQuery();
+        }
+
+        if(getSinger)
+        {
+            while(getCurtEstimatedSingerList.next())
+            {
+                QString singer = getCurtEstimatedSingerList.value(0).toString();
+                singersList.append(singer);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedSingerList.lastError().text();
+        }
+
+        if(getAlbum)
+        {
+            while(getCurtEstimatedAlbumList.next())
+            {
+                QString album = getCurtEstimatedAlbumList.value(0).toString();
+                albumsList.append(album);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedAlbumList.lastError().text();
+        }
+
+        if(getTitle && getSinger && getAlbum)
+        {
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            return DB_OP_GET_FAILED;
+        }
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getSongInfoListByAlbum(QList<musicDataStruct> &resList, const QString &album)
+{
+    if(true == album.isEmpty())
+    {
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongsListByAlbum(m_database);
+        QString getSongsListByAlbumString = QString("select * from LocalMusic where album = '%1'").arg(inPutStringHandle(album));
+        getRes = getSongsListByAlbum.exec(getSongsListByAlbumString);
+
+        if(true == getRes)
+        {
+            while(getSongsListByAlbum.next())
+            {
+                musicDataStruct fileData;
+                fileData.filepath    = outPutStringHandle(getSongsListByAlbum.value(2).toString());
+                fileData.title       = outPutStringHandle(getSongsListByAlbum.value(3).toString());
+                fileData.singer      = outPutStringHandle(getSongsListByAlbum.value(4).toString());
+                fileData.album       = outPutStringHandle(getSongsListByAlbum.value(5).toString());
+                fileData.filetype    = outPutStringHandle(getSongsListByAlbum.value(6).toString());
+                fileData.size        = outPutStringHandle(getSongsListByAlbum.value(7).toString());
+                fileData.time        = outPutStringHandle(getSongsListByAlbum.value(8).toString());
+
+                resList.append(fileData);
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getSongsListByAlbum.lastError().text();
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getSongInfoListBySinger(QList<musicDataStruct> &resList, const QString &singer)
+{
+    if(true == singer.isEmpty())
+    {
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongsListBySinger(m_database);
+        QString getSongsListBySingerString = QString("select * from LocalMusic where singer = '%1'").arg(inPutStringHandle(singer));
+        getRes = getSongsListBySinger.exec(getSongsListBySingerString);
+
+        if(true == getRes)
+        {
+            while(getSongsListBySinger.next())
+            {
+                musicDataStruct fileData;
+                fileData.filepath    = outPutStringHandle(getSongsListBySinger.value(2).toString());
+                fileData.title       = outPutStringHandle(getSongsListBySinger.value(3).toString());
+                fileData.singer      = outPutStringHandle(getSongsListBySinger.value(4).toString());
+                fileData.album       = outPutStringHandle(getSongsListBySinger.value(5).toString());
+                fileData.filetype    = outPutStringHandle(getSongsListBySinger.value(6).toString());
+                fileData.size        = outPutStringHandle(getSongsListBySinger.value(7).toString());
+                fileData.time        = outPutStringHandle(getSongsListBySinger.value(8).toString());
+
+                resList.append(fileData);
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getSongsListBySinger.lastError().text();
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
 }
 
 int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QString& filePath,const QString& playListName)
@@ -1761,23 +1983,23 @@ int MusicDataBase::delSongFromEveryWhere(const QString& filePath)
     return DB_OP_SUCC;
 }
 
-void MusicDataBase::testSearch()
-{
-    // 测试方法
-    QList<musicDataStruct> resList;
-    const QString keyword = "chenyix";
-    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
-    int len = resList.size();
-    for(int i = 0; i < len; i++)
-    {
-        musicDataStruct temp = resList.at(i);
-        qDebug() << temp.title << temp.singer << temp.album;
-    }
-    QString PY = characterToSpell(keyword);
-    qDebug() << "PY: " << PY;
-    QString JP = characterToSpellFirstLetter(keyword);
-    qDebug() << "JP: " << JP;
-}
+//void MusicDataBase::testSearch()
+//{
+//    // 测试方法
+//    QList<musicDataStruct> resList;
+//    const QString keyword = "chenyix";
+//    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
+//    int len = resList.size();
+//    for(int i = 0; i < len; i++)
+//    {
+//        musicDataStruct temp = resList.at(i);
+//        qDebug() << temp.title << temp.singer << temp.album;
+//    }
+//    QString PY = characterToSpell(keyword);
+//    qDebug() << "PY: " << PY;
+//    QString JP = characterToSpellFirstLetter(keyword);
+//    qDebug() << "JP: " << JP;
+//}
 
 QString MusicDataBase::inPutStringHandle(const QString& input)
 {
@@ -1798,337 +2020,73 @@ QString MusicDataBase::outPutStringHandle(const QString& output)
     return outOrigin;
 }
 
-QString MusicDataBase::characterToSpell(const QString &character_str)
+void MusicDataBase::testSearch()
 {
-    if(character_str.isEmpty())
+    // ph-code
+    // 测试功能是否生效。
+    qDebug() << "ph-debug----------------------testsearch";
+    const QString keyword = "zj";
+    QList<musicDataStruct> resList;
+    getSongInfoListFromLocalMusicByKeyword(resList, keyword);
+    for(auto record : resList)
     {
-        return "";
+        qDebug() << record.title << record.singer << record.album;
     }
-    // 实现中文转拼音
-    int len = character_str.length();
-    QStringList list;
-    for(int i = 0; i < len; ++i)
+//    QSqlQuery testSql(m_database);
+//    QString sql = QString("select * from AuxIndexLocalMusicContent"
+//                          " where AuxIndexLocalMusicContent match simple_query('%1') order by rank").arg(keyword);
+//    bool res = testSql.exec(sql);
+//    qDebug() << testSql.lastQuery();
+//    qDebug() << res << testSql.lastError().text();
+//    while(testSql.next())
+//    {
+//        musicDataStruct temp;
+//        temp.title  = testSql.value(1).toString();
+//        temp.singer = testSql.value(2).toString();
+//        temp.album  = testSql.value(3).toString();
+//        temp.filepath = testSql.value(4).toString();
+//        temp.time = testSql.value(5).toString();
+//        qDebug() << testSql.value(0).toString() << temp.title << temp.singer << temp.album << temp.filepath << temp.time;
+//    }
+    qDebug() << "—————————————主搜索功能测试结束———————————————";
+    QList<musicDataStruct> titleSongsList;
+    QList<QString> singersList;
+    QList<QString> albumsList;
+    int Number = 4;
+    getCurtEstimatedListByKeyword(keyword, Number, titleSongsList, singersList, albumsList);
+    qDebug() << "匹配到的歌曲：";
+    for(auto song : titleSongsList)
     {
-        int unicode = QString::number(character_str.at(i).unicode(), 10).toInt();
-        if (unicode >= 0x4E00 && unicode <= 0x9FA5)
+        qDebug() << song.title << song.filepath;
+    }
+    qDebug() << "匹配到的歌手：";
+    for(auto singer : singersList)
+    {
+        qDebug() << singer;
+        qDebug() << "根据该歌手匹配歌曲列表：";
+        QList<musicDataStruct> temp1;
+        getSongInfoListBySinger(temp1, singer);
+        for(auto item : temp1)
         {
-            list.append(listSpell.at(unicode - 0x4E00));
+            qDebug() << item.title << item.singer << item.album;
         }
-        else
-        {
-            list.append(character_str.at(i));
-        }
-
     }
-    // 控制返回的字符串
-    return list.join("");
-}
-
-QString MusicDataBase::characterToSpellFirstLetter(const QString &character_str)
-{
-    if(character_str.isEmpty())
+    qDebug() << "匹配到的专辑：";
+    for(auto album : albumsList)
     {
-        return "";
-    }
-    // 中文转拼音首字母
-    QString strChineseFirstSpell = listSimpleSpell.join("").toLower();
-    // 从StringList获得连续的首拼String
-    int len = character_str.length();
-    if(0 == len)
-    {
-        return character_str;
-    }
-
-    QString outputStr;
-    int index = 0;
-    for(int i = 0; i < len; i++)
-    {
-        // 字母或数字，则不作操作，直接拷贝
-        ushort vChar = character_str.at(i).unicode();
-        if((int)vChar >= 0x4E00 && (int)vChar <= 0x9FA5)
+        qDebug() << album;
+        qDebug() << "根据该专辑匹配歌曲列表：";
+        QList<musicDataStruct> temp2;
+        getSongInfoListByAlbum(temp2, album);
+        for(auto item : temp2)
         {
-            index = (int)vChar - 0x4E00;
-            // 19968就是十六进制0x4E00，汉字开始的编码,这里index就是当前字符的码 减去 汉字开始的码，以获得它在我们列表里的位置下标
-            if(index >= 0 && index < strChineseFirstSpell.length())
-            {
-                outputStr.append(strChineseFirstSpell.at(index));
-            }
+            qDebug() << item.title << item.singer << item.album;
         }
-        else
-        {
-            if((vChar >= 'a' && vChar <= 'z') || (vChar >= 'A' && vChar <= 'Z'))
-            {
-                outputStr.append(character_str.at(i).toLower());
-            }
-            else
-            {
-                outputStr.append(character_str.at(i));
-            }
-        }
-//        if((vChar >= 'a' && vChar <= 'z') || (vChar >= 'A' && vChar <= 'Z'))
-//        {
-//            outputStr.append(character_str.at(i).toUpper());
-//            // 不用转大写
-//        }
-//        if(vChar >= '0' && vChar <= '9')
-//        {
-//            outputStr.append(character_str.at(i));
-//        }
-//        else
-//        {
-//            //
-//            index = (int)vChar - 19968;
-//            // 19968就是十六进制0x4E00，汉字开始的编码,这里index就是当前字符的码 减去 汉字开始的码，以获得它在我们列表里的位置下标
-//            if(index >= 0 && index < strChineseFirstSpell.length())
-//            {
-//                outputStr.append(strChineseFirstSpell.at(index));
-//            }
-//        }
     }
+//    for(int i = 0; i < resList.size(); i++)
+//    {
+//        musicDataStruct temp = resList.at(i);
+//        qDebug() << temp.title << temp.time << temp.singer << temp.album;
+//    }
 
-    return outputStr;
-}
-
-void MusicDataBase::initSpellList()
-{
-    //读取拼音数组
-    QFile file(":/cnl.txt");
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        QString str = file.readAll();
-        listSpell = str.split(" ");
-    }
-    //加载简拼数组
-    listSimpleSpell << "YDYQSXMWZSSXJBYMGCCZQPSSQBYCDSCDQLDYLYBSSJGYZZJJFKCCLZDHWDWZJLJPFYYNWJJTMYHZWZHFLZPPQHGSCYYYNJQYXXGJ";
-    listSimpleSpell << "HHSDSJNKKTMOMLCRXYPSNQSECCQZGGLLYJLMYZZSECYKYYHQWJSSGGYXYZYJWWKDJHYCHMYXJTLXJYQBYXZLDWRDJRWYSRLDZJPC";
-    listSimpleSpell << "BZJJBRCFTLECZSTZFXXZHTRQHYBDLYCZSSYMMRFMYQZPWWJJYFCRWFDFZQPYDDWYXKYJAWJFFXYPSFTZYHHYZYSWCJYXSCLCXXWZ";
-    listSimpleSpell << "ZXNBGNNXBXLZSZSBSGPYSYZDHMDZBQBZCWDZZYYTZHBTSYYBZGNTNXQYWQSKBPHHLXGYBFMJEBJHHGQTJCYSXSTKZHLYCKGLYSMZ";
-    listSimpleSpell << "XYALMELDCCXGZYRJXSDLTYZCQKCNNJWHJTZZCQLJSTSTBNXBTYXCEQXGKWJYFLZQLYHYXSPSFXLMPBYSXXXYDJCZYLLLSJXFHJXP";
-    listSimpleSpell << "JBTFFYABYXBHZZBJYZLWLCZGGBTSSMDTJZXPTHYQTGLJSCQFZKJZJQNLZWLSLHDZBWJNCJZYZSQQYCQYRZCJJWYBRTWPYFTWEXCS";
-    listSimpleSpell << "KDZCTBZHYZZYYJXZCFFZZMJYXXSDZZOTTBZLQWFCKSZSXFYRLNYJMBDTHJXSQQCCSBXYYTSYFBXDZTGBCNSLCYZZPSAZYZZSCJCS";
-    listSimpleSpell << "HZQYDXLBPJLLMQXTYDZXSQJTZPXLCGLQTZWJBHCTSYJSFXYEJJTLBGXSXJMYJQQPFZASYJNTYDJXKJCDJSZCBARTDCLYJQMWNQNC";
-    listSimpleSpell << "LLLKBYBZZSYHQQLTWLCCXTXLLZNTYLNEWYZYXCZXXGRKRMTCNDNJTSYYSSDQDGHSDBJGHRWRQLYBGLXHLGTGXBQJDZPYJSJYJCTM";
-    listSimpleSpell << "RNYMGRZJCZGJMZMGXMPRYXKJNYMSGMZJYMKMFXMLDTGFBHCJHKYLPFMDXLQJJSMTQGZSJLQDLDGJYCALCMZCSDJLLNXDJFFFFJCZ";
-    listSimpleSpell << "FMZFFPFKHKGDPSXKTACJDHHZDDCRRCFQYJKQCCWJDXHWJLYLLZGCFCQDSMLZPBJJPLSBCJGGDCKKDEZSQCCKJGCGKDJTJDLZYCXK";
-    listSimpleSpell << "LQSCGJCLTFPCQCZGWPJDQYZJJBYJHSJDZWGFSJGZKQCCZLLPSPKJGQJHZZLJPLGJGJJTHJJYJZCZMLZLYQBGJWMLJKXZDZNJQSYZ";
-    listSimpleSpell << "MLJLLJKYWXMKJLHSKJGBMCLYYMKXJQLBMLLKMDXXKWYXYSLMLPSJQQJQXYXFJTJDXMXXLLCXQBSYJBGWYMBGGBCYXPJYGPEPFGDJ";
-    listSimpleSpell << "GBHBNSQJYZJKJKHXQFGQZKFHYGKHDKLLSDJQXPQYKYBNQSXQNSZSWHBSXWHXWBZZXDMNSJBSBKBBZKLYLXGWXDRWYQZMYWSJQLCJ";
-    listSimpleSpell << "XXJXKJEQXSCYETLZHLYYYSDZPAQYZCMTLSHTZCFYZYXYLJSDCJQAGYSLCQLYYYSHMRQQKLDXZSCSSSYDYCJYSFSJBFRSSZQSBXXP";
-    listSimpleSpell << "XJYSDRCKGJLGDKZJZBDKTCSYQPYHSTCLDJDHMXMCGXYZHJDDTMHLTXZXYLYMOHYJCLTYFBQQXPFBDFHHTKSQHZYYWCNXXCRWHOWG";
-    listSimpleSpell << "YJLEGWDQCWGFJYCSNTMYTOLBYGWQWESJPWNMLRYDZSZTXYQPZGCWXHNGPYXSHMYQJXZTDPPBFYHZHTJYFDZWKGKZBLDNTSXHQEEG";
-    listSimpleSpell << "ZZYLZMMZYJZGXZXKHKSTXNXXWYLYAPSTHXDWHZYMPXAGKYDXBHNHXKDPJNMYHYLPMGOCSLNZHKXXLPZZLBMLSFBHHGYGYYGGBHSC";
-    listSimpleSpell << "YAQTYWLXTZQCEZYDQDQMMHTKLLSZHLSJZWFYHQSWSCWLQAZYNYTLSXTHAZNKZZSZZLAXXZWWCTGQQTDDYZTCCHYQZFLXPSLZYGPZ";
-    listSimpleSpell << "SZNGLNDQTBDLXGTCTAJDKYWNSYZLJHHZZCWNYYZYWMHYCHHYXHJKZWSXHZYXLYSKQYSPSLYZWMYPPKBYGLKZHTYXAXQSYSHXASMC";
-    listSimpleSpell << "HKDSCRSWJPWXSGZJLWWSCHSJHSQNHCSEGNDAQTBAALZZMSSTDQJCJKTSCJAXPLGGXHHGXXZCXPDMMHLDGTYBYSJMXHMRCPXXJZCK";
-    listSimpleSpell << "ZXSHMLQXXTTHXWZFKHCCZDYTCJYXQHLXDHYPJQXYLSYYDZOZJNYXQEZYSQYAYXWYPDGXDDXSPPYZNDLTWRHXYDXZZJHTCXMCZLHP";
-    listSimpleSpell << "YYYYMHZLLHNXMYLLLMDCPPXHMXDKYCYRDLTXJCHHZZXZLCCLYLNZSHZJZZLNNRLWHYQSNJHXYNTTTKYJPYCHHYEGKCTTWLGQRLGG";
-    listSimpleSpell << "TGTYGYHPYHYLQYQGCWYQKPYYYTTTTLHYHLLTYTTSPLKYZXGZWGPYDSSZZDQXSKCQNMJJZZBXYQMJRTFFBTKHZKBXLJJKDXJTLBWF";
-    listSimpleSpell << "ZPPTKQTZTGPDGNTPJYFALQMKGXBDCLZFHZCLLLLADPMXDJHLCCLGYHDZFGYDDGCYYFGYDXKSSEBDHYKDKDKHNAXXYBPBYYHXZQGA";
-    listSimpleSpell << "FFQYJXDMLJCSQZLLPCHBSXGJYNDYBYQSPZWJLZKSDDTACTBXZDYZYPJZQSJNKKTKNJDJGYYPGTLFYQKASDNTCYHBLWDZHBBYDWJR";
-    listSimpleSpell << "YGKZYHEYYFJMSDTYFZJJHGCXPLXHLDWXXJKYTCYKSSSMTWCTTQZLPBSZDZWZXGZAGYKTYWXLHLSPBCLLOQMMZSSLCMBJCSZZKYDC";
-    listSimpleSpell << "ZJGQQDSMCYTZQQLWZQZXSSFPTTFQMDDZDSHDTDWFHTDYZJYQJQKYPBDJYYXTLJHDRQXXXHAYDHRJLKLYTWHLLRLLRCXYLBWSRSZZ";
-    listSimpleSpell << "SYMKZZHHKYHXKSMDSYDYCJPBZBSQLFCXXXNXKXWYWSDZYQOGGQMMYHCDZTTFJYYBGSTTTYBYKJDHKYXBELHTYPJQNFXFDYKZHQKZ";
-    listSimpleSpell << "BYJTZBXHFDXKDASWTAWAJLDYJSFHBLDNNTNQJTJNCHXFJSRFWHZFMDRYJYJWZPDJKZYJYMPCYZNYNXFBYTFYFWYGDBNZZZDNYTXZ";
-    listSimpleSpell << "EMMQBSQEHXFZMBMFLZZSRXYMJGSXWZJSPRYDJSJGXHJJGLJJYNZZJXHGXKYMLPYYYCXYTWQZSWHWLYRJLPXSLSXMFSWWKLCTNXNY";
-    listSimpleSpell << "NPSJSZHDZEPTXMYYWXYYSYWLXJQZQXZDCLEEELMCPJPCLWBXSQHFWWTFFJTNQJHJQDXHWLBYZNFJLALKYYJLDXHHYCSTYYWNRJYX";
-    listSimpleSpell << "YWTRMDRQHWQCMFJDYZMHMYYXJWMYZQZXTLMRSPWWCHAQBXYGZYPXYYRRCLMPYMGKSJSZYSRMYJSNXTPLNBAPPYPYLXYYZKYNLDZY";
-    listSimpleSpell << "JZCZNNLMZHHARQMPGWQTZMXXMLLHGDZXYHXKYXYCJMFFYYHJFSBSSQLXXNDYCANNMTCJCYPRRNYTYQNYYMBMSXNDLYLYSLJRLXYS";
-    listSimpleSpell << "XQMLLYZLZJJJKYZZCSFBZXXMSTBJGNXYZHLXNMCWSCYZYFZLXBRNNNYLBNRTGZQYSATSWRYHYJZMZDHZGZDWYBSSCSKXSYHYTXXG";
-    listSimpleSpell << "CQGXZZSHYXJSCRHMKKBXCZJYJYMKQHZJFNBHMQHYSNJNZYBKNQMCLGQHWLZNZSWXKHLJHYYBQLBFCDSXDLDSPFZPSKJYZWZXZDDX";
-    listSimpleSpell << "JSMMEGJSCSSMGCLXXKYYYLNYPWWWGYDKZJGGGZGGSYCKNJWNJPCXBJJTQTJWDSSPJXZXNZXUMELPXFSXTLLXCLJXJJLJZXCTPSWX";
-    listSimpleSpell << "LYDHLYQRWHSYCSQYYBYAYWJJJQFWQCQQCJQGXALDBZZYJGKGXPLTZYFXJLTPADKYQHPMATLCPDCKBMTXYBHKLENXDLEEGQDYMSAW";
-    listSimpleSpell << "HZMLJTWYGXLYQZLJEEYYBQQFFNLYXRDSCTGJGXYYNKLLYQKCCTLHJLQMKKZGCYYGLLLJDZGYDHZWXPYSJBZKDZGYZZHYWYFQYTYZ";
-    listSimpleSpell << "SZYEZZLYMHJJHTSMQWYZLKYYWZCSRKQYTLTDXWCTYJKLWSQZWBDCQYNCJSRSZJLKCDCDTLZZZACQQZZDDXYPLXZBQJYLZLLLQDDZ";
-    listSimpleSpell << "QJYJYJZYXNYYYNYJXKXDAZWYRDLJYYYRJLXLLDYXJCYWYWNQCCLDDNYYYNYCKCZHXXCCLGZQJGKWPPCQQJYSBZZXYJSQPXJPZBSB";
-    listSimpleSpell << "DSFNSFPZXHDWZTDWPPTFLZZBZDMYYPQJRSDZSQZSQXBDGCPZSWDWCSQZGMDHZXMWWFYBPDGPHTMJTHZSMMBGZMBZJCFZWFZBBZMQ";
-    listSimpleSpell << "CFMBDMCJXLGPNJBBXGYHYYJGPTZGZMQBQTCGYXJXLWZKYDPDYMGCFTPFXYZTZXDZXTGKMTYBBCLBJASKYTSSQYYMSZXFJEWLXLLS";
-    listSimpleSpell << "ZBQJJJAKLYLXLYCCTSXMCWFKKKBSXLLLLJYXTYLTJYYTDPJHNHNNKBYQNFQYYZBYYESSESSGDYHFHWTCJBSDZZTFDMXHCNJZYMQW";
-    listSimpleSpell << "SRYJDZJQPDQBBSTJGGFBKJBXTGQHNGWJXJGDLLTHZHHYYYYYYSXWTYYYCCBDBPYPZYCCZYJPZYWCBDLFWZCWJDXXHYHLHWZZXJTC";
-    listSimpleSpell << "ZLCDPXUJCZZZLYXJJTXPHFXWPYWXZPTDZZBDZCYHJHMLXBQXSBYLRDTGJRRCTTTHYTCZWMXFYTWWZCWJWXJYWCSKYBZSCCTZQNHX";
-    listSimpleSpell << "NWXXKHKFHTSWOCCJYBCMPZZYKBNNZPBZHHZDLSYDDYTYFJPXYNGFXBYQXCBHXCPSXTYZDMKYSNXSXLHKMZXLYHDHKWHXXSSKQYHH";
-    listSimpleSpell << "CJYXGLHZXCSNHEKDTGZXQYPKDHEXTYKCNYMYYYPKQYYYKXZLTHJQTBYQHXBMYHSQCKWWYLLHCYYLNNEQXQWMCFBDCCMLJGGXDQKT";
-    listSimpleSpell << "LXKGNQCDGZJWYJJLYHHQTTTNWCHMXCXWHWSZJYDJCCDBQCDGDNYXZTHCQRXCBHZTQCBXWGQWYYBXHMBYMYQTYEXMQKYAQYRGYZSL";
-    listSimpleSpell << "FYKKQHYSSQYSHJGJCNXKZYCXSBXYXHYYLSTYCXQTHYSMGSCPMMGCCCCCMTZTASMGQZJHKLOSQYLSWTMXSYQKDZLJQQYPLSYCZTCQ";
-    listSimpleSpell << "QPBBQJZCLPKHQZYYXXDTDDTSJCXFFLLCHQXMJLWCJCXTSPYCXNDTJSHJWXDQQJSKXYAMYLSJHMLALYKXCYYDMNMDQMXMCZNNCYBZ";
-    listSimpleSpell << "KKYFLMCHCMLHXRCJJHSYLNMTJZGZGYWJXSRXCWJGJQHQZDQJDCJJZKJKGDZQGJJYJYLXZXXCDQHHHEYTMHLFSBDJSYYSHFYSTCZQ";
-    listSimpleSpell << "LPBDRFRZTZYKYWHSZYQKWDQZRKMSYNBCRXQBJYFAZPZZEDZCJYWBCJWHYJBQSZYWRYSZPTDKZPFPBNZTKLQYHBBZPNPPTYZZYBQN";
-    listSimpleSpell << "YDCPJMMCYCQMCYFZZDCMNLFPBPLNGQJTBTTNJZPZBBZNJKLJQYLNBZQHKSJZNGGQSZZKYXSHPZSNBCGZKDDZQANZHJKDRTLZLSWJ";
-    listSimpleSpell << "LJZLYWTJNDJZJHXYAYNCBGTZCSSQMNJPJYTYSWXZFKWJQTKHTZPLBHSNJZSYZBWZZZZLSYLSBJHDWWQPSLMMFBJDWAQYZTCJTBNN";
-    listSimpleSpell << "WZXQXCDSLQGDSDPDZHJTQQPSWLYYJZLGYXYZLCTCBJTKTYCZJTQKBSJLGMGZDMCSGPYNJZYQYYKNXRPWSZXMTNCSZZYXYBYHYZAX";
-    listSimpleSpell << "YWQCJTLLCKJJTJHGDXDXYQYZZBYWDLWQCGLZGJGQRQZCZSSBCRPCSKYDZNXJSQGXSSJMYDNSTZTPBDLTKZWXQWQTZEXNQCZGWEZK";
-    listSimpleSpell << "SSBYBRTSSSLCCGBPSZQSZLCCGLLLZXHZQTHCZMQGYZQZNMCOCSZJMMZSQPJYGQLJYJPPLDXRGZYXCCSXHSHGTZNLZWZKJCXTCFCJ";
-    listSimpleSpell << "XLBMQBCZZWPQDNHXLJCTHYZLGYLNLSZZPCXDSCQQHJQKSXZPBAJYEMSMJTZDXLCJYRYYNWJBNGZZTMJXLTBSLYRZPYLSSCNXPHLL";
-    listSimpleSpell << "HYLLQQZQLXYMRSYCXZLMMCZLTZSDWTJJLLNZGGQXPFSKYGYGHBFZPDKMWGHCXMSGDXJMCJZDYCABXJDLNBCDQYGSKYDQTXDJJYXM";
-    listSimpleSpell << "SZQAZDZFSLQXYJSJZYLBTXXWXQQZBJZUFBBLYLWDSLJHXJYZJWTDJCZFQZQZZDZSXZZQLZCDZFJHYSPYMPQZMLPPLFFXJJNZZYLS";
-    listSimpleSpell << "JEYQZFPFZKSYWJJJHRDJZZXTXXGLGHYDXCSKYSWMMZCWYBAZBJKSHFHJCXMHFQHYXXYZFTSJYZFXYXPZLCHMZMBXHZZSXYFYMNCW";
-    listSimpleSpell << "DABAZLXKTCSHHXKXJJZJSTHYGXSXYYHHHJWXKZXSSBZZWHHHCWTZZZPJXSNXQQJGZYZYWLLCWXZFXXYXYHXMKYYSWSQMNLNAYCYS";
-    listSimpleSpell << "PMJKHWCQHYLAJJMZXHMMCNZHBHXCLXTJPLTXYJHDYYLTTXFSZHYXXSJBJYAYRSMXYPLCKDUYHLXRLNLLSTYZYYQYGYHHSCCSMZCT";
-    listSimpleSpell << "ZQXKYQFPYYRPFFLKQUNTSZLLZMWWTCQQYZWTLLMLMPWMBZSSTZRBPDDTLQJJBXZCSRZQQYGWCSXFWZLXCCRSZDZMCYGGDZQSGTJS";
-    listSimpleSpell << "WLJMYMMZYHFBJDGYXCCPSHXNZCSBSJYJGJMPPWAFFYFNXHYZXZYLREMZGZCYZSSZDLLJCSQFNXZKPTXZGXJJGFMYYYSNBTYLBNLH";
-    listSimpleSpell << "PFZDCYFBMGQRRSSSZXYSGTZRNYDZZCDGPJAFJFZKNZBLCZSZPSGCYCJSZLMLRSZBZZLDLSLLYSXSQZQLYXZLSKKBRXBRBZCYCXZZ";
-    listSimpleSpell << "ZEEYFGKLZLYYHGZSGZLFJHGTGWKRAAJYZKZQTSSHJJXDCYZUYJLZYRZDQQHGJZXSSZBYKJPBFRTJXLLFQWJHYLQTYMBLPZDXTZYG";
-    listSimpleSpell << "BDHZZRBGXHWNJTJXLKSCFSMWLSDQYSJTXKZSCFWJLBXFTZLLJZLLQBLSQMQQCGCZFPBPHZCZJLPYYGGDTGWDCFCZQYYYQYSSCLXZ";
-    listSimpleSpell << "SKLZZZGFFCQNWGLHQYZJJCZLQZZYJPJZZBPDCCMHJGXDQDGDLZQMFGPSYTSDYFWWDJZJYSXYYCZCYHZWPBYKXRYLYBHKJKSFXTZJ";
-    listSimpleSpell << "MMCKHLLTNYYMSYXYZPYJQYCSYCWMTJJKQYRHLLQXPSGTLYYCLJSCPXJYZFNMLRGJJTYZBXYZMSJYJHHFZQMSYXRSZCWTLRTQZSST";
-    listSimpleSpell << "KXGQKGSPTGCZNJSJCQCXHMXGGZTQYDJKZDLBZSXJLHYQGGGTHQSZPYHJHHGYYGKGGCWJZZYLCZLXQSFTGZSLLLMLJSKCTBLLZZSZ";
-    listSimpleSpell << "MMNYTPZSXQHJCJYQXYZXZQZCPSHKZZYSXCDFGMWQRLLQXRFZTLYSTCTMJCXJJXHJNXTNRZTZFQYHQGLLGCXSZSJDJLJCYDSJTLNY";
-    listSimpleSpell << "XHSZXCGJZYQPYLFHDJSBPCCZHJJJQZJQDYBSSLLCMYTTMQTBHJQNNYGKYRQYQMZGCJKPDCGMYZHQLLSLLCLMHOLZGDYYFZSLJCQZ";
-    listSimpleSpell << "LYLZQJESHNYLLJXGJXLYSYYYXNBZLJSSZCQQCJYLLZLTJYLLZLLBNYLGQCHXYYXOXCXQKYJXXXYKLXSXXYQXCYKQXQCSGYXXYQXY";
-    listSimpleSpell << "GYTQOHXHXPYXXXULCYEYCHZZCBWQBBWJQZSCSZSSLZYLKDESJZWMYMCYTSDSXXSCJPQQSQYLYYZYCMDJDZYWCBTJSYDJKCYDDJLB";
-    listSimpleSpell << "DJJSODZYSYXQQYXDHHGQQYQHDYXWGMMMAJDYBBBPPBCMUUPLJZSMTXERXJMHQNUTPJDCBSSMSSSTKJTSSMMTRCPLZSZMLQDSDMJM";
-    listSimpleSpell << "QPNQDXCFYNBFSDQXYXHYAYKQYDDLQYYYSSZBYDSLNTFQTZQPZMCHDHCZCWFDXTMYQSPHQYYXSRGJCWTJTZZQMGWJJTJHTQJBBHWZ";
-    listSimpleSpell << "PXXHYQFXXQYWYYHYSCDYDHHQMNMTMWCPBSZPPZZGLMZFOLLCFWHMMSJZTTDHZZYFFYTZZGZYSKYJXQYJZQBHMBZZLYGHGFMSHPZF";
-    listSimpleSpell << "ZSNCLPBQSNJXZSLXXFPMTYJYGBXLLDLXPZJYZJYHHZCYWHJYLSJEXFSZZYWXKZJLUYDTMLYMQJPWXYHXSKTQJEZRPXXZHHMHWQPW";
-    listSimpleSpell << "QLYJJQJJZSZCPHJLCHHNXJLQWZJHBMZYXBDHHYPZLHLHLGFWLCHYYTLHJXCJMSCPXSTKPNHQXSRTYXXTESYJCTLSSLSTDLLLWWYH";
-    listSimpleSpell << "DHRJZSFGXTSYCZYNYHTDHWJSLHTZDQDJZXXQHGYLTZPHCSQFCLNJTCLZPFSTPDYNYLGMJLLYCQHYSSHCHYLHQYQTMZYPBYWRFQYK";
-    listSimpleSpell << "QSYSLZDQJMPXYYSSRHZJNYWTQDFZBWWTWWRXCWHGYHXMKMYYYQMSMZHNGCEPMLQQMTCWCTMMPXJPJJHFXYYZSXZHTYBMSTSYJTTQ";
-    listSimpleSpell << "QQYYLHYNPYQZLCYZHZWSMYLKFJXLWGXYPJYTYSYXYMZCKTTWLKSMZSYLMPWLZWXWQZSSAQSYXYRHSSNTSRAPXCPWCMGDXHXZDZYF";
-    listSimpleSpell << "JHGZTTSBJHGYZSZYSMYCLLLXBTYXHBBZJKSSDMALXHYCFYGMQYPJYCQXJLLLJGSLZGQLYCJCCZOTYXMTMTTLLWTGPXYMZMKLPSZZ";
-    listSimpleSpell << "ZXHKQYSXCTYJZYHXSHYXZKXLZWPSQPYHJWPJPWXQQYLXSDHMRSLZZYZWTTCYXYSZZSHBSCCSTPLWSSCJCHNLCGCHSSPHYLHFHHXJ";
-    listSimpleSpell << "SXYLLNYLSZDHZXYLSXLWZYKCLDYAXZCMDDYSPJTQJZLNWQPSSSWCTSTSZLBLNXSMNYYMJQBQHRZWTYYDCHQLXKPZWBGQYBKFCMZW";
-    listSimpleSpell << "PZLLYYLSZYDWHXPSBCMLJBSCGBHXLQHYRLJXYSWXWXZSLDFHLSLYNJLZYFLYJYCDRJLFSYZFSLLCQYQFGJYHYXZLYLMSTDJCYHBZ";
-    listSimpleSpell << "LLNWLXXYGYYHSMGDHXXHHLZZJZXCZZZCYQZFNGWPYLCPKPYYPMCLQKDGXZGGWQBDXZZKZFBXXLZXJTPJPTTBYTSZZDWSLCHZHSLT";
-    listSimpleSpell << "YXHQLHYXXXYYZYSWTXZKHLXZXZPYHGCHKCFSYHUTJRLXFJXPTZTWHPLYXFCRHXSHXKYXXYHZQDXQWULHYHMJTBFLKHTXCWHJFWJC";
-    listSimpleSpell << "FPQRYQXCYYYQYGRPYWSGSUNGWCHKZDXYFLXXHJJBYZWTSXXNCYJJYMSWZJQRMHXZWFQSYLZJZGBHYNSLBGTTCSYBYXXWXYHXYYXN";
-    listSimpleSpell << "SQYXMQYWRGYQLXBBZLJSYLPSYTJZYHYZAWLRORJMKSCZJXXXYXCHDYXRYXXJDTSQFXLYLTSFFYXLMTYJMJUYYYXLTZCSXQZQHZXL";
-    listSimpleSpell << "YYXZHDNBRXXXJCTYHLBRLMBRLLAXKYLLLJLYXXLYCRYLCJTGJCMTLZLLCYZZPZPCYAWHJJFYBDYYZSMPCKZDQYQPBPCJPDCYZMDP";
-    listSimpleSpell << "BCYYDYCNNPLMTMLRMFMMGWYZBSJGYGSMZQQQZTXMKQWGXLLPJGZBQCDJJJFPKJKCXBLJMSWMDTQJXLDLPPBXCWRCQFBFQJCZAHZG";
-    listSimpleSpell << "MYKPHYYHZYKNDKZMBPJYXPXYHLFPNYYGXJDBKXNXHJMZJXSTRSTLDXSKZYSYBZXJLXYSLBZYSLHXJPFXPQNBYLLJQKYGZMCYZZYM";
-    listSimpleSpell << "CCSLCLHZFWFWYXZMWSXTYNXJHPYYMCYSPMHYSMYDYSHQYZCHMJJMZCAAGCFJBBHPLYZYLXXSDJGXDHKXXTXXNBHRMLYJSLTXMRHN";
-    listSimpleSpell << "LXQJXYZLLYSWQGDLBJHDCGJYQYCMHWFMJYBMBYJYJWYMDPWHXQLDYGPDFXXBCGJSPCKRSSYZJMSLBZZJFLJJJLGXZGYXYXLSZQYX";
-    listSimpleSpell << "BEXYXHGCXBPLDYHWETTWWCJMBTXCHXYQXLLXFLYXLLJLSSFWDPZSMYJCLMWYTCZPCHQEKCQBWLCQYDPLQPPQZQFJQDJHYMMCXTXD";
-    listSimpleSpell << "RMJWRHXCJZYLQXDYYNHYYHRSLSRSYWWZJYMTLTLLGTQCJZYABTCKZCJYCCQLJZQXALMZYHYWLWDXZXQDLLQSHGPJFJLJHJABCQZD";
-    listSimpleSpell << "JGTKHSSTCYJLPSWZLXZXRWGLDLZRLZXTGSLLLLZLYXXWGDZYGBDPHZPBRLWSXQBPFDWOFMWHLYPCBJCCLDMBZPBZZLCYQXLDOMZB";
-    listSimpleSpell << "LZWPDWYYGDSTTHCSQSCCRSSSYSLFYBFNTYJSZDFNDPDHDZZMBBLSLCMYFFGTJJQWFTMTPJWFNLBZCMMJTGBDZLQLPYFHYYMJYLSD";
-    listSimpleSpell << "CHDZJWJCCTLJCLDTLJJCPDDSQDSSZYBNDBJLGGJZXSXNLYCYBJXQYCBYLZCFZPPGKCXZDZFZTJJFJSJXZBNZYJQTTYJYHTYCZHYM";
-    listSimpleSpell << "DJXTTMPXSPLZCDWSLSHXYPZGTFMLCJTYCBPMGDKWYCYZCDSZZYHFLYCTYGWHKJYYLSJCXGYWJCBLLCSNDDBTZBSCLYZCZZSSQDLL";
-    listSimpleSpell << "MQYYHFSLQLLXFTYHABXGWNYWYYPLLSDLDLLBJCYXJZMLHLJDXYYQYTDLLLBUGBFDFBBQJZZMDPJHGCLGMJJPGAEHHBWCQXAXHHHZ";
-    listSimpleSpell << "CHXYPHJAXHLPHJPGPZJQCQZGJJZZUZDMQYYBZZPHYHYBWHAZYJHYKFGDPFQSDLZMLJXKXGALXZDAGLMDGXMWZQYXXDXXPFDMMSSY";
-    listSimpleSpell << "MPFMDMMKXKSYZYSHDZKXSYSMMZZZMSYDNZZCZXFPLSTMZDNMXCKJMZTYYMZMZZMSXHHDCZJEMXXKLJSTLWLSQLYJZLLZJSSDPPMH";
-    listSimpleSpell << "NLZJCZYHMXXHGZCJMDHXTKGRMXFWMCGMWKDTKSXQMMMFZZYDKMSCLCMPCGMHSPXQPZDSSLCXKYXTWLWJYAHZJGZQMCSNXYYMMPML";
-    listSimpleSpell << "KJXMHLMLQMXCTKZMJQYSZJSYSZHSYJZJCDAJZYBSDQJZGWZQQXFKDMSDJLFWEHKZQKJPEYPZYSZCDWYJFFMZZYLTTDZZEFMZLBNP";
-    listSimpleSpell << "PLPLPEPSZALLTYLKCKQZKGENQLWAGYXYDPXLHSXQQWQCQXQCLHYXXMLYCCWLYMQYSKGCHLCJNSZKPYZKCQZQLJPDMDZHLASXLBYD";
-    listSimpleSpell << "WQLWDNBQCRYDDZTJYBKBWSZDXDTNPJDTCTQDFXQQMGNXECLTTBKPWSLCTYQLPWYZZKLPYGZCQQPLLKCCYLPQMZCZQCLJSLQZDJXL";
-    listSimpleSpell << "DDHPZQDLJJXZQDXYZQKZLJCYQDYJPPYPQYKJYRMPCBYMCXKLLZLLFQPYLLLMBSGLCYSSLRSYSQTMXYXZQZFDZUYSYZTFFMZZSMZQ";
-    listSimpleSpell << "HZSSCCMLYXWTPZGXZJGZGSJSGKDDHTQGGZLLBJDZLCBCHYXYZHZFYWXYZYMSDBZZYJGTSMTFXQYXQSTDGSLNXDLRYZZLRYYLXQHT";
-    listSimpleSpell << "XSRTZNGZXBNQQZFMYKMZJBZYMKBPNLYZPBLMCNQYZZZSJZHJCTZKHYZZJRDYZHNPXGLFZTLKGJTCTSSYLLGZRZBBQZZKLPKLCZYS";
-    listSimpleSpell << "SUYXBJFPNJZZXCDWXZYJXZZDJJKGGRSRJKMSMZJLSJYWQSKYHQJSXPJZZZLSNSHRNYPZTWCHKLPSRZLZXYJQXQKYSJYCZTLQZYBB";
-    listSimpleSpell << "YBWZPQDWWYZCYTJCJXCKCWDKKZXSGKDZXWWYYJQYYTCYTDLLXWKCZKKLCCLZCQQDZLQLCSFQCHQHSFSMQZZLNBJJZBSJHTSZDYSJ";
-    listSimpleSpell << "QJPDLZCDCWJKJZZLPYCGMZWDJJBSJQZSYZYHHXJPBJYDSSXDZNCGLQMBTSFSBPDZDLZNFGFJGFSMPXJQLMBLGQCYYXBQKDJJQYRF";
-    listSimpleSpell << "KZTJDHCZKLBSDZCFJTPLLJGXHYXZCSSZZXSTJYGKGCKGYOQXJPLZPBPGTGYJZGHZQZZLBJLSQFZGKQQJZGYCZBZQTLDXRJXBSXXP";
-    listSimpleSpell << "ZXHYZYCLWDXJJHXMFDZPFZHQHQMQGKSLYHTYCGFRZGNQXCLPDLBZCSCZQLLJBLHBZCYPZZPPDYMZZSGYHCKCPZJGSLJLNSCDSLDL";
-    listSimpleSpell << "XBMSTLDDFJMKDJDHZLZXLSZQPQPGJLLYBDSZGQLBZLSLKYYHZTTNTJYQTZZPSZQZTLLJTYYLLQLLQYZQLBDZLSLYYZYMDFSZSNHL";
-    listSimpleSpell << "XZNCZQZPBWSKRFBSYZMTHBLGJPMCZZLSTLXSHTCSYZLZBLFEQHLXFLCJLYLJQCBZLZJHHSSTBRMHXZHJZCLXFNBGXGTQJCZTMSFZ";
-    listSimpleSpell << "KJMSSNXLJKBHSJXNTNLZDNTLMSJXGZJYJCZXYJYJWRWWQNZTNFJSZPZSHZJFYRDJSFSZJZBJFZQZZHZLXFYSBZQLZSGYFTZDCSZX";
-    listSimpleSpell << "ZJBQMSZKJRHYJZCKMJKHCHGTXKXQGLXPXFXTRTYLXJXHDTSJXHJZJXZWZLCQSBTXWXGXTXXHXFTSDKFJHZYJFJXRZSDLLLTQSQQZ";
-    listSimpleSpell << "QWZXSYQTWGWBZCGZLLYZBCLMQQTZHZXZXLJFRMYZFLXYSQXXJKXRMQDZDMMYYBSQBHGZMWFWXGMXLZPYYTGZYCCDXYZXYWGSYJYZ";
-    listSimpleSpell << "NBHPZJSQSYXSXRTFYZGRHZTXSZZTHCBFCLSYXZLZQMZLMPLMXZJXSFLBYZMYQHXJSXRXSQZZZSSLYFRCZJRCRXHHZXQYDYHXSJJH";
-    listSimpleSpell << "ZCXZBTYNSYSXJBQLPXZQPYMLXZKYXLXCJLCYSXXZZLXDLLLJJYHZXGYJWKJRWYHCPSGNRZLFZWFZZNSXGXFLZSXZZZBFCSYJDBRJ";
-    listSimpleSpell << "KRDHHGXJLJJTGXJXXSTJTJXLYXQFCSGSWMSBCTLQZZWLZZKXJMLTMJYHSDDBXGZHDLBMYJFRZFSGCLYJBPMLYSMSXLSZJQQHJZFX";
-    listSimpleSpell << "GFQFQBPXZGYYQXGZTCQWYLTLGWSGWHRLFSFGZJMGMGBGTJFSYZZGZYZAFLSSPMLPFLCWBJZCLJJMZLPJJLYMQDMYYYFBGYGYZMLY";
-    listSimpleSpell << "ZDXQYXRQQQHSYYYQXYLJTYXFSFSLLGNQCYHYCWFHCCCFXPYLYPLLZYXXXXXKQHHXSHJZCFZSCZJXCPZWHHHHHAPYLQALPQAFYHXD";
-    listSimpleSpell << "YLUKMZQGGGDDESRNNZLTZGCHYPPYSQJJHCLLJTOLNJPZLJLHYMHEYDYDSQYCDDHGZUNDZCLZYZLLZNTNYZGSLHSLPJJBDGWXPCDU";
-    listSimpleSpell << "TJCKLKCLWKLLCASSTKZZDNQNTTLYYZSSYSSZZRYLJQKCQDHHCRXRZYDGRGCWCGZQFFFPPJFZYNAKRGYWYQPQXXFKJTSZZXSWZDDF";
-    listSimpleSpell << "BBXTBGTZKZNPZZPZXZPJSZBMQHKCYXYLDKLJNYPKYGHGDZJXXEAHPNZKZTZCMXCXMMJXNKSZQNMNLWBWWXJKYHCPSTMCSQTZJYXT";
-    listSimpleSpell << "PCTPDTNNPGLLLZSJLSPBLPLQHDTNJNLYYRSZFFJFQWDPHZDWMRZCCLODAXNSSNYZRESTYJWJYJDBCFXNMWTTBYLWSTSZGYBLJPXG";
-    listSimpleSpell << "LBOCLHPCBJLTMXZLJYLZXCLTPNCLCKXTPZJSWCYXSFYSZDKNTLBYJCYJLLSTGQCBXRYZXBXKLYLHZLQZLNZCXWJZLJZJNCJHXMNZ";
-    listSimpleSpell << "ZGJZZXTZJXYCYYCXXJYYXJJXSSSJSTSSTTPPGQTCSXWZDCSYFPTFBFHFBBLZJCLZZDBXGCXLQPXKFZFLSYLTUWBMQJHSZBMDDBCY";
-    listSimpleSpell << "SCCLDXYCDDQLYJJWMQLLCSGLJJSYFPYYCCYLTJANTJJPWYCMMGQYYSXDXQMZHSZXPFTWWZQSWQRFKJLZJQQYFBRXJHHFWJJZYQAZ";
-    listSimpleSpell << "MYFRHCYYBYQWLPEXCCZSTYRLTTDMQLYKMBBGMYYJPRKZNPBSXYXBHYZDJDNGHPMFSGMWFZMFQMMBCMZZCJJLCNUXYQLMLRYGQZCY";
-    listSimpleSpell << "XZLWJGCJCGGMCJNFYZZJHYCPRRCMTZQZXHFQGTJXCCJEAQCRJYHPLQLSZDJRBCQHQDYRHYLYXJSYMHZYDWLDFRYHBPYDTSSCNWBX";
-    listSimpleSpell << "GLPZMLZZTQSSCPJMXXYCSJYTYCGHYCJWYRXXLFEMWJNMKLLSWTXHYYYNCMMCWJDQDJZGLLJWJRKHPZGGFLCCSCZMCBLTBHBQJXQD";
-    listSimpleSpell << "SPDJZZGKGLFQYWBZYZJLTSTDHQHCTCBCHFLQMPWDSHYYTQWCNZZJTLBYMBPDYYYXSQKXWYYFLXXNCWCXYPMAELYKKJMZZZBRXYYQ";
-    listSimpleSpell << "JFLJPFHHHYTZZXSGQQMHSPGDZQWBWPJHZJDYSCQWZKTXXSQLZYYMYSDZGRXCKKUJLWPYSYSCSYZLRMLQSYLJXBCXTLWDQZPCYCYK";
-    listSimpleSpell << "PPPNSXFYZJJRCEMHSZMSXLXGLRWGCSTLRSXBZGBZGZTCPLUJLSLYLYMTXMTZPALZXPXJTJWTCYYZLBLXBZLQMYLXPGHDSLSSDMXM";
-    listSimpleSpell << "BDZZSXWHAMLCZCPJMCNHJYSNSYGCHSKQMZZQDLLKABLWJXSFMOCDXJRRLYQZKJMYBYQLYHETFJZFRFKSRYXFJTWDSXXSYSQJYSLY";
-    listSimpleSpell << "XWJHSNLXYYXHBHAWHHJZXWMYLJCSSLKYDZTXBZSYFDXGXZJKHSXXYBSSXDPYNZWRPTQZCZENYGCXQFJYKJBZMLJCMQQXUOXSLYXX";
-    listSimpleSpell << "LYLLJDZBTYMHPFSTTQQWLHOKYBLZZALZXQLHZWRRQHLSTMYPYXJJXMQSJFNBXYXYJXXYQYLTHYLQYFMLKLJTMLLHSZWKZHLJMLHL";
-    listSimpleSpell << "JKLJSTLQXYLMBHHLNLZXQJHXCFXXLHYHJJGBYZZKBXSCQDJQDSUJZYYHZHHMGSXCSYMXFEBCQWWRBPYYJQTYZCYQYQQZYHMWFFHG";
-    listSimpleSpell << "ZFRJFCDPXNTQYZPDYKHJLFRZXPPXZDBBGZQSTLGDGYLCQMLCHHMFYWLZYXKJLYPQHSYWMQQGQZMLZJNSQXJQSYJYCBEHSXFSZPXZ";
-    listSimpleSpell << "WFLLBCYYJDYTDTHWZSFJMQQYJLMQXXLLDTTKHHYBFPWTYYSQQWNQWLGWDEBZWCMYGCULKJXTMXMYJSXHYBRWFYMWFRXYQMXYSZTZ";
-    listSimpleSpell << "ZTFYKMLDHQDXWYYNLCRYJBLPSXCXYWLSPRRJWXHQYPHTYDNXHHMMYWYTZCSQMTSSCCDALWZTCPQPYJLLQZYJSWXMZZMMYLMXCLMX";
-    listSimpleSpell << "CZMXMZSQTZPPQQBLPGXQZHFLJJHYTJSRXWZXSCCDLXTYJDCQJXSLQYCLZXLZZXMXQRJMHRHZJBHMFLJLMLCLQNLDXZLLLPYPSYJY";
-    listSimpleSpell << "SXCQQDCMQJZZXHNPNXZMEKMXHYKYQLXSXTXJYYHWDCWDZHQYYBGYBCYSCFGPSJNZDYZZJZXRZRQJJYMCANYRJTLDPPYZBSTJKXXZ";
-    listSimpleSpell << "YPFDWFGZZRPYMTNGXZQBYXNBUFNQKRJQZMJEGRZGYCLKXZDSKKNSXKCLJSPJYYZLQQJYBZSSQLLLKJXTBKTYLCCDDBLSPPFYLGYD";
-    listSimpleSpell << "TZJYQGGKQTTFZXBDKTYYHYBBFYTYYBCLPDYTGDHRYRNJSPTCSNYJQHKLLLZSLYDXXWBCJQSPXBPJZJCJDZFFXXBRMLAZHCSNDLBJ";
-    listSimpleSpell << "DSZBLPRZTSWSBXBCLLXXLZDJZSJPYLYXXYFTFFFBHJJXGBYXJPMMMPSSJZJMTLYZJXSWXTYLEDQPJMYGQZJGDJLQJWJQLLSJGJGY";
-    listSimpleSpell << "GMSCLJJXDTYGJQJQJCJZCJGDZZSXQGSJGGCXHQXSNQLZZBXHSGZXCXYLJXYXYYDFQQJHJFXDHCTXJYRXYSQTJXYEFYYSSYYJXNCY";
-    listSimpleSpell << "ZXFXMSYSZXYYSCHSHXZZZGZZZGFJDLTYLNPZGYJYZYYQZPBXQBDZTZCZYXXYHHSQXSHDHGQHJHGYWSZTMZMLHYXGEBTYLZKQWYTJ";
-    listSimpleSpell << "ZRCLEKYSTDBCYKQQSAYXCJXWWGSBHJYZYDHCSJKQCXSWXFLTYNYZPZCCZJQTZWJQDZZZQZLJJXLSBHPYXXPSXSHHEZTXFPTLQYZZ";
-    listSimpleSpell << "XHYTXNCFZYYHXGNXMYWXTZSJPTHHGYMXMXQZXTSBCZYJYXXTYYZYPCQLMMSZMJZZLLZXGXZAAJZYXJMZXWDXZSXZDZXLEYJJZQBH";
-    listSimpleSpell << "ZWZZZQTZPSXZTDSXJJJZNYAZPHXYYSRNQDTHZHYYKYJHDZXZLSWCLYBZYECWCYCRYLCXNHZYDZYDYJDFRJJHTRSQTXYXJRJHOJYN";
-    listSimpleSpell << "XELXSFSFJZGHPZSXZSZDZCQZBYYKLSGSJHCZSHDGQGXYZGXCHXZJWYQWGYHKSSEQZZNDZFKWYSSTCLZSTSYMCDHJXXYWEYXCZAYD";
-    listSimpleSpell << "MPXMDSXYBSQMJMZJMTZQLPJYQZCGQHXJHHLXXHLHDLDJQCLDWBSXFZZYYSCHTYTYYBHECXHYKGJPXHHYZJFXHWHBDZFYZBCAPNPG";
-    listSimpleSpell << "NYDMSXHMMMMAMYNBYJTMPXYYMCTHJBZYFCGTYHWPHFTWZZEZSBZEGPFMTSKFTYCMHFLLHGPZJXZJGZJYXZSBBQSCZZLZCCSTPGXM";
-    listSimpleSpell << "JSFTCCZJZDJXCYBZLFCJSYZFGSZLYBCWZZBYZDZYPSWYJZXZBDSYUXLZZBZFYGCZXBZHZFTPBGZGEJBSTGKDMFHYZZJHZLLZZGJQ";
-    listSimpleSpell << "ZLSFDJSSCBZGPDLFZFZSZYZYZSYGCXSNXXCHCZXTZZLJFZGQSQYXZJQDCCZTQCDXZJYQJQCHXZTDLGSCXZSYQJQTZWLQDQZTQCHQ";
-    listSimpleSpell << "QJZYEZZZPBWKDJFCJPZTYPQYQTTYNLMBDKTJZPQZQZZFPZSBNJLGYJDXJDZZKZGQKXDLPZJTCJDQBXDJQJSTCKNXBXZMSLYJCQMT";
-    listSimpleSpell << "JQWWCJQNJNLLLHJCWQTBZQYDZCZPZZDZYDDCYZZZCCJTTJFZDPRRTZTJDCQTQZDTJNPLZBCLLCTZSXKJZQZPZLBZRBTJDCXFCZDB";
-    listSimpleSpell << "CCJJLTQQPLDCGZDBBZJCQDCJWYNLLZYZCCDWLLXWZLXRXNTQQCZXKQLSGDFQTDDGLRLAJJTKUYMKQLLTZYTDYYCZGJWYXDXFRSKS";
-    listSimpleSpell << "TQTENQMRKQZHHQKDLDAZFKYPBGGPZREBZZYKZZSPEGJXGYKQZZZSLYSYYYZWFQZYLZZLZHWCHKYPQGNPGBLPLRRJYXCCSYYHSFZF";
-    listSimpleSpell << "YBZYYTGZXYLXCZWXXZJZBLFFLGSKHYJZEYJHLPLLLLCZGXDRZELRHGKLZZYHZLYQSZZJZQLJZFLNBHGWLCZCFJYSPYXZLZLXGCCP";
-    listSimpleSpell << "ZBLLCYBBBBUBBCBPCRNNZCZYRBFSRLDCGQYYQXYGMQZWTZYTYJXYFWTEHZZJYWLCCNTZYJJZDEDPZDZTSYQJHDYMBJNYJZLXTSST";
-    listSimpleSpell << "PHNDJXXBYXQTZQDDTJTDYYTGWSCSZQFLSHLGLBCZPHDLYZJYCKWTYTYLBNYTSDSYCCTYSZYYEBHEXHQDTWNYGYCLXTSZYSTQMYGZ";
-    listSimpleSpell << "AZCCSZZDSLZCLZRQXYYELJSBYMXSXZTEMBBLLYYLLYTDQYSHYMRQWKFKBFXNXSBYCHXBWJYHTQBPBSBWDZYLKGZSKYHXQZJXHXJX";
-    listSimpleSpell << "GNLJKZLYYCDXLFYFGHLJGJYBXQLYBXQPQGZTZPLNCYPXDJYQYDYMRBESJYYHKXXSTMXRCZZYWXYQYBMCLLYZHQYZWQXDBXBZWZMS";
-    listSimpleSpell << "LPDMYSKFMZKLZCYQYCZLQXFZZYDQZPZYGYJYZMZXDZFYFYTTQTZHGSPCZMLCCYTZXJCYTJMKSLPZHYSNZLLYTPZCTZZCKTXDHXXT";
-    listSimpleSpell << "QCYFKSMQCCYYAZHTJPCYLZLYJBJXTPNYLJYYNRXSYLMMNXJSMYBCSYSYLZYLXJJQYLDZLPQBFZZBLFNDXQKCZFYWHGQMRDSXYCYT";
-    listSimpleSpell << "XNQQJZYYPFZXDYZFPRXEJDGYQBXRCNFYYQPGHYJDYZXGRHTKYLNWDZNTSMPKLBTHBPYSZBZTJZSZZJTYYXZPHSSZZBZCZPTQFZMY";
-    listSimpleSpell << "FLYPYBBJQXZMXXDJMTSYSKKBJZXHJCKLPSMKYJZCXTMLJYXRZZQSLXXQPYZXMKYXXXJCLJPRMYYGADYSKQLSNDHYZKQXZYZTCGHZ";
-    listSimpleSpell << "TLMLWZYBWSYCTBHJHJFCWZTXWYTKZLXQSHLYJZJXTMPLPYCGLTBZZTLZJCYJGDTCLKLPLLQPJMZPAPXYZLKKTKDZCZZBNZDYDYQZ";
-    listSimpleSpell << "JYJGMCTXLTGXSZLMLHBGLKFWNWZHDXUHLFMKYSLGXDTWWFRJEJZTZHYDXYKSHWFZCQSHKTMQQHTZHYMJDJSKHXZJZBZZXYMPAGQM";
-    listSimpleSpell << "STPXLSKLZYNWRTSQLSZBPSPSGZWYHTLKSSSWHZZLYYTNXJGMJSZSUFWNLSOZTXGXLSAMMLBWLDSZYLAKQCQCTMYCFJBSLXCLZZCL";
-    listSimpleSpell << "XXKSBZQCLHJPSQPLSXXCKSLNHPSFQQYTXYJZLQLDXZQJZDYYDJNZPTUZDSKJFSLJHYLZSQZLBTXYDGTQFDBYAZXDZHZJNHHQBYKN";
-    listSimpleSpell << "XJJQCZMLLJZKSPLDYCLBBLXKLELXJLBQYCXJXGCNLCQPLZLZYJTZLJGYZDZPLTQCSXFDMNYCXGBTJDCZNBGBQYQJWGKFHTNPYQZQ";
-    listSimpleSpell << "GBKPBBYZMTJDYTBLSQMPSXTBNPDXKLEMYYCJYNZCTLDYKZZXDDXHQSHDGMZSJYCCTAYRZLPYLTLKXSLZCGGEXCLFXLKJRTLQJAQZ";
-    listSimpleSpell << "NCMBYDKKCXGLCZJZXJHPTDJJMZQYKQSECQZDSHHADMLZFMMZBGNTJNNLGBYJBRBTMLBYJDZXLCJLPLDLPCQDHLXZLYCBLCXZZJAD";
-    listSimpleSpell << "JLNZMMSSSMYBHBSQKBHRSXXJMXSDZNZPXLGBRHWGGFCXGMSKLLTSJYYCQLTSKYWYYHYWXBXQYWPYWYKQLSQPTNTKHQCWDQKTWPXX";
-    listSimpleSpell << "HCPTHTWUMSSYHBWCRWXHJMKMZNGWTMLKFGHKJYLSYYCXWHYECLQHKQHTTQKHFZLDXQWYZYYDESBPKYRZPJFYYZJCEQDZZDLATZBB";
-    listSimpleSpell << "FJLLCXDLMJSSXEGYGSJQXCWBXSSZPDYZCXDNYXPPZYDLYJCZPLTXLSXYZYRXCYYYDYLWWNZSAHJSYQYHGYWWAXTJZDAXYSRLTDPS";
-    listSimpleSpell << "SYYFNEJDXYZHLXLLLZQZSJNYQYQQXYJGHZGZCYJCHZLYCDSHWSHJZYJXCLLNXZJJYYXNFXMWFPYLCYLLABWDDHWDXJMCXZTZPMLQ";
-    listSimpleSpell << "ZHSFHZYNZTLLDYWLSLXHYMMYLMBWWKYXYADTXYLLDJPYBPWUXJMWMLLSAFDLLYFLBHHHBQQLTZJCQJLDJTFFKMMMBYTHYGDCQRDD";
-    listSimpleSpell << "WRQJXNBYSNWZDBYYTBJHPYBYTTJXAAHGQDQTMYSTQXKBTZPKJLZRBEQQSSMJJBDJOTGTBXPGBKTLHQXJJJCTHXQDWJLWRFWQGWSH";
-    listSimpleSpell << "CKRYSWGFTGYGBXSDWDWRFHWYTJJXXXJYZYSLPYYYPAYXHYDQKXSHXYXGSKQHYWFDDDPPLCJLQQEEWXKSYYKDYPLTJTHKJLTCYYHH";
-    listSimpleSpell << "JTTPLTZZCDLTHQKZXQYSTEEYWYYZYXXYYSTTJKLLPZMCYHQGXYHSRMBXPLLNQYDQHXSXXWGDQBSHYLLPJJJTHYJKYPPTHYYKTYEZ";
-    listSimpleSpell << "YENMDSHLCRPQFDGFXZPSFTLJXXJBSWYYSKSFLXLPPLBBBLBSFXFYZBSJSSYLPBBFFFFSSCJDSTZSXZRYYSYFFSYZYZBJTBCTSBSD";
-    listSimpleSpell << "HRTJJBYTCXYJEYLXCBNEBJDSYXYKGSJZBXBYTFZWGENYHHTHZHHXFWGCSTBGXKLSXYWMTMBYXJSTZSCDYQRCYTWXZFHMYMCXLZNS";
-    listSimpleSpell << "DJTTTXRYCFYJSBSDYERXJLJXBBDEYNJGHXGCKGSCYMBLXJMSZNSKGXFBNBPTHFJAAFXYXFPXMYPQDTZCXZZPXRSYWZDLYBBKTYQP";
-    listSimpleSpell << "QJPZYPZJZNJPZJLZZFYSBTTSLMPTZRTDXQSJEHBZYLZDHLJSQMLHTXTJECXSLZZSPKTLZKQQYFSYGYWPCPQFHQHYTQXZKRSGTTSQ";
-    listSimpleSpell << "CZLPTXCDYYZXSQZSLXLZMYCPCQBZYXHBSXLZDLTCDXTYLZJYYZPZYZLTXJSJXHLPMYTXCQRBLZSSFJZZTNJYTXMYJHLHPPLCYXQJ";
-    listSimpleSpell << "QQKZZSCPZKSWALQSBLCCZJSXGWWWYGYKTJBBZTDKHXHKGTGPBKQYSLPXPJCKBMLLXDZSTBKLGGQKQLSBKKTFXRMDKBFTPZFRTBBR";
-    listSimpleSpell << "FERQGXYJPZSSTLBZTPSZQZSJDHLJQLZBPMSMMSXLQQNHKNBLRDDNXXDHDDJCYYGYLXGZLXSYGMQQGKHBPMXYXLYTQWLWGCPBMQXC";
-    listSimpleSpell << "YZYDRJBHTDJYHQSHTMJSBYPLWHLZFFNYPMHXXHPLTBQPFBJWQDBYGPNZTPFZJGSDDTQSHZEAWZZYLLTYYBWJKXXGHLFKXDJTMSZS";
-    listSimpleSpell << "QYNZGGSWQSPHTLSSKMCLZXYSZQZXNCJDQGZDLFNYKLJCJLLZLMZZNHYDSSHTHZZLZZBBHQZWWYCRZHLYQQJBEYFXXXWHSRXWQHWP";
-    listSimpleSpell << "SLMSSKZTTYGYQQWRSLALHMJTQJSMXQBJJZJXZYZKXBYQXBJXSHZTSFJLXMXZXFGHKZSZGGYLCLSARJYHSLLLMZXELGLXYDJYTLFB";
-    listSimpleSpell << "HBPNLYZFBBHPTGJKWETZHKJJXZXXGLLJLSTGSHJJYQLQZFKCGNNDJSSZFDBCTWWSEQFHQJBSAQTGYPQLBXBMMYWXGSLZHGLZGQYF";
-    listSimpleSpell << "LZBYFZJFRYSFMBYZHQGFWZSYFYJJPHZBYYZFFWODGRLMFTWLBZGYCQXCDJYGZYYYYTYTYDWEGAZYHXJLZYYHLRMGRXXZCLHNELJJ";
-    listSimpleSpell << "TJTPWJYBJJBXJJTJTEEKHWSLJPLPSFYZPQQBDLQJJTYYQLYZKDKSQJYYQZLDQTGJQYZJSUCMRYQTHTEJMFCTYHYPKMHYZWJDQFHY";
-    listSimpleSpell << "YXWSHCTXRLJHQXHCCYYYJLTKTTYTMXGTCJTZAYYOCZLYLBSZYWJYTSJYHBYSHFJLYGJXXTMZYYLTXXYPZLXYJZYZYYPNHMYMDYYL";
-    listSimpleSpell << "BLHLSYYQQLLNJJYMSOYQBZGDLYXYLCQYXTSZEGXHZGLHWBLJHEYXTWQMAKBPQCGYSHHEGQCMWYYWLJYJHYYZLLJJYLHZYHMGSLJL";
-    listSimpleSpell << "JXCJJYCLYCJPCPZJZJMMYLCQLNQLJQJSXYJMLSZLJQLYCMMHCFMMFPQQMFYLQMCFFQMMMMHMZNFHHJGTTHHKHSLNCHHYQDXTMMQD";
-    listSimpleSpell << "CYZYXYQMYQYLTDCYYYZAZZCYMZYDLZFFFMMYCQZWZZMABTBYZTDMNZZGGDFTYPCGQYTTSSFFWFDTZQSSYSTWXJHXYTSXXYLBYQHW";
-    listSimpleSpell << "WKXHZXWZNNZZJZJJQJCCCHYYXBZXZCYZTLLCQXYNJYCYYCYNZZQYYYEWYCZDCJYCCHYJLBTZYYCQWMPWPYMLGKDLDLGKQQBGYCHJ";
-    listSimpleSpell << "XY";
-
-}
-
-QString MusicDataBase::composeContentSpell(const QString &xtitle, const QString &xsinger, const QString &xalbum)
-{
-    QString xtitleSpell = characterToSpell(xtitle);
-    QString xsingerSpell = characterToSpell(xsinger);
-    QString xalbumSpell = characterToSpell(xalbum);
-
-    QString res = QString("%1 %2 %3").arg(xtitleSpell, xsingerSpell, xalbumSpell);
-    // 以空格隔开
-    return res;
-}
-
-QString MusicDataBase::composeContentSpellSimple(const QString &xtitle, const QString &xsinger, const QString &xalbum)
-{
-    QString xtitleSpellSimple = characterToSpellFirstLetter(xtitle);
-    QString xsingerSpellSimple = characterToSpellFirstLetter(xsinger);
-    QString xalbumSpellSimple = characterToSpellFirstLetter(xalbum);
-
-    QString res = QString("%1 %2 %3").arg(xtitleSpellSimple, xsingerSpellSimple, xalbumSpellSimple);
-    // 以空格隔开
-    return res;
 }
