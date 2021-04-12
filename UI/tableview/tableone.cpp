@@ -3,17 +3,14 @@
 TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
 {
     nowListName = listName;
-    delegate = new TableViewDelegate;
     initUI();
     initRightMenu();
     initConnect();
     initStyle();
-
 }
 
 void TableOne::initStyle()
 {
-
     listTitleLabel->setStyleSheet("width:96px;height:24px;"
                                  "font-size:24px;\
                                  font-weight: 600;\
@@ -39,14 +36,13 @@ void TableOne::initTableViewStyle()
     tableView->hideColumn(4);
     tableView->hideColumn(5);
     tableView->hideColumn(6);
-    //    tableView->setModel(tableModel);
     tableView->resize(800,1000);
     tableView->show();
-    tableView->setAlternatingRowColors(false);
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     tableView->setAutoFillBackground(true);
+    tableView->setAlternatingRowColors(false);
 }
 
 void TableOne::initUI()
@@ -112,19 +108,14 @@ void TableOne::initUI()
     if(nowListName == tr("Song List"))
     {
         ret = g_db->getSongInfoListFromLocalMusic(resList);
-
     }
     else
     {
         ret = g_db->getSongInfoListFromPlayList(resList,nowListName);
     }
-    //    qDebug() << resList[0].filepath;
-    //    if(ret == DB_OP_SUCC)
-    //    {
     m_model = new MusicListModel;
     m_model->add(resList);
     m_model->setView(*tableView);
-//    tableView->setItemDelegate(delegate);
     initTableViewStyle();
     int num = m_model->count();
     listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
@@ -137,7 +128,6 @@ void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
-    connect(tableView,&TableBaseView::hoverIndexChanged,delegate,&TableViewDelegate::onHoverIndexChanged);
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
 
@@ -346,11 +336,9 @@ void TableOne::playListRenamed(QString oldName, QString newName)
     }
 }
 
-//void TableOne::mouseMoveEvent(QMouseEvent *event)
-//{
-//    QModelIndex index = tableView->indexAt(event->pos());
-//    int row = index.row();
-//    qDebug() << event->pos();
-//    qDebug() << "QModelIndex index"<< index.row();
-//    emit hoverIndexChanged(index);
-//}
+void TableOne::mouseMoveEvent(QMouseEvent *event)
+{
+    QModelIndex index = tableView->indexAt(event->pos());
+    int row = index.row();
+    emit hoverIndexChanged(index);
+}

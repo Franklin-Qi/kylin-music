@@ -64,7 +64,7 @@ private:
     QMap<int, QString> getSelectedTaskIdList();
 
 
-//    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event)override;
     TableViewDelegate *delegate;
 
     QHBoxLayout *listTitleHBoxLayout;
@@ -77,7 +77,7 @@ signals:
     void sendPathToPlayer(QString fp);
 
     void countChanges();
-//    void hoverIndexChanged(QModelIndex index);
+    void hoverIndexChanged(QModelIndex index);
     void addMusicToHistoryListSignal();
 
 public slots:
