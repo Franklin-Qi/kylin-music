@@ -5,6 +5,10 @@
 
 int main(int argc, char *argv[])
 {
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    //高清屏幕自适应
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication a(argc, argv);
     QString locale = QLocale::system().name();
     QTranslator trans_global, trans_menu;

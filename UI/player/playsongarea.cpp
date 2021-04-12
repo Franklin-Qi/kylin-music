@@ -118,8 +118,7 @@ void PlaySongArea::initWidget()
 
     leftLayout->addWidget(coverPhotoLabel,Qt::AlignVCenter);
     leftLayout->addWidget(vWidget,Qt::AlignVCenter);
-    leftLayout->setContentsMargins(30,5,0,14);
-//    leftLayout->setMargin(0);
+    leftLayout->setMargin(0);
 
     QHBoxLayout *playLayout = new QHBoxLayout(centreWid);
     playLayout->addStretch();
@@ -129,7 +128,7 @@ void PlaySongArea::initWidget()
     playLayout->addSpacing(12);
     playLayout->addWidget(nextBtn,Qt::AlignHCenter);
     playLayout->addStretch();
-//    playLayout->setMargin(0);
+    playLayout->setMargin(0);
 
     QHBoxLayout *rightLayout = new QHBoxLayout(rightWid);
     rightLayout->addWidget(volumeBtn,Qt::AlignRight);
@@ -140,7 +139,7 @@ void PlaySongArea::initWidget()
     rightLayout->addSpacing(8);
     rightLayout->addWidget(listBtn,Qt::AlignRight);
     rightLayout->setContentsMargins(0,14,30,14);
-//    rightLayout->setMargin(0);
+    rightLayout->setMargin(0);
 
     letfWid->setLayout(leftLayout);
 //    letfWid->setStyleSheet("background: red;");
@@ -161,6 +160,9 @@ void PlaySongArea::initWidget()
 
     m_vmainLayout->addLayout(m_hmainLayout);
     m_vmainLayout->addLayout(m_mainLayout);
+    m_vmainLayout->setMargin(0);
+    m_vmainLayout->setSpacing(0);
+
     this->setLayout(m_vmainLayout);
 }
 

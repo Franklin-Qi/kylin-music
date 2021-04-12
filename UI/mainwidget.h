@@ -27,12 +27,22 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 public slots:
+    //关闭主窗体
+    void slotClose();
+    //最小化
+    void slotShowMinimized();
+    //最大化
+    void slotShowMaximized();
 
 private slots:
+protected:
+    void resizeEvent(QResizeEvent *event)override;
+//    void mousePressEvent(QResizeEvent *event)override;
 private:
     void initAllComponent();
     void allConnect();
     void initGSettings();
+private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
     TableOne *musicListTable;
@@ -42,7 +52,6 @@ private:
     PlaySongArea *playSongArea;
     TitleBar *m_titleBar;
 
-    void resizeEvent(QResizeEvent *event);
-    void mousePressEvent(QResizeEvent *event);
+    bool Minimize = false;       //最大化和还原俩个状态
 };
 #endif // WIDGET_H
