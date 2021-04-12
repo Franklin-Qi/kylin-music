@@ -121,7 +121,7 @@ void TableOne::initUI()
     //    qDebug() << resList[0].filepath;
     //    if(ret == DB_OP_SUCC)
     //    {
-    m_model = new ScoreInfoModel;
+    m_model = new MusicListModel;
     m_model->add(resList);
     m_model->setView(*tableView);
 //    tableView->setItemDelegate(delegate);
@@ -138,7 +138,7 @@ void TableOne::initConnect()
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
     connect(tableView,&TableBaseView::hoverIndexChanged,delegate,&TableViewDelegate::onHoverIndexChanged);
-    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicFromLocal);
+    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
 
 }
@@ -230,9 +230,12 @@ void TableOne::playSongs()
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     qDebug() << "tableView->selectedIndexes();" << index << date.filepath;
+    QStringList pathList;
     pathList = m_model->getPathList();
     playController::getInstance().setCurPlaylist(nowListName,pathList);
     playController::getInstance().play(nowListName,index);
+    g_db->addMusicToHistoryMusic(date.filepath);
+    emit addMusicToHistoryListSignal();
 }
 
 void TableOne::showInfo()
@@ -256,12 +259,16 @@ void TableOne::addToOtherList(QAction *listNameAction)
         it++;
     }
 }
-void TableOne::addMusicFromLocal()
+void TableOne::addMusicToLocalOrPlayList()
 {
     qDebug() << "添加歌曲";
     //获取歌曲路径
     QStringList songFiles = QFileDialog::getOpenFileNames(this, tr("Open the file"),"","音乐文件(*.mp3 *.ogg *.wma *.spx *.flac)");  //歌曲文件
     qDebug() << songFiles;
+    MusicFileInformation::getInstance().addFile(songFiles);
+    QList<musicDataStruct> resList;
+    resList = MusicFileInformation::getInstance().resList;
+    m_model->add(resList);
 //    QFileDialog *fileDialog = new QFileDialog;
 //    fileDialog->setFileMode(QFileDialog::Directory);
 //    QStringList m_fileNames;
@@ -329,6 +336,14 @@ void TableOne::selectListChanged(QString listname)
     changeNumber();
     listTitleLabel->setText(listname);
 
+}
+
+void TableOne::playListRenamed(QString oldName, QString newName)
+{
+    if(listTitleLabel->text() == oldName)
+    {
+        listTitleLabel->setText(newName);
+    }
 }
 
 //void TableOne::mouseMoveEvent(QMouseEvent *event)

@@ -13,6 +13,7 @@ Widget::Widget(QWidget *parent)
     initAllComponent();
     allConnect();
     initGSettings();
+
 }
 
 Widget::~Widget()
@@ -23,18 +24,18 @@ Widget::~Widget()
 
 void Widget::initAllComponent()
 {
-
+//    this->setWindowFlag(Qt::FramelessWindowHint);
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
     musicListTable = new TableOne(tr("Song List"),this);
-    playSongArea = new PlaySongArea;
+    playSongArea = new PlaySongArea(this);
+    m_titleBar = new TitleBar(this);
     QWidget *rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
+    mainVBoxLayout->addWidget(m_titleBar);
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
-    mainVBoxLayout->setMargin(0);
-    mainVBoxLayout->setSpacing(0);
     mainHBoxLayout = new QHBoxLayout();
     sideBarWid = new SideBarWidget(this);
     sideBarWid->setFixedWidth(210);
@@ -42,43 +43,30 @@ void Widget::initAllComponent()
     mainHBoxLayout->addWidget(rightVWidget);
     mainHBoxLayout->setSpacing(0);
     mainHBoxLayout->setMargin(0);
-
+    mainVBoxLayout->setSpacing(10);
+    mainVBoxLayout->setMargin(0);
     this->resize(960,640);
     this->setLayout(mainHBoxLayout);
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
+
+    historyListTable = new TableHistory(this);
+    historyListTable->hide();
 }
 
 void Widget::allConnect()
 {
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
+    connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
+    connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
+    connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
+    connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::close);
+    connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::showMinimized);
+    connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::showMaximized);
 }
 
-void Widget::keyPressEvent(QKeyEvent *event)
-{
-    // F1快捷键打开用户手册
-    if (event->key() == Qt::Key_F1) {
-        if (!mDaemonIpcDbus->daemonIsNotRunning()){
-            // F1快捷键打开用户手册，如kylin-music
-            //由于是小工具类，下面的showGuide参数要填写"tools/kylin-recorder"
-            mDaemonIpcDbus->showGuide("kylin-music");
-        }
-    }
-    else if(event->key() == Qt::Key_Right)
-    {
-        return;
-    }
-    else if(event->key() == Qt::Key_Left)
-    {
-        return;
-    }
-    QWidget::keyPressEvent(event);
-}
 
-void Widget::showHistroryPlayList()
-{
-//    historyListTable->show();
-}
+
 void Widget::initGSettings()//初始化GSettings
 {
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
@@ -109,5 +97,19 @@ void Widget::initGSettings()//初始化GSettings
         });
     }
     qDebug()<<"初始化GSettings成功";
+}
+
+void Widget::resizeEvent(QResizeEvent *event)
+{
+    qDebug() << "resizeEvent" << this->width() << this->height();
+    historyListTable->resize(320,this->height()-playSongArea->height()-5);
+    int x = this->width()-320;
+    int y = this->height()-playSongArea->height()-historyListTable->height();
+    historyListTable->move(x,y);
+}
+
+void Widget::mousePressEvent(QResizeEvent *event)
+{
+    qDebug() << QCursor::pos();
 }
 

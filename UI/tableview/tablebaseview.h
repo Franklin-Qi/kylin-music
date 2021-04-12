@@ -6,7 +6,7 @@
 #include <QHeaderView>
 #include <QStandardItemModel>
 #include <QStandardItemModel>
-#include "UIControl/tableview/scoreinfomodel.h"
+#include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/base/musicDataBase.h"
 
 class TableBaseView : public QTableView
@@ -16,7 +16,7 @@ class TableBaseView : public QTableView
 public:
     explicit TableBaseView(QTableView *parent = nullptr);
     ~TableBaseView();
-    ScoreInfoModel *m_model;
+    MusicListModel *m_model;
     void mouseMoveEvent(QMouseEvent *event);
 
 signals:

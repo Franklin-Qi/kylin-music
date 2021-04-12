@@ -8,16 +8,17 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QStackedWidget>
+#include <QResizeEvent>
 
 #include "UIControl/base/musicDataBase.h"
 #include "UI/tableview/tableone.h"
-#include "UIControl/tableview/scoreinfomodel.h"
+#include "UIControl/tableview/musiclistmodel.h"
 #include "UI/tableview/tablebaseview.h"
 #include "UI/base/widgetstyle.h"
 #include "UI/sidebar/sidebarwidget.h"
 #include "UI/player/playsongarea.h"
-#include "daemonipcdbus.h"
-
+#include "UI/tableview/tablehistory.h"
+#include "UI/titlebar/titlebar.h"
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -28,28 +29,20 @@ public:
 public slots:
 
 private slots:
-
-protected:
-    // 键盘响应事件
-    void keyPressEvent(QKeyEvent *event);
 private:
     void initAllComponent();
     void allConnect();
-    void showHistroryPlayList();
-
     void initGSettings();
-private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
-
-//    TableBaseView *musicListTable;
     TableOne *musicListTable;
-//    TableOne *historyListTable;
-
+    TableHistory *historyListTable;
     QGSettings *themeData = nullptr;
     SideBarWidget *sideBarWid;
     PlaySongArea *playSongArea;
-    // 用户手册功能
-    DaemonIpcDbus *mDaemonIpcDbus;
+    TitleBar *m_titleBar;
+
+    void resizeEvent(QResizeEvent *event);
+    void mousePressEvent(QResizeEvent *event);
 };
 #endif // WIDGET_H

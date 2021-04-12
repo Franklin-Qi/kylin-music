@@ -1,5 +1,5 @@
-#include "mainwidget.h"
-
+#include "UI/mainwidget.h"
+#include "UI/base/xatom-helper.h"
 #include <QApplication>
 #include <QDebug>
 
@@ -28,7 +28,11 @@ int main(int argc, char *argv[])
         qDebug() << "Failed to load Chinese translation file.";
 #endif
     Widget w;
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(w.winId(), hints);
     w.show();
-    qDebug() << "错误状态：啊啊啊啊啊啊啊啊啊啊";
     return a.exec();
 }

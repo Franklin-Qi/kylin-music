@@ -34,6 +34,9 @@ private:
     ~playController();
 
 public:
+    //新增接口 fyf
+    bool playSingleSong(QString Path, bool isPlayNowOrNext);
+
     bool play(QString playlist, int index);
 
     bool play();

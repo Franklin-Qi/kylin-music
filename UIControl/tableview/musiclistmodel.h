@@ -8,11 +8,11 @@
 #include <QDebug>
 #include "UIControl/base/musicDataBase.h"
 
-class ScoreInfoModel : public QObject
+class MusicListModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit ScoreInfoModel(QObject *parent = 0);
+    explicit MusicListModel(QObject *parent = 0);
     bool add(musicDataStruct info);
     bool add(QList<musicDataStruct> list);
     bool remove(int i);

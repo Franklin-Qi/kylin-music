@@ -32,7 +32,7 @@ public:
       SliderWidget *m_volSliderWid;
       PlayBackModeWidget *m_playBackModeWid;
 signals:
-
+    void showHistoryListBtnClicked();
 public slots:
     //显示音量界面
     void slotVolSliderWidget();
@@ -57,6 +57,8 @@ private:
     void moveVolSliderWid();
     //计算新的播放模式
     void movePlayModeWid();
+
+    void listBtnClicked();
 private:
 
     QHBoxLayout *m_mainLayout;

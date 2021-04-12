@@ -1,8 +1,8 @@
-#include "scoreinfomodel.h"
+#include "musiclistmodel.h"
 #include <QStandardItem>
 #include <QVariant>
 
-ScoreInfoModel::ScoreInfoModel(QObject* parent) : QObject(parent)
+MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
 {
     QStringList list;
     list.append("Title");
@@ -15,7 +15,7 @@ ScoreInfoModel::ScoreInfoModel(QObject* parent) : QObject(parent)
     m_model.setHorizontalHeaderLabels(list); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
 }
 
-bool ScoreInfoModel::add(musicDataStruct info)
+bool MusicListModel::add(musicDataStruct info)
 {
     QStandardItem* root = m_model.invisibleRootItem();
     QStandardItem* item0 = new QStandardItem();
@@ -33,12 +33,11 @@ bool ScoreInfoModel::add(musicDataStruct info)
 //        item1->setData(info.singer, Qt::DisplayPropertyRole);
 //        item2->setData(info.album, Qt::DisplayPropertyRole);
 //        item3->setData(info.time, Qt::DisplayPropertyRole);
-
         item0->setData(info.title, Qt::DisplayRole);
         item1->setData(info.singer, Qt::DisplayRole);
         item2->setData(info.album, Qt::DisplayRole);
         item3->setData(info.time, Qt::DisplayRole);
-        item3->setTextAlignment(Qt::AlignRight);
+        item3->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
         item4->setData(info.filepath, Qt::DisplayRole);
         item5->setData(info.filetype, Qt::DisplayRole);
         item6->setData(info.size, Qt::DisplayRole);
@@ -71,7 +70,7 @@ bool ScoreInfoModel::add(musicDataStruct info)
     return ret;
 }
 
-bool ScoreInfoModel::add(QList<musicDataStruct> list)
+bool MusicListModel::add(QList<musicDataStruct> list)
 {
     bool ret = true;
 
@@ -83,7 +82,7 @@ bool ScoreInfoModel::add(QList<musicDataStruct> list)
     return ret;
 }
 
-bool ScoreInfoModel::remove(int i)
+bool MusicListModel::remove(int i)
 {
     bool ret = true;
 
@@ -99,12 +98,13 @@ bool ScoreInfoModel::remove(int i)
     return ret;
 }
 
-void ScoreInfoModel::clear()
+void MusicListModel::clear()
 {
     m_model.clear();
+    resList.clear();
 }
 
-musicDataStruct ScoreInfoModel::getItem(int i)
+musicDataStruct MusicListModel::getItem(int i)
 {
     musicDataStruct ret;
 
@@ -138,7 +138,7 @@ musicDataStruct ScoreInfoModel::getItem(int i)
     return ret;
 }
 
-QStringList ScoreInfoModel::getPathList()
+QStringList MusicListModel::getPathList()
 {
     qDebug() << "resList.size():" << resList.size();
     QStringList pathList;
@@ -149,17 +149,17 @@ QStringList ScoreInfoModel::getPathList()
     return pathList;
 }
 
-void ScoreInfoModel::getMusicDateList(QList<musicDataStruct> list)
+void MusicListModel::getMusicDateList(QList<musicDataStruct> list)
 {
     list = resList;
 }
 
-int ScoreInfoModel::count()
+int MusicListModel::count()
 {
     return m_model.rowCount();
 }
 
-void ScoreInfoModel::setView(QTableView& view)
+void MusicListModel::setView(QTableView& view)
 {
     view.setModel(&m_model);
 }
