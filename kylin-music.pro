@@ -33,9 +33,12 @@ SOURCES += \
     UI/base/allpupwindow.cpp \
     UI/base/widgetstyle.cpp \
     UI/mainwidget.cpp \
+    UI/player/miniwidget.cpp \
     UI/player/musicslider.cpp \
     UI/player/playbackmodewidget.cpp \
     UI/player/playsongarea.cpp \
+    UI/player/qtsingleapplication/qtlocalpeer.cpp \
+    UI/player/qtsingleapplication/qtsingleapplication.cpp \
     UI/player/sliderwidget.cpp \
     UI/base/xatom-helper.cpp \
     UI/sidebar/mytoolbutton.cpp \
@@ -59,9 +62,13 @@ HEADERS += \
     UI/base/allpupwindow.h \
     UI/base/widgetstyle.h \
     UI/mainwidget.h \
+    UI/player/miniwidget.h \
     UI/player/musicslider.h \
+    UI/player/myapplication.h \
     UI/player/playbackmodewidget.h \
     UI/player/playsongarea.h \
+    UI/player/qtsingleapplication/qtlocalpeer.h \
+    UI/player/qtsingleapplication/qtsingleapplication.h \
     UI/player/sliderwidget.h \
     UI/base/xatom-helper.h \
     UI/sidebar/mytoolbutton.h \

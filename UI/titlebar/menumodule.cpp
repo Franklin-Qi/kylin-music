@@ -1,4 +1,5 @@
 #include "menumodule.h"
+#include "UI/mainwidget.h"
 #include "UI/base/xatom-helper.h"
 menuModule::menuModule(QWidget *parent = nullptr) : QWidget(parent)
 {
@@ -191,11 +192,11 @@ void menuModule::initAbout(){
     mainlyt->addStretch();
     aboutWindow->setLayout(mainlyt);
     //TODO:在屏幕中央显示
-    QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
-    aboutWindow->move((availableGeometry.width()-aboutWindow->width())/2,(availableGeometry.height()- aboutWindow->height())/2);
+//    QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
+//    aboutWindow->move((availableGeometry.width()-aboutWindow->width())/2,(availableGeometry.height()- aboutWindow->height())/2);
     //弹窗位置应用居中
-//    QRect availableGeometry = this->parentWidget()->geometry();
-//    aboutWindow->move(availableGeometry.center()-aboutWindow->rect().center());
+    QRect availableGeometry = Widget::mutual->geometry();
+    aboutWindow->move(availableGeometry.center() - aboutWindow->rect().center());
     aboutWindow->show();
 }
 
@@ -215,6 +216,7 @@ QHBoxLayout* menuModule::initTitleBar(){
     connect(titleBtnClose,&QPushButton::clicked,[=](){aboutWindow->close();});
     QHBoxLayout *hlyt = new QHBoxLayout;
     titleText->setText(tr("kylin music"));
+    titleText->setStyleSheet("font-size:14px;");
     hlyt->setSpacing(0);
     hlyt->setMargin(4);
     hlyt->addSpacing(4);
@@ -230,6 +232,7 @@ QVBoxLayout* menuModule::initBody(){
     QLabel* bodyIcon = new QLabel();
     bodyIcon->setFixedSize(96,96);
     bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
+    bodyIcon->setStyleSheet("font-size:14px;");
     bodyIcon->setScaledContents(true);
     bodyAppDescribe->setText(tr("Kylin music player is a kind of multimedia "
                                 "player software for playing various music files."
@@ -252,6 +255,7 @@ QVBoxLayout* menuModule::initBody(){
     });
     bodySupport->setContextMenuPolicy(Qt::NoContextMenu);
     bodySupport->setFixedHeight(24);
+    bodySupport->setStyleSheet("font-size:14px;");
     QVBoxLayout *vlyt = new QVBoxLayout;
     vlyt->setMargin(0);
     vlyt->setSpacing(0);

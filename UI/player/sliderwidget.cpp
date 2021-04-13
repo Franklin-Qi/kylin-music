@@ -6,8 +6,9 @@ SliderWidget::SliderWidget(QWidget *parent) : QDialog(parent)
 {
     installEventFilter(this);
 //    this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
     initUi(); //初始化样式
-    volSliderColor();
 }
 
 void SliderWidget::initUi()
@@ -19,10 +20,26 @@ void SliderWidget::initUi()
     vSlider->setMinimum(0);
     vSlider->setMaximum(100);
     vSlider->setValue(50);
-    vSlider->setStyleSheet("QSlider::groove:vertical{background:transparent;height: 70px;width: 4px;background:#3790FA;border-radius:5px;}"
+    vSlider->setStyleSheet(
+                           "QSlider::groove:vertical {height: 70px;width: 4px;\
+                                                   border: 1px solid #4A708B;\
+                                                   padding-left:-1px;\
+                                                   padding-right:-1px;\
+                                                   border-radius:2px;\
+                                                   }"
                            "QSlider::add-page:vertical{background:#3790FA;}"
                            "QSlider::sub-page:vertical{background:#ECEEF5;}"
-                           "QSlider::handle:vertical{width: 4px;margin: -5 0 -5 0;border-image:url(:/img/default/point.png);}"
+                           "QSlider::handle:vertical {\
+                               background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
+                               stop:0 #3790FA, stop:0.1 #3790FA);\
+                               width: 10px;\
+                               height: 10px;\
+                               margin-top: -4px;\
+                               margin-left: -3px;\
+                               margin-bottom: -4px;\
+                               margin-right: -3px;\
+                               border-radius: 4px;\
+                           }"
                            );
 
     HLayout = new QHBoxLayout;
@@ -83,16 +100,4 @@ void SliderWidget::changeVolumePos(int posX, int posY, int width, int height)
     volunmPosY = posY;
     volunmPosWidth = width;
     volunmPosHeight = height;
-}
-
-void SliderWidget::volSliderColor()
-{
-    if(WidgetStyle::themeColor == 1)
-    {
-        setStyleSheet("background-color:#252526;");
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
-        setStyleSheet("background-color:#FFFFFF;");
-    }
 }

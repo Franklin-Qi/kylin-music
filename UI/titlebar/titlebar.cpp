@@ -25,18 +25,7 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 {
     setMouseTracking(true);
     initTitle();
-//    searchWidget = new QListWidget(parent);
-//    searchResultWidget = new MusicListWid(parent);
-////    searchResultWidget->songListLabel->setText("搜索结果");
-//    searchResultWidget->songListLabel->setText(tr("The search results"));
-
-//    searchResultWidget->hide();
-
-//    searchWidget->setGeometry(270,42,200,180);
-
-//    searchWidget->hide();
-
-//    titlecolor();
+    titlecolor();
 }
 
 void TitleBar::initTitle()
@@ -285,8 +274,6 @@ void TitleBar::searchMusic()
 
 void TitleBar::titlecolor()
 {
-
-
     if (WidgetStyle::themeColor == 1)
     {
         settingMenu->setStyleSheet("QMenu{background-color:#303032;color:#F9F9F9;}"
@@ -295,11 +282,12 @@ void TitleBar::titlecolor()
                                             "QMenu::item:selected{background-color:#3D6BE5;}");
 
         this->setStyleSheet(".widget{background-color:#252526;}");
-        searchWidget->setStyleSheet("QListWidget{border:5px;background:#3D3D41;color:#F9F9F9; }"
-                                    "QListWidget::Item{height:30px;color:#F9F9F9;}"
-                                    "QListWidget::Item:hover{background:#303032;color:#F9F9F9; }"
-                                    "QListWidget::item:selected{background:#303032;color:#F9F9F9;}"
-                                    );
+
+//        searchWidget->setStyleSheet("QListWidget{border:5px;background:#3D3D41;color:#F9F9F9; }"
+//                                    "QListWidget::Item{height:30px;color:#F9F9F9;}"
+//                                    "QListWidget::Item:hover{background:#303032;color:#F9F9F9; }"
+//                                    "QListWidget::item:selected{background:#303032;color:#F9F9F9;}"
+//                                    );
 
         searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#303032;color:#F9F9F9;}");
 
@@ -324,11 +312,11 @@ void TitleBar::titlecolor()
 
         this->setStyleSheet(".widget{background-color:#FFFFFF;}");
 
-        searchWidget->setStyleSheet("QListWidget{border:5px;color:#303133; }"
-                                    "QListWidget::Item{height:30px;color:#303133;}"
-                                    "QListWidget::Item:hover{background:#F7F7F7;color:#303133; }"
-                                    "QListWidget::item:selected{background:#F7F7F7;color:#303133;}"
-                                    );
+//        searchWidget->setStyleSheet("QListWidget{border:5px;color:#303133; }"
+//                                    "QListWidget::Item{height:30px;color:#303133;}"
+//                                    "QListWidget::Item:hover{background:#F7F7F7;color:#303133; }"
+//                                    "QListWidget::item:selected{background:#F7F7F7;color:#303133;}"
+//                                    );
 
         searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
 
