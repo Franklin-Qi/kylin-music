@@ -33,6 +33,7 @@ SOURCES += \
     UI/base/allpupwindow.cpp \
     UI/base/widgetstyle.cpp \
     UI/mainwidget.cpp \
+    UI/player/miniwidget.cpp \
     UI/player/musicslider.cpp \
     UI/player/playbackmodewidget.cpp \
     UI/player/playsongarea.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     UI/base/allpupwindow.h \
     UI/base/widgetstyle.h \
     UI/mainwidget.h \
+    UI/player/miniwidget.h \
     UI/player/musicslider.h \
     UI/player/playbackmodewidget.h \
     UI/player/playsongarea.h \

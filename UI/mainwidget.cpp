@@ -1,8 +1,11 @@
 #include "mainwidget.h"
+#include "UI/base/xatom-helper.h"
 
+Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
+    mutual = this;//！！！赋值，非常重要
     int res;
     res = g_db->initDataBase();
     if(res != DB_OP_SUCC)
@@ -18,6 +21,7 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
+    m_miniWidget->deleteLater();
 }
 
 
@@ -25,12 +29,20 @@ Widget::~Widget()
 void Widget::initAllComponent()
 {
 //    this->setWindowFlag(Qt::FramelessWindowHint);
+    setMinimumSize(960,640);
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
     musicListTable = new TableOne(tr("Song List"),this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
+    m_miniWidget = new miniWidget();
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(m_miniWidget->winId(), hints);
+
     QWidget *rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(m_titleBar);
@@ -60,9 +72,20 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
     connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
+
+    connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
     connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
     connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
+
+    //迷你模式槽函数绑定
+    connect(m_miniWidget->m_recoveryWinBtn,&QPushButton::clicked,this,&Widget::slotRecoverNormalWidget);
+//    connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,this,&Widget::slotPlayNext);
+//    connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,this,&Widget::slotPlaySong);
+//    connect(m_miniWidget->m_preBtn,&QPushButton::clicked,this,&Widget::slotPlayPre);
+//    connect(m_miniWidget->m_orderBtn,&QPushButton::clicked,this,&Widget::slotPlayModeChanged);
+    connect(m_miniWidget->m_closeBtn,&QPushButton::clicked,this,&Widget::slotCloseMiniWidget);
+//    connect(m_miniWidget->m_loveBtn,&QPushButton::clicked,this,&Widget::slotAddLike);
 }
 
 
@@ -74,12 +97,12 @@ void Widget::initGSettings()//初始化GSettings
         themeData = new QGSettings(FITTHEMEWINDOW);
         if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
             WidgetStyle::themeColor = 1;
-//            changeDarkTheme();
+            changeDarkTheme();
         }
         else
         {
             WidgetStyle::themeColor = 0;
-//            changeLightTheme();
+            changeLightTheme();
         }
 
         connect(themeData,&QGSettings::changed,this,[=]()
@@ -87,12 +110,12 @@ void Widget::initGSettings()//初始化GSettings
             qDebug() << "主题颜色" << themeData->get("style-name").toString();
             if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
                 WidgetStyle::themeColor = 1;
-//                changeDarkTheme();
+                changeDarkTheme();
             }
             else
             {
                 WidgetStyle::themeColor = 0;
-//                changeLight Theme();
+                changeLightTheme();
             }
         });
     }
@@ -125,6 +148,36 @@ void Widget::resizeEvent(QResizeEvent *event)
 //{
 //    qDebug() << QCursor::pos();
 //}
+
+void Widget::slotShowMiniWidget()
+{
+    // 添加过渡动画
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
+    animation->setDuration(200);
+    animation->setStartValue(1);
+    animation->setEndValue(0);
+    connect(animation, &QPropertyAnimation::valueChanged, [&](QVariant value){
+        update();
+    });
+    connect(animation, &QPropertyAnimation::finished, [&](){
+        hide();
+        setWindowOpacity(1);
+    });
+
+    QPropertyAnimation *animation_mini = new QPropertyAnimation(m_miniWidget, "windowOpacity");
+    animation_mini->setDuration(200);
+    animation_mini->setStartValue(0);
+    animation_mini->setEndValue(1);
+    connect(animation_mini, &QPropertyAnimation::valueChanged, [&](QVariant value){
+        m_miniWidget->update();
+    });
+
+    m_miniWidget->setWindowOpacity(0);
+    m_miniWidget->showNormal();
+    m_miniWidget->activateWindow();
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    animation_mini->start(QAbstractAnimation::DeleteWhenStopped);
+}
 
 void Widget::slotClose()
 {
@@ -167,4 +220,44 @@ void Widget::slotShowMaximized()
         m_titleBar->maximumBtn->setProperty("useIconHighlightEffect", 0x2);
         m_titleBar->maximumBtn->setFlat(true);
     }
+}
+
+void Widget::slotRecoverNormalWidget()
+{
+    if(Minimize == true)
+    {
+        this->showMaximized();
+    }
+    else
+    {
+        this->showNormal();
+    }
+    m_miniWidget->hide();
+}
+
+void Widget::slotCloseMiniWidget()
+{
+    this->close();
+}
+
+//切换深色主题
+void Widget::changeDarkTheme()
+{
+    sideBarWid->newSonglistPup->dlgcolor();
+    sideBarWid->renameSongListPup->dlgcolor();
+    sideBarWid->sidecolor();
+    playSongArea->playcolor();
+    m_miniWidget->minicolor();
+    m_titleBar->titlecolor();
+}
+
+//切换浅色主题
+void Widget::changeLightTheme()
+{
+    sideBarWid->newSonglistPup->dlgcolor();
+    sideBarWid->renameSongListPup->dlgcolor();
+    sideBarWid->sidecolor();
+    playSongArea->playcolor();
+    m_miniWidget->minicolor();
+    m_titleBar->titlecolor();
 }

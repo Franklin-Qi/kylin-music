@@ -102,7 +102,6 @@ void PlayBackModeWidget::playModecolor()
 {
     if(WidgetStyle::themeColor == 1)
     {
-        setStyleSheet("background-color:#252526");
         loopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
                                "QToolButton::hover{background-color:#303032;border-radius:4px;}");
         randomBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
@@ -114,7 +113,6 @@ void PlayBackModeWidget::playModecolor()
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        setStyleSheet("background-color:#FFFFFF");
         loopBtn->setStyleSheet("QToolButton{padding-left:7px;\
                                background-color:#FAFAFA;color:#303133;border-radius:4px;}"
                                "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");

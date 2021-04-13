@@ -13,14 +13,6 @@
 #include "playbackmodewidget.h"
 #include "musicslider.h"
 
-//enum PlayBackMode{
-//    modeNull = -1,
-//    Loop,
-//    Random,
-//    Sequential,
-//    CurrentItemInLoop,
-//};
-
 class PlaySongArea : public QWidget
 {
     Q_OBJECT

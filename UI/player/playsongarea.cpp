@@ -1,6 +1,6 @@
 #include "playsongarea.h"
 #include "UI/base/widgetstyle.h"
-//#include "xatom-helper.h"
+#include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
@@ -36,7 +36,7 @@ void PlaySongArea::initWidget()
     nextBtn->setToolTip(tr("Next"));
 
     volumeBtn = new QPushButton(this);
-    volumeBtn->setFixedSize(16,16);
+    volumeBtn->setFixedSize(25,25);
     volumeBtn->setCursor(Qt::PointingHandCursor);
     volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
     volumeBtn->setProperty("isWindowButton", 0x1);
@@ -45,19 +45,19 @@ void PlaySongArea::initWidget()
     volumeBtn->setToolTip(tr("Volume"));    //音量
 
     m_volSliderWid = new SliderWidget(this);
-//    MotifWmHints hint;
-//    hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-//    hint.functions = MWM_FUNC_ALL;
-//    hint.decorations = MWM_DECOR_BORDER;
-//    XAtomHelper::getInstance()->setWindowMotifHint(m_volSliderWid->winId(), hint);
+    MotifWmHints hint;
+    hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hint.functions = MWM_FUNC_ALL;
+    hint.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(m_volSliderWid->winId(), hint);
     m_volSliderWid->hide();
 
     m_playBackModeWid = new PlayBackModeWidget(this);
-//    MotifWmHints hints;
-//    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-//    hints.functions = MWM_FUNC_ALL;
-//    hints.decorations = MWM_DECOR_BORDER;
-//    XAtomHelper::getInstance()->setWindowMotifHint(m_playBackModeWid->winId(), hints);
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(m_playBackModeWid->winId(), hints);
     m_playBackModeWid->hide();
 
     MusicSlider *hSlider = new MusicSlider(this);
@@ -65,13 +65,13 @@ void PlaySongArea::initWidget()
     favBtn = new QPushButton;
     favBtn->setFixedSize(16,16);
     favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
-    favBtn->setChecked(false);
+//    favBtn->setChecked(false);
     favBtn->setCursor(Qt::PointingHandCursor);
     favBtn->setToolTip(tr("Favourite"));
 
     //播放模式
     playModeBtn = new QPushButton;
-    playModeBtn->setFixedSize(16,16);
+    playModeBtn->setFixedSize(25,25);
     playModeBtn->setCursor(Qt::PointingHandCursor);
     playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
     playModeBtn->setProperty("isWindowButton", 0x1);
@@ -311,8 +311,6 @@ void PlaySongArea::playcolor()
 {
     if(WidgetStyle::themeColor == 1)
     {
-        setStyleSheet("background-color:#252526;");
-
         preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/lastsong.png);}"
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
@@ -325,13 +323,15 @@ void PlaySongArea::playcolor()
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/nextsong.png);}");
 
-        favBtn->setStyleSheet("QPushButton{border-image:url(::/img/dark/icon_love2_b@2x.png);}"
-                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
+        favBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
+//        favBtn->setStyleSheet("QPushButton{border-image:url(::/img/dark/icon_love2_b@2x.png);}"
+//                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+//                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
 
-        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/dark/icon_songlist_h@2x.png);}"
-                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
-                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
+        listBtn->setIcon(QIcon(":/img/dark/icon_songlist_h@2x.png"));
+//        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/dark/icon_songlist_h@2x.png);}"
+//                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
+//                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
@@ -339,8 +339,6 @@ void PlaySongArea::playcolor()
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        setStyleSheet("background-color:#FFFFFF;");
-
         preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/lastsong.png);}"
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
