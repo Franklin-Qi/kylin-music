@@ -7,14 +7,14 @@ TableHistory::TableHistory(QWidget *parent) : QFrame(parent)
     initConnect();
     initRightMenu();
     initTableStyle();
+    qDebug()<< "x" << m_tableHistory->alternatingRowColors();
 }
 
 void TableHistory::initSetModel()
 {
-
     mainVLayout = new QVBoxLayout();
-//    hBooxLayout = new QHBoxLayout();
     m_tableHistory = new TableBaseView;
+    qDebug() << m_tableHistory;
     m_tableHistory->setContextMenuPolicy(Qt::CustomContextMenu);
     m_model = new MusicListModel;
     QList<musicDataStruct> resList;
@@ -94,8 +94,7 @@ void TableHistory::initTableStyle()
     m_tableHistory->hideColumn(4);
     m_tableHistory->hideColumn(5);
     m_tableHistory->hideColumn(6);
-//    m_tableHistory->setStyleSheet("QTableView{border:none;}"
-//                                  "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+    m_tableHistory->setAutoFillBackground(true);
     m_tableHistory->setAlternatingRowColors(false);
 }
 
@@ -110,6 +109,7 @@ void TableHistory::initConnect()
 }
 void TableHistory::showHistroryPlayList()
 {
+    qDebug() << m_tableHistory->alternatingRowColors();
     if(this->isHidden())
     {
         this->show();
@@ -118,7 +118,9 @@ void TableHistory::showHistroryPlayList()
     {
         this->hide();
     }
-
+    qDebug() << m_tableHistory;
+    qDebug() << m_tableHistory->alternatingRowColors();
+    m_tableHistory->setAlternatingRowColors(false);
 }
 void TableHistory::changeNumber()
 {
