@@ -17,7 +17,6 @@
 
 #include "miniwidget.h"
 #include "UI/base/widgetstyle.h"
-#include "UI/player/myapplication.h"
 #include <QDebug>
 
 miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
@@ -29,15 +28,13 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
 //    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool|Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);     //窗体透明
 //    this->setWindowTitle(tr("麒麟音乐"));
-    this->setWindowTitle(tr("Kylin music"));
+    this->setWindowTitle(tr("Kylin Music"));
 
     setMouseTracking(true);
     init_miniWidget();
 
     this->setLayout(m_HMainLayout);
     minicolor();
-
-    initMyApp();    // liucong add 20201222
 
     initAction();
     initStyle();
@@ -114,15 +111,6 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
         return;
     }
     QWidget::keyPressEvent(event);
-}
-
-void miniWidget::initMyApp()
-{
-    MyApplication * app = MyApplication::instance();
-//    connect(app, &MyApplication::messageReceived, [&](QString msg){
-//        qDebug() << "recv msg : " << msg;
-//    });
-//    app->setActivationWindow(this);
 }
 
 void miniWidget::minicolor()

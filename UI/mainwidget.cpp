@@ -29,6 +29,7 @@ Widget::~Widget()
 void Widget::initAllComponent()
 {
 //    this->setWindowFlag(Qt::FramelessWindowHint);
+    setMinimumSize(960,640);
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
