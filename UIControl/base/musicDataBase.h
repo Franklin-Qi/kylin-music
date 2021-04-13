@@ -35,7 +35,9 @@ enum DB_RETURN_STATUS{              //数据库操作结果返回表
     LIST_REORDER_ERR    = (-19),    //歌单中歌曲更改顺序失败
     LIST_NOT_EMPTY      = (-20),    //歌单不为空
     LIST_IS_EMPTY       = (-21),    //歌单为空
-    OUT_OF_RESULT       = (-22),    //歌单为空
+    EMPTYT_HIS_FAILED   = (-22),    //清空历史列表失败
+    CREATE_HIS_FAILED   = (-23),    //创建历史列表失败
+    OUT_OF_RESULT              ,    //结果边界
 };
 
 typedef struct
@@ -109,6 +111,8 @@ public:
     int getSongInfoFromHistoryMusic(const QString& filePath, musicDataStruct &fileData);
     //从数据库中获取历史歌单列表歌曲信息
     int getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resList);
+    //清空历史歌单
+    int emptyHistoryMusic();
 
 protected:
     explicit MusicDataBase(QObject *parent = nullptr);

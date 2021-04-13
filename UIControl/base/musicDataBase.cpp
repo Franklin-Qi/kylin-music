@@ -1112,6 +1112,56 @@ int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resLi
     }
 }
 
+//清空历史歌单
+int MusicDataBase::emptyHistoryMusic()
+{
+    if(true == m_database.isValid())
+    {
+        bool delRes = true;
+
+        QSqlQuery delPlayList(m_database);
+        QString delPlayListString = QString("DROP TABLE HistoryPlayList");
+        delRes &= delPlayList.exec(delPlayListString);
+
+        if(true == delRes)
+        {
+            bool queryRes = true;
+            QSqlQuery queryInit(m_database);
+
+            queryRes &= queryInit.exec(QString("create table if not exists HistoryPlayList ("
+                                               "id integer primary key autoincrement,"
+                                               "idIndex integer unique,"
+                                               "filepath varchar unique not NULL,"
+                                               "title varchar,"
+                                               "singer varchar,"
+                                               "album varchar,"
+                                               "filetype varchar,"
+                                               "size varchar,"
+                                               "time varchar)"
+                                               ));//创建历史播放列表，自增id为主键，index为唯一值，插入歌曲时为空，获取自增id值后赋值，filepath为唯一值且不为空。
+            if(true == queryRes)
+            {
+                return DB_OP_SUCC;
+            }
+            else
+            {
+                return CREATE_HIS_FAILED;
+            }
+        }
+        else
+        {
+            return EMPTYT_HIS_FAILED;
+        }
+
+    }
+    else
+    {
+        qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+        return DB_UNCONNECT;
+    }
+
+}
+
 int MusicDataBase::checkIfSongExistsInLocalMusic(const QString& filePath)
 {
     bool queryRes = true;
