@@ -75,7 +75,11 @@ public:
     QMenu* predictMenu;
     QWidget* predictWid;
     QLabel* predictSingerLab;
+    QLabel* predictAlbumLab;
+    QLabel* predictSongLab;
     QListWidget* predictSingerLiswid;
+    QListWidget* predictAlbumLiswid;
+    QListWidget* predictSongLiswid;
     QVBoxLayout* predictLayout;
 
     //设置菜单

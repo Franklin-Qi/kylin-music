@@ -89,6 +89,7 @@
 #include "sliderwidget.h"
 //test:lx
 #include<typeinfo>
+#include"searchpredictWid.h"
 
 
 struct MusicPath
@@ -175,6 +176,8 @@ public:
     QString musicTime;
     QString musicSize;
     QString musicType;
+    //test:lx
+    searchPredictWid* preWid = NULL;
 
     void processArgs(QStringList args);
 
@@ -199,6 +202,7 @@ public slots:
     void on_listWidget_doubleClicked(QListWidgetItem *item);         //双击本地音乐播放playlist
     void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
     //test:lx 预测搜索框
+    void testLx();
     void onSearchPredict_lx();
     void onSearchPredict();
     void hideSearchEdit();

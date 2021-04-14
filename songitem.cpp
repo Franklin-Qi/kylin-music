@@ -71,6 +71,7 @@ void SongItem::initItem()
 //    songNameWid->setFixedHeight(myheight);
 
     mainLayout->addWidget(songNameLabel,278);
+    //mainLayout->addWidget(songNameLabel,200);
     mainLayout->addWidget(singerLabel,174,Qt::AlignVCenter);
     mainLayout->addWidget(albumLabel,174,Qt::AlignVCenter);
     mainLayout->addWidget(songTimeLabel,64,Qt::AlignVCenter);

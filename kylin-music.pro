@@ -75,6 +75,7 @@ SOURCES += \
     playsongarea.cpp \
     qtsingleapplication/qtlocalpeer.cpp \
     qtsingleapplication/qtsingleapplication.cpp \
+    searchpredictWid.cpp \
     sidebar.cpp \
     sliderwidget.cpp \
     songitem.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     qsql_sqlite_p.h \
     qtsingleapplication/qtlocalpeer.h \
     qtsingleapplication/qtsingleapplication.h \
+    searchpredictWid.h \
     sidebar.h \
     sliderwidget.h \
     songitem.h \
@@ -124,9 +126,16 @@ DISTFILES += \
     data/org.kylin-music-data.gschema.xml
 
 
+unix: LIBS += -L$$PWD/../../../../../usr/local/bin/ -lsimple
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/bin
+DEPENDPATH += $$PWD/../../../../../usr/local/bin
+
+unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lsqlite3
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+unix: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libsqlite3.a
 
 LIBS +=-ldl
-
-unix|win32: LIBS += -lsimple
-
-unix|win32: LIBS += -lsqlite3

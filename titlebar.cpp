@@ -44,19 +44,49 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
     //test:lx
 
     predictWid = new QWidget(parent);
-    predictWid->setGeometry (270,42,400,200);
-    predictWid->setFixedHeight (400);
+    predictWid->setGeometry (270,42,450,200);
+    //predictWid->setGeometry (0,42,-1,-1);
+    //predictWid->setFixedHeight (600);
+    //predictWid->setMaximumHeight (1000);
+    /*
     predictSingerLab = new QLabel(predictWid);
+    predictAlbumLab = new QLabel(predictWid);
+    predictSongLab = new QLabel(predictWid);
     predictSingerLiswid = new QListWidget(predictWid);
+    predictAlbumLiswid = new QListWidget(predictWid);
+    predictSongLiswid = new QListWidget(predictWid);
     predictLayout = new QVBoxLayout(predictWid);
+    //predictSingerLiswid->setFixedHeight (200);
     predictLayout->addWidget (predictSingerLab);
     predictLayout->addWidget (predictSingerLiswid);
+    //predictSingerLiswid->setSizePolicy (Expanding);
+    predictLayout->addWidget (predictAlbumLab);
+    predictLayout->addWidget(predictAlbumLiswid);
+    predictLayout->addWidget(predictSongLab);
+    predictLayout->addWidget(predictSongLiswid);
     predictWid->setLayout (predictLayout);
     predictSingerLab->setText ("Singer");
+    predictAlbumLab->setText ("Album");
+    predictSongLab->setText ("SongName");
+    //predictWid->setStyleSheet ("background:yellow;");
+    predictWid->setAttribute (Qt::WA_TranslucentBackground,false);
+    predictSingerLab->setFixedHeight (80);
+    predictSingerLab->setStyleSheet ("background:red;"
+                                     "border:5px,double,#000000;"
+                                     "border-radius:10px;"
+                                     "padding:0px;"
+                                     "margin:0px;");
+    predictWid->setStyleSheet ("background-color:rgb(148,0,211);"
+                               "opacity:0.8;"
+                               "padding:20px;"
+                               "margin:0px;");
+    predictSingerLiswid->setStyleSheet ("background:yellow;"
+                                        "padding:0px;"
+                                        "margin:0px;");
+    predictWid->setFixedHeight (500);
+    */
 
-
-    titlecolor();
-}
+    titlecolor();}
 
 void TitleBar::initTitle()
 {

@@ -219,10 +219,9 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
                          fileData.time);
             bool setVTableRes = addSongToIndexTable.exec(addSongIndex);
 
-            qDebug() << "ph-test setVTable";
-            qDebug() << setVTableRes;
 
-            testSearch();
+
+            //testSearch();
 
             if(true == (queryRes&setRes))
             {

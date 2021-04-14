@@ -52,6 +52,8 @@ MainWid::MainWid(QString str, QWidget *parent)
     qDebug() << "Mainwindow displayed at " << QDateTime::currentDateTime().toString("    yyyy-MM-dd hh:mm:ss.zzz"); //设置显示格式
 
     //test:lx
+    //myTitleBar->searchEdit->setText ("as");
+
     mySideBar->rightChangeWid->setCurrentIndex (0);
 
     qDebug()<<"--------------------程序初始化完成--------------------";
@@ -1302,6 +1304,11 @@ void MainWid::onSearchPredict (){
     }
 }
 
+//test:lx 测试相关
+void MainWid::testLx (){
+    qDebug()<<"call testLx() function!!";
+}
+
 //预测搜索框里输入的字段
 void MainWid::onSearchPredict_lx(){
     qDebug()<<"call onSearchPredict_lx;";
@@ -1309,55 +1316,150 @@ void MainWid::onSearchPredict_lx(){
     if(enterStr == "")
     {
         //myTitleBar->predictMenu->close();
+        if(preWid != NULL){
+            preWid->predictWid->hide ();
+            delete preWid;
+            preWid = NULL;
+        }
         return;
     }
-
-/*
-    QScrollArea* scroll = new QScrollArea(myTitleBar);
-    myTitleBar->predictMenu->clear();
-
-    QList<musicDataStruct> musicFromDb;
-    g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
-    QListIterator<musicDataStruct> i(musicFromDb);
-    int time = 0;
-    while(i.hasNext()){
-        time++;
-        if(time == 10){
-            break;
-        }
-        musicDataStruct music = i.next ();
-        QAction* getSearchResult = new QAction(myTitleBar->predictMenu);
-        getSearchResult->setText (music.title);
-        myTitleBar->predictMenu->addAction(getSearchResult);
-    }
-
-    //QVBoxLayout* layout = new QVBoxLayout(myTitleBar->searchWidget);
-    //layout->addWidget (myTitleBar->predictMenu);
-    //myTitleBar->searchWidget->setLayout (layout);
-//    myTitleBar->searchWidget->show();
-//    myTitleBar->searchWidget->raise();
-    //scroll->setWidget (myTitleBar->searchWidget);
-    //scroll->show ();
-    myTitleBar->predictMenu->show ();
-    */
+    //预测搜索框的展示；
+    myTitleBar->predictWid->setFixedHeight (800);
+    myTitleBar->predictSingerLab = new QLabel(myTitleBar->predictWid);
+    myTitleBar->predictAlbumLab = new QLabel(myTitleBar->predictWid);
+    myTitleBar->predictSongLab = new QLabel(myTitleBar->predictWid);
+    myTitleBar->predictSingerLiswid = new QListWidget(myTitleBar->predictWid);
+    myTitleBar->predictWid->setObjectName ("predictWid");
+    //至此，已经设置好了item的高度和hover之类的属性
+    myTitleBar->predictWid->setStyleSheet("QListWidget{background-color:yellow;border:0px;margin-left:220px;margin-right:30px;}"
+                                   "QListWidget::item{height:40px;}"
+                                   "QListWidget::item:selected{background-color:#F0F0F0;}"
+                                   "QListWidget::item:hover{background-color:#F0F0F0;}"
+                                          "QWidget#predictWid{background:#FFFACD;}"
+                                          );
+    //myTitleBar->predictSingerLiswid->height ()
 
     myTitleBar->predictSingerLiswid->clear ();
     QList<musicDataStruct> musicFromDb;
-    g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
-    QListIterator<musicDataStruct> i(musicFromDb);
-    int time = 0;
+    QList<musicDataStruct> title1;
+    QList<QString> singer1;
+    QList<QString> album1;
+    g_db->getCurtEstimatedListByKeyword(enterStr,3,title1,singer1,album1);
+    if(preWid == NULL){
+        preWid = new searchPredictWid(this,singer1,album1,title1);
+    }
+    else{
+        preWid->predictWid->hide ();
+        delete preWid;
+        preWid = new searchPredictWid(this,singer1,album1,title1);
+    }
+    qDebug()<<"the height of Wid: "<<preWid->predictWid->height ();
+
+    preWid->predictWid->raise ();
+    preWid->predictWid->show ();
+    QListIterator<musicDataStruct> i(title1);
+    int time = -1;
     while(i.hasNext()){
         time++;
-        if(time == 5){
-            break;
-        }
         musicDataStruct music = i.next ();
         QListWidgetItem* item1 = new QListWidgetItem(myTitleBar->predictSingerLiswid);
-        item1->setText (music.title);
-        myTitleBar->predictSingerLiswid->addItem (item1);
+        //myTitleBar->predictSingerLiswid->set
+        QWidget* wid1 = new QWidget;
+        QHBoxLayout* hlayout = new QHBoxLayout(wid1);
+        QLabel* label1 = new QLabel(wid1);
+        label1->setText (music.title);
+        wid1->setFixedHeight (50);
+        //wid1->setFixedHeight (10);
+//            if(time%2==0){
+//                wid1->setStyleSheet("background:#FF1493;");
+//            }
+//            else{
+//                wid1->setStyleSheet("background:blue;");
+//            }
+
+
+        myTitleBar->predictSingerLiswid->setItemWidget (item1,wid1);
+
     }
-    myTitleBar->predictWid->raise ();
-    myTitleBar->predictWid->show ();
+
+    myTitleBar->predictAlbumLiswid = new QListWidget(myTitleBar->predictWid);
+    myTitleBar->predictSongLiswid = new QListWidget(myTitleBar->predictWid);
+    myTitleBar->predictLayout = new QVBoxLayout(myTitleBar->predictWid);
+    myTitleBar->predictSingerLiswid->setFixedHeight (200);
+    //myTitleBar->predictSingerLab->setFixedHeight (80);
+    myTitleBar->predictWid->setAttribute (Qt::WA_TranslucentBackground,false);
+    myTitleBar->predictSingerLiswid->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    myTitleBar->predictSingerLab->setStyleSheet ("background:red;"
+                                                 "font-size:24px;"
+                                                 "border-width:8px;"
+                                    "border-color:#111111;"
+                                     "border-radius:20px;"
+                                     "padding-top:20px;"
+                                                 "margin-left:250px;");
+    
+    myTitleBar->predictAlbumLab->setStyleSheet ("background:red;"
+                                                "margin-left:190px;"
+                                                "margin-right:60px;");
+    myTitleBar->predictSongLab->setStyleSheet ("background:red;"
+                                               "margin-left:120px;"
+                                               "margin-right:120px;");
+//    myTitleBar->predictWid->setStyleSheet ("background:#FFFACD;"
+//                               "opacity:0.8;"
+//                               "padding:20px;"
+//                               "margin:0px;"
+//                                           "hover{background:green;}");
+//    myTitleBar->predictSingerLiswid->setStyleSheet ("background:yellow;"
+//                                        "padding:0px;"
+//                                        "margin:0px;"
+//                                                    "margin-left:220px;"
+//                                                    "margin-right:30px;");
+    myTitleBar->predictSingerLiswid->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    myTitleBar->predictAlbumLiswid->setStyleSheet ("background:#00FA9A;"
+                                                   "margin-left:160px;"
+                                                   "margin-right:90px;");
+    myTitleBar->predictAlbumLiswid->setFixedHeight (20);
+    myTitleBar->predictSongLiswid->setStyleSheet ("background:	#87CEFA;"
+                                                  "margin-left:90px;"
+                                                  "margin-right:150px;");
+
+    QListWidgetItem* item1 = myTitleBar->predictSingerLiswid->item (0);
+    //item1->setBackground(QBrush(QColor(233,150,122,1)));
+    //QWidget* wid1 = new QWidget;
+    //wid1->setFixedHeight (30);
+    //wid1->setStyleSheet ("background:blue;");
+
+    //myTitleBar->predictSingerLiswid->setItemWidget (item1,wid1);
+    //myTitleBar->predictSingerLiswid->setFixedHeight (260);
+    //myTitleBar->predictAlbumLab->raise ();
+
+
+
+    myTitleBar->predictLayout->addWidget (myTitleBar->predictSingerLab);
+    myTitleBar->predictLayout->addWidget (myTitleBar->predictSingerLiswid);
+    //predictSingerLiswid->setSizePolicy (Expanding);
+    myTitleBar->predictLayout->addWidget (myTitleBar->predictAlbumLab);
+    myTitleBar->predictLayout->addWidget(myTitleBar->predictAlbumLiswid);
+    myTitleBar->predictLayout->addWidget(myTitleBar->predictSongLab);
+    myTitleBar->predictLayout->addWidget(myTitleBar->predictSongLiswid);
+    myTitleBar->predictWid->setLayout (myTitleBar->predictLayout);
+    myTitleBar->predictSingerLab->setText ("Singer");
+    myTitleBar->predictAlbumLab->setText ("Album");
+    myTitleBar->predictSongLab->setText ("SongName");
+    //predictWid->setStyleSheet ("background:yellow;");
+
+    //myTitleBar->predictSingerLab->setGeometry (0,0,450,80);
+
+    //myTitleBar->predictWid->raise ();
+    //myTitleBar->predictWid->show ();
+    //test:lx
+    int a = 30;
+    QString str_a;
+
+    str_a = QString::number (a);
+    qDebug()<<str_a;
+    QString str2 = QString("height:%1px;").arg (str_a);
+    qDebug()<<"str2 is: "<<str2;
 }
 
 void MainWid::hideSearchEdit(){
