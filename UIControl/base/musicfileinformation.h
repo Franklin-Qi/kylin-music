@@ -8,6 +8,7 @@
 #include <QSqlTableModel>
 #include <QMessageBox>
 #include <QDebug>
+#include <QTime>
 
 //taglib
 #include <taglib/fileref.h>

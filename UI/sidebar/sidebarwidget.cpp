@@ -106,11 +106,13 @@ void SideBarWidget::initWidget()
     mainWid->setLayout(mainLayout);
     mainWid->setObjectName("mainWid");
     scrollArea->setWidget(mainWid);
+//    scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
 
     //放置活动条
     QVBoxLayout *scrollLayout = new QVBoxLayout(this);
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setMargin(0);
+    scrollLayout->setSpacing(0);
     this->setLayout(scrollLayout);
 
 //    this->setAutoFillBackground(true);
@@ -177,7 +179,14 @@ void SideBarWidget::getPlayListName()
     //    newPlayListLayout->setContentsMargins(24,0,24,0);
         newPlayListLayout->setSpacing(6);
         listName = playListName.at(i);
-        newBtn->setText(listName);
+        if(listName == "我喜欢")
+        {
+            newBtn->setText(tr("I Love"));
+        }
+        else
+        {
+            newBtn->setText(listName);
+        }
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));

@@ -115,7 +115,9 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
 
     int seconds = properties->length() % 60;
     int minutes = (properties->length() - seconds) / 60;
-    QString musicTime = QString::number(minutes)+":"+QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QTime time(0,minutes,seconds);
+//    QString musicTime = QString::number(minutes)+":"+QString("%1").arg(seconds, 2, 10, QChar('0'));
+    QString musicTime = time.toString("mm:ss");
     musicdataStruct.title = musicName;
     musicdataStruct.singer = musicSinger;
     musicdataStruct.album = musicAlbum;

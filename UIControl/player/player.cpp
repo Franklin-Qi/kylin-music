@@ -3,10 +3,11 @@
 
 bool playController::play(QString playlist, int index)
 {
+    qDebug() << "正在播放"  << playlist << index;
     if (playlist.compare(m_curList)==0) {
+        m_listName = playlist;
         if (index == m_curIndex) {
-            if (m_player->state() == QMediaPlayer::State::PlayingState)
-            {
+            if (m_player->state() == QMediaPlayer::State::PlayingState){
                 play();
             }else {
                 pause();
@@ -94,10 +95,12 @@ void playController::setPlaymode(int mode)
         return;
     }
 
-    if (mode < 0 || mode > 5) {
-        m_playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemOnce);
-    } else
-        m_playlist->setPlaybackMode(static_cast<QMediaPlaylist::PlaybackMode>(mode));
+//    if (mode < 0 || mode > 5) {
+//        m_playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemOnce);
+//    } else
+        m_playlist->setPlaybackMode(static_cast<QMediaPlaylist::PlaybackMode>(mode + 1));
+    qDebug() << "mode" << mode;
+    qDebug() << "m_playlist" << m_playlist->playbackMode();
 }
 
 void playController::curPlaylist()
@@ -173,6 +176,9 @@ playController::playController()
         return;
     }
     m_player->setPlaylist(m_playlist);
+    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
+//    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -192,7 +198,10 @@ void playController::onNextSong()
         qDebug() << "m_playlist or m_player is nullptr";
         return;
     }
+    qDebug() << " 当前"<< m_playlist->currentIndex();
     m_playlist->next();
+    curPlaylist();
+    qDebug() << " next之后"<< m_playlist->currentIndex() << m_curIndex;
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
 }
@@ -228,4 +237,13 @@ playController::~playController(/* args */)
 bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 {
 
+}
+
+void playController::slotIndexChange(int index)
+{
+    if(index == -1)
+    {
+        return;
+    }
+    emit singalIndexChange(m_listName, index);
 }

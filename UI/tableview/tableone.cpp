@@ -140,7 +140,6 @@ void TableOne::initConnect()
     connect(tableView,&TableBaseView::hoverIndexChanged,delegate,&TableViewDelegate::onHoverIndexChanged);
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
-
 }
 
 void TableOne::initRightMenu()

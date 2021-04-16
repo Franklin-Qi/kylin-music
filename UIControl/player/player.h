@@ -5,21 +5,24 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
-enum PlayState {
-    STOP_STATE = 0,
-    PLAY_STATE = 1,
-    PAUSED_STATE = 2
-};
+#include "UIControl/tableview/musiclistmodel.h"
+#include "UIControl/base/musicDataBase.h"
 
-enum PlayMode {
-    CurrentItemOnce = 0,
-    CurrentItemInLoop = 1,
-    Sequential = 2,
-    Loop = 3,
-    Random = 4
-};
 class playController : public QObject {
     Q_OBJECT
+public:
+    enum PlayState {
+        STOP_STATE = 0,
+        PLAY_STATE = 1,
+        PAUSED_STATE = 2
+    };
+
+    enum PlayMode {
+        CurrentItemInLoop = 0,
+        Sequential = 1,
+        Loop = 2,
+        Random = 3,
+    };
 public:
     static playController& getInstance()
     {
@@ -60,6 +63,7 @@ public:
     void addSongToCurList(QString name, QString songPath);
     void removeSongFromCurList(QString name, int index);
 
+    PlayMode mode() const;
     QMediaPlayer* getPlayer()
     {
         return m_player;
@@ -74,6 +78,7 @@ signals:
     void curIndexChanged(int index);
     void playerError(int error, QString errMsg);
     void playerStateChange(int state);
+    void singalIndexChange(QString m_listName, int index);
 
 public slots:
     void onCurrentIndexChanged();
@@ -84,9 +89,12 @@ public slots:
 private slots:
     void onError();
     void onMediaStatusChanged();
-
+    //获得当前播放的index
+    void slotIndexChange(int index);
 private:
     QString m_curList;
+    //正在播放的歌单名
+    QString m_listName;
     int m_curIndex;
     QMediaPlayer* m_player;
     QMediaPlaylist* m_playlist;
