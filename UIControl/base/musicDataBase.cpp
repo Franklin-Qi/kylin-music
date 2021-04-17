@@ -1071,6 +1071,83 @@ int MusicDataBase::getSongInfoFromHistoryMusic(const QString& filePath, musicDat
 
 }
 
+//使用歌曲的path值，和歌单名，查询歌曲信息
+int MusicDataBase::getSongInfoFromDB(const QString& filePath, const QString& playListName, musicDataStruct &fileData)
+{
+    bool getRes = true;
+
+    if(filePath.isEmpty() || playListName.isEmpty())
+    {
+        qDebug() << "入参错误" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+        return INVALID_INPUT;
+    }
+    else
+    {
+        if(ALLMUSIC == playListName)
+        {
+            getRes = getSongInfoFromLocalMusic(filePath, fileData);
+        }
+        else if(HISTORY == playListName)
+        {
+            getRes = getSongInfoFromHistoryMusic(filePath, fileData);
+        }
+        else if(FAV == playListName)
+        {
+            getRes = getSongInfoFromPlayList(fileData,filePath,FAV);
+        }
+        else
+        {
+            getRes = getSongInfoFromPlayList(fileData,filePath,playListName);
+        }
+        return getRes;
+    }
+}
+
+int MusicDataBase::getSongInfoListFromDB(QList<musicDataStruct>& resList,const QString& playListName)
+{
+    bool getRes = true;
+
+    if(playListName.isEmpty())
+    {
+        qDebug() << "输入歌单名为空" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+        return INVALID_INPUT;
+    }
+    else
+    {
+        if(ALLMUSIC == playListName)
+        {
+            getRes = getSongInfoListFromLocalMusic(resList);
+        }
+        else if(HISTORY == playListName)
+        {
+            getRes = getSongInfoListFromHistoryMusic(resList);
+        }
+        else if(FAV == playListName)
+        {
+            getRes = getSongInfoListFromPlayList(resList,FAV);
+        }
+        else
+        {
+            getRes = getSongInfoListFromPlayList(resList,playListName);
+        }
+        return getRes;
+    }
+}
+
+bool MusicDataBase::checkSongIsInFav(const QString& filePath)
+{
+    int isExist = OUT_OF_RESULT;
+    isExist = checkIfSongExistsInPlayList(filePath, FAV);
+    if(isExist == DB_OP_SUCC)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resList)
 {
     if(true == m_database.isValid())
