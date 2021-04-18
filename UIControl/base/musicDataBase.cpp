@@ -332,20 +332,20 @@ int MusicDataBase::getSongInfoFromLocalMusic(const QString& filePath, musicDataS
     {
         bool getRes = true;
         QSqlQuery getSongFromLocalMusic(m_database);
-        QString getSongString = QString("select * from LocalMusic where filepath = '%1'").arg(inPutStringHandle(filePath));
+        QString getSongString = QString("select filepath,title,singer,album,filetype,size,time from LocalMusic where filepath = '%1'").arg(inPutStringHandle(filePath));
         getRes = getSongFromLocalMusic.exec(getSongString);
 
         if(true == getRes)
         {
             if(getSongFromLocalMusic.next())
             {
-                fileData.filepath    = outPutStringHandle(getSongFromLocalMusic.value(2).toString());
-                fileData.title       = outPutStringHandle(getSongFromLocalMusic.value(3).toString());
-                fileData.singer      = outPutStringHandle(getSongFromLocalMusic.value(4).toString());
-                fileData.album       = outPutStringHandle(getSongFromLocalMusic.value(5).toString());
-                fileData.filetype    = outPutStringHandle(getSongFromLocalMusic.value(6).toString());
-                fileData.size        = outPutStringHandle(getSongFromLocalMusic.value(7).toString());
-                fileData.time        = outPutStringHandle(getSongFromLocalMusic.value(8).toString());
+                fileData.filepath    = outPutStringHandle(getSongFromLocalMusic.value(0).toString());
+                fileData.title       = outPutStringHandle(getSongFromLocalMusic.value(1).toString());
+                fileData.singer      = outPutStringHandle(getSongFromLocalMusic.value(2).toString());
+                fileData.album       = outPutStringHandle(getSongFromLocalMusic.value(3).toString());
+                fileData.filetype    = outPutStringHandle(getSongFromLocalMusic.value(4).toString());
+                fileData.size        = outPutStringHandle(getSongFromLocalMusic.value(5).toString());
+                fileData.time        = outPutStringHandle(getSongFromLocalMusic.value(6).toString());
             }
             else
             {
@@ -373,7 +373,7 @@ int MusicDataBase::getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList
         bool getRes = true;
 
         QSqlQuery getSongListFromLocalMusic(m_database);
-        QString getSongListString = QString("select * from LocalMusic  order by idIndex");//按index排序返回给前端，而非添加歌曲时的顺序
+        QString getSongListString = QString("select filepath from LocalMusic  order by idIndex");//按index排序返回给前端，而非添加歌曲时的顺序
         getRes = getSongListFromLocalMusic.exec(getSongListString);
 
         if(true == getRes)
@@ -381,7 +381,7 @@ int MusicDataBase::getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList
             while(getSongListFromLocalMusic.next())
             {
                 musicDataStruct temp;
-                temp.filepath = outPutStringHandle(getSongListFromLocalMusic.value(2).toString());
+                temp.filepath = outPutStringHandle(getSongListFromLocalMusic.value(0).toString());
                 int curRes = getSongInfoFromLocalMusic(temp.filepath, temp);
 
                 if(DB_OP_SUCC == curRes)
@@ -453,7 +453,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
         {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
-            QString setIndexs = QString("select * from LocalMusic WHERE idIndex between '%1' and '%2'").arg(oldIndex).arg(newIndex);
+            QString setIndexs = QString("select idIndex,filepath from LocalMusic WHERE idIndex between '%1' and '%2'").arg(oldIndex).arg(newIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
             if(true == getRes)
@@ -461,8 +461,8 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                 bool updateIndexRes = true;
                 while(getBetweenSongIndexFromLocal.next())
                 {
-                    int tempIndex           = getBetweenSongIndexFromLocal.value(1).toInt();
-                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(2).toString());
+                    int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
+                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
                     QSqlQuery updateSongIndexFromLocal(m_database);
                     QString updateIndex = QString("update LocalMusic set idIndex='%1' WHERE filepath='%2'").arg(tempIndex-1).arg(inPutStringHandle(tempFilepath));
@@ -503,7 +503,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
         {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
-            QString setIndexs = QString("select * from LocalMusic WHERE idIndex between '%1' and '%2' order by idIndex desc").arg(newIndex+1).arg(oldIndex);
+            QString setIndexs = QString("select idIndex,filepath from LocalMusic WHERE idIndex between '%1' and '%2' order by idIndex desc").arg(newIndex+1).arg(oldIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
             if(true == getRes)
@@ -511,8 +511,8 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                 bool updateIndexRes = true;
                 while(getBetweenSongIndexFromLocal.next())
                 {
-                    int tempIndex           = getBetweenSongIndexFromLocal.value(1).toInt();
-                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(2).toString());
+                    int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
+                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
                     QSqlQuery updateSongIndexFromLocal(m_database);
                     QString updateIndex = QString("update LocalMusic set idIndex='%1' WHERE filepath='%2'").arg(tempIndex+1).arg(inPutStringHandle(tempFilepath));
@@ -564,7 +564,7 @@ int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QStr
         {
             bool getRes = true;
             QSqlQuery getplayList(m_database);
-            QString getplayListString = QString("select * from ListOfPlayList where title = '%1'").
+            QString getplayListString = QString("select title from ListOfPlayList where title = '%1'").
                     arg(inPutStringHandle(playListName));
             getRes = getplayList.exec(getplayListString);
 
@@ -577,7 +577,7 @@ int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QStr
             if(getplayList.next())
             {
                 QSqlQuery getSongFromPlayList(m_database);
-                QString getSongFromPlayListString = QString("select * from 'playlist_%1' where filepath = '%2'").
+                QString getSongFromPlayListString = QString("select filepath,title,singer,album,filetype,size,time from 'playlist_%1' where filepath = '%2'").
                         arg(inPutStringHandle(playListName)).arg(inPutStringHandle(filePath));
                 getRes = getSongFromPlayList.exec(getSongFromPlayListString);
 
@@ -587,13 +587,13 @@ int MusicDataBase::getSongInfoFromPlayList(musicDataStruct &fileData, const QStr
                 }
                 if(getSongFromPlayList.next())
                 {
-                    fileData.filepath    = outPutStringHandle(getSongFromPlayList.value(2).toString());
-                    fileData.title       = outPutStringHandle(getSongFromPlayList.value(3).toString());
-                    fileData.singer      = outPutStringHandle(getSongFromPlayList.value(4).toString());
-                    fileData.album       = outPutStringHandle(getSongFromPlayList.value(5).toString());
-                    fileData.filetype    = outPutStringHandle(getSongFromPlayList.value(6).toString());
-                    fileData.size        = outPutStringHandle(getSongFromPlayList.value(7).toString());
-                    fileData.time        = outPutStringHandle(getSongFromPlayList.value(8).toString());
+                    fileData.filepath    = outPutStringHandle(getSongFromPlayList.value(0).toString());
+                    fileData.title       = outPutStringHandle(getSongFromPlayList.value(1).toString());
+                    fileData.singer      = outPutStringHandle(getSongFromPlayList.value(2).toString());
+                    fileData.album       = outPutStringHandle(getSongFromPlayList.value(3).toString());
+                    fileData.filetype    = outPutStringHandle(getSongFromPlayList.value(4).toString());
+                    fileData.size        = outPutStringHandle(getSongFromPlayList.value(5).toString());
+                    fileData.time        = outPutStringHandle(getSongFromPlayList.value(6).toString());
                 }
                 else
                 {
@@ -637,7 +637,7 @@ int MusicDataBase::getSongInfoListFromPlayList(QList<musicDataStruct>& resList,c
             resList.clear();
 
             QSqlQuery getplayList(m_database);
-            QString getplayListString = QString("select * from ListOfPlayList where title = '%1'").
+            QString getplayListString = QString("select title from ListOfPlayList where title = '%1'").
                     arg(inPutStringHandle(playListName));
             getRes = getplayList.exec(getplayListString);
 
@@ -650,7 +650,7 @@ int MusicDataBase::getSongInfoListFromPlayList(QList<musicDataStruct>& resList,c
             if(getplayList.next())
             {
                 QSqlQuery getSongFromPlayList(m_database);
-                QString getSongFromPlayListString = QString("select * from 'playlist_%1' order by idIndex").
+                QString getSongFromPlayListString = QString("select filepath,title,singer,album,filetype,size,time from 'playlist_%1' order by idIndex").
                         arg(inPutStringHandle(playListName));//按index排序返回给前端，而非添加歌曲时的顺序
                 getRes = getSongFromPlayList.exec(getSongFromPlayListString);
 
@@ -659,13 +659,13 @@ int MusicDataBase::getSongInfoListFromPlayList(QList<musicDataStruct>& resList,c
                     while(getSongFromPlayList.next())
                     {
                         musicDataStruct temp;
-                        temp.filepath      = outPutStringHandle(getSongFromPlayList.value(2).toString());
-                        temp.title         = outPutStringHandle(getSongFromPlayList.value(3).toString());
-                        temp.singer        = outPutStringHandle(getSongFromPlayList.value(4).toString());
-                        temp.album         = outPutStringHandle(getSongFromPlayList.value(5).toString());
-                        temp.filetype      = outPutStringHandle(getSongFromPlayList.value(6).toString());
-                        temp.size          = outPutStringHandle(getSongFromPlayList.value(7).toString());
-                        temp.time          = outPutStringHandle(getSongFromPlayList.value(8).toString());
+                        temp.filepath      = outPutStringHandle(getSongFromPlayList.value(0).toString());
+                        temp.title         = outPutStringHandle(getSongFromPlayList.value(1).toString());
+                        temp.singer        = outPutStringHandle(getSongFromPlayList.value(2).toString());
+                        temp.album         = outPutStringHandle(getSongFromPlayList.value(3).toString());
+                        temp.filetype      = outPutStringHandle(getSongFromPlayList.value(4).toString());
+                        temp.size          = outPutStringHandle(getSongFromPlayList.value(5).toString());
+                        temp.time          = outPutStringHandle(getSongFromPlayList.value(6).toString());
 
                         resList.append(temp);
                     }
@@ -757,7 +757,7 @@ int MusicDataBase::changeSongOrderInPlayList(const QString& selectFilePath, cons
         {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
-            QString setIndexs = QString("select * from 'playlist_%1' WHERE idIndex between '%2' and '%3'")
+            QString setIndexs = QString("select idIndex,filepath from 'playlist_%1' WHERE idIndex between '%2' and '%3'")
                                         .arg(inPutStringHandle(playListName)).arg(oldIndex).arg(newIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
@@ -766,8 +766,8 @@ int MusicDataBase::changeSongOrderInPlayList(const QString& selectFilePath, cons
                 bool updateIndexRes = true;
                 while(getBetweenSongIndexFromLocal.next())
                 {
-                    int tempIndex           = getBetweenSongIndexFromLocal.value(1).toInt();
-                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(2).toString());
+                    int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
+                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
                     QSqlQuery updateSongIndexFromLocal(m_database);
                     QString updateIndex = QString("update 'playlist_%1' set idIndex='%2' WHERE filepath='%3'")
@@ -811,7 +811,7 @@ int MusicDataBase::changeSongOrderInPlayList(const QString& selectFilePath, cons
         {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
-            QString setIndexs = QString("select * from 'playlist_%1' WHERE idIndex between '%2' and '%3' order by idIndex desc")
+            QString setIndexs = QString("select idIndex,filepath from 'playlist_%1' WHERE idIndex between '%2' and '%3' order by idIndex desc")
                                         .arg(inPutStringHandle(playListName)).arg(newIndex+1).arg(oldIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
@@ -820,8 +820,8 @@ int MusicDataBase::changeSongOrderInPlayList(const QString& selectFilePath, cons
                 bool updateIndexRes = true;
                 while(getBetweenSongIndexFromLocal.next())
                 {
-                    int tempIndex           = getBetweenSongIndexFromLocal.value(1).toInt();
-                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(2).toString());
+                    int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
+                    QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
                     QSqlQuery updateSongIndexFromLocal(m_database);
                     QString updateIndex = QString("update 'playlist_%1' set idIndex='%2' WHERE filepath='%3'")
@@ -1034,7 +1034,7 @@ int MusicDataBase::getSongInfoFromHistoryMusic(const QString& filePath, musicDat
             {
                 QSqlQuery getSongInfoFromHistoryPlayList(m_database);
 
-                QString getSongString = QString("select * from HistoryPlayList where filepath = '%1'").arg(inPutStringHandle(filePath));
+                QString getSongString = QString("select filepath,title,singer,album,filetype,size,time from HistoryPlayList where filepath = '%1'").arg(inPutStringHandle(filePath));
                 getRes &= getSongInfoFromHistoryPlayList.exec(getSongString);
                 if(false == getRes)
                 {
@@ -1044,13 +1044,13 @@ int MusicDataBase::getSongInfoFromHistoryMusic(const QString& filePath, musicDat
                 //判断是否找到了对应的歌曲
                 if(getSongInfoFromHistoryPlayList.next())
                 {
-                    fileData.filepath    = outPutStringHandle(getSongInfoFromHistoryPlayList.value(2).toString());
-                    fileData.title       = outPutStringHandle(getSongInfoFromHistoryPlayList.value(3).toString());
-                    fileData.singer      = outPutStringHandle(getSongInfoFromHistoryPlayList.value(4).toString());
-                    fileData.album       = outPutStringHandle(getSongInfoFromHistoryPlayList.value(5).toString());
-                    fileData.filetype    = outPutStringHandle(getSongInfoFromHistoryPlayList.value(6).toString());
-                    fileData.size        = outPutStringHandle(getSongInfoFromHistoryPlayList.value(7).toString());
-                    fileData.time        = outPutStringHandle(getSongInfoFromHistoryPlayList.value(8).toString());
+                    fileData.filepath    = outPutStringHandle(getSongInfoFromHistoryPlayList.value(0).toString());
+                    fileData.title       = outPutStringHandle(getSongInfoFromHistoryPlayList.value(1).toString());
+                    fileData.singer      = outPutStringHandle(getSongInfoFromHistoryPlayList.value(2).toString());
+                    fileData.album       = outPutStringHandle(getSongInfoFromHistoryPlayList.value(3).toString());
+                    fileData.filetype    = outPutStringHandle(getSongInfoFromHistoryPlayList.value(4).toString());
+                    fileData.size        = outPutStringHandle(getSongInfoFromHistoryPlayList.value(5).toString());
+                    fileData.time        = outPutStringHandle(getSongInfoFromHistoryPlayList.value(6).toString());
 
                     return DB_OP_SUCC;
                 }
@@ -1154,7 +1154,7 @@ int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resLi
     {
         bool getRes = true;
         QSqlQuery getSongListFromHistoryMusic(m_database);
-        QString getSongListString = QString("select * from HistoryPlayList order by idIndex desc");
+        QString getSongListString = QString("select filepath from HistoryPlayList order by idIndex desc");
         getRes = getSongListFromHistoryMusic.exec(getSongListString);
 
         if(true == getRes)
@@ -1162,7 +1162,7 @@ int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resLi
             while(getSongListFromHistoryMusic.next())
             {
                 musicDataStruct temp;
-                temp.filepath = outPutStringHandle(getSongListFromHistoryMusic.value(2).toString());
+                temp.filepath = outPutStringHandle(getSongListFromHistoryMusic.value(0).toString());
                 int curRes = getSongInfoFromHistoryMusic(temp.filepath, temp);
 
                 if(DB_OP_SUCC == curRes)
@@ -1246,7 +1246,7 @@ int MusicDataBase::checkIfSongExistsInLocalMusic(const QString& filePath)
     QString filePathHash = inPutStringHandle(filePath);
 
     QSqlQuery getSongFromLocalMusic(m_database);
-    QString getSongString = QString("select * from LocalMusic where filepath = '%1'").arg(filePathHash);
+    QString getSongString = QString("select id from LocalMusic where filepath = '%1'").arg(filePathHash);
     queryRes = getSongFromLocalMusic.exec(getSongString);
 
     if(false == queryRes)
@@ -1273,7 +1273,7 @@ int MusicDataBase::checkIfSongExistsInHistoryMusic(const QString& filePath)
     QString filePathHash = inPutStringHandle(filePath);
 
     QSqlQuery getSongFromHistoryMusic(m_database);
-    QString getSongString = QString("select * from HistoryPlayList where filepath = '%1'").arg(filePathHash);
+    QString getSongString = QString("select id from HistoryPlayList where filepath = '%1'").arg(filePathHash);
     queryRes = getSongFromHistoryMusic.exec(getSongString);
 
     if(false == queryRes)
@@ -1309,7 +1309,7 @@ int MusicDataBase::checkIfSongExistsInPlayList(const QString& filePath, const QS
         bool queryRes = true;
 
         QSqlQuery getSongFromPlayListMusic(m_database);
-        QString getSongString = QString("select * from 'playlist_%1' where filepath = '%2'").arg(playListNameHash).arg(filePathHash);
+        QString getSongString = QString("select id from 'playlist_%1' where filepath = '%2'").arg(playListNameHash).arg(filePathHash);
         queryRes = getSongFromPlayListMusic.exec(getSongString);
 
         if(false == queryRes)
@@ -1344,7 +1344,7 @@ int MusicDataBase::getPlayList(QStringList& playListNameList)
 //        QMutexLocker lockData( &m_mutex);  //加锁，函数执行完后自动解锁
 
         QSqlQuery getplayListFromLocalMusic(m_database);
-        QString getplayListFromLocalMusicString = QString("select * from ListOfPlayList");
+        QString getplayListFromLocalMusicString = QString("select title from ListOfPlayList");
         getRes = getplayListFromLocalMusic.exec(getplayListFromLocalMusicString);
 
         if(false == getRes)
@@ -1443,7 +1443,7 @@ int MusicDataBase::checkPlayListExist(const QString& playListName)
     if(m_database.isValid())
     {
         QSqlQuery getplayListFromLocalMusic(m_database);
-        QString getplayListFromLocalMusicString = QString("select * from ListOfPlayList");
+        QString getplayListFromLocalMusicString = QString("select title from ListOfPlayList");
         getRes = getplayListFromLocalMusic.exec(getplayListFromLocalMusicString);
 
         if(false == getRes)
@@ -1696,14 +1696,14 @@ int MusicDataBase::getSongIndexFromLocalMusic(const QString& filePath, int &song
     {
         bool getRes = true;
         QSqlQuery getSongFromLocalMusic(m_database);
-        QString getSongString = QString("select * from LocalMusic where filepath = '%1'").arg(inPutStringHandle(filePath));
+        QString getSongString = QString("select idIndex from LocalMusic where filepath = '%1'").arg(inPutStringHandle(filePath));
         getRes = getSongFromLocalMusic.exec(getSongString);
 
         if(true == getRes)
         {
             if(getSongFromLocalMusic.next())
             {
-                songIndex    = getSongFromLocalMusic.value(1).toInt();
+                songIndex    = getSongFromLocalMusic.value(0).toInt();
             }
             else
             {
@@ -1738,7 +1738,7 @@ int MusicDataBase::getSongIndexFromPlayList(const QString& filePath,const QStrin
         {
             bool getRes = true;
             QSqlQuery getSongFromPlayList(m_database);
-            QString getSongString = QString("select * from 'playlist_%1' where filepath = '%2'").
+            QString getSongString = QString("select idIndex from 'playlist_%1' where filepath = '%2'").
                     arg(inPutStringHandle(playListName)).arg(inPutStringHandle(filePath));
             getRes = getSongFromPlayList.exec(getSongString);
 
@@ -1746,7 +1746,7 @@ int MusicDataBase::getSongIndexFromPlayList(const QString& filePath,const QStrin
             {
                 if(getSongFromPlayList.next())
                 {
-                    songIndex    = getSongFromPlayList.value(1).toInt();
+                    songIndex    = getSongFromPlayList.value(0).toInt();
                 }
                 else
                 {
@@ -1969,7 +1969,7 @@ int MusicDataBase::checkIfPlayListIsEmpty(const QString& playListName)
             bool getRes = true;
             int count = 0;
             QSqlQuery getSongFromPlayList(m_database);
-            QString getSongString = QString("select count(*) from 'playlist_%1'").arg(inPutStringHandle(playListName));
+            QString getSongString = QString("select count(title) from 'playlist_%1'").arg(inPutStringHandle(playListName));
             getRes = getSongFromPlayList.exec(getSongString);
             if(true == getRes)
             {
