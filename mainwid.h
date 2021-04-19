@@ -202,6 +202,7 @@ public slots:
     void on_listWidget_doubleClicked(QListWidgetItem *item);         //双击本地音乐播放playlist
     void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
     //test:lx 预测搜索框
+    void predictWidClickShow(QString& field,int& choose,musicDataStruct& music);
     void testLx();
     void onSearchPredict_lx();
     void onSearchPredict();
@@ -267,6 +268,8 @@ public slots:
     //test:lx
     void onPlaylistIndexChanged();
     void showSearchResultWidget_lx();
+    void showSearchResultWidget_lx2();
+    void showSearchMusicList (QList<musicDataStruct>& musicFromDb);//预测框点击字段展示
     void hideSearchResultWidget(); //隐藏搜索页面
 
     void local_currentIndexChanged(int currentIndex);    //获取歌曲列表正在播放title

@@ -8,6 +8,7 @@
 #include<QList>
 #include<QString>
 #include<QDebug>
+#include<QObject>
 
 
 #include"musicDataBase.h"
@@ -17,7 +18,9 @@
 /*
 
 */
-class searchPredictWid{
+class searchPredictWid : public QWidget
+{
+    Q_OBJECT
 public:
     searchPredictWid(QWidget* parent,QList<QString>& singerList,QList<QString>& albumList,QList<musicDataStruct>& songList);
     //控件
@@ -46,6 +49,12 @@ public:
     //void setData(QList<QString> singerList,QList<QString> albumList,QList<musicDataStruct> songList);
     void initStyleSheet();
     void initListen();
+    void initConnect();
+    ~searchPredictWid();
+public slots:
+    void do_itemClicked(QListWidgetItem* );
+signals:
+    void searchForField(QString& field,int& choose,musicDataStruct& music);
 };
 
 #endif // SEARCHPREDICTWID_H

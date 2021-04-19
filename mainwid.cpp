@@ -310,7 +310,8 @@ void MainWid::onPrepareForSleep(bool isSleep)
 }
 void MainWid::onPlaylistChanged(int index)
 {
-    if(mySideBar->currentSelectList == -10)
+    //if(mySideBar->currentSelectList == -10)
+    if(index == -10)
     {
         qDebug()<< __FILE__ << " " <<__LINE__ <<"onPlaylistChanged";
         connect(myPlaySongArea->searchBufferPlayer,SIGNAL(positionChanged(qint64)),
@@ -353,6 +354,7 @@ void MainWid::initAction()//初始化事件
     connect(myTitleBar->searchEdit,SIGNAL(textChanged(QString)),this,SLOT(onSearchPredict_lx()));
     //connect(myTitleBar->searchEdit,SIGNAL(textChanged(QString)),this,SLOT(onSearchPredict()));
     connect(myTitleBar->searchEdit,SIGNAL(editingFinished()),this,SLOT(hideSearchEdit()));
+    //connect(preWid,SIGNAL(searchForField(QString&,int&)),this,SLOT(predictWidClickShow(QString&,int&)));
 
     //test:lx 播放歌曲
     //connect(myPlaySongArea->searchBufferPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistIndexChanged()));
@@ -476,7 +478,7 @@ void MainWid::initAction()//初始化事件
 //    connect(this,&MainWid::musicDbus,mykylinMuisc,&KylinMuisc::processArgs);
     // 显示搜索结果界面
     //connect(myTitleBar->searchBtn,&QPushButton::clicked,this,&MainWid::showSearchResultWidget);
-    connect(myTitleBar->searchBtn,&QPushButton::clicked,this,&MainWid::showSearchResultWidget_lx);
+    connect(myTitleBar->searchBtn,&QPushButton::clicked,this,&MainWid::showSearchResultWidget_lx2);
     // 隐藏搜索结果界面
     connect(mySideBar->PlayListBtn, &QToolButton::clicked, this, &MainWid::hideSearchResultWidget);
     for (int i = 0; i < mySideBar->songListWidget->count(); i++)
@@ -1354,7 +1356,8 @@ void MainWid::onSearchPredict_lx(){
         preWid = new searchPredictWid(this,singer1,album1,title1);
     }
     qDebug()<<"the height of Wid: "<<preWid->predictWid->height ();
-
+    connect(preWid,SIGNAL(searchForField(QString&,int&,musicDataStruct&)),
+            this,SLOT(predictWidClickShow(QString&,int&,musicDataStruct&)));
     preWid->predictWid->raise ();
     preWid->predictWid->show ();
     QListIterator<musicDataStruct> i(title1);
@@ -1464,6 +1467,13 @@ void MainWid::onSearchPredict_lx(){
 
 void MainWid::hideSearchEdit(){
     myTitleBar->searchWidget->hide ();
+    if(preWid!=NULL){
+        if(preWid->predictWid!=NULL){
+            if(!preWid->predictWid->isHidden ()){
+                preWid->predictWid->hide ();
+            }
+        }
+    }
 }
 void MainWid::on_sidebarWidget_customContextMenuRequested(const QPoint &pos)     //歌曲列表右键菜单
 {
@@ -5005,6 +5015,49 @@ void MainWid::onPlaylistIndexChanged(){
     }
 }
 
+//单击搜索框的item，展示搜索的东西
+void MainWid::predictWidClickShow (QString& field, int& choose , musicDataStruct& music){
+    qDebug()<<"call predictWidClickShow function,and the field is:"<<field<<"  ,the choose is: "<<choose;
+
+
+    switch (choose) {
+        case 0:
+        {
+            QList<musicDataStruct> musicFromDb;
+            int ret = g_db->getSongInfoListBySinger(musicFromDb,field);
+            if(ret == DB_OP_SUCC){
+                showSearchMusicList (musicFromDb);
+            }
+            break;
+        }
+        case 1:
+        {
+            QList<musicDataStruct> musicFromDb;
+            int ret = g_db->getSongInfoListByAlbum(musicFromDb,field);
+            if(ret == DB_OP_SUCC){
+                showSearchMusicList (musicFromDb);
+            }
+            break;
+        }
+        case 2:
+        {
+            QList<musicDataStruct> musicFromDb;
+            int ret = g_db->getSongInfoListFromLocalMusicByKeyword (musicFromDb,music.title);
+            if(ret == DB_OP_SUCC){
+                showSearchMusicList (musicFromDb);
+            }
+            //myTitleBar->searchEdit->setText (music.title);
+
+            break;
+        }
+        default:
+            break;
+    }
+
+}
+
+
+//这是点击搜索按钮可以成功的一个操作，现在我将其暂时屏蔽，用另外一个函数，在showSearchResultWidget_lx2代替他
 void MainWid::showSearchResultWidget_lx(){
     //qDebug()<<"call showSearchResultWidget_lx()";
     //onPlaylistIndexChanged();
@@ -5015,6 +5068,9 @@ void MainWid::showSearchResultWidget_lx(){
     myTitleBar->searchResultWidget->initialQMediaPlayer ();
     myTitleBar->searchResultWidget->top_addSongBtn->hide ();
     myTitleBar->searchWidget->hide();
+    if(preWid->predictWid!=NULL){
+        preWid->predictWid->hide ();
+    }
     QString enterStr = myTitleBar->searchEdit->text().trimmed();
     if(myTitleBar->searchResultWidget->PlayList==myPlaySongArea->searchBufferPlaylist){
         myTitleBar->searchResultWidget->PlayList = new QMediaPlaylist(myTitleBar->searchResultWidget);
@@ -5022,7 +5078,7 @@ void MainWid::showSearchResultWidget_lx(){
         delete myTitleBar->searchResultWidget->PlayList;
         myTitleBar->searchResultWidget->PlayList = new QMediaPlaylist(myTitleBar->searchResultWidget);
     }
-    disconnect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),0,0);
+    //disconnect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),0,0);
     myTitleBar->searchResultWidget->musicInfoWidget->clear ();
     //myTitleBar->searchResultWidget->PlayList->clear ();
     if(enterStr != "")
@@ -5030,6 +5086,9 @@ void MainWid::showSearchResultWidget_lx(){
         //test:lx
         QList<musicDataStruct> musicFromDb;
         g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+        /*
+         * 这一段代码很重要，尽量不删除，预防后面需要改动，最后外面的onPlayListChanged调用了一次，记得在里面调用
+         */
         QListIterator<musicDataStruct> i(musicFromDb);
         while(i.hasNext()){
             musicDataStruct music = i.next ();
@@ -5072,6 +5131,8 @@ void MainWid::showSearchResultWidget_lx(){
                 mySideBar->musicListChangeWid[i]->hide ();
             }
         }
+
+
     }
     //加入右键菜单
     qDebug()<<"the count of mytitlebar`s musicinfowidget: "<<myTitleBar->searchResultWidget->musicInfoWidget->count();
@@ -5079,16 +5140,91 @@ void MainWid::showSearchResultWidget_lx(){
 //    myTitleBar->searchResultWidget->musicInfoWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 //    connect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(customContextMenuRequested(const QPoint&)),
 //            this,SLOT(on_musicInfoWidget_customContextMenuRequested_lx(const QPoint&)));
-    //test:lx
 
-    //test:lx
-    //myTitleBar->searchResultWidget->songNumberLabel->setStyleSheet ("background:red;");
-
-
-    //test:lx
-    //myTitleBar->searchResultWidget->setStyleSheet ("background:blue;");
 
 }
+
+void MainWid::showSearchResultWidget_lx2(){
+
+    QString enterStr = myTitleBar->searchEdit->text().trimmed();
+    mySideBar->currentSelectList=-10;
+    if(enterStr != "")
+    {
+        //test:lx
+        QList<musicDataStruct> musicFromDb;
+        g_db->getSongInfoListFromLocalMusicByKeyword(musicFromDb,enterStr);
+        showSearchMusicList (musicFromDb);
+    }
+}
+
+void MainWid::showSearchMusicList (QList<musicDataStruct>& musicFromDb)
+{
+
+    mySideBar->currentSelectList=-10;
+    //开始初始化界面
+    //QMediaPlaylist* lxplaylist = new QMediaPlaylist;
+    myTitleBar->searchResultWidget->initialQMediaPlayer ();
+    myTitleBar->searchResultWidget->top_addSongBtn->hide ();
+    if(preWid->predictWid!=NULL){
+        preWid->predictWid->hide ();
+    }
+    if(myTitleBar->searchResultWidget->PlayList==myPlaySongArea->searchBufferPlaylist){
+        myTitleBar->searchResultWidget->PlayList = new QMediaPlaylist(myTitleBar->searchResultWidget);
+    }else{
+        delete myTitleBar->searchResultWidget->PlayList;
+        myTitleBar->searchResultWidget->PlayList = new QMediaPlaylist(myTitleBar->searchResultWidget);
+    }
+    disconnect(myTitleBar->searchResultWidget->musicInfoWidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),0,0);
+    myTitleBar->searchResultWidget->musicInfoWidget->clear ();
+
+
+    //test:lx
+    QListIterator<musicDataStruct> i(musicFromDb);
+    while(i.hasNext()){
+        musicDataStruct music = i.next ();
+        QString Path = music.filepath;
+        QString Title = music.title;
+        QString Album = music.album;
+        QString Time = music.time;
+        QString Name=music.singer;
+        //套用这个函数，将找不到songitem，所以这个我稍微修改一下
+        //myTitleBar->searchResultWidget->showFileInformation (Title,Name,Album,Time);
+        QListWidgetItem *listItem = new QListWidgetItem(myTitleBar->searchResultWidget->musicInfoWidget);
+        SongItem *songitem = new SongItem;
+        songitem->setObjectName (QString("lxsong"));
+        myTitleBar->searchResultWidget->musicInfoWidget->setItemWidget(listItem,songitem);
+        songitem->song_singer_albumText(Title,Name,Album); //歌曲名称 歌手 专辑
+        songitem->songTimeLabel->setText(Time); //时长
+        songitem->filepath_lx = Path;
+        myTitleBar->searchResultWidget->PlayList->addMedia (QUrl::fromLocalFile(Path));
+        //lxplaylist->addMedia (QUrl::fromLocalFile(Path));
+
+    }
+    //myTitleBar->searchResultWidget->PlayList = lxplaylist;
+    //qDebug()<<"after adding songs,the count of the playlist:"<<myTitleBar->searchResultWidget->PlayList->mediaCount ();
+    myTitleBar->searchResultWidget->songNumberLabel->
+            setText(tr("A total of")+QString::number(musicFromDb.count ())+tr("The first"));
+    //初始化界面完成
+    onPlaylistChanged ( -10);
+    //connect(myPlaySongArea->searchBufferPlaylist,SIGNAL(currentIndexChanged(int)),this,SLOT(onPlaylistIndexChanged()));
+    myTitleBar->searchResultWidget->raise();
+    myTitleBar->searchResultWidget->show();
+
+    rightlayout->replaceWidget(mySideBar->rightChangeWid,myTitleBar->searchResultWidget);
+    //把sidebar的按钮关联的列表全部藏起来
+    mySideBar->rightChangeWid->hide();
+    if(!(mySideBar->myMusicListWid->isHidden ())){
+        mySideBar->myMusicListWid->hide ();
+    }
+    for(int i=0;i<mySideBar->songListWidget->count ();i++){
+        if(!(mySideBar->musicListChangeWid[i]->isHidden ())){
+            mySideBar->musicListChangeWid[i]->hide ();
+        }
+    }
+    onPlaylistIndexChanged();
+}
+
+
 //lx:end
 void MainWid::hideSearchResultWidget()
 {
@@ -5098,6 +5234,8 @@ void MainWid::hideSearchResultWidget()
         rightlayout->replaceWidget(myTitleBar->searchResultWidget, mySideBar->rightChangeWid);
         mySideBar->rightChangeWid->show();
     }
+
+
 }
 
 void MainWid::currentPlayHighlight()
