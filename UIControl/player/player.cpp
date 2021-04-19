@@ -5,7 +5,6 @@ bool playController::play(QString playlist, int index)
 {
     qDebug() << "正在播放"  << playlist << index;
     if (playlist.compare(m_curList)==0) {
-        m_listName = playlist;
         if (index == m_curIndex) {
             if (m_player->state() == QMediaPlayer::State::PlayingState){
                 play();
@@ -98,7 +97,7 @@ void playController::setPlaymode(int mode)
 //    if (mode < 0 || mode > 5) {
 //        m_playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemOnce);
 //    } else
-        m_playlist->setPlaybackMode(static_cast<QMediaPlaylist::PlaybackMode>(mode + 1));
+        m_playlist->setPlaybackMode(static_cast<QMediaPlaylist::PlaybackMode>(mode));
     qDebug() << "mode" << mode;
     qDebug() << "m_playlist" << m_playlist->playbackMode();
 }
@@ -179,7 +178,6 @@ playController::playController()
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
 //    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
-    connect(this,&playController::singalPath,this,&playController::slotChangePath);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -247,12 +245,6 @@ void playController::slotIndexChange(int index)
         return;
     }
     QMediaContent content = m_playlist->media(index);
-    emit singalPath(content);
-}
-
-void playController::slotChangePath(const QMediaContent &media)
-{
-    QString path = media.canonicalUrl().toString();
+    QString path = content.canonicalUrl().toString();
     emit singalChangePath(path);
-    qDebug() << "---path--- : : :" << path;
 }

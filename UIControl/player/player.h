@@ -18,10 +18,10 @@ public:
     };
 
     enum PlayMode {
-        CurrentItemInLoop = 0,
-        Sequential = 1,
-        Loop = 2,
-        Random = 3,
+        CurrentItemInLoop = 1,
+        Sequential = 2,
+        Loop = 3,
+        Random = 4,
     };
 public:
     static playController& getInstance()
@@ -78,8 +78,6 @@ signals:
     void curIndexChanged(int index);
     void playerError(int error, QString errMsg);
     void playerStateChange(int state);
-//    void singalIndexChange(QString m_listName, int index);
-    void singalPath(const QMediaContent &content);
     void singalChangePath(QString path);
 public slots:
     void onCurrentIndexChanged();
@@ -92,12 +90,8 @@ private slots:
     void onMediaStatusChanged();
     //获得当前播放的index
     void slotIndexChange(int index);
-    //获取当前播放的路径
-    void slotChangePath(const QMediaContent &media);
 private:
     QString m_curList;
-    //正在播放的歌单名
-    QString m_listName;
     int m_curIndex;
     QMediaPlayer* m_player;
     QMediaPlaylist* m_playlist;
