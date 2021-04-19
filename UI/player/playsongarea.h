@@ -48,8 +48,8 @@ public slots:
     void slotRandomClicked();
     void slotSequentialClicked();
     void slotCurrentItemInLoopClicked();
-    //获取改变index后当前播放的歌曲信息
-    void slotIndexChange(QString playName, int index);
+    //获取当前播放歌曲的路径
+    void slotSongInfo(QString path);
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
@@ -86,8 +86,6 @@ private:
     QLabel *playingLabel;
     //时长
     QLabel *timeLabel;
-
-    TableOne *m_table;
 };
 
 #endif // PLAYSONGAREA_H

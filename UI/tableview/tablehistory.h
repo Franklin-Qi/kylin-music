@@ -27,7 +27,7 @@
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/player/player.h"
 
-class TableHistory : public QFrame
+class TableHistory : public QWidget
 {
     Q_OBJECT
 public:

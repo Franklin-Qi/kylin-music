@@ -179,6 +179,7 @@ playController::playController()
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
 //    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
+    connect(this,&playController::singalPath,this,&playController::slotChangePath);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -245,5 +246,13 @@ void playController::slotIndexChange(int index)
     {
         return;
     }
-    emit singalIndexChange(m_listName, index);
+    QMediaContent content = m_playlist->media(index);
+    emit singalPath(content);
+}
+
+void playController::slotChangePath(const QMediaContent &media)
+{
+    QString path = media.canonicalUrl().toString();
+    emit singalChangePath(path);
+    qDebug() << "---path--- : : :" << path;
 }

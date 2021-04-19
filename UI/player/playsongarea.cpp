@@ -169,6 +169,7 @@ void PlaySongArea::initWidget()
 void PlaySongArea::initConnect()
 {
     //
+//    connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
     connect(preBtn,&QPushButton::clicked,this,&PlaySongArea::slotPrevious);
     connect(nextBtn,&QPushButton::clicked,this,&PlaySongArea::slotNext);
     connect(listBtn,&QPushButton::clicked,this,&PlaySongArea::listBtnClicked);
@@ -180,8 +181,7 @@ void PlaySongArea::initConnect()
     connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
     connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
     connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
-
-    connect(&playController::getInstance(),&playController::singalIndexChange,this,&PlaySongArea::slotIndexChange);
+    connect(&playController::getInstance(),&playController::singalChangePath,this,&PlaySongArea::slotSongInfo);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -275,14 +275,9 @@ void PlaySongArea::slotCurrentItemInLoopClicked()
     m_playBackModeWid->hide();
 }
 
-void PlaySongArea::slotIndexChange(QString playName, int index)
+void PlaySongArea::slotSongInfo(QString path)
 {
-    qDebug() << "playName" << playName << "index" << index;
-    m_table = new TableOne(playName);
-    musicDataStruct data = m_table->m_model->getItem(index);
-    qDebug() << "-----data-----" << data.title << data.filepath << data.time;
-    playingLabel->setText(data.title);
-    timeLabel->setText(data.time);
+    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
 }
 
 void PlaySongArea::resizeEvent(QResizeEvent *event)
@@ -319,6 +314,11 @@ void PlaySongArea::movePlayModeWid()
     m_playBackModeWid->changePlayModePos(newPosX, newPosY, modeSize.width(), modeSize.height());
     m_playBackModeWid->move(modePos);
 }
+
+//void PlaySongArea::slotPlayClicked()
+//{
+
+//}
 
 void PlaySongArea::slotPrevious()
 {

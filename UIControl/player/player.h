@@ -78,8 +78,9 @@ signals:
     void curIndexChanged(int index);
     void playerError(int error, QString errMsg);
     void playerStateChange(int state);
-    void singalIndexChange(QString m_listName, int index);
-
+//    void singalIndexChange(QString m_listName, int index);
+    void singalPath(const QMediaContent &content);
+    void singalChangePath(QString path);
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);
@@ -91,6 +92,8 @@ private slots:
     void onMediaStatusChanged();
     //获得当前播放的index
     void slotIndexChange(int index);
+    //获取当前播放的路径
+    void slotChangePath(const QMediaContent &media);
 private:
     QString m_curList;
     //正在播放的歌单名

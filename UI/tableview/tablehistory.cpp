@@ -1,6 +1,6 @@
 #include "tablehistory.h"
 
-TableHistory::TableHistory(QWidget *parent) : QFrame(parent)
+TableHistory::TableHistory(QWidget *parent) : QWidget(parent)
 {
     initSetModel();
     initStyle();
@@ -46,11 +46,11 @@ void TableHistory::initSetModel()
     mainVLayout->addWidget(m_tableHistory);
     this->setLayout(mainVLayout);
 
-    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
-    effect->setOffset(0, 0);          //设置向哪个方向产生阴影效果(dx,dy)，特别地，(0,0)代表向四周发散
-    effect->setColor(QColor(220,220,220));       //设置阴影颜色，也可以setColor(QColor(220,220,220))
-    effect->setBlurRadius(25);        //设定阴影的模糊半径，数值越大越模糊
-    this->setGraphicsEffect(effect);
+//    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
+//    effect->setOffset(0, 0);          //设置向哪个方向产生阴影效果(dx,dy)，特别地，(0,0)代表向四周发散
+//    effect->setColor(QColor(220,220,220));       //设置阴影颜色，也可以setColor(QColor(220,220,220))
+//    effect->setBlurRadius(25);        //设定阴影的模糊半径，数值越大越模糊
+//    this->setGraphicsEffect(effect);
     this->setFixedWidth(320);
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);

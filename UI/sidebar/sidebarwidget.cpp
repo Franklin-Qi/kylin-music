@@ -75,13 +75,17 @@ void SideBarWidget::initWidget()
     scrollArea->setWidgetResizable(true);
 //    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    scrollArea->setBackgroundRole(QPalette::Dark);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
 
     newPlayListLayout->setAlignment(Qt::AlignTop);
     newPlayListWidget->setLayout(newPlayListLayout);
     newPlayListLayout->setContentsMargins(24,0,24,0);
 
-    mainLayout->addLayout(logoLayout);
-    mainLayout->addSpacing(16);
+//    mainLayout->addLayout(logoLayout);
+//    mainLayout->addSpacing(16);
+
     mainLayout->addLayout(libraryLayout);
     mainLayout->addSpacing(6);
     mainLayout->addLayout(playListBtnLayout);
@@ -106,14 +110,30 @@ void SideBarWidget::initWidget()
     mainWid->setLayout(mainLayout);
     mainWid->setObjectName("mainWid");
     scrollArea->setWidget(mainWid);
-//    scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+    scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+
+    logoWid = new QWidget(this);
+    logoWid->setLayout(logoLayout);
+    logoWid->setObjectName("logoWid");
 
     //放置活动条
     QVBoxLayout *scrollLayout = new QVBoxLayout(this);
+    scrollLayout->addWidget(logoWid);
+    scrollLayout->addSpacing(16);
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setMargin(0);
     scrollLayout->setSpacing(0);
-    this->setLayout(scrollLayout);
+
+    // 真正的主widget
+    sideWid = new QWidget(this);
+    sideWid->setLayout(scrollLayout);
+    sideWid->setObjectName("sideWid");
+
+    QVBoxLayout *sideLayout = new QVBoxLayout(this);
+    sideLayout->addWidget(sideWid);
+    sideLayout->setMargin(0);
+    sideLayout->setSpacing(0);
+
 
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Window);
@@ -138,9 +158,12 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
+        sideWid->setStyleSheet("#sideWid{width: 210px;\
+                      background: #1F2022;\
+                      }");
         mainWid->setStyleSheet("#mainWid{width: 210px;\
                       background: #1F2022;\
-                      border-radius: 4px;}");
+                      }");
         logoPushButton->setStyleSheet("border-image:url(:/img/kylin-music-logo.png);");
         myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
         libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
@@ -152,9 +175,12 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
+        sideWid->setStyleSheet("#sideWid{width: 210px;\
+                      background: #FAFAFA;\
+                      }");
         mainWid->setStyleSheet("#mainWid{width: 210px;\
                       background: #FAFAFA;\
-                      border-radius: 4px;}");
+                      }");
         logoPushButton->setStyleSheet("border-image:url(:/img/kylin-music-logo.png);");
         myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
         libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");

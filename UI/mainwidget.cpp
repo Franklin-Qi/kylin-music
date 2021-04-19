@@ -63,6 +63,11 @@ void Widget::initAllComponent()
     this->setBackgroundRole(QPalette::Base);
 
     historyListTable = new TableHistory(this);
+    MotifWmHints hint;
+    hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hint.functions = MWM_FUNC_ALL;
+    hint.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(historyListTable->winId(), hint);
     historyListTable->hide();
 }
 
