@@ -1071,7 +1071,7 @@ int MusicDataBase::getSongInfoFromHistoryMusic(const QString& filePath, musicDat
 
 }
 
-//使用歌曲的path值，和歌单名，查询歌曲信息
+//使用歌曲的path值，查询歌曲信息(因为所有歌曲都在本地歌单，所以只用歌曲路径)
 int MusicDataBase::getSongInfoFromDB(const QString& filePath, musicDataStruct &fileData)
 {
     bool getRes = true;
