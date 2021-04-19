@@ -168,6 +168,10 @@ void PlaySongArea::initWidget()
 
 void PlaySongArea::initConnect()
 {
+    //
+//    connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
+    connect(preBtn,&QPushButton::clicked,this,&PlaySongArea::slotPrevious);
+    connect(nextBtn,&QPushButton::clicked,this,&PlaySongArea::slotNext);
     connect(listBtn,&QPushButton::clicked,this,&PlaySongArea::listBtnClicked);
     connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
     connect(volumeBtn,&QPushButton::clicked,this,&PlaySongArea::slotVolSliderWidget);
@@ -177,6 +181,7 @@ void PlaySongArea::initConnect()
     connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
     connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
     connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
+    connect(&playController::getInstance(),&playController::singalChangePath,this,&PlaySongArea::slotSongInfo);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -242,6 +247,7 @@ void PlaySongArea::slotLoopClicked()
 {
     playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
     playModeBtn->setToolTip(tr("Loop"));
+    playController::getInstance().setPlaymode(playController::Loop);
     m_playBackModeWid->hide();
 }
 
@@ -249,6 +255,7 @@ void PlaySongArea::slotRandomClicked()
 {
     playModeBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle"));
     playModeBtn->setToolTip(tr("Random"));
+    playController::getInstance().setPlaymode(playController::Random);
     m_playBackModeWid->hide();
 }
 
@@ -256,6 +263,7 @@ void PlaySongArea::slotSequentialClicked()
 {
     playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
     playModeBtn->setToolTip(tr("Sequential"));
+    playController::getInstance().setPlaymode(playController::Sequential);
     m_playBackModeWid->hide();
 }
 
@@ -263,7 +271,13 @@ void PlaySongArea::slotCurrentItemInLoopClicked()
 {
     playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one"));
     playModeBtn->setToolTip(tr("CurrentItemInLoop"));
+    playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
     m_playBackModeWid->hide();
+}
+
+void PlaySongArea::slotSongInfo(QString path)
+{
+    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
 }
 
 void PlaySongArea::resizeEvent(QResizeEvent *event)
@@ -299,6 +313,21 @@ void PlaySongArea::movePlayModeWid()
     int newPosY = modePos.y() + 25 + size.height() - modeSize.height() / 2 + 1;
     m_playBackModeWid->changePlayModePos(newPosX, newPosY, modeSize.width(), modeSize.height());
     m_playBackModeWid->move(modePos);
+}
+
+//void PlaySongArea::slotPlayClicked()
+//{
+
+//}
+
+void PlaySongArea::slotPrevious()
+{
+    playController::getInstance().onPreviousSong();
+}
+
+void PlaySongArea::slotNext()
+{
+    playController::getInstance().onNextSong();
 }
 
 void PlaySongArea::listBtnClicked()

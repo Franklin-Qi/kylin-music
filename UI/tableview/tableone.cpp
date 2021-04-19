@@ -130,7 +130,6 @@ void TableOne::initConnect()
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
-
 }
 
 void TableOne::initRightMenu()
@@ -141,22 +140,6 @@ void TableOne::initRightMenu()
     removeRow = new QAction("删除");
     showInfoRow = new QAction("查看歌曲信息");
     addToOtherListMenu = new QMenu("添加到歌单");
-    QStringList allList;
-    int ret = g_db->getPlayList(allList);
-    if(ret == 0)
-    {
-        for(int i = 0 ;i < allList.size() ;i++)
-        {
-            qDebug() << allList[i];
-            QAction *listNameAct = new QAction;
-            addToOtherListMenu->addAction(listNameAct);
-            listNameAct->setText(allList[i]);
-        }
-    }
-    else
-    {
-        qDebug() << "获取所有歌单失败";
-    }
     connect(playRow,&QAction::triggered,this,&TableOne::playSongs);
     connect(removeRow,&QAction::triggered,this,&TableOne::deleteSongs);
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
@@ -174,6 +157,23 @@ void TableOne::showRightMenu(const QPoint &pos)
     m_menu->addAction(removeRow);  //添加动作到菜单
     m_menu->addAction(showInfoRow); //添加动作到菜单
     QMap<int,QString> map1 = getSelectedTaskIdList();
+    addToOtherListMenu->clear();
+    QStringList allList;
+    int ret = g_db->getPlayList(allList);
+    if(ret == 0)
+    {
+        for(int i = 0 ;i < allList.size() ;i++)
+        {
+            qDebug() << allList[i];
+            QAction *listNameAct = new QAction;
+            addToOtherListMenu->addAction(listNameAct);
+            listNameAct->setText(allList[i]);
+        }
+    }
+    else
+    {
+        qDebug() << "获取所有歌单失败";
+    }
     if(map1.size() > 1)
     {
         m_menu->removeAction(playRow);

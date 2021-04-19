@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <UI/base/allpupwindow.h>
+#include <QPalette>
 
 #include "mytoolbutton.h"
 
@@ -57,7 +58,9 @@ private:
     QPushButton *myPlayListBtn;
     //新建歌单按钮界面(包含我喜欢在内)
     QWidget *newPlayListWidget;
+    QWidget *logoWid;
     QWidget *mainWid;
+    QWidget *sideWid;
     QVBoxLayout *newPlayListLayout;
     //歌单名
     QStringList playListName;

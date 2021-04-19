@@ -62,6 +62,88 @@
     </message>
 </context>
 <context>
+    <name>PlayBackModeWidget</name>
+    <message>
+        <location filename="../UI/player/playbackmodewidget.cpp" line="24"/>
+        <source>Loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playbackmodewidget.cpp" line="34"/>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playbackmodewidget.cpp" line="44"/>
+        <source>Sequential</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playbackmodewidget.cpp" line="54"/>
+        <source>CurrentItemInLoop</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PlaySongArea</name>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="24"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="36"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="45"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="70"/>
+        <source>Favourite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="80"/>
+        <location filename="../UI/player/playsongarea.cpp" line="249"/>
+        <source>Loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="88"/>
+        <source>Play List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="95"/>
+        <source>Kylin Music</source>
+        <translation type="unfinished">麒麟音乐</translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="98"/>
+        <source>00:00/00:00</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="257"/>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="265"/>
+        <source>Sequential</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/player/playsongarea.cpp" line="273"/>
+        <source>CurrentItemInLoop</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../base/musicDataBase.cpp" line="59"/>

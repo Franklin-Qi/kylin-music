@@ -12,6 +12,9 @@
 #include "sliderwidget.h"
 #include "playbackmodewidget.h"
 #include "musicslider.h"
+#include "UIControl/player/player.h"
+#include "UIControl/tableview/musiclistmodel.h"
+#include "UI/tableview/tableone.h"
 
 class PlaySongArea : public QWidget
 {
@@ -26,6 +29,10 @@ public:
 signals:
     void showHistoryListBtnClicked();
 public slots:
+    //上一首
+    void slotPrevious();
+    //下一首
+    void slotNext();
     //显示音量界面
     void slotVolSliderWidget();
 //    void increaseVolume();   //音量调高
@@ -34,12 +41,15 @@ public slots:
     void slotVolumeChanged(int values);
     //我喜欢按钮
     void slotFav();
-    //改变播放模式
+    //改变播放模式弹窗
     void slotPlayBackModeChanged();
+
     void slotLoopClicked();
     void slotRandomClicked();
     void slotSequentialClicked();
     void slotCurrentItemInLoopClicked();
+    //获取当前播放歌曲的路径
+    void slotSongInfo(QString path);
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
@@ -70,11 +80,12 @@ private:
     QPushButton *lyricBtn;
     //播放列表
     QPushButton *listBtn;
-
+    //封面
     QLabel *coverPhotoLabel;
+    //正在播放
     QLabel *playingLabel;
+    //时长
     QLabel *timeLabel;
-
 };
 
 #endif // PLAYSONGAREA_H
