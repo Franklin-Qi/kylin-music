@@ -115,8 +115,8 @@ public:
     int emptyHistoryMusic();
 
     /**************************二层封装接口****************************/
-    //使用歌曲的path值，和歌单名，查询歌曲信息
-    int getSongInfoFromDB(const QString& filePath, const QString& playListName, musicDataStruct &fileData);
+    //使用歌曲的path值，查询歌曲信息(因为所有歌曲都在本地歌单，所以只用歌曲路径即可)
+    int getSongInfoFromDB(const QString& filePath, musicDataStruct &fileData);
     //根据歌单名title值查询对应歌单列表
     int getSongInfoListFromDB(QList<musicDataStruct>& resList,const QString& playListName);
     //检查歌曲是是我喜欢的歌曲
