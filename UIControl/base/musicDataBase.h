@@ -8,9 +8,11 @@
 #include<QThread>
 #include<QMutexLocker>
 
-const QString ALLMUSIC = "LocalMusic";              //本地总表
-const QString HISTORY = "HistoryPlayList";          //历史记录
-const QString FAV = "我喜欢";                        //我喜欢
+const QString ALLMUSIC = "LocalMusic";                    //本地总表
+const QString HISTORY = "HistoryPlayList";                //历史记录
+const QString FAV = "我喜欢";                              //我喜欢
+const QString SHOWCONTEXTS =
+        "filepath,title,singer,album,filetype,size,time"; //播放列表显示项
 
 enum DB_RETURN_STATUS{              //数据库操作结果返回表
     DB_OP_SUCC          = (0),      //数据库操作成功
