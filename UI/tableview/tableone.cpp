@@ -28,8 +28,8 @@ void TableOne::initTableViewStyle()
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,50);
 
-    tableView->setStyleSheet("QTableView{border:none;}"
-                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+//    tableView->setStyleSheet("QTableView{border:none;}"
+//                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
 
     tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
@@ -292,29 +292,22 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
 
 void TableOne::setHightLightAndSelect()
 {
-
     if(WidgetStyle::themeColor == 0)
     {
         for (int i=0 ;i<4 ;i++ )
         {
             for(int j = 0; j < m_model->count() ; j++)
             {
-                if(itemSelection.contains(j))
-                {
-                    m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
-//                    m_model->m_model.item(j,i)->setBackground(QBrush(QColor(Qt::red)));
-                }
-                else
-                {
-                    m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
-                }
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
             }
         }
         if(heightLightIndex != -1)
         {
             for (int i = 0 ; i<4 ;i++ )
             {
-                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
             }
         }
 
@@ -325,24 +318,20 @@ void TableOne::setHightLightAndSelect()
         {
             for(int j = 0; j < m_model->count() ; j++)
             {
-                if(itemSelection.contains(j))
-                {
-                    m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
-                }
-                else
-                {
-                    m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
-                }
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
             }
         }
         if(heightLightIndex != -1)
         {
             for (int i = 0 ; i<4 ;i++ )
             {
-                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
             }
         }
     }
+
 }
 
 void TableOne::changeNumber()

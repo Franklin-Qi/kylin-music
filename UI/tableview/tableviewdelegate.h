@@ -11,6 +11,8 @@
 #include <QPushButton>
 #include <QStyledItemDelegate>
 #include <QToolTip>
+#include <QVariant>
+#include <QColor>
 
 class TableViewDelegate: public QStyledItemDelegate
 {
