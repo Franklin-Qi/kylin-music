@@ -19,8 +19,7 @@ void TableBaseView::initStyle()
     setAutoFillBackground(true);
     setAlternatingRowColors(false);
 
-    this->setStyleSheet("QTableView{border:none;}"
-                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+    this->setStyleSheet("QTableView{border:none;}");
     this->horizontalHeader()->setVisible(false);// 水平不可见
     this->verticalHeader()->setVisible(false);// 垂直不可见
     this->setAutoScroll(true);

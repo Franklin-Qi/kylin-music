@@ -22,9 +22,12 @@ void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     QStyleOptionViewItem opt = option;
     if(index.row() == m_hoverrow ){
         opt.state |= QStyle::State_MouseOver;
+//        qDebug() << "ForegroundRoles" << index.data(Qt::ForegroundRole).;
     } else {
         opt.state &= ~QStyle::State_MouseOver;
     }
+    opt.palette.setColor(QPalette::HighlightedText,index.data(Qt::ForegroundRole).value<QColor>());
+    opt.palette.setColor(QPalette::Highlight,QColor(240,240,240));
     QStyledItemDelegate::paint(painter,opt,index);
 }
 

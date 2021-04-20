@@ -20,13 +20,14 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/player/player.h"
 #include "tableviewdelegate.h"
 #include "tablebaseview.h"
 #include "UIControl/base/musicfileinformation.h"
+#include "UI/base/mylabel.h"
+#include "UI/base/widgetstyle.h"
 
 class TableOne : public QWidget
 {
@@ -37,9 +38,11 @@ public:
     MusicListModel *m_model;
 //    QTableView *tableView;
     TableBaseView *tableView;
-    QLabel *listTitleLabel;
+    MyLabel *listTitleLabel;
     QString nowListName;
     void changeNumber();
+    void initTableViewStyle();
+    void setHightLightAndSelect();
 
     QList<musicDataStruct> getMusicList();
     void addMusicToLocalOrPlayList();
@@ -70,19 +73,22 @@ private:
     QHBoxLayout *listTitleHBoxLayout;
     QToolButton *addMusicButton;
     QLabel *listTotalNumLabel;
-    void setHightLight(int index);
     void initStyle();
-    void initTableViewStyle();
+    QList<int> itemSelection;
+    int heightLightIndex = -1;
 signals:
     void sendPathToPlayer(QString fp);
 
     void countChanges();
     void hoverIndexChanged(QModelIndex index);
     void addMusicToHistoryListSignal();
+//    void heightIndexChanged(int index);
 
 public slots:
     void selectListChanged(QString listname);
     void playListRenamed(QString oldName,QString newName);
+    void pressTableViewRow(QModelIndex index);
+    void getHightLightIndex(int index, QString listName);
 };
 
 #endif // TableOne_H

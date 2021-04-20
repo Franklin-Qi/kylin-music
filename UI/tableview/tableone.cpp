@@ -7,6 +7,7 @@ TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
     initRightMenu();
     initConnect();
     initStyle();
+
 }
 
 void TableOne::initStyle()
@@ -27,8 +28,9 @@ void TableOne::initTableViewStyle()
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,50);
 
-    tableView->setStyleSheet("QTableView{border:none;}"
-                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+//    tableView->setStyleSheet("QTableView{border:none;}"
+//                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+
     tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->setAutoScroll(true);
@@ -50,7 +52,7 @@ void TableOne::initUI()
     QVBoxLayout *tableLayout = new QVBoxLayout();
     this->setLayout(tableLayout);
 
-    listTitleLabel = new QLabel(this);
+    listTitleLabel = new MyLabel(this);
     listTotalNumLabel = new QLabel(this);
     addMusicButton = new QToolButton(this);
     listTitleHBoxLayout = new QHBoxLayout();
@@ -130,6 +132,8 @@ void TableOne::initConnect()
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
+    connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
+    connect(tableView,&TableBaseView::pressed,this,&TableOne::pressTableViewRow);
 }
 
 void TableOne::initRightMenu()
@@ -286,8 +290,47 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
     return map1;
 }
 
-void TableOne::setHightLight(int index)
+void TableOne::setHightLightAndSelect()
 {
+    if(WidgetStyle::themeColor == 0)
+    {
+        for (int i=0 ;i<4 ;i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
+            }
+        }
+        if(heightLightIndex != -1)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+
+    }
+    if(WidgetStyle::themeColor == 1)
+    {
+        for (int i=0 ;i<4 ;i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
+            }
+        }
+        if(heightLightIndex != -1)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+    }
 
 }
 
@@ -333,6 +376,28 @@ void TableOne::playListRenamed(QString oldName, QString newName)
     if(listTitleLabel->text() == oldName)
     {
         listTitleLabel->setText(newName);
+        nowListName = newName;
+    }
+}
+
+void TableOne::pressTableViewRow(QModelIndex index)
+{
+    itemSelection.clear();
+    QTableView *m_pTableView = tableView;
+    QModelIndexList selected = m_pTableView->selectionModel()->selectedRows();
+    foreach( const QModelIndex & index, selected)
+    {
+        itemSelection.append(index.row());
+    }
+    setHightLightAndSelect();
+}
+
+void TableOne::getHightLightIndex(int index, QString listName)
+{
+    if(listName == nowListName)
+    {
+        heightLightIndex = index;
+        setHightLightAndSelect();
     }
 }
 

@@ -246,5 +246,6 @@ void playController::slotIndexChange(int index)
     }
     QMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
+    emit currentIndexAndCurrentList(index,m_curList);
     emit singalChangePath(path);
 }

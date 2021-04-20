@@ -90,7 +90,7 @@ void PlaySongArea::initWidget()
     coverPhotoLabel = new QLabel(this);
     coverPhotoLabel->setFixedSize(40,40);
 
-    playingLabel = new QLabel(this);
+    playingLabel = new MyLabel(this);
     playingLabel->setFixedHeight(20);
     playingLabel->setText(tr("Kylin Music"));
 
@@ -121,7 +121,7 @@ void PlaySongArea::initWidget()
     leftLayout->setMargin(0);
 
     QHBoxLayout *playLayout = new QHBoxLayout(centreWid);
-    playLayout->addStretch();
+    playLayout->addStretch(0);
     playLayout->addWidget(preBtn,Qt::AlignHCenter);
     playLayout->addSpacing(12);
     playLayout->addWidget(playBtn,Qt::AlignHCenter);
@@ -131,6 +131,7 @@ void PlaySongArea::initWidget()
     playLayout->setMargin(0);
 
     QHBoxLayout *rightLayout = new QHBoxLayout(rightWid);
+    rightLayout->addStretch(0);
     rightLayout->addWidget(volumeBtn,Qt::AlignRight);
     rightLayout->addSpacing(8);
     rightLayout->addWidget(favBtn,Qt::AlignRight);
@@ -152,15 +153,22 @@ void PlaySongArea::initWidget()
     m_hmainLayout->setMargin(0);
     m_hmainLayout->setSpacing(0);
 
-    m_mainLayout->addWidget(letfWid,0,Qt::AlignLeft);
-    m_mainLayout->addWidget(centreWid,0,Qt::AlignCenter);
-    m_mainLayout->addWidget(rightWid,0,Qt::AlignRight);
-    m_mainLayout->setMargin(0);
+    m_mainLayout->addWidget(letfWid);
+//    m_mainLayout->addStretch(0);
+    m_mainLayout->addWidget(centreWid);
+//    m_mainLayout->addStretch(0);
+    m_mainLayout->addWidget(rightWid);
+//    m_mainLayout->setMargin(0);
     m_mainLayout->setSpacing(0);
+
+    m_mainLayout->setStretchFactor(letfWid,1);
+    m_mainLayout->setStretchFactor(centreWid,1);
+    m_mainLayout->setStretchFactor(rightWid,1);
+
 
     m_vmainLayout->addLayout(m_hmainLayout);
     m_vmainLayout->addLayout(m_mainLayout);
-    m_vmainLayout->setMargin(0);
+    m_vmainLayout->setContentsMargins(8,0,8,8);
     m_vmainLayout->setSpacing(0);
 
     this->setLayout(m_vmainLayout);
@@ -182,6 +190,7 @@ void PlaySongArea::initConnect()
     connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
     connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
     connect(&playController::getInstance(),&playController::singalChangePath,this,&PlaySongArea::slotSongInfo);
+    connect(&playController::getInstance(),&playController::playerStateChange,this,&PlaySongArea::playerStateChange);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -280,10 +289,18 @@ void PlaySongArea::slotSongInfo(QString path)
     qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
 }
 
+void PlaySongArea::playerStateChange(int state)
+{
+    qDebug() << "playerStateChange" << state;
+
+}
+
 void PlaySongArea::resizeEvent(QResizeEvent *event)
 {
     moveVolSliderWid();
     movePlayModeWid();
+    qDebug() << "play width" << this->width();
+    playingLabel->setFixedWidth(this->width()/3.6);
     QWidget::resizeEvent(event);
 }
 

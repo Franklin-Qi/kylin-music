@@ -254,6 +254,8 @@ void Widget::changeDarkTheme()
     playSongArea->playcolor();
     m_miniWidget->minicolor();
     m_titleBar->titlecolor();
+    musicListTable->initTableViewStyle();
+    musicListTable->setHightLightAndSelect();
 }
 
 //切换浅色主题
@@ -265,4 +267,6 @@ void Widget::changeLightTheme()
     playSongArea->playcolor();
     m_miniWidget->minicolor();
     m_titleBar->titlecolor();
+    musicListTable->initTableViewStyle();
+    musicListTable->setHightLightAndSelect();
 }
