@@ -79,6 +79,7 @@ signals:
     void playerError(int error, QString errMsg);
     void playerStateChange(int state);
     void singalChangePath(QString path);
+    void currentIndexAndCurrentList(int index,QString listname);
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);

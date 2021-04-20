@@ -15,6 +15,7 @@
 #include "UIControl/player/player.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UI/tableview/tableone.h"
+#include "UI/base/mylabel.h"
 
 class PlaySongArea : public QWidget
 {
@@ -50,6 +51,8 @@ public slots:
     void slotCurrentItemInLoopClicked();
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
+    void playerStateChange(int state);
+
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
@@ -83,7 +86,7 @@ private:
     //封面
     QLabel *coverPhotoLabel;
     //正在播放
-    QLabel *playingLabel;
+    MyLabel *playingLabel;
     //时长
     QLabel *timeLabel;
 };
