@@ -130,10 +130,10 @@ void Widget::initGSettings()//初始化GSettings
 void Widget::resizeEvent(QResizeEvent *event)
 {
     qDebug() << "resizeEvent" << this->width() << this->height();
-    historyListTable->resize(320,this->height()-playSongArea->height()-5);
-    int x = this->width()-320;
-    int y = this->height()-playSongArea->height()-historyListTable->height();
-    historyListTable->move(x,y);
+    historyListTable->resize(320,this->height() - playSongArea->height()+20);
+    int x = this->width()-historyListTable->width();
+//    int y = this->height()-playSongArea->height()-historyListTable->height();
+    historyListTable->move(x,2);
     if(this->isMaximized() == true)
     {
         m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
@@ -256,6 +256,8 @@ void Widget::changeDarkTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
+    historyListTable->initStyle();
+    historyListTable->setHighlight(-1);
 }
 
 //切换浅色主题
@@ -269,4 +271,7 @@ void Widget::changeLightTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
+    historyListTable->initStyle();
+    historyListTable->setHighlight(-1);
+
 }

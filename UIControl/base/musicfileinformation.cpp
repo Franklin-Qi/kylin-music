@@ -19,14 +19,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             if(musicType.indexOf(musicdataStruct.filetype) != -1)
             {
                 fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
-                //            filepathHash(musicdataStruct.filepath);// 通过路径获取hash
-                ret = g_db->addMusicToLocalMusic(musicdataStruct);
-                if (ret == DB_OP_SUCC) {
-                    qDebug() << "歌曲成功添加！";
-                    resList.append(musicdataStruct);
-                } else {
-                    qDebug()<<"歌曲已存在";
-                }
+                resList.append(musicdataStruct);
             }
             else
             {

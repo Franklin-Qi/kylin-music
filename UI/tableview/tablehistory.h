@@ -26,6 +26,7 @@
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/player/player.h"
+#include "UI/base/widgetstyle.h"
 
 class TableHistory : public QWidget
 {
@@ -35,6 +36,8 @@ public:
     TableBaseView *m_tableHistory;
     MusicListModel *m_model;
     void changeNumber();
+    void setHighlight(int index);
+    void initStyle();
 public slots:
     void showHistroryPlayList();
     void addMusicToHistoryListSlot();
@@ -55,7 +58,6 @@ private:
     QLabel *historyTitileLabel;
     QToolButton *deleteAllBtn;
     QWidget *historyTitileWidget;
-    void initStyle();
     void deleteAllClicked();
     void initTableStyle();
 

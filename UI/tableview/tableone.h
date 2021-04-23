@@ -47,10 +47,10 @@ public:
     QList<musicDataStruct> getMusicList();
     void addMusicToLocalOrPlayList();
 private:
-    void initUI();
-    void initConnect();
-    void initRightMenu();
-    void tableViewDoubleClicked();
+    void initUI();  //初始化ui
+    void initConnect();  //信号绑定
+    void initRightMenu();  //初始化右键菜单
+    void tableViewDoubleClicked();  //双击播放
 
     void showRightMenu(const QPoint &pos);
     void deleteSongs();
@@ -74,8 +74,8 @@ private:
     QToolButton *addMusicButton;
     QLabel *listTotalNumLabel;
     void initStyle();
-    QList<int> itemSelection;
     int heightLightIndex = -1;
+    QString nowPlayListName;
 signals:
     void sendPathToPlayer(QString fp);
 
@@ -85,10 +85,9 @@ signals:
 //    void heightIndexChanged(int index);
 
 public slots:
-    void selectListChanged(QString listname);
-    void playListRenamed(QString oldName,QString newName);
-    void pressTableViewRow(QModelIndex index);
-    void getHightLightIndex(int index, QString listName);
+    void selectListChanged(QString listname);  //切换歌单
+    void playListRenamed(QString oldName,QString newName);  //歌单重命名
+    void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 };
 
 #endif // TableOne_H

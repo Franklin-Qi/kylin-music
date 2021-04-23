@@ -135,7 +135,7 @@ void SideBarWidget::initWidget()
     sideLayout->setSpacing(0);
 
 
-//    this->setAutoFillBackground(true);
+    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Window);
 }
 
@@ -158,6 +158,10 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
+        setStyleSheet("width: 210px;\
+                             background: #1F2022;");
+        logoWid->setStyleSheet("width: 210px;\
+                             background: #1F2022;");
         sideWid->setStyleSheet("#sideWid{width: 210px;\
                       background: #1F2022;\
                       }");
@@ -175,6 +179,8 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
+        setStyleSheet("");
+        logoWid->setStyleSheet("width: 210px;background: #FAFAFA;");
         sideWid->setStyleSheet("#sideWid{width: 210px;\
                       background: #FAFAFA;\
                       }");

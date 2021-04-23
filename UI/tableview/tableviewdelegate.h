@@ -11,8 +11,6 @@
 #include <QPushButton>
 #include <QStyledItemDelegate>
 #include <QToolTip>
-#include <QVariant>
-#include <QColor>
 
 class TableViewDelegate: public QStyledItemDelegate
 {
@@ -22,7 +20,6 @@ public:
     explicit TableViewDelegate(QWidget *parent = 0);
     ~TableViewDelegate();
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index);
     void onHoverIndexChanged(const QModelIndex &index);
     void onLeaveFromItemEvent();
 signals:
