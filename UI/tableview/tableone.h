@@ -83,6 +83,8 @@ signals:
     void hoverIndexChanged(QModelIndex index);
     void addMusicToHistoryListSignal();
 //    void heightIndexChanged(int index);
+    void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
+    void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
 
 public slots:
     void selectListChanged(QString listname);  //切换歌单

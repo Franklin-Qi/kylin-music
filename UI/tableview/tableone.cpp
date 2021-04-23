@@ -208,6 +208,10 @@ void TableOne::deleteSongs()
             m_model->remove(iter.key());
             playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
+            if(nowListName == tr("I Love"))
+            {
+                emit removeILoveFilepathSignal(iter.value());
+            }
             emit countChanges();
             map1.remove(iter.key());
         }
@@ -253,6 +257,10 @@ void TableOne::addToOtherList(QAction *listNameAction)
         if(ret == 0)
         {
             playController::getInstance().addSongToCurList(listName,it.value());
+            if(listName == tr("I Love"))
+            {
+                emit addILoveFilepathSignal(it.value());
+            }
         }else{
             QMessageBox::warning(this,"提示","添加失败");
         }
@@ -276,9 +284,14 @@ void TableOne::addMusicToLocalOrPlayList()
         }
         else{
             ret = g_db->addMusicToLocalMusic(date);
+
         }
         if(ret == 0){
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
+            if(nowListName == tr("I Love"))
+            {
+                emit addILoveFilepathSignal(date.filepath);
+            }
             m_model->add(date);
             emit countChanges();
         }
