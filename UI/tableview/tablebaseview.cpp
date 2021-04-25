@@ -27,6 +27,8 @@ void TableBaseView::initStyle()
     this->setAutoFillBackground(true);
 
 }
+
+}
 TableBaseView::~TableBaseView()
 {
     if(m_delegate!=nullptr) {

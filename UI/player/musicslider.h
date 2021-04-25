@@ -15,8 +15,8 @@ public:
     MusicSlider(QWidget *parent);
 
 protected:
-    bool eventFilter(QObject * obj, QEvent * ev);
-    void wheelEvent(QWheelEvent *e);
+    bool eventFilter(QObject * obj, QEvent * ev) Q_DECL_OVERRIDE;
+    void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
 private:
     void initStyle();
 };

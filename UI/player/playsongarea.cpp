@@ -60,11 +60,11 @@ void PlaySongArea::initWidget()
     XAtomHelper::getInstance()->setWindowMotifHint(m_playBackModeWid->winId(), hints);
     m_playBackModeWid->hide();
 
-    MusicSlider *hSlider = new MusicSlider(this);
+    hSlider = new MusicSlider(this);
 
     favBtn = new QPushButton;
     favBtn->setFixedSize(16,16);
-    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
+//    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    favBtn->setChecked(false);
     favBtn->setCursor(Qt::PointingHandCursor);
     favBtn->setToolTip(tr("Favourite"));
@@ -177,8 +177,8 @@ void PlaySongArea::initWidget()
 void PlaySongArea::initConnect()
 {
     //
-//    connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
     connect(preBtn,&QPushButton::clicked,this,&PlaySongArea::slotPrevious);
+    connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
     connect(nextBtn,&QPushButton::clicked,this,&PlaySongArea::slotNext);
     connect(listBtn,&QPushButton::clicked,this,&PlaySongArea::listBtnClicked);
     connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
@@ -191,6 +191,11 @@ void PlaySongArea::initConnect()
     connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
     connect(&playController::getInstance(),&playController::singalChangePath,this,&PlaySongArea::slotSongInfo);
     connect(&playController::getInstance(),&playController::playerStateChange,this,&PlaySongArea::playerStateChange);
+    connect(playController::getInstance().getPlayer(),SIGNAL(positionChanged(qint64)),this,SLOT(slotPositionChanged(qint64)));
+    connect(playController::getInstance().getPlayer(),SIGNAL(durationChanged(qint64)),this,SLOT(slotDurationChanged(qint64)));
+    connect(hSlider,SIGNAL(sliderPressed()),this,SLOT(slotSlidePressd()));
+    connect(hSlider,SIGNAL(sliderReleased()),this,SLOT(slotSlideReleased()));
+    connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -225,6 +230,30 @@ void PlaySongArea::slotVolSliderWidget()
 
 void PlaySongArea::slotFav()
 {
+    qDebug() << "我喜欢按钮要添加的路径" << filePath;
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
+        if(ret == DB_OP_SUCC)
+        {
+            qDebug() << "添加歌曲路径" << filePath;
+//            emit signalAddFromFavButton("我喜欢");
+            qDebug() << "从我喜欢删除";
+        }
+    }
+    else
+    {
+
+        int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
+        if(ref == DB_OP_SUCC)
+        {
+            qDebug() << "删除歌曲路径" << filePath;
+//            emit signalDelFromFavButton("我喜欢");
+            qDebug() << "添加到我喜欢";
+        }
+    }
+
+    slotFavExixts();
 //    if(favBtn->isVisible())
 //    {
 ////        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
@@ -287,6 +316,55 @@ void PlaySongArea::slotCurrentItemInLoopClicked()
 void PlaySongArea::slotSongInfo(QString path)
 {
     qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
+
+    filePath = path.remove("file://");
+    musicDataStruct musicStruct;
+    g_db->getSongInfoFromDB(filePath, musicStruct);
+    //使用库解析总时间
+    m_time = musicStruct.time;
+    playingLabel->setText(musicStruct.title);
+
+    slotFavExixts();
+}
+
+void PlaySongArea::playerStateChange(int state)
+{
+    qDebug() << "playerStateChange" << state;
+
+}
+
+void PlaySongArea::slotPositionChanged(qint64 position)
+{
+    hSlider->setValue(static_cast<int>(position));
+    QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
+    QString str_time = duration.toString("mm:ss");
+    QString length = str_time + "/" + m_time;
+    timeLabel->setText(length);
+    slotPlayButtonChanged(true);
+}
+
+void PlaySongArea::slotDurationChanged(qint64 duration)
+{
+    qDebug() << "duration" << duration;
+    hSlider->setRange(0,static_cast<int>(duration));
+    hSlider->setEnabled(duration>0);
+    hSlider->setPageStep(static_cast<int>(duration)/10);
+}
+
+void PlaySongArea::slotSlidePressd()
+{
+    playController::getInstance().getPlayer()->pause();
+}
+
+void PlaySongArea::slotSlideReleased()
+{
+    playController::getInstance().getPlayer()->play();
+}
+
+void PlaySongArea::setPosition(int position)
+{
+    if (qAbs(playController::getInstance().getPlayer()->position() - position) > 99)
+       playController::getInstance().getPlayer()->setPosition(position);
 }
 
 void PlaySongArea::playerStateChange(int state)
@@ -332,25 +410,87 @@ void PlaySongArea::movePlayModeWid()
     m_playBackModeWid->move(modePos);
 }
 
-//void PlaySongArea::slotPlayClicked()
-//{
-
-//}
+void PlaySongArea::slotPlayClicked()
+{
+    if(playController::getInstance().getPlayer()->state() == QMediaPlayer::PlayingState)
+    {
+        playController::getInstance().getPlayer()->pause();
+        slotPlayButtonChanged(false);
+    }
+    else
+    {
+        playController::getInstance().getPlayer()->play();
+        slotPlayButtonChanged(true);
+    }
+}
 
 void PlaySongArea::slotPrevious()
 {
     playController::getInstance().onPreviousSong();
+    playController::getInstance().getPlayer()->play();
+    slotPlayButtonChanged(true);
 }
 
 void PlaySongArea::slotNext()
 {
     playController::getInstance().onNextSong();
+    playController::getInstance().getPlayer()->play();
+    slotPlayButtonChanged(true);
 }
 
 void PlaySongArea::listBtnClicked()
 {
     emit showHistoryListBtnClicked();
     qDebug() << "void PlaySongArea::listBtnClicked()";
+}
+
+void PlaySongArea::slotPlayButtonChanged(bool playButtonChanged)
+{
+    if(playButtonChanged)
+    {
+        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
+                               "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
+                               "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
+    }
+    else
+    {
+        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                            "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                             "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+    }
+}
+
+void PlaySongArea::slotFavExixts()
+{
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
+}
+
+void PlaySongArea::slotFavIsExixts(QString filePath)
+{
+    qDebug() << "---------- filePath -------- " << filePath;
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
 }
 
 void PlaySongArea::playcolor()

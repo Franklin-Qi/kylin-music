@@ -29,11 +29,23 @@ public:
       PlayBackModeWidget *m_playBackModeWid;
 signals:
     void showHistoryListBtnClicked();
+//    //按钮添加到我喜欢刷新界面
+//    void signalAddFromFavButton(QString listName);
+//    //按钮从我喜欢删除刷新界面
+//    void signalDelFromFavButton(QString listName);
 public slots:
     //上一首
     void slotPrevious();
+    //播放/暂停
+    void slotPlayClicked();
     //下一首
     void slotNext();
+    //播放按钮状态改变
+    void slotPlayButtonChanged(bool playButtonChanged);
+    //播放通过路径判断我喜欢是否存在此歌曲
+    void slotFavExixts();
+    //动态添加判断我喜欢是否存在
+    void slotFavIsExixts(QString filePath);
     //显示音量界面
     void slotVolSliderWidget();
 //    void increaseVolume();   //音量调高
@@ -52,7 +64,12 @@ public slots:
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
     void playerStateChange(int state);
-
+    //播放滑动条相关
+    void slotPositionChanged(qint64 position);
+    void slotDurationChanged(qint64 duration);
+    void setPosition(int position);
+    void slotSlidePressd();
+    void slotSlideReleased();
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
@@ -89,6 +106,12 @@ private:
     MyLabel *playingLabel;
     //时长
     QLabel *timeLabel;
+    //播放滑动条
+    MusicSlider *hSlider;
+    //保存库解析总时间
+    QString m_time;
+    //路径
+    QString filePath;
 };
 
 #endif // PLAYSONGAREA_H

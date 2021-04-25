@@ -7,9 +7,9 @@ MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
     int ret;
+    resList.clear();
     if(!addFile.isEmpty())
     {
-        resList.clear();
         for(int i = 0; i < addFile.size(); i++)
         {
             musicdataStruct.filepath = addFile.at(i);

@@ -153,7 +153,12 @@ void TableOne::initRightMenu()
 
 void TableOne::showRightMenu(const QPoint &pos)
 {
-    qDebug() << "鼠标位置 " << pos;
+    QModelIndex index = tableView->indexAt(pos);
+    if(index.row() < 0)
+    {
+        return;
+    }
+    qDebug() << "鼠标位置 " << pos << index.row();
 //    m_menu->move(0,0);
     m_menu->addAction(playRow);      //添加动作到菜单
     m_menu->addMenu(addToOtherListMenu);
@@ -208,7 +213,8 @@ void TableOne::deleteSongs()
             m_model->remove(iter.key());
             playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
-            if(nowListName == tr("I Love"))
+//            if(nowListName == tr("I Love"))
+            if(nowListName == "我喜欢")
             {
                 emit removeILoveFilepathSignal(iter.value());
             }
@@ -257,8 +263,11 @@ void TableOne::addToOtherList(QAction *listNameAction)
         if(ret == 0)
         {
             playController::getInstance().addSongToCurList(listName,it.value());
-            if(listName == tr("I Love"))
+//            if(listName == tr("I Love"))
+            qDebug() << "------------------- listName -------------" << listName;
+            if(listName == "我喜欢")
             {
+                qDebug() << "---------------- it.value() it.value() ------------" << it.value();
                 emit addILoveFilepathSignal(it.value());
             }
         }else{
@@ -288,10 +297,10 @@ void TableOne::addMusicToLocalOrPlayList()
         }
         if(ret == 0){
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
-            if(nowListName == tr("I Love"))
-            {
-                emit addILoveFilepathSignal(date.filepath);
-            }
+//            if(nowListName == tr("I Love"))
+//            {
+//                emit addILoveFilepathSignal(date.filepath);
+//            }
             m_model->add(date);
             emit countChanges();
         }
@@ -399,7 +408,6 @@ QList<musicDataStruct> TableOne::getMusicList()
 }
 void TableOne::selectListChanged(QString listname)
 {
-
     qDebug() << "歌单名" <<listname;
     m_model->clear();
     nowListName = listname;

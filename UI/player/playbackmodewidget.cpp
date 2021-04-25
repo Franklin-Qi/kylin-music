@@ -102,6 +102,14 @@ void PlayBackModeWidget::changePlayModePos(int posX, int posY, int width, int he
 
 void PlayBackModeWidget::playModecolor()
 {
+//    this->setAutoFillBackground(true);
+//    this->setBackgroundRole(QPalette::Base);
+//
+//    loopBtn->setAutoRaise(true);
+//    randomBtn->setAutoRaise(true);
+//    sequentialBtn->setAutoRaise(true);
+//    currentItemInLoopBtn->setAutoRaise(true);
+
     if(WidgetStyle::themeColor == 1)
     {
         loopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
