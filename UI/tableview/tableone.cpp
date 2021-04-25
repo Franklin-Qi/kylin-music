@@ -133,7 +133,6 @@ void TableOne::initConnect()
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
-    connect(tableView,&TableBaseView::pressed,this,&TableOne::pressTableViewRow);
 }
 
 void TableOne::initRightMenu()
@@ -207,14 +206,19 @@ void TableOne::deleteSongs()
         if(ret == 0)
         {
             m_model->remove(iter.key());
+            playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
+            if(nowListName == tr("I Love"))
+            {
+                emit removeILoveFilepathSignal(iter.value());
+            }
             emit countChanges();
+            map1.remove(iter.key());
         }
         else
         {
             qDebug() << "delete failed" << iter.value();
         }
-        map1.remove(iter.key());
     }
 }
 
@@ -249,7 +253,17 @@ void TableOne::addToOtherList(QAction *listNameAction)
     while(it != map1.end())
     {
         qDebug()<<it.key()<<"\t"<<it.value();
-        g_db->addMusicToPlayList(it.value(),listName);
+        int ret = g_db->addMusicToPlayList(it.value(),listName);
+        if(ret == 0)
+        {
+            playController::getInstance().addSongToCurList(listName,it.value());
+            if(listName == tr("I Love"))
+            {
+                emit addILoveFilepathSignal(it.value());
+            }
+        }else{
+            QMessageBox::warning(this,"提示","添加失败");
+        }
         it++;
     }
 }
@@ -262,7 +276,34 @@ void TableOne::addMusicToLocalOrPlayList()
     MusicFileInformation::getInstance().addFile(songFiles);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
-    m_model->add(resList);
+    int ret;
+    foreach (const musicDataStruct date, resList) {
+        if(nowListName != tr("Song List")){
+            ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
+            qDebug() << "111111" << ret;
+        }
+        else{
+            ret = g_db->addMusicToLocalMusic(date);
+
+        }
+        if(ret == 0){
+            playController::getInstance().addSongToCurList(nowListName,date.filepath);
+            if(nowListName == tr("I Love"))
+            {
+                emit addILoveFilepathSignal(date.filepath);
+            }
+            m_model->add(date);
+            emit countChanges();
+        }
+        else{
+//            QMessageBox::warning(this,tr("Prompt information"),date.filepath+tr("歌曲文件添加失败！"));
+            QMessageBox msg;
+            msg.setWindowTitle(tr("Prompt information"));
+            msg.setText(date.filepath+tr("歌曲文件添加失败！"));
+            msg.exec();
+            qDebug() << "添加数据库失败.";
+        }
+    }
 //    QFileDialog *fileDialog = new QFileDialog;
 //    fileDialog->setFileMode(QFileDialog::Directory);
 //    QStringList m_fileNames;
@@ -272,7 +313,6 @@ void TableOne::addMusicToLocalOrPlayList()
 //    }
 //    qDebug() << m_fileNames;
 
-    emit countChanges();
 }
 
 QMap<int,QString> TableOne::getSelectedTaskIdList()
@@ -302,7 +342,7 @@ void TableOne::setHightLightAndSelect()
                 m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
             }
         }
-        if(heightLightIndex != -1)
+        if(heightLightIndex != -1 && nowListName == nowPlayListName)
         {
             for (int i = 0 ; i<4 ;i++ )
             {
@@ -322,16 +362,14 @@ void TableOne::setHightLightAndSelect()
                 m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
             }
         }
-        if(heightLightIndex != -1)
+        if(heightLightIndex != -1 && nowListName == nowPlayListName)
         {
             for (int i = 0 ; i<4 ;i++ )
             {
-//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
                 m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
             }
         }
     }
-
 }
 
 void TableOne::changeNumber()
@@ -368,7 +406,7 @@ void TableOne::selectListChanged(QString listname)
     getMusicList();
     changeNumber();
     listTitleLabel->setText(listname);
-
+    setHightLightAndSelect();
 }
 
 void TableOne::playListRenamed(QString oldName, QString newName)
@@ -380,23 +418,12 @@ void TableOne::playListRenamed(QString oldName, QString newName)
     }
 }
 
-void TableOne::pressTableViewRow(QModelIndex index)
-{
-    itemSelection.clear();
-    QTableView *m_pTableView = tableView;
-    QModelIndexList selected = m_pTableView->selectionModel()->selectedRows();
-    foreach( const QModelIndex & index, selected)
-    {
-        itemSelection.append(index.row());
-    }
-    setHightLightAndSelect();
-}
-
 void TableOne::getHightLightIndex(int index, QString listName)
 {
+    nowPlayListName = listName;
+    heightLightIndex = index;
     if(listName == nowListName)
     {
-        heightLightIndex = index;
         setHightLightAndSelect();
     }
 }

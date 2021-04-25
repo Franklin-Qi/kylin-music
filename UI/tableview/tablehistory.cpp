@@ -44,6 +44,8 @@ void TableHistory::initSetModel()
     titleHBoxLayout->addWidget(deleteAllBtn,Qt::AlignRight);
     mainVLayout->addWidget(historyTitileWidget);
     mainVLayout->addWidget(m_tableHistory);
+    mainVLayout->setMargin(0);
+    mainVLayout->setSpacing(0);
     this->setLayout(mainVLayout);
 
 //    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
@@ -55,9 +57,25 @@ void TableHistory::initSetModel()
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
 
+
 }
 void TableHistory::initStyle()
 {
+    if(WidgetStyle::themeColor == 0)
+    {
+        qDebug() << "color " << WidgetStyle::themeColor;
+        this->setStyleSheet("background:#FAFAFA");
+        historyTitileWidget->setStyleSheet("background:#FAFAFA");
+        m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA");
+
+    }
+    if(WidgetStyle::themeColor == 1)
+    {
+        qDebug() << "color " << WidgetStyle::themeColor;
+        this->setStyleSheet("background-color:#1F2022");
+        historyTitileWidget->setStyleSheet("background:#1F2022");
+        m_tableHistory->setStyleSheet("border:none;background-color:#1F2022");
+    }
 
     historyTitileLabel->setStyleSheet("width:96px;height:24px;"
                                  "font-size:24px;\
@@ -96,6 +114,7 @@ void TableHistory::initTableStyle()
     m_tableHistory->hideColumn(6);
     m_tableHistory->setAutoFillBackground(true);
     m_tableHistory->setAlternatingRowColors(false);
+    setHighlight(-1);
 }
 
 
@@ -135,6 +154,7 @@ void TableHistory::addMusicToHistoryListSlot()
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
     initTableStyle();
+    setHighlight(0);
     changeNumber();
 }
 void TableHistory::initRightMenu()
@@ -164,12 +184,18 @@ void TableHistory::playSongs()
     int index = m_tableHistory->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     qDebug() << "m_tableHistory->selectedIndexes();" << index << date.filepath;
-    QStringList pathList;
-    pathList = m_model->getPathList();
-    playController::getInstance().setCurPlaylist(nowListName,pathList);
-    playController::getInstance().play(nowListName,index);
-    g_db->addMusicToHistoryMusic(date.filepath);
-    addMusicToHistoryListSlot();
+    int ret = g_db->addMusicToHistoryMusic(date.filepath);
+    if(ret == 0){
+        QStringList pathList;
+        pathList = m_model->getPathList();
+        playController::getInstance().setCurPlaylist(nowListName,pathList);
+        playController::getInstance().play(nowListName,index);
+        addMusicToHistoryListSlot();
+    }else{
+        QMessageBox::about(this,"提示","歌曲不存在");
+        g_db->delMusicFromHistoryMusic(date.filepath);
+        m_model->remove(index);
+    }
 }
 void TableHistory::deleteSongs()
 {
@@ -184,3 +210,44 @@ void TableHistory::playNextRowClicked()
 
 }
 
+void TableHistory::setHighlight(int index)
+{
+    if(WidgetStyle::themeColor == 0)
+    {
+        for (int i = 0 ;i<4 ;i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
+            }
+        }
+        if(index != -1)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+                m_model->m_model.item(index,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+
+    }
+    if(WidgetStyle::themeColor == 1)
+    {
+        for (int i = 0; i < 4; i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
+            }
+        }
+        if(index != -1)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(0,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+    }
+}

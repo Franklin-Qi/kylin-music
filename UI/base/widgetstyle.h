@@ -19,6 +19,7 @@
 #define WIDGETSTYLE_H
 
 #include <QGSettings>
+#include <QCollator>
 
 #define KYLINRECORDER "org.kylin-music-data.settings"
 #define FITTHEMEWINDOW "org.ukui.style"
@@ -31,6 +32,7 @@ public:
     WidgetStyle() {}
 
     static int themeColor;   //test  主题颜色适配--浅色
+//    const QColor highlightTextColor;
 
 };
 

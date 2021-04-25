@@ -62,6 +62,8 @@ void PlayBackModeWidget::initWidget()
     vLayout->setMargin(0);
     vLayout->setSpacing(0);
     this->setLayout(vLayout);
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
 }
 
 bool PlayBackModeWidget::nativeEvent(const QByteArray &eventType, void *message, long *result)
@@ -114,16 +116,16 @@ void PlayBackModeWidget::playModecolor()
     else if(WidgetStyle::themeColor == 0)
     {
         loopBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                               background-color:#FAFAFA;color:#303133;border-radius:4px;}"
+                               background-color:#FFFFFF;color:#303133;border-radius:4px;}"
                                "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
         randomBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                 background-color:#FAFAFA;color:#303133;border-radius:4px;}"
+                                 background-color:#FFFFFF;color:#303133;border-radius:4px;}"
                                  "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
         sequentialBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                     background-color:#FAFAFA;color:#303133;border-radius:4px;}"
+                                     background-color:#FFFFFF;color:#303133;border-radius:4px;}"
                                      "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
         currentItemInLoopBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                            background-color:#FAFAFA;color:#303133;border-radius:4px;}"
+                                            background-color:#FFFFFF;color:#303133;border-radius:4px;}"
                                             "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
     }
 }

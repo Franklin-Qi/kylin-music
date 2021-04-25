@@ -176,8 +176,8 @@ playController::playController()
     }
     m_player->setPlaylist(m_playlist);
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
-//    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
-    connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
+    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+//    connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -247,5 +247,6 @@ void playController::slotIndexChange(int index)
     QMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
     emit currentIndexAndCurrentList(index,m_curList);
+    qDebug() << "currentIndex:" << index << m_curList;
     emit singalChangePath(path);
 }
