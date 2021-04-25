@@ -3,7 +3,6 @@
 TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
 {
     nowListName = listName;
-    delegate = new TableViewDelegate;
     initUI();
     initRightMenu();
     initConnect();
@@ -13,7 +12,6 @@ TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
 
 void TableOne::initStyle()
 {
-
     listTitleLabel->setStyleSheet("width:96px;height:24px;"
                                  "font-size:24px;\
                                  font-weight: 600;\
@@ -30,8 +28,9 @@ void TableOne::initTableViewStyle()
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,50);
 
-    tableView->setStyleSheet("QTableView{border:none;}"
-                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+//    tableView->setStyleSheet("QTableView{border:none;}"
+//                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
+
     tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->setAutoScroll(true);
@@ -39,14 +38,13 @@ void TableOne::initTableViewStyle()
     tableView->hideColumn(4);
     tableView->hideColumn(5);
     tableView->hideColumn(6);
-    //    tableView->setModel(tableModel);
     tableView->resize(800,1000);
     tableView->show();
-    tableView->setAlternatingRowColors(false);
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     tableView->setAutoFillBackground(true);
+    tableView->setAlternatingRowColors(false);
 }
 
 void TableOne::initUI()
@@ -54,7 +52,7 @@ void TableOne::initUI()
     QVBoxLayout *tableLayout = new QVBoxLayout();
     this->setLayout(tableLayout);
 
-    listTitleLabel = new QLabel(this);
+    listTitleLabel = new MyLabel(this);
     listTotalNumLabel = new QLabel(this);
     addMusicButton = new QToolButton(this);
     listTitleHBoxLayout = new QHBoxLayout();
@@ -112,19 +110,14 @@ void TableOne::initUI()
     if(nowListName == tr("Song List"))
     {
         ret = g_db->getSongInfoListFromLocalMusic(resList);
-
     }
     else
     {
         ret = g_db->getSongInfoListFromPlayList(resList,nowListName);
     }
-    //    qDebug() << resList[0].filepath;
-    //    if(ret == DB_OP_SUCC)
-    //    {
     m_model = new MusicListModel;
     m_model->add(resList);
     m_model->setView(*tableView);
-//    tableView->setItemDelegate(delegate);
     initTableViewStyle();
     int num = m_model->count();
     listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
@@ -137,9 +130,9 @@ void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
-    connect(tableView,&TableBaseView::hoverIndexChanged,delegate,&TableViewDelegate::onHoverIndexChanged);
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
+    connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
 }
 
 void TableOne::initRightMenu()
@@ -160,7 +153,12 @@ void TableOne::initRightMenu()
 
 void TableOne::showRightMenu(const QPoint &pos)
 {
-    qDebug() << "鼠标位置 " << pos;
+    QModelIndex index = tableView->indexAt(pos);
+    if(index.row() < 0)
+    {
+        return;
+    }
+    qDebug() << "鼠标位置 " << pos << index.row();
 //    m_menu->move(0,0);
     m_menu->addAction(playRow);      //添加动作到菜单
     m_menu->addMenu(addToOtherListMenu);
@@ -213,14 +211,20 @@ void TableOne::deleteSongs()
         if(ret == 0)
         {
             m_model->remove(iter.key());
+            playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
+//            if(nowListName == tr("I Love"))
+            if(nowListName == "我喜欢")
+            {
+                emit removeILoveFilepathSignal(iter.value());
+            }
             emit countChanges();
+            map1.remove(iter.key());
         }
         else
         {
             qDebug() << "delete failed" << iter.value();
         }
-        map1.remove(iter.key());
     }
 }
 
@@ -255,7 +259,20 @@ void TableOne::addToOtherList(QAction *listNameAction)
     while(it != map1.end())
     {
         qDebug()<<it.key()<<"\t"<<it.value();
-        g_db->addMusicToPlayList(it.value(),listName);
+        int ret = g_db->addMusicToPlayList(it.value(),listName);
+        if(ret == 0)
+        {
+            playController::getInstance().addSongToCurList(listName,it.value());
+//            if(listName == tr("I Love"))
+            qDebug() << "------------------- listName -------------" << listName;
+            if(listName == "我喜欢")
+            {
+                qDebug() << "---------------- it.value() it.value() ------------" << it.value();
+                emit addILoveFilepathSignal(it.value());
+            }
+        }else{
+            QMessageBox::warning(this,"提示","添加失败");
+        }
         it++;
     }
 }
@@ -268,7 +285,34 @@ void TableOne::addMusicToLocalOrPlayList()
     MusicFileInformation::getInstance().addFile(songFiles);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
-    m_model->add(resList);
+    int ret;
+    foreach (const musicDataStruct date, resList) {
+        if(nowListName != tr("Song List")){
+            ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
+            qDebug() << "111111" << ret;
+        }
+        else{
+            ret = g_db->addMusicToLocalMusic(date);
+
+        }
+        if(ret == 0){
+            playController::getInstance().addSongToCurList(nowListName,date.filepath);
+//            if(nowListName == tr("I Love"))
+//            {
+//                emit addILoveFilepathSignal(date.filepath);
+//            }
+            m_model->add(date);
+            emit countChanges();
+        }
+        else{
+//            QMessageBox::warning(this,tr("Prompt information"),date.filepath+tr("歌曲文件添加失败！"));
+            QMessageBox msg;
+            msg.setWindowTitle(tr("Prompt information"));
+            msg.setText(date.filepath+tr("歌曲文件添加失败！"));
+            msg.exec();
+            qDebug() << "添加数据库失败.";
+        }
+    }
 //    QFileDialog *fileDialog = new QFileDialog;
 //    fileDialog->setFileMode(QFileDialog::Directory);
 //    QStringList m_fileNames;
@@ -278,7 +322,6 @@ void TableOne::addMusicToLocalOrPlayList()
 //    }
 //    qDebug() << m_fileNames;
 
-    emit countChanges();
 }
 
 QMap<int,QString> TableOne::getSelectedTaskIdList()
@@ -296,9 +339,46 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
     return map1;
 }
 
-void TableOne::setHightLight(int index)
+void TableOne::setHightLightAndSelect()
 {
+    if(WidgetStyle::themeColor == 0)
+    {
+        for (int i=0 ;i<4 ;i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
 
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
+            }
+        }
+        if(heightLightIndex != -1 && nowListName == nowPlayListName)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+
+    }
+    if(WidgetStyle::themeColor == 1)
+    {
+        for (int i=0 ;i<4 ;i++ )
+        {
+            for(int j = 0; j < m_model->count() ; j++)
+            {
+
+                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
+            }
+        }
+        if(heightLightIndex != -1 && nowListName == nowPlayListName)
+        {
+            for (int i = 0 ; i<4 ;i++ )
+            {
+                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            }
+        }
+    }
 }
 
 void TableOne::changeNumber()
@@ -328,14 +408,13 @@ QList<musicDataStruct> TableOne::getMusicList()
 }
 void TableOne::selectListChanged(QString listname)
 {
-
     qDebug() << "歌单名" <<listname;
     m_model->clear();
     nowListName = listname;
     getMusicList();
     changeNumber();
     listTitleLabel->setText(listname);
-
+    setHightLightAndSelect();
 }
 
 void TableOne::playListRenamed(QString oldName, QString newName)
@@ -343,14 +422,23 @@ void TableOne::playListRenamed(QString oldName, QString newName)
     if(listTitleLabel->text() == oldName)
     {
         listTitleLabel->setText(newName);
+        nowListName = newName;
     }
 }
 
-//void TableOne::mouseMoveEvent(QMouseEvent *event)
-//{
-//    QModelIndex index = tableView->indexAt(event->pos());
-//    int row = index.row();
-//    qDebug() << event->pos();
-//    qDebug() << "QModelIndex index"<< index.row();
-//    emit hoverIndexChanged(index);
-//}
+void TableOne::getHightLightIndex(int index, QString listName)
+{
+    nowPlayListName = listName;
+    heightLightIndex = index;
+    if(listName == nowListName)
+    {
+        setHightLightAndSelect();
+    }
+}
+
+void TableOne::mouseMoveEvent(QMouseEvent *event)
+{
+    QModelIndex index = tableView->indexAt(event->pos());
+    int row = index.row();
+    emit hoverIndexChanged(index);
+}

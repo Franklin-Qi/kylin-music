@@ -8,9 +8,11 @@
 #include<QThread>
 #include<QMutexLocker>
 
-const QString ALLMUSIC = "LocalMusic";              //本地总表
-const QString HISTORY = "HistoryPlayList";          //历史记录
-const QString FAV = "FavorPlayList";                //我喜欢
+const QString ALLMUSIC = "LocalMusic";                    //本地总表
+const QString HISTORY = "HistoryPlayList";                //历史记录
+const QString FAV = "我喜欢";                              //我喜欢
+const QString SHOWCONTEXTS =
+        "filepath,title,singer,album,filetype,size,time"; //播放列表显示项
 
 enum DB_RETURN_STATUS{              //数据库操作结果返回表
     DB_OP_SUCC          = (0),      //数据库操作成功
@@ -35,7 +37,9 @@ enum DB_RETURN_STATUS{              //数据库操作结果返回表
     LIST_REORDER_ERR    = (-19),    //歌单中歌曲更改顺序失败
     LIST_NOT_EMPTY      = (-20),    //歌单不为空
     LIST_IS_EMPTY       = (-21),    //歌单为空
-    OUT_OF_RESULT       = (-22),    //歌单为空
+    EMPTYT_HIS_FAILED   = (-22),    //清空历史列表失败
+    CREATE_HIS_FAILED   = (-23),    //创建历史列表失败
+    OUT_OF_RESULT              ,    //结果边界
 };
 
 typedef struct
@@ -109,6 +113,16 @@ public:
     int getSongInfoFromHistoryMusic(const QString& filePath, musicDataStruct &fileData);
     //从数据库中获取历史歌单列表歌曲信息
     int getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resList);
+    //清空历史歌单
+    int emptyHistoryMusic();
+
+    /**************************二层封装接口****************************/
+    //使用歌曲的path值，查询歌曲信息(因为所有歌曲都在本地歌单，所以只用歌曲路径即可)
+    int getSongInfoFromDB(const QString& filePath, musicDataStruct &fileData);
+    //根据歌单名title值查询对应歌单列表
+    int getSongInfoListFromDB(QList<musicDataStruct>& resList,const QString& playListName);
+    //检查歌曲是是我喜欢的歌曲
+    bool checkSongIsInFav(const QString& filePath);
 
 protected:
     explicit MusicDataBase(QObject *parent = nullptr);

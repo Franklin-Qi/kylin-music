@@ -20,13 +20,14 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/player/player.h"
 #include "tableviewdelegate.h"
 #include "tablebaseview.h"
 #include "UIControl/base/musicfileinformation.h"
+#include "UI/base/mylabel.h"
+#include "UI/base/widgetstyle.h"
 
 class TableOne : public QWidget
 {
@@ -37,17 +38,19 @@ public:
     MusicListModel *m_model;
 //    QTableView *tableView;
     TableBaseView *tableView;
-    QLabel *listTitleLabel;
+    MyLabel *listTitleLabel;
     QString nowListName;
     void changeNumber();
+    void initTableViewStyle();
+    void setHightLightAndSelect();
 
     QList<musicDataStruct> getMusicList();
     void addMusicToLocalOrPlayList();
 private:
-    void initUI();
-    void initConnect();
-    void initRightMenu();
-    void tableViewDoubleClicked();
+    void initUI();  //初始化ui
+    void initConnect();  //信号绑定
+    void initRightMenu();  //初始化右键菜单
+    void tableViewDoubleClicked();  //双击播放
 
     void showRightMenu(const QPoint &pos);
     void deleteSongs();
@@ -64,25 +67,29 @@ private:
     QMap<int, QString> getSelectedTaskIdList();
 
 
-//    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event)override;
     TableViewDelegate *delegate;
 
     QHBoxLayout *listTitleHBoxLayout;
     QToolButton *addMusicButton;
     QLabel *listTotalNumLabel;
-    void setHightLight(int index);
     void initStyle();
-    void initTableViewStyle();
+    int heightLightIndex = -1;
+    QString nowPlayListName;
 signals:
     void sendPathToPlayer(QString fp);
 
     void countChanges();
-//    void hoverIndexChanged(QModelIndex index);
+    void hoverIndexChanged(QModelIndex index);
     void addMusicToHistoryListSignal();
+//    void heightIndexChanged(int index);
+    void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
+    void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
 
 public slots:
-    void selectListChanged(QString listname);
-    void playListRenamed(QString oldName,QString newName);
+    void selectListChanged(QString listname);  //切换歌单
+    void playListRenamed(QString oldName,QString newName);  //歌单重命名
+    void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 };
 
 #endif // TableOne_H

@@ -7,6 +7,7 @@
 
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/base/musicDataBase.h"
+#include "UI/player/playsongarea.h"
 
 class playController : public QObject {
     Q_OBJECT
@@ -72,6 +73,8 @@ public:
     {
         return m_playlist;
     }
+
+    void setPosition(int position);
 signals:
     void curPositionChanged(qint64);
     void curDurationChanged(qint64);
@@ -79,6 +82,7 @@ signals:
     void playerError(int error, QString errMsg);
     void playerStateChange(int state);
     void singalChangePath(QString path);
+    void currentIndexAndCurrentList(int index,QString listname);
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);
@@ -90,6 +94,7 @@ private slots:
     void onMediaStatusChanged();
     //获得当前播放的index
     void slotIndexChange(int index);
+
 private:
     QString m_curList;
     int m_curIndex;

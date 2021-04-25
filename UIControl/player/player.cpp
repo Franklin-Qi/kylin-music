@@ -127,6 +127,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         return;
     }
 
+    disconnect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     m_curList = name;
     m_playlist->clear();
 
@@ -138,6 +139,8 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         m_player->setPlaylist(m_playlist);
     }
     m_player->stop();
+    m_playlist->setCurrentIndex(-1);
+    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
 }
 void playController::addSongToCurList(QString name, QString songPath)
@@ -158,6 +161,10 @@ void playController::removeSongFromCurList(QString name, int index)
     }
     if (m_playlist != nullptr) {
         m_playlist->removeMedia(index);
+        //判断删除后 播放歌曲的index    当前只判断了删除正在播放的歌曲    还没做删除正在播放之前的歌曲和之后的歌曲
+        auto cr_index = m_playlist->currentIndex();
+        emit curIndexChanged(cr_index);
+        emit currentIndexAndCurrentList(cr_index,m_curList);
     }
 }
 playController::playController()
@@ -176,8 +183,8 @@ playController::playController()
     }
     m_player->setPlaylist(m_playlist);
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
-//    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
-    connect(this,&playController::curIndexChanged,this,&playController::slotIndexChange);
+    m_playlist->setCurrentIndex(-1);
+    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -240,11 +247,19 @@ bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 
 void playController::slotIndexChange(int index)
 {
+    qDebug() << "-----index-----" << index;
     if(index == -1)
     {
         return;
     }
     QMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
+    emit currentIndexAndCurrentList(index,m_curList);
     emit singalChangePath(path);
+}
+
+void playController::setPosition(int position)
+{
+    if (qAbs(m_player->position() - position) > 99)
+       m_player->setPosition(position);
 }

@@ -29,15 +29,16 @@ bool MusicListModel::add(musicDataStruct info)
     bool ret = true;
     if( (root != NULL) && (item0 != NULL) && (item1 != NULL) && (item2 != NULL) )
     {
-//        item0->setData(info.title, Qt::DisplayPropertyRole);
-//        item1->setData(info.singer, Qt::DisplayPropertyRole);
-//        item2->setData(info.album, Qt::DisplayPropertyRole);
-//        item3->setData(info.time, Qt::DisplayPropertyRole);
+        item0->setData(info.title, Qt::ToolTipRole);
+        item1->setData(info.singer, Qt::ToolTipRole);
+        item2->setData(info.album, Qt::ToolTipRole);
+
         item0->setData(info.title, Qt::DisplayRole);
         item1->setData(info.singer, Qt::DisplayRole);
         item2->setData(info.album, Qt::DisplayRole);
         item3->setData(info.time, Qt::DisplayRole);
         item3->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+
         item4->setData(info.filepath, Qt::DisplayRole);
         item5->setData(info.filetype, Qt::DisplayRole);
         item6->setData(info.size, Qt::DisplayRole);

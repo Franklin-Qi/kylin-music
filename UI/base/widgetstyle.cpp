@@ -18,3 +18,5 @@
 #include "widgetstyle.h"
 
 int WidgetStyle::themeColor = 0;
+
+//const QColor highlightTextColor = QColor(55,144,250);

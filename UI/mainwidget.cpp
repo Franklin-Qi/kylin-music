@@ -91,6 +91,11 @@ void Widget::allConnect()
 //    connect(m_miniWidget->m_orderBtn,&QPushButton::clicked,this,&Widget::slotPlayModeChanged);
     connect(m_miniWidget->m_closeBtn,&QPushButton::clicked,this,&Widget::slotCloseMiniWidget);
 //    connect(m_miniWidget->m_loveBtn,&QPushButton::clicked,this,&Widget::slotAddLike);
+
+    connect(musicListTable,&TableOne::addILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
+    connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
+//    connect(playSongArea,&PlaySongArea::signalAddFromFavButton,musicListTable,&TableOne::selectListChanged);
+//    connect(playSongArea,&PlaySongArea::signalDelFromFavButton,musicListTable,&TableOne::selectListChanged);
 }
 
 
@@ -130,10 +135,10 @@ void Widget::initGSettings()//初始化GSettings
 void Widget::resizeEvent(QResizeEvent *event)
 {
     qDebug() << "resizeEvent" << this->width() << this->height();
-    historyListTable->resize(320,this->height()-playSongArea->height()-5);
-    int x = this->width()-320;
-    int y = this->height()-playSongArea->height()-historyListTable->height();
-    historyListTable->move(x,y);
+    historyListTable->resize(320,this->height() - playSongArea->height()+20);
+    int x = this->width()-historyListTable->width();
+//    int y = this->height()-playSongArea->height()-historyListTable->height();
+    historyListTable->move(x,2);
     if(this->isMaximized() == true)
     {
         m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
@@ -254,6 +259,10 @@ void Widget::changeDarkTheme()
     playSongArea->playcolor();
     m_miniWidget->minicolor();
     m_titleBar->titlecolor();
+    musicListTable->initTableViewStyle();
+    musicListTable->setHightLightAndSelect();
+    historyListTable->initStyle();
+    historyListTable->setHighlight(-1);
 }
 
 //切换浅色主题
@@ -265,4 +274,9 @@ void Widget::changeLightTheme()
     playSongArea->playcolor();
     m_miniWidget->minicolor();
     m_titleBar->titlecolor();
+    musicListTable->initTableViewStyle();
+    musicListTable->setHightLightAndSelect();
+    historyListTable->initStyle();
+    historyListTable->setHighlight(-1);
+
 }

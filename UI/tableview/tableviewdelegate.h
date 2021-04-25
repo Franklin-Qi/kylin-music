@@ -20,9 +20,8 @@ public:
     explicit TableViewDelegate(QWidget *parent = 0);
     ~TableViewDelegate();
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index);
     void onHoverIndexChanged(const QModelIndex &index);
-
+    void onLeaveFromItemEvent();
 signals:
     void open(const QModelIndex &index);
     void deleteData(const QModelIndex &index);
@@ -38,7 +37,7 @@ private:
     int m_nHeight;  // 按钮高度
     int m_nType;  // 按钮状态-1：划过 2：按下
 
-    int hoverrow_;
+    int m_hoverrow;
 };
 
 #endif // TABLEVIEWDELEGATE_H

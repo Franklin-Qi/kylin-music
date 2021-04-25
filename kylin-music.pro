@@ -12,8 +12,23 @@ CONFIG += c++11
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+target.path = /usr/bin
+target.source += $$TARGET
+
+icon.path = /usr/share/pixmaps
+icon.files = img/kylin-music.png
+
+desktop.path = /usr/share/applications/
+desktop.files = kylin-music.desktop
+
 schemes.files = data/org.kylin-music-data.gschema.xml
 schemes.path = /usr/share/glib-2.0/schemas/
+
+INSTALLS += \
+    target  \
+    icon    \
+    desktop \
+    schemes
 
 TRANSLATIONS += ./translations/kylin-music_side.ts
 
@@ -31,6 +46,7 @@ LIBS +=-lX11
 
 SOURCES += \
     UI/base/allpupwindow.cpp \
+    UI/base/mylabel.cpp \
     UI/base/widgetstyle.cpp \
     UI/mainwidget.cpp \
     UI/player/miniwidget.cpp \
@@ -58,6 +74,7 @@ SOURCES += \
 
 HEADERS += \
     UI/base/allpupwindow.h \
+    UI/base/mylabel.h \
     UI/base/widgetstyle.h \
     UI/mainwidget.h \
     UI/player/miniwidget.h \
@@ -82,12 +99,13 @@ HEADERS += \
 
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+#!isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
     res.qrc
 
 DISTFILES += \
-    data/org.kylin-music-data.gschema.xml
+    data/org.kylin-music-data.gschema.xml \
+    kylin-music.desktop
