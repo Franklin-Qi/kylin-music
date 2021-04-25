@@ -28,6 +28,7 @@ void TableBaseView::initStyle()
 
 }
 
+}
 TableBaseView::~TableBaseView()
 {
     if(m_delegate!=nullptr) {
