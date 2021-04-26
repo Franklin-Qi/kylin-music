@@ -6,6 +6,8 @@ QT       += dbus x11extras KWindowSystem
 
 CONFIG += c++11
 
+LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -21,7 +23,9 @@ icon.files = img/kylin-music.png
 desktop.path = /usr/share/applications/
 desktop.files = kylin-music.desktop
 
-schemes.files = data/org.kylin-music-data.gschema.xml
+schemes.files += \
+    data/org.kylin-music-data.gschema.xml \
+    data/org.ukui.log4qt.kylin-music.gschema.xml
 schemes.path = /usr/share/glib-2.0/schemas/
 
 INSTALLS += \
@@ -108,4 +112,5 @@ RESOURCES += \
 
 DISTFILES += \
     data/org.kylin-music-data.gschema.xml \
+    data/org.ukui.log4qt.kylin-music.gschema.xml \
     kylin-music.desktop

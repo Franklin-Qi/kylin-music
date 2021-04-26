@@ -215,7 +215,7 @@ QHBoxLayout* menuModule::initTitleBar(){
     titleBtnClose->setFlat(true);
     connect(titleBtnClose,&QPushButton::clicked,[=](){aboutWindow->close();});
     QHBoxLayout *hlyt = new QHBoxLayout;
-    titleText->setText(tr("kylin music"));
+    titleText->setText(tr("Music Player"));
     titleText->setStyleSheet("font-size:14px;");
     hlyt->setSpacing(0);
     hlyt->setMargin(4);
@@ -234,7 +234,7 @@ QVBoxLayout* menuModule::initBody(){
     bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
     bodyIcon->setStyleSheet("font-size:14px;");
     bodyIcon->setScaledContents(true);
-    bodyAppDescribe->setText(tr("Kylin music player is a kind of multimedia "
+    bodyAppDescribe->setText(tr("Music Player is a kind of multimedia "
                                 "player software for playing various music files."
                                 "It covers a variety of music formats play tool,"
                                 "easy to operate."));
@@ -242,7 +242,7 @@ QVBoxLayout* menuModule::initBody(){
     bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
     bodyAppName->setFixedHeight(28);
-    bodyAppName->setText(tr("kylin music"));
+    bodyAppName->setText(tr("Music Player"));
 
     bodyAppName->setStyleSheet("font-size:18px;");
     bodyAppVersion->setFixedHeight(24);

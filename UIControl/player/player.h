@@ -5,10 +5,6 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
-#include "UIControl/tableview/musiclistmodel.h"
-#include "UIControl/base/musicDataBase.h"
-#include "UI/player/playsongarea.h"
-
 class playController : public QObject {
     Q_OBJECT
 public:
