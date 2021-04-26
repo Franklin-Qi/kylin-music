@@ -379,12 +379,6 @@ void PlaySongArea::setPosition(int position)
        playController::getInstance().getPlayer()->setPosition(position);
 }
 
-void PlaySongArea::playerStateChange(int state)
-{
-    qDebug() << "playerStateChange" << state;
-
-}
-
 void PlaySongArea::resizeEvent(QResizeEvent *event)
 {
     moveVolSliderWid();
