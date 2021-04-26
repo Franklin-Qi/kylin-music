@@ -77,6 +77,7 @@ void TableHistory::initStyle()
         qDebug() << "color " << WidgetStyle::themeColor;
         this->setStyleSheet("background:#FAFAFA");
         historyTitileWidget->setStyleSheet("background:#FAFAFA");
+        nullPageWidget->setStyleSheet("background:#FAFAFA");
         m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA");
 
     }
@@ -85,6 +86,7 @@ void TableHistory::initStyle()
         qDebug() << "color " << WidgetStyle::themeColor;
         this->setStyleSheet("background-color:#1F2022");
         historyTitileWidget->setStyleSheet("background:#1F2022");
+        nullPageWidget->setStyleSheet("background:#1F2022");
         m_tableHistory->setStyleSheet("border:none;background-color:#1F2022");
     }
 
@@ -175,15 +177,9 @@ void TableHistory::addMusicToHistoryListSlot()
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
-    initTableStyle();
     isHightLight = true;
     changeNumber();
-    if(isHightLight == false) {
-        setHighlight(-1);
-    }
-    else {
-        setHighlight(0);
-    }
+    initTableStyle();
 }
 void TableHistory::initRightMenu()
 {

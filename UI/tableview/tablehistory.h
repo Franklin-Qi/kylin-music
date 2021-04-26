@@ -38,6 +38,7 @@ public:
     void changeNumber();
     void setHighlight(int index);
     void initStyle();
+    void initTableStyle();
     bool isHightLight = false;
 public slots:
     void showHistroryPlayList();
@@ -60,7 +61,6 @@ private:
     QToolButton *deleteAllBtn;
     QWidget *historyTitileWidget;
     void deleteAllClicked();
-    void initTableStyle();
 
     QAction *playRow;
     QAction *removeRow;
