@@ -175,9 +175,9 @@ void TableOne::initRightMenu()
     m_menu = new QMenu(tableView);
 
     playRow = new QAction(tr("Play"));
-    removeRow = new QAction("Delete");
-    showInfoRow = new QAction("View song information");
-    addToOtherListMenu = new QMenu("Add to songlist");
+    removeRow = new QAction(tr("Delete"));
+    showInfoRow = new QAction(tr("View song information"));
+    addToOtherListMenu = new QMenu(tr("Add to songlist"));
     connect(playRow,&QAction::triggered,this,&TableOne::playSongs);
     connect(removeRow,&QAction::triggered,this,&TableOne::deleteSongs);
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);

@@ -318,6 +318,21 @@
         <translation>播放</translation>
     </message>
     <message>
+        <location filename="../UI/tableview/tableone.cpp" line="178"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="179"/>
+        <source>View song information</source>
+        <translation>查看歌曲信息</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="180"/>
+        <source>Add to songlist</source>
+        <translation>添加到歌单</translation>
+    </message>
+    <message>
         <location filename="../UI/tableview/tableone.cpp" line="309"/>
         <location filename="../UI/tableview/tableone.cpp" line="369"/>
         <source>Prompt information</source>
