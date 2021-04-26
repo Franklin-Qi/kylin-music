@@ -119,5 +119,6 @@
         <file>translations/kylin-music_side.qm</file>
         <file>translations/kylin-music_side.ts</file>
         <file>translations/qt_zh_CN.qm</file>
+        <file>img/default/null.png</file>
     </qresource>
 </RCC>

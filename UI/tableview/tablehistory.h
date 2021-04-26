@@ -38,6 +38,7 @@ public:
     void changeNumber();
     void setHighlight(int index);
     void initStyle();
+    bool isHightLight = false;
 public slots:
     void showHistroryPlayList();
     void addMusicToHistoryListSlot();
@@ -66,6 +67,11 @@ private:
     QAction *playNextRow;
     QMenu *m_menu;
     QString nowListName = "historyList";
+
+    QWidget *nullPageWidget;
+    QVBoxLayout *nullPageLayout;
+    QLabel *nullIconLabel;
+    QLabel *nullTextLabel;
 
 };
 
