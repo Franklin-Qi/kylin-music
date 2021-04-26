@@ -2,7 +2,7 @@
 #include "UI/base/xatom-helper.h"
 
 Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
-Widget::Widget(QWidget *parent)
+Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
     mutual = this;//！！！赋值，非常重要
@@ -16,7 +16,10 @@ Widget::Widget(QWidget *parent)
     initAllComponent();
     allConnect();
     initGSettings();
-
+    //单例
+    Single(str);
+    //初始化dbus
+    initDbus();
 }
 
 Widget::~Widget()
@@ -24,12 +27,101 @@ Widget::~Widget()
     m_miniWidget->deleteLater();
 }
 
+void Widget::Single(QStringList path)   //单例
+{
+    QString str;
+    if(path.size() > 1)
+    {
+        str = path[1];
+    }
+    QStringList homePath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+    QString lockPath = homePath.at(0) + "/.config/kylin-music-lock";
+    int fd = open(lockPath.toUtf8().data(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    if(fd < 0)
+    {
+        exit(1);
+    }
+    if (lockf(fd, F_TLOCK, 0))
+    {
+        qDebug() << "path.size" << path.size();
+        QDBusInterface interface( "org.ukui.kylin_music", "/org/ukui/kylin_music","org.ukui.kylin_music.play", QDBusConnection::sessionBus());
+        if(path.size() == 1)
+            interface.call( "kylin_music_play_request", str);
+        if(path.size() == 2)
+            interface.call( "kylin_music_play_request", str);
+        else if(path.size() == 4)
+            interface.call( "kylin_music_play_request", str, path[2], path[3]);
+        qDebug()<<"麒麟音乐正在运行";
+        exit(0);
+    }
+}
 
+void Widget::initDbus()//初始化dbus
+{
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    if(sessionBus.registerService("org.ukui.kylin_music"))
+    {
+        sessionBus.registerObject("/org/ukui/kylin_music",this,
+                                  QDBusConnection::ExportAllContents);
+        qDebug()<<"初始化DBUS成功";
+    }
+    else
+    {
+        qDebug()<<"初始化DBUS失败";
+    }
+}
+
+int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
+{
+    //无参数，单例触发
+    if(cmd1 == "")
+    {
+        KWindowSystem::forceActiveWindow(this->winId());
+        return 0;
+    }
+    //下一首
+    if(cmd1 == "-n" || cmd1 == "-next")
+    {
+        //------下一首-------
+        playController::getInstance().onNextSong();
+        playSongArea->slotPlayButtonChanged(true);
+        return 0;
+    }
+    //上一首
+    if(cmd1 == "-b" || cmd1 == "-back")
+    {
+        //-------上一首------
+        playController::getInstance().onPreviousSong();
+        playSongArea->slotPlayButtonChanged(true);
+        return 0;
+    }
+    //暂停
+    if(cmd1 == "-p" || cmd1 == "-pause")
+    {
+        //------暂停------
+        playController::getInstance().play();
+        playSongArea->slotPlayButtonChanged(false);
+        return 0;
+    }
+    //播放
+    if(cmd1 == "-s" || cmd1 == "-start")
+    {
+        //------播放------
+        playController::getInstance().play();
+        playSongArea->slotPlayButtonChanged(true);
+        return 0;
+    }
+}
 
 void Widget::initAllComponent()
 {
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
+    this->setWindowTitle(tr("Music Player"));
+    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
+    //窗体显示在中间
+    QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
+    this->move((availableGeometry.width() - this->width())/2, (availableGeometry.height() - this->height())/2);
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
