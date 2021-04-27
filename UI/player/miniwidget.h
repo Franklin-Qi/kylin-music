@@ -27,7 +27,6 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QAction>
-#include <QMediaPlayer>
 
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
@@ -63,7 +62,7 @@ private:
     void initStyle();
 
 public slots:
-    void playerStateChange(QMediaPlayer::State newState);
+    void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
     void slotFavExixtsDark();
     void slotFavIsExixts(QString filePath);

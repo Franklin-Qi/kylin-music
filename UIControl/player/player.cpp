@@ -170,15 +170,14 @@ void playController::removeSongFromCurList(QString name, int index)
     }
 }
 
-QMediaPlayer::State playController::getState()
+playController::PlayState playController::getState()
 {
-//    if(m_player->state() == QMediaPlayer::State::PlayingState)
-//        return PlayState::PLAY_STATE;
-//    else if(m_player->state() == QMediaPlayer::State::PausedState)
-//        return PlayState::PAUSED_STATE;
-//    else if(m_player->state() == QMediaPlayer::State::StoppedState)
-//        return PlayState::STOP_STATE;
-    return m_player->state();
+    if(m_player->state() == QMediaPlayer::State::PlayingState)
+        return PlayState::PLAY_STATE;
+    else if(m_player->state() == QMediaPlayer::State::PausedState)
+        return PlayState::PAUSED_STATE;
+    else if(m_player->state() == QMediaPlayer::State::StoppedState)
+        return PlayState::STOP_STATE;
 }
 
 playController::playController()
@@ -264,7 +263,13 @@ bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 
 void playController::slotStateChanged(QMediaPlayer::State newState)
 {
-    emit playerStateChange(newState);
+    if(newState == QMediaPlayer::State::PlayingState)
+        emit playerStateChange(playController::PlayState::PLAY_STATE);
+    else if(newState == QMediaPlayer::State::PausedState)
+        emit playerStateChange(playController::PlayState::PAUSED_STATE);
+    else if(newState == QMediaPlayer::State::StoppedState)
+        emit playerStateChange(playController::PlayState::STOP_STATE);
+
 }
 
 void playController::slotIndexChange(int index)

@@ -69,7 +69,7 @@ public slots:
     void slotCurrentItemInLoopClicked();
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
-    void playerStateChange(QMediaPlayer::State newState);
+    void playerStateChange(playController::PlayState newState);
     //播放滑动条相关
     void slotPositionChanged(qint64 position);
     void slotDurationChanged(qint64 duration);
