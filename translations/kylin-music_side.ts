@@ -108,7 +108,7 @@
     </message>
     <message>
         <location filename="../UI/player/playsongarea.cpp" line="80"/>
-        <location filename="../UI/player/playsongarea.cpp" line="287"/>
+        <location filename="../UI/player/playsongarea.cpp" line="299"/>
         <source>Loop</source>
         <translation>列表循环</translation>
     </message>
@@ -119,26 +119,30 @@
     </message>
     <message>
         <location filename="../UI/player/playsongarea.cpp" line="95"/>
+        <source>Music Player</source>
+        <translation>音乐</translation>
+    </message>
+    <message>
         <source>Kylin Music</source>
-        <translation>麒麟音乐</translation>
+        <translation type="vanished">麒麟音乐</translation>
     </message>
     <message>
         <location filename="../UI/player/playsongarea.cpp" line="98"/>
         <source>00:00/00:00</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../UI/player/playsongarea.cpp" line="295"/>
+        <location filename="../UI/player/playsongarea.cpp" line="307"/>
         <source>Random</source>
         <translation>随机播放</translation>
     </message>
     <message>
-        <location filename="../UI/player/playsongarea.cpp" line="303"/>
+        <location filename="../UI/player/playsongarea.cpp" line="315"/>
         <source>Sequential</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../UI/player/playsongarea.cpp" line="311"/>
+        <location filename="../UI/player/playsongarea.cpp" line="323"/>
         <source>CurrentItemInLoop</source>
         <translation>单曲循环</translation>
     </message>
@@ -148,15 +152,14 @@
     <message>
         <location filename="../UIControl/base/musicDataBase.cpp" line="60"/>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>SideBarWidget</name>
     <message>
-        <location filename="../UI/sidebar/sidebarwidget.cpp" line="26"/>
         <source>Kylin Music</source>
-        <translation>麒麟音乐</translation>
+        <translation type="vanished">麒麟音乐</translation>
     </message>
     <message>
         <location filename="../UI/sidebar/sidebarwidget.cpp" line="38"/>
@@ -185,6 +188,11 @@
         <translation>新建歌单</translation>
     </message>
     <message>
+        <location filename="../UI/sidebar/sidebarwidget.cpp" line="26"/>
+        <source>Music Player</source>
+        <translation>音乐</translation>
+    </message>
+    <message>
         <location filename="../UI/sidebar/sidebarwidget.cpp" line="105"/>
         <source>Rename</source>
         <translation>重命名</translation>
@@ -210,55 +218,55 @@
         <translation>播放列表</translation>
     </message>
     <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="34"/>
+        <source>清空</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../UI/tableview/tablehistory.cpp" line="46"/>
         <source>The playlist has no songs</source>
         <translation>播放列表还没有歌曲哦</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="104"/>
-        <location filename="../UI/tableview/tablehistory.cpp" line="223"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="106"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="219"/>
         <source>Prompt information</source>
         <translation>提示信息</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="104"/>
-        <source>Clear the playlist?</source>
-        <translation>清空播放列表？</translation>
-    </message>
-    <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="161"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="163"/>
         <source>Total </source>
         <translation>共 </translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="161"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="163"/>
         <source> songs</source>
         <translation> 首</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="191"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="187"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="192"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="188"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="193"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="189"/>
         <source>Play the next one</source>
-        <translation>下一首播放</translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="223"/>
+        <location filename="../UI/tableview/tablehistory.cpp" line="219"/>
         <source>The song doesn&apos;t exist</source>
         <translation>歌曲不存在</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="34"/>
-        <source>清空</source>
-        <translation type="unfinished"></translation>
+        <location filename="../UI/tableview/tablehistory.cpp" line="106"/>
+        <source>Clear the playlist?</source>
+        <translation>清空播放列表？</translation>
     </message>
 </context>
 <context>
@@ -334,19 +342,13 @@
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="309"/>
-        <location filename="../UI/tableview/tableone.cpp" line="369"/>
-        <source>Prompt information</source>
-        <translation>提示信息</translation>
-    </message>
-    <message>
-        <location filename="../UI/tableview/tableone.cpp" line="309"/>
         <source>Add failed!</source>
         <translation>添加失败！</translation>
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="370"/>
         <source>Failed to add song file!</source>
-        <translation>添加文件失败！</translation>
+        <translation>添加歌曲文件失败！</translation>
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="438"/>
@@ -362,6 +364,12 @@
         <location filename="../UI/tableview/tableone.cpp" line="318"/>
         <source>Open the file</source>
         <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="309"/>
+        <location filename="../UI/tableview/tableone.cpp" line="369"/>
+        <source>Prompt information</source>
+        <translation>提示信息</translation>
     </message>
 </context>
 <context>
@@ -410,19 +418,24 @@
 <context>
     <name>Widget</name>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="36"/>
+        <location filename="../UI/mainwidget.cpp" line="120"/>
+        <source>Music Player</source>
+        <translation>音乐</translation>
+    </message>
+    <message>
+        <location filename="../UI/mainwidget.cpp" line="128"/>
         <source>Song List</source>
         <translation>歌曲列表</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="146"/>
-        <location filename="../UI/mainwidget.cpp" line="228"/>
+        <location filename="../UI/mainwidget.cpp" line="238"/>
+        <location filename="../UI/mainwidget.cpp" line="320"/>
         <source>reduction</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="152"/>
-        <location filename="../UI/mainwidget.cpp" line="217"/>
+        <location filename="../UI/mainwidget.cpp" line="244"/>
+        <location filename="../UI/mainwidget.cpp" line="309"/>
         <source>maximize</source>
         <translation>最大化</translation>
     </message>
@@ -432,7 +445,7 @@
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="32"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="34"/>
@@ -449,33 +462,41 @@
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="46"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="51"/>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="56"/>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="122"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="218"/>
         <location filename="../UI/titlebar/menumodule.cpp" line="245"/>
-        <source>kylin music</source>
-        <translation>麒麟音乐</translation>
+        <source>Music Player</source>
+        <translation>音乐</translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="237"/>
+        <source>Music Player is a kind of multimedia player software for playing various music files.It covers a variety of music formats play tool,easy to operate.</source>
+        <translation>音乐播放器是一种用于播放多种音乐文件的多媒体播放软件。它是涵盖了各种音乐格式的播放工具，操作快捷简单</translation>
+    </message>
+    <message>
+        <source>kylin music</source>
+        <translation type="vanished">麒麟音乐</translation>
+    </message>
+    <message>
         <source>Kylin music player is a kind of multimedia player software for playing various music files.It covers a variety of music formats play tool,easy to operate.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">音乐播放器是一种用于播放多种音乐文件的多媒体播放软件。它是涵盖了各种音乐格式的播放工具，操作快捷简单</translation>
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="249"/>
@@ -492,30 +513,34 @@
 <context>
     <name>miniWidget</name>
     <message>
-        <location filename="../UI/player/miniwidget.cpp" line="31"/>
         <source>Kylin Music</source>
-        <translation>麒麟音乐</translation>
+        <translation type="vanished">麒麟音乐</translation>
+    </message>
+    <message>
+        <location filename="../UI/player/miniwidget.cpp" line="31"/>
+        <source>Music Player</source>
+        <translation>音乐</translation>
     </message>
     <message>
         <location filename="../UI/player/miniwidget.cpp" line="45"/>
         <location filename="../UI/player/miniwidget.cpp" line="46"/>
         <source>列表循环</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/player/miniwidget.cpp" line="47"/>
         <source>随机播放</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/player/miniwidget.cpp" line="48"/>
         <source>顺序播放</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../UI/player/miniwidget.cpp" line="49"/>
         <source>单曲循环</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

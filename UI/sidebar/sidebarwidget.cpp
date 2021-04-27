@@ -23,7 +23,7 @@ void SideBarWidget::initWidget()
     QHBoxLayout *logoLayout = new QHBoxLayout();
     QLabel *logoNameLabel = new QLabel(this);
     logoNameLabel->setFixedSize(120,30);
-    logoNameLabel->setText(tr("Kylin Music"));
+    logoNameLabel->setText(tr("Music Player"));
     logoPushButton = new QPushButton(this);
     logoPushButton->setFixedSize(24,24);
     logoPushButton->setIconSize(QSize(24,24));

@@ -92,7 +92,7 @@ void PlaySongArea::initWidget()
 
     playingLabel = new MyLabel(this);
     playingLabel->setFixedHeight(20);
-    playingLabel->setText(tr("Kylin Music"));
+    playingLabel->setText(tr("Music Player"));
 
     timeLabel = new QLabel(this);
     timeLabel->setText(tr("00:00/00:00"));
@@ -204,7 +204,11 @@ void PlaySongArea::slotVolumeChanged(int values)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
     }
-    else if(values > 0 && values <= 50)
+    else if(values > 0 && values <= 33)
+    {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-low-symbolic"));
+    }
+    else if(values > 33 && values <= 77)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-medium-symbolic"));
     }
@@ -212,6 +216,14 @@ void PlaySongArea::slotVolumeChanged(int values)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
     }
+    if(values > 100) {
+        values = 100;
+    }
+    if(values < 0) {
+        values = 0;
+    }
+    qDebug() << "values" << values;
+    playController::getInstance().getPlayer()->setVolume(values);
 }
 
 void PlaySongArea::slotVolSliderWidget()
@@ -366,7 +378,6 @@ void PlaySongArea::setPosition(int position)
     if (qAbs(playController::getInstance().getPlayer()->position() - position) > 99)
        playController::getInstance().getPlayer()->setPosition(position);
 }
-
 
 void PlaySongArea::resizeEvent(QResizeEvent *event)
 {
