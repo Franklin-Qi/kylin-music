@@ -64,7 +64,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-    initUkuiLog4qt("kylin-music");
+//    initUkuiLog4qt("kylin-music");
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 //    //高清屏幕自适应
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

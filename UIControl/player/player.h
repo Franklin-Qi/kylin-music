@@ -59,7 +59,7 @@ public:
     void setCurPlaylist(QString name, QStringList songPaths);
     void addSongToCurList(QString name, QString songPath);
     void removeSongFromCurList(QString name, int index);
-
+    QMediaPlayer::State getState();
     PlayMode mode() const;
     QMediaPlayer* getPlayer()
     {
@@ -76,7 +76,7 @@ signals:
     void curDurationChanged(qint64);
     void curIndexChanged(int index);
     void playerError(int error, QString errMsg);
-    void playerStateChange(int state);
+    void playerStateChange(QMediaPlayer::State newState);
     void singalChangePath(QString path);
     void currentIndexAndCurrentList(int index,QString listname);
 public slots:
@@ -84,10 +84,11 @@ public slots:
     void onPositionChanged(double value);
     void onNextSong();
     void onPreviousSong();
-
 private slots:
     void onError();
     void onMediaStatusChanged();
+    //状态改变
+    void slotStateChanged(QMediaPlayer::State newState);
     //获得当前播放的index
     void slotIndexChange(int index);
 

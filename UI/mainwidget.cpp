@@ -84,7 +84,6 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //------下一首-------
         playController::getInstance().onNextSong();
-        playSongArea->slotPlayButtonChanged(true);
         return 0;
     }
     //上一首
@@ -92,7 +91,6 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //-------上一首------
         playController::getInstance().onPreviousSong();
-        playSongArea->slotPlayButtonChanged(true);
         return 0;
     }
     //暂停
@@ -100,7 +98,6 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //------暂停------
         playController::getInstance().play();
-        playSongArea->slotPlayButtonChanged(false);
         return 0;
     }
     //播放
@@ -108,7 +105,6 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //------播放------
         playController::getInstance().play();
-        playSongArea->slotPlayButtonChanged(true);
         return 0;
     }
 }
@@ -188,9 +184,16 @@ void Widget::allConnect()
     connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
 //    connect(playSongArea,&PlaySongArea::signalAddFromFavButton,musicListTable,&TableOne::selectListChanged);
 //    connect(playSongArea,&PlaySongArea::signalDelFromFavButton,musicListTable,&TableOne::selectListChanged);
+    connect(m_miniWidget->m_preBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPrevious);
+    connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotNext);
+    connect(musicListTable,&TableOne::addILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
+    connect(musicListTable,&TableOne::removeILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
+    connect(m_miniWidget,&miniWidget::signalFavBtnChange,playSongArea,&PlaySongArea::slotFavBtnChange);
+    connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&miniWidget::slotFavBtnChange);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&miniWidget::slotPlayingLab);
+    connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
 }
-
-
 
 void Widget::initGSettings()//初始化GSettings
 {
@@ -370,5 +373,4 @@ void Widget::changeLightTheme()
     musicListTable->setHightLightAndSelect();
     historyListTable->initStyle();
     historyListTable->setHighlight(-1);
-
 }
