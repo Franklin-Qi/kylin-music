@@ -88,7 +88,7 @@ void TableOne::initUI()
     tableTitleLayout->addWidget(albumTitle,1);
     tableTitleLayout->addStretch(0);
     tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
-    tableTitleLayout->addSpacing(18);
+    tableTitleLayout->addSpacing(10);
     tableTitleLayout->setSpacing(0);
     tableTitleLayout->setContentsMargins(3.5,0,2.5,0);
     songNameTitle->setStyleSheet("color:#8F9399;");
