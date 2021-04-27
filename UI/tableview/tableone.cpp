@@ -38,7 +38,6 @@ void TableOne::initTableViewStyle()
     tableView->hideColumn(4);
     tableView->hideColumn(5);
     tableView->hideColumn(6);
-    tableView->resize(800,1000);
     tableView->show();
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
@@ -89,6 +88,7 @@ void TableOne::initUI()
     tableTitleLayout->addWidget(albumTitle,1);
     tableTitleLayout->addStretch(0);
     tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
+    tableTitleLayout->addSpacing(18);
     tableTitleLayout->setSpacing(0);
     tableTitleLayout->setContentsMargins(3.5,0,2.5,0);
     songNameTitle->setStyleSheet("color:#8F9399;");
