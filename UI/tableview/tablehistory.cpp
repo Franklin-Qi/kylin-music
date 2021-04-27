@@ -23,39 +23,50 @@ void TableHistory::initSetModel()
     m_model->setView(*m_tableHistory);
 
     historyTitileLabel = new QLabel(this);
-    historyTitileLabel->setText(tr("播放列表"));
+    historyTitileLabel->setText(tr("HistoryPlayList"));
     listCountLabel = new QLabel(this);
-    int num = m_model->count();
-    listCountLabel->setText(tr("共") + QString::number(num) + tr("首"));
-
     historyTitileWidget = new QWidget(this);
-
+    historyTitileWidget->setFixedHeight(64);
     deleteAllBtn = new QToolButton(this);
-    //文字在图标旁边
     deleteAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     deleteAllBtn->setIconSize(QSize(16,16));
     deleteAllBtn->setIcon(QIcon(":/img/default/delete.png"));
     deleteAllBtn->setText(tr("清空"));
-
     titleHBoxLayout = new QHBoxLayout();
     historyTitileWidget->setLayout(titleHBoxLayout);
     titleHBoxLayout->addWidget(historyTitileLabel,Qt::AlignLeft);
     titleHBoxLayout->addWidget(listCountLabel,Qt::AlignLeft);
     titleHBoxLayout->addWidget(deleteAllBtn,Qt::AlignRight);
-    mainVLayout->addWidget(historyTitileWidget);
+
+    nullPageWidget = new QWidget(this);
+    nullIconLabel = new QLabel(this);
+    nullIconLabel->setPixmap(QPixmap(":/img/default/null.png").scaled(122,122));
+    nullTextLabel = new QLabel(this);
+    nullTextLabel->setFixedHeight(30);
+    nullTextLabel->setText(tr("The playlist has no songs"));
+    nullPageLayout = new QVBoxLayout();
+    nullPageLayout->addStretch(1);
+    nullPageLayout->addWidget(nullIconLabel);
+    nullIconLabel->setAlignment(Qt::AlignHCenter);
+    nullPageLayout->addWidget(nullTextLabel);
+    nullTextLabel->setAlignment(Qt::AlignHCenter);
+    nullPageLayout->addStretch(1);
+    nullPageLayout->setSpacing(20);
+    nullPageLayout->setAlignment(Qt::AlignHCenter);
+    nullPageWidget->setLayout(nullPageLayout);
+
+    mainVLayout->addWidget(historyTitileWidget,Qt::AlignTop);
+//    mainVLayout->addStretch(0);
     mainVLayout->addWidget(m_tableHistory);
+    mainVLayout->addWidget(nullPageWidget);
     mainVLayout->setMargin(0);
     mainVLayout->setSpacing(0);
     this->setLayout(mainVLayout);
-
-//    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(this);
-//    effect->setOffset(0, 0);          //设置向哪个方向产生阴影效果(dx,dy)，特别地，(0,0)代表向四周发散
-//    effect->setColor(QColor(220,220,220));       //设置阴影颜色，也可以setColor(QColor(220,220,220))
-//    effect->setBlurRadius(25);        //设定阴影的模糊半径，数值越大越模糊
-//    this->setGraphicsEffect(effect);
     this->setFixedWidth(320);
-    this->setAutoFillBackground(true);
-    this->setBackgroundRole(QPalette::Base);
+//    this->setAutoFillBackground(true);
+//    this->setBackgroundRole(QPalette::Base);
+
+    changeNumber();
 
 
 }
@@ -66,6 +77,7 @@ void TableHistory::initStyle()
         qDebug() << "color " << WidgetStyle::themeColor;
         this->setStyleSheet("background:#FAFAFA");
         historyTitileWidget->setStyleSheet("background:#FAFAFA");
+        nullPageWidget->setStyleSheet("background:#FAFAFA");
         m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA");
 
     }
@@ -74,6 +86,7 @@ void TableHistory::initStyle()
         qDebug() << "color " << WidgetStyle::themeColor;
         this->setStyleSheet("background-color:#1F2022");
         historyTitileWidget->setStyleSheet("background:#1F2022");
+        nullPageWidget->setStyleSheet("background:#1F2022");
         m_tableHistory->setStyleSheet("border:none;background-color:#1F2022");
     }
 
@@ -90,13 +103,12 @@ void TableHistory::initStyle()
 
 void TableHistory::deleteAllClicked()
 {
-//    QMessageBox msgBox;
-//    msgBox.setText(tr("是否清空播放列表？"));
-    QMessageBox msg(QMessageBox::Warning,tr("提示信息"),tr("是否清除播放列表？"),QMessageBox::Yes|QMessageBox::No,this);
+    QMessageBox msg(QMessageBox::Warning,tr("Prompt information"),tr("Clear the playlist?"),QMessageBox::Yes|QMessageBox::No,this);
     int ret = msg.exec();
     if(ret == QMessageBox::Yes)
     {
         m_model->clear();
+        g_db->emptyHistoryMusic();
         changeNumber();
     }
     else
@@ -114,7 +126,11 @@ void TableHistory::initTableStyle()
     m_tableHistory->hideColumn(6);
     m_tableHistory->setAutoFillBackground(true);
     m_tableHistory->setAlternatingRowColors(false);
-    setHighlight(-1);
+    if(isHightLight == false) {
+        setHighlight(-1);
+    } else {
+        setHighlight(0);
+    }
 }
 
 
@@ -144,7 +160,15 @@ void TableHistory::showHistroryPlayList()
 void TableHistory::changeNumber()
 {
     int num = m_model->count();
-    listCountLabel->setText(tr("共") + QString::number(num) + tr("首"));
+    listCountLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
+    if(num == 0) {
+        nullPageWidget->show();
+        m_tableHistory->hide();
+        isHightLight = false;
+    } else{
+        nullPageWidget->hide();
+        m_tableHistory->show();
+    }
 }
 
 void TableHistory::addMusicToHistoryListSlot()
@@ -153,16 +177,16 @@ void TableHistory::addMusicToHistoryListSlot()
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
-    initTableStyle();
-    setHighlight(0);
+    isHightLight = true;
     changeNumber();
+    initTableStyle();
 }
 void TableHistory::initRightMenu()
 {
     m_menu = new QMenu(m_tableHistory);
-    playRow = new QAction("播放");
-    removeRow = new QAction("删除");
-    playNextRow = new QAction("下一首播放");
+    playRow = new QAction(tr("Play"));
+    removeRow = new QAction(tr("Delete"));
+    playNextRow = new QAction(tr("Play the next one"));
 
     m_menu->addAction(playRow);
     m_menu->addAction(removeRow);
@@ -192,7 +216,7 @@ void TableHistory::playSongs()
         playController::getInstance().play(nowListName,index);
         addMusicToHistoryListSlot();
     }else{
-        QMessageBox::about(this,"提示","歌曲不存在");
+        QMessageBox::about(this,tr("Prompt information"),tr("The song doesn't exist"));
         g_db->delMusicFromHistoryMusic(date.filepath);
         m_model->remove(index);
     }
@@ -203,7 +227,11 @@ void TableHistory::deleteSongs()
     musicDataStruct date = m_model->getItem(index);
     g_db->delMusicFromHistoryMusic(date.filepath);
     addMusicToHistoryListSlot();
+    if(index == 0) {
+        setHighlight(-1);
+    }
 }
+
 
 void TableHistory::playNextRowClicked()
 {

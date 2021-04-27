@@ -45,7 +45,7 @@ public:
     void setHightLightAndSelect();
 
     QList<musicDataStruct> getMusicList();
-    void addMusicToLocalOrPlayList();
+
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
@@ -57,6 +57,10 @@ private:
     void playSongs();
     void showInfo();
     void addToOtherList(QAction *listNameAction);
+
+    void addMusicSlot(); // 添加歌曲文件槽函数
+    void addDirMusicSlot();  //添加文件夹槽函数
+    void addMusicToDatebase(QStringList fileNames);
     QMenu *m_menu;  //新建一个Menu属性
     QSqlQueryModel *tableModel;
 
@@ -78,7 +82,6 @@ private:
     QString nowPlayListName;
 signals:
     void sendPathToPlayer(QString fp);
-
     void countChanges();
     void hoverIndexChanged(QModelIndex index);
     void addMusicToHistoryListSignal();
@@ -90,6 +93,17 @@ public slots:
     void selectListChanged(QString listname);  //切换歌单
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
+
+private:
+    QWidget *m_musicWidget;
+    QVBoxLayout *m_historyLayout;
+    QWidget *nullPageWidget;
+    QVBoxLayout *nullPageVLayout;
+    QHBoxLayout *nullPageHLayout;
+    QPushButton *n_addMusicButton;
+    QPushButton *n_addDirMusicButton;
+    QLabel *nullPageIconLabel;
+    QLabel *nullPageTextLabel;
 };
 
 #endif // TableOne_H
