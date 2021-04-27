@@ -37,6 +37,7 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
     minicolor();
 
     initAction();
+    initConnect();
     initStyle();
 }
 
@@ -118,18 +119,40 @@ void miniWidget::minicolor()
     if(WidgetStyle::themeColor == 1)
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#252526;}");
-        m_timeLab->setStyleSheet("QLabel{color:#8F9399;}");
+        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
         m_coverLabel->setPixmap(QPixmap(":/img/kylin-music-logo.png").scaled(48,48));
 
-        m_songNameLab->setStyleSheet("QLabel{color:#F9F9F9;}");
+        m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#F9F9F9;font-size:14px;}");
+
         m_preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/lastsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        m_loveBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
+//        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+//                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+//                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
+        }
+        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+        }
+        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+        }
+
+//        m_loveBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
+        slotFavExixtsDark();
 
         m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
 
@@ -152,20 +175,41 @@ void miniWidget::minicolor()
     else if(WidgetStyle::themeColor == 0)
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#FFFFFF;}");
-        m_timeLab->setStyleSheet("QLabel{color:#8F9399;}");
+        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
         m_coverLabel->setPixmap(QPixmap(":/img/kylin-music-logo.png").scaled(48,48));
 
-        m_songNameLab->setStyleSheet("QLabel{color:#303133;}");
+        m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#303133;font-size:14px;}");
+
         m_preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/lastsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
-        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+//        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+//                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+//                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
 
-        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
-                                 "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-                                 "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
+        }
+        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+        }
+        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
+        {
+            m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                          "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                          "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+        }
+
+//        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+//                                 "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+//                                 "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
+        slotFavExixts();
 
         m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
         m_closeBtn->setIconSize(QSize(30, 30));
@@ -208,17 +252,18 @@ void miniWidget::init_miniWidget()
     /************************************/
     m_vInfoLayout = new QVBoxLayout;
 
-    m_songNameLab = new QLabel;
-    m_songNameLab->setFixedSize(200,18);
-    m_songNameLab->setAlignment(Qt::AlignCenter);
+    m_songNameLab = new MyLabel;
+    m_songNameLab->setFixedSize(180,20);
+    m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
-    m_timeLab->setFixedSize(200,18);
-    m_timeLab->setAlignment(Qt::AlignCenter);
+    m_timeLab->setFixedSize(180,14);
+    m_timeLab->setAlignment(Qt::AlignLeft);
 
     m_vInfoLayout->setMargin(3);
     m_vInfoLayout->setSpacing(3);
     m_vInfoLayout->addWidget(m_songNameLab);
+    m_vInfoLayout->addSpacing(8);
     m_vInfoLayout->addWidget(m_timeLab);
 
     /******************************************/
@@ -318,6 +363,146 @@ void miniWidget::initStyle()
     QList<QPushButton*> list = this->findChildren<QPushButton*>();
     for(QPushButton *btn :list)
         btn->setFocusPolicy(Qt::NoFocus);
+}
+
+void miniWidget::initConnect()
+{
+    connect(&playController::getInstance(),&playController::playerStateChange,this,&miniWidget::playerStateChange);
+    connect(&playController::getInstance(),&playController::singalChangePath,this,&miniWidget::slotSongInfo);
+    connect(m_loveBtn,&QPushButton::clicked,this,&miniWidget::slotFav);
+}
+
+void miniWidget::playerStateChange(playController::PlayState newState)
+{
+    if(newState == playController::PlayState::PLAY_STATE)
+    {
+        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
+                                      "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
+                                      "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
+    }
+    else if(newState == playController::PlayState::PAUSED_STATE)
+    {
+        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+    }
+    else if(newState == playController::PlayState::STOP_STATE)
+    {
+        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
+                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
+                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+    }
+}
+
+void miniWidget::slotSongInfo(QString path)
+{
+    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
+
+    filePath = path.remove("file://");
+    slotFavExixts();
+}
+
+void miniWidget::slotFav()
+{
+    qDebug() << "miniWidget  我喜欢按钮要添加的路径" << filePath;
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
+        if(ret == DB_OP_SUCC)
+        {
+            qDebug() << "添加歌曲路径" << filePath;
+            qDebug() << "从我喜欢删除";
+        }
+    }
+    else
+    {
+
+        int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
+        if(ref == DB_OP_SUCC)
+        {
+            qDebug() << "删除歌曲路径" << filePath;
+            qDebug() << "添加到我喜欢";
+        }
+    }
+    slotFavExixts();
+
+}
+
+void miniWidget::slotFavExixts()
+{
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
+    emit signalFavBtnChange(filePath);
+}
+
+void miniWidget::slotFavExixtsDark()
+{
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        m_loveBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
+//        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+//                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+//                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+//                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
+    emit signalFavBtnChange(filePath);
+}
+
+void miniWidget::slotFavIsExixts(QString filePath)
+{
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+                                 "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+                                 "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+                                 "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
+}
+
+void miniWidget::slotFavBtnChange(QString filePath)
+{
+    if(g_db->checkSongIsInFav(filePath))
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
+
+    }
+    else
+    {
+        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
+                                 "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
+                                 "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
+                                 "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
+    }
+}
+
+void miniWidget::slotPlayingLab(QString playing)
+{
+    m_songNameLab->setText(playing);
+}
+
+void miniWidget::slotTimeLab(QString time)
+{
+    m_timeLab->setText(time);
 }
 
 void miniWidget::songText(QString songName)

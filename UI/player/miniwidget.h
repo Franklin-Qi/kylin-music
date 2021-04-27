@@ -28,6 +28,10 @@
 #include <QMenu>
 #include <QAction>
 
+#include "UIControl/player/player.h"
+#include "UIControl/base/musicDataBase.h"
+#include "UI/base/mylabel.h"
+
 const QString miniMainColor = "QFrame{background:#FFFFFF;}";
 
 #pragma pack(push)
@@ -48,16 +52,28 @@ public:
     void songText(QString songName); //mini 正在播放
 protected:
     void keyPressEvent(QKeyEvent *event);
-
+signals:
+    //发送信号mini窗口我喜欢按钮改变
+    void signalFavBtnChange(QString filePath);
 private:
     void initAction();
+    void initConnect();
     //初始化样式
     void initStyle();
 
 public slots:
-
-
-
+    void playerStateChange(playController::PlayState newState);
+    void slotFavExixts();
+    void slotFavExixtsDark();
+    void slotFavIsExixts(QString filePath);
+    void slotSongInfo(QString path);
+    void slotFav();
+    //接收播放区我喜欢按钮改变
+    void slotFavBtnChange(QString filePath);
+    //获取正在播放的title
+    void slotPlayingLab(QString playing);
+    //获取正在播放的时长
+    void slotTimeLab(QString time);
 public:
     QFrame *m_mainFrame;
 
@@ -73,7 +89,7 @@ public:
     QPushButton *m_playStateBtn;
     QPushButton *m_nextBtn;
 
-    QLabel *m_songNameLab;
+    MyLabel *m_songNameLab;
     QLabel *m_timeLab;
 
     void minicolor();
@@ -102,6 +118,7 @@ private:
 
     QVBoxLayout *m_vInfoLayout;
     QVBoxLayout *m_vSysLayout;
+    QString filePath;
 };
 
 #pragma pack(pop)

@@ -165,8 +165,21 @@ void playController::removeSongFromCurList(QString name, int index)
         auto cr_index = m_playlist->currentIndex();
         emit curIndexChanged(cr_index);
         emit currentIndexAndCurrentList(cr_index,m_curList);
+        //删除正在播放的歌曲时，正在播放的歌曲名和时长实时更新
+        slotIndexChange(cr_index);
     }
 }
+
+playController::PlayState playController::getState()
+{
+    if(m_player->state() == QMediaPlayer::State::PlayingState)
+        return PlayState::PLAY_STATE;
+    else if(m_player->state() == QMediaPlayer::State::PausedState)
+        return PlayState::PAUSED_STATE;
+    else if(m_player->state() == QMediaPlayer::State::StoppedState)
+        return PlayState::STOP_STATE;
+}
+
 playController::playController()
     : m_curList(""),m_curIndex(-1)
 {
@@ -185,6 +198,7 @@ playController::playController()
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    connect(m_player,&QMediaPlayer::stateChanged,this,&playController::slotStateChanged);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -206,6 +220,7 @@ void playController::onNextSong()
     }
     qDebug() << " 当前"<< m_playlist->currentIndex();
     m_playlist->next();
+    m_player->play();
     curPlaylist();
     qDebug() << " next之后"<< m_playlist->currentIndex() << m_curIndex;
     auto index = m_playlist->currentIndex();
@@ -218,6 +233,7 @@ void playController::onPreviousSong()
         return;
     }
     m_playlist->previous();
+    m_player->play();
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
 }
@@ -242,6 +258,17 @@ playController::~playController(/* args */)
 
 bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 {
+
+}
+
+void playController::slotStateChanged(QMediaPlayer::State newState)
+{
+    if(newState == QMediaPlayer::State::PlayingState)
+        emit playerStateChange(playController::PlayState::PLAY_STATE);
+    else if(newState == QMediaPlayer::State::PausedState)
+        emit playerStateChange(playController::PlayState::PAUSED_STATE);
+    else if(newState == QMediaPlayer::State::StoppedState)
+        emit playerStateChange(playController::PlayState::STOP_STATE);
 
 }
 
