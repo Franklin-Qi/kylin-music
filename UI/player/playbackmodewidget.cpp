@@ -49,7 +49,7 @@ void PlayBackModeWidget::initWidget()
     currentItemInLoopBtn = new QToolButton(this);
     currentItemInLoopBtn->setFixedSize(114, 30);
     currentItemInLoopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    currentItemInLoopBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one"));
+    currentItemInLoopBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
     currentItemInLoopBtn->setIconSize(QSize(16,16));
     currentItemInLoopBtn->setText(tr("CurrentItemInLoop"));
     currentItemInLoopLayout->addWidget(currentItemInLoopBtn);

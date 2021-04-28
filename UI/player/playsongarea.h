@@ -67,6 +67,8 @@ public slots:
     void slotRandomClicked();
     void slotSequentialClicked();
     void slotCurrentItemInLoopClicked();
+
+    void setPlayMode(int playModel);
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
     void playerStateChange(playController::PlayState newState);

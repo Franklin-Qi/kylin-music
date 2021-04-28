@@ -299,7 +299,7 @@ void miniWidget::init_miniWidget()
     m_orderBtn = new QPushButton;
     m_orderBtn->setFixedSize(25,25);
     m_orderBtn->setCursor(Qt::PointingHandCursor);
-    m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
+    m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
     m_orderBtn->setProperty("isWindowButton", 0x1);
     m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
     m_orderBtn->setFlat(true);
@@ -370,6 +370,8 @@ void miniWidget::initConnect()
     connect(&playController::getInstance(),&playController::playerStateChange,this,&miniWidget::playerStateChange);
     connect(&playController::getInstance(),&playController::singalChangePath,this,&miniWidget::slotSongInfo);
     connect(m_loveBtn,&QPushButton::clicked,this,&miniWidget::slotFav);
+    connect(m_orderBtn,&QPushButton::clicked,this,&miniWidget::slotPlayModeClicked);
+    connect(&playController::getInstance(),&playController::signalPlayMode,this,&miniWidget::setPlayMode);
 }
 
 void miniWidget::playerStateChange(playController::PlayState newState)
@@ -503,6 +505,58 @@ void miniWidget::slotPlayingLab(QString playing)
 void miniWidget::slotTimeLab(QString time)
 {
     m_timeLab->setText(time);
+}
+
+void miniWidget::slotPlayModeClicked()
+{
+    int playMode = playController::getInstance().playmode();
+    switch (playMode)
+    {
+    case 1:
+        ++playMode;
+        break;
+    case 2:
+        ++playMode;
+        break;
+
+    case 3:
+        ++playMode;
+        break;
+
+   case 4:
+        playMode = 1;
+    default:
+        break;
+    }
+    setPlayMode(playMode);
+}
+
+void miniWidget::setPlayMode(int playModel)
+{
+    switch (playModel) {
+    case 1:
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+        m_orderBtn->setToolTip(tr("CurrentItemInLoop"));
+        playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
+        break;
+    case 2:
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
+        m_orderBtn->setToolTip(tr("Sequential"));
+        playController::getInstance().setPlaymode(playController::Sequential);
+        break;
+    case 3:
+        m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+        m_orderBtn->setToolTip(tr("Loop"));
+        playController::getInstance().setPlaymode(playController::Loop);
+        break;
+    case 4:
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle"));
+        m_orderBtn->setToolTip(tr("Random"));
+        playController::getInstance().setPlaymode(playController::Random);
+        break;
+    default:
+        break;
+    }
 }
 
 void miniWidget::songText(QString songName)

@@ -199,6 +199,7 @@ playController::playController()
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(m_player,&QMediaPlayer::stateChanged,this,&playController::slotStateChanged);
+    connect(m_playlist,&QMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
 }
 void playController::onCurrentIndexChanged()
 {
@@ -270,6 +271,18 @@ void playController::slotStateChanged(QMediaPlayer::State newState)
     else if(newState == QMediaPlayer::State::StoppedState)
         emit playerStateChange(playController::PlayState::STOP_STATE);
 
+}
+
+void playController::slotPlayModeChange(QMediaPlaylist::PlaybackMode mode)
+{
+    if(mode == QMediaPlaylist::PlaybackMode::CurrentItemInLoop)
+        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::CurrentItemInLoop));
+    else if(mode == QMediaPlaylist::PlaybackMode::Sequential)
+        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Sequential));
+    else if(mode == QMediaPlaylist::PlaybackMode::Loop)
+        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Loop));
+    else if(mode == QMediaPlaylist::PlaybackMode::Random)
+        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Random));
 }
 
 void playController::slotIndexChange(int index)

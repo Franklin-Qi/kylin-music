@@ -48,6 +48,9 @@ DEPENDPATH += qtsingleapplication
 LIBS +=-lpthread
 LIBS +=-lX11
 
+# 解析音频文件
+LIBS += -lavformat
+
 SOURCES += \
     UI/base/allpupwindow.cpp \
     UI/base/mylabel.cpp \

@@ -1,8 +1,13 @@
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+}
+
 #include "musicfileinformation.h"
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "mp3" << "ogg" << "wma" << "spx" << "flac";
+    musicType << "mp3" << "ogg" << "wma" << "flac" << "wav" << "ape" << "amr" << "m4a" << "ac3" << "aac" << "mid";
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
@@ -80,14 +85,36 @@ inline int MusicFileInformation::preNum(unsigned char byte) {
 
 QStringList MusicFileInformation::fileInformation(QString filepath)
 {
-
+    QStringList information;
     QByteArray byteArray = filepath.toLocal8Bit();
     TagLib::FileRef f(byteArray.data());
-//    if(f.isNull())
-//    {
-//        //can't read this music;
-//        continue;
-//    }
+    if(f.isNull())
+    {
+        QString name = fileInfo.completeBaseName();
+        QString singer = "未知歌手";
+        QString album = "未知专辑";
+        musicdataStruct.singer = singer;
+        musicdataStruct.album = album;
+        musicdataStruct.title  = name;
+
+        AVFormatContext *pFormatCtx = NULL;
+        avformat_open_input(&pFormatCtx, filepath.toStdString().c_str(), nullptr, nullptr);
+        if(pFormatCtx)
+        {
+            avformat_find_stream_info(pFormatCtx, nullptr);
+            qint64 duration = pFormatCtx->duration / 1000;
+            if(duration > 0)
+            {
+                QTime me(0,(duration/60000) % 60,(duration / 1000) % 60);
+                QString length = me.toString("mm:ss");
+                musicdataStruct.time = length;
+            }
+        }
+        avformat_close_input(&pFormatCtx);
+        avformat_free_context(pFormatCtx);
+        information << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+        return information;
+    }
     TagLib::PropertyMap propertyMap = f.file() ->properties();
 
     QString musicName = propertyMap["TITLE"].toString().toCString(true);
@@ -100,11 +127,6 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
     if(filterTextCode(musicAlbum).isEmpty())
         musicAlbum = "未知专辑";
     TagLib::AudioProperties *properties = f.audioProperties();
-    if(properties == nullptr)
-    {
-        qDebug() << "添加文件失败";
-        return songFiles;
-    }
 
     int seconds = properties->length() % 60;
     int minutes = (properties->length() - seconds) / 60;
@@ -115,6 +137,7 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
     musicdataStruct.singer = musicSinger;
     musicdataStruct.album = musicAlbum;
     musicdataStruct.time = musicTime;
+    qDebug() << "527 音频音频音频音频音频" << musicdataStruct.time;
     QStringList audioFileInformation;
     audioFileInformation << musicdataStruct.title << musicdataStruct.singer
                          << musicdataStruct.album << musicdataStruct.time;

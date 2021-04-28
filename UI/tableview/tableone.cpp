@@ -280,7 +280,7 @@ void TableOne::addMusicToLocalOrPlayList()
 {
     qDebug() << "添加歌曲";
     //获取歌曲路径
-    QStringList songFiles = QFileDialog::getOpenFileNames(this, tr("Open the file"),"","音乐文件(*.mp3 *.ogg *.wma *.spx *.flac)");  //歌曲文件
+    QStringList songFiles = QFileDialog::getOpenFileNames(this, tr("Open the file"),"","音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid)");  //歌曲文件
     qDebug() << songFiles;
     MusicFileInformation::getInstance().addFile(songFiles);
     QList<musicDataStruct> resList;
