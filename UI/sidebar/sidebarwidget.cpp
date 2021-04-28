@@ -240,7 +240,6 @@ void SideBarWidget::addItemToSongList()
 //    newBtn->setIcon(QIcon(":/img/default/songlist.png"));
 //    newBtn->setIcon(QIcon::fromTheme("stock_contact-list"));
     newPlayListLayout->setAlignment(Qt::AlignTop);
-    newPlayListLayout->addWidget(newBtn);
 //    newPlayListLayout->setContentsMargins(24,0,24,0);
     newPlayListLayout->setSpacing(6);
     QString text = newSonglistPup->enterLineEdit->text();
@@ -252,12 +251,15 @@ void SideBarWidget::addItemToSongList()
             {
                 newSonglistPup->pupDialog->hide();
         //        QMessageBox::about(this,tr("提示信息"),tr("歌单名已存在！！！"));
-                QMessageBox::about(this,tr("Prompt information"),tr("Single song name already exists!!!"));
+                QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Yes);
+                warn->button(QMessageBox::Yes)->setText("确定");
+                warn->exec();
                 return ;
             }
         }
 
         newBtn->setText(text);
+        newPlayListLayout->addWidget(newBtn);
         playListName.append(text);
         newSonglistPup->pupDialog->hide();
         g_db->createNewPlayList(text);
@@ -267,6 +269,7 @@ void SideBarWidget::addItemToSongList()
     {
         QString listName = newPlayListName();
         newBtn->setText(listName);
+        newPlayListLayout->addWidget(newBtn);
         playListName.append(listName);
         newSonglistPup->pupDialog->hide();
         g_db->createNewPlayList(listName);
@@ -332,9 +335,11 @@ void SideBarWidget::renamePlayList()
                 {
                     if(playListName.at(i) == text)
                     {
-                        newSonglistPup->pupDialog->hide();
+                        renameSongListPup->pupDialog->hide();
                 //        QMessageBox::about(this,tr("提示信息"),tr("歌单名已存在！！！"));
-                        QMessageBox::about(this,tr("Prompt information"),tr("Single song name already exists!!!"));
+                        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Yes);
+                        warn->button(QMessageBox::Yes)->setText("确定");
+                        warn->exec();
                         return ;
                     }
                 }

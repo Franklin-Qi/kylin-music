@@ -196,6 +196,7 @@ void PlaySongArea::initConnect()
     connect(hSlider,SIGNAL(sliderPressed()),this,SLOT(slotSlidePressd()));
     connect(hSlider,SIGNAL(sliderReleased()),this,SLOT(slotSlideReleased()));
     connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
+    connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -319,10 +320,38 @@ void PlaySongArea::slotSequentialClicked()
 
 void PlaySongArea::slotCurrentItemInLoopClicked()
 {
-    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one"));
+    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
     playModeBtn->setToolTip(tr("CurrentItemInLoop"));
     playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
     m_playBackModeWid->hide();
+}
+
+void PlaySongArea::setPlayMode(int playModel)
+{
+    switch (playModel) {
+    case 1:
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+        playModeBtn->setToolTip(tr("CurrentItemInLoop"));
+        playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
+        break;
+    case 2:
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
+        playModeBtn->setToolTip(tr("Sequential"));
+        playController::getInstance().setPlaymode(playController::Sequential);
+        break;
+    case 3:
+        playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+        playModeBtn->setToolTip(tr("Loop"));
+        playController::getInstance().setPlaymode(playController::Loop);
+        break;
+    case 4:
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle"));
+        playModeBtn->setToolTip(tr("Random"));
+        playController::getInstance().setPlaymode(playController::Random);
+        break;
+    default:
+        break;
+    }
 }
 
 void PlaySongArea::slotSongInfo(QString path)

@@ -124,6 +124,13 @@ void Widget::initAllComponent()
     musicListTable = new TableOne(tr("Song List"),this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
+
+    MotifWmHints hintt;
+    hintt.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hintt.functions = MWM_FUNC_ALL;
+    hintt.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hintt);
+
     m_miniWidget = new miniWidget();
     MotifWmHints hints;
     hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;

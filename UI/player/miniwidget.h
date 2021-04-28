@@ -74,6 +74,10 @@ public slots:
     void slotPlayingLab(QString playing);
     //获取正在播放的时长
     void slotTimeLab(QString time);
+    //设置播放模式
+    void slotPlayModeClicked();
+    //设置图标
+    void setPlayMode(int playModel);
 public:
     QFrame *m_mainFrame;
 

@@ -79,6 +79,7 @@ signals:
     void playerStateChange(playController::PlayState newState);
     void singalChangePath(QString path);
     void currentIndexAndCurrentList(int index,QString listname);
+    void signalPlayMode(int playModel);
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);
@@ -89,6 +90,8 @@ private slots:
     void onMediaStatusChanged();
     //状态改变
     void slotStateChanged(QMediaPlayer::State newState);
+    //播放模式改变
+    void slotPlayModeChange(QMediaPlaylist::PlaybackMode mode);
     //获得当前播放的index
     void slotIndexChange(int index);
 
