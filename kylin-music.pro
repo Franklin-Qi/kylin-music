@@ -139,3 +139,7 @@ DEPENDPATH += $$PWD/../../../../../usr/local/include
 unix: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libsqlite3.a
 
 LIBS +=-ldl
+
+#unix|win32: LIBS += -lsimple
+
+#unix|win32: LIBS += -lsqlite3

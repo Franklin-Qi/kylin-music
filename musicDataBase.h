@@ -68,8 +68,10 @@ public:
     int renamePlayList(const QString& oldPlayListName, const QString& newPlayListName);
     //从所有歌单中删除一首歌
     int delSongFromEveryWhere(const QString& filePath);
-    //测试
+    //搜索功能测试函数，可删
     void testSearch();
+    //搜索功能性能测试函数，可删
+    void testPerformance();
 
     /**************************新建歌曲增删改查****************************/
     //添加歌曲到新建歌单，使用歌曲filePath,歌单名title值，输入数据必须有效，
@@ -147,6 +149,8 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
+    // 对包含'的字符串做预处理，避免获取SQL语句时语法出错
+    QString preHandle(const QString& input);
 };
 
 #endif // MUSICDATABASE_H

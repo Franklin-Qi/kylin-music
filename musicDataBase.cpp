@@ -7,11 +7,8 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QSqlRecord>
-
-// ph-code
-//Q_DECLARE_OPAQUE_POINTER(sqlite3*)
-//Q_DECLARE_METATYPE(sqlite3*)
-
+#include<QTime>
+#include<sys/time.h>
 
 MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
 {
@@ -27,8 +24,6 @@ MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
         qDebug() << "存在旧版本数据库" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
     }
     m_database.setDatabaseName(dirPath + "mymusic.db");
-//    initSpellList();
-    // 初始化拼音转换的列表
 }
 
 MusicDataBase::~MusicDataBase()
@@ -82,8 +77,6 @@ int MusicDataBase::initDataBase()
         if(m_handle)
         {
             sqlite3_enable_load_extension(m_handle, 1); //允许加载扩展
-//            QSqlQueryModel sql;
-//            sql.setQuery("SELECT load_extension('libsimple')", m_database);
             QSqlQuery loadExtension(m_database);
             bool loadRes = loadExtension.exec("SELECT load_extension('libsimple')"); // 使用sql函数加载libsimple
             if(!loadRes)
@@ -123,17 +116,13 @@ int MusicDataBase::initDataBase()
 
     queryRes &= queryInit.exec(QString("create table if not exists ListOfPlayList (title varchar primary key)"));//创建播放列表名称列表
 
-
-    // ph-code
-
-    qDebug() << "before exec fts5" << queryRes;
     queryRes &= queryInit.exec(QString("create virtual table if not exists AuxIndexLocalMusicContent"
-                                       " using fts5(id UNINDEXED, title, singer, album, filepath UNINDEXED, time UNINDEXED, tokenize='simple')"));
-    // 为localMusic本地音乐表创建辅助的全文索引虚拟表fts5
-    qDebug() << "after exec fts5" << queryRes;
+                                       " using fts5(id UNINDEXED, title, singer, album, filepath UNINDEXED, time UNINDEXED, tokenize='simple', prefix='1 2 3 4 5')"));
+    // 为localMusic本地音乐表创建辅助的全文索引虚拟表fts5，设置前缀索引，设置非索引项，加载simple分词器包。
 //    queryRes &= queryInit.exec(QString("create trigger local_music_add after insert on LocalMusic begin"
 //                                       " insert into AuxIndexLocalMusicContent values(new.id, new.title); end"));
-    // 存在问题：利用触发器插入时需要额外操作（包括对新值处理从中文到拼音、从编码格式到不编码格式）。即便表中存储的并非base64，我们也需要处理从中文到拼音，包括取old变量值到转换
+    // 存在问题：利用触发器插入时需要额外操作（包括对新值处理从中文到拼音、从编码格式到不编码格式）。即便表中存储的并非base64，我们也需要处理从中文到拼音，包括取old变量值到转换，
+    // 废弃方案
 
     queryRes &= queryInit.exec(QString("create trigger if not exists local_music_delete before delete on LocalMusic begin"
                                        " delete from AuxIndexLocalMusicContent where id=old.id;"
@@ -189,7 +178,6 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
                 qDebug() << "添加失败，重复添加" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                 return DB_OP_ADD_REPEAT;
             }
-
             QSqlQuery addSongToLocal(m_database);
             QString addSongString = QString("insert into LocalMusic (filepath,title,singer,album,filetype,size,time) values('%1','%2','%3','%4','%5','%6','%7')").
                     arg(inPutStringHandle(fileData.filepath)).
@@ -207,31 +195,29 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
             QString setIndex = QString("update LocalMusic set idIndex='%1' WHERE filepath='%2'").arg(tempIndex).arg(inPutStringHandle(fileData.filepath));
             setRes &= setSongIDFromLocal.exec(setIndex);
 
-            // ph-code
             // 每插入一条记录，都要更新辅助的虚拟表AuxIndexLocalMusicContent
             QSqlQuery addSongToIndexTable(m_database);
-            QString addSongIndex = QString("insert into AuxIndexLocalMusicContent(id,title,singer,album,filepath,time) values(%1, '%2', '%3', '%4', '%5', '%6')")
-                    .arg(QString::number(tempIndex),
-                         fileData.title,
-                         fileData.singer,
-                         fileData.album,
-                         fileData.filepath,
-                         fileData.time);
+            QString addSongIndex = QString("insert into AuxIndexLocalMusicContent(id,title,singer,album,filepath,time) values('%1', '%2', '%3', '%4', '%5', '%6')")
+                    .arg(tempIndex)
+                    .arg(preHandle(fileData.title),
+                         preHandle(fileData.singer),
+                         preHandle(fileData.album),
+                         preHandle(fileData.filepath),
+                         preHandle(fileData.time));
             bool setVTableRes = addSongToIndexTable.exec(addSongIndex);
 
-
-
-            //testSearch();
-
-            if(true == (queryRes&setRes))
+            if(true == (queryRes&setRes&setVTableRes))
             {
                 return DB_OP_SUCC;
             }
             else
             {
                 qDebug() << "数据库操作失败，添加失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+                qDebug() << addSongToIndexTable.lastError().text();
+                qDebug() << addSongToIndexTable.lastQuery();
                 return DB_OP_ADD_FAILED;
             }
+
         }
         else
         {
@@ -633,6 +619,7 @@ int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>
         QString getSongListStringByKeyword = QString("select * from AuxIndexLocalMusicContent"
                                                      " where AuxIndexLocalMusicContent match simple_query('%1') order by rank")
                                                     .arg(keyword);
+
         getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
 
         if(true == getRes)
@@ -2019,73 +2006,153 @@ QString MusicDataBase::outPutStringHandle(const QString& output)
     return outOrigin;
 }
 
+QString MusicDataBase::preHandle(const QString &input)
+{
+    // 将'替换成''
+    QString res = input;
+    int iPos = res.indexOf("'", 0);
+    while(-1 != iPos){
+        res.insert(iPos, QString("'"));
+        iPos = res.indexOf("'", iPos + 2);
+    }
+    return res;
+}
+
 void MusicDataBase::testSearch()
 {
     // ph-code
+//    testPerformance();
     // 测试功能是否生效。
-    qDebug() << "ph-debug----------------------testsearch";
-    const QString keyword = "zj";
+    qDebug() << "----------------------testsearch";
+    const QString keyword = "luo";
     QList<musicDataStruct> resList;
     getSongInfoListFromLocalMusicByKeyword(resList, keyword);
     for(auto record : resList)
     {
         qDebug() << record.title << record.singer << record.album;
     }
-//    QSqlQuery testSql(m_database);
-//    QString sql = QString("select * from AuxIndexLocalMusicContent"
-//                          " where AuxIndexLocalMusicContent match simple_query('%1') order by rank").arg(keyword);
-//    bool res = testSql.exec(sql);
-//    qDebug() << testSql.lastQuery();
-//    qDebug() << res << testSql.lastError().text();
-//    while(testSql.next())
+    QSqlQuery testSql(m_database);
+    QString sql = QString("select title,simple_highlight_pos(AuxIndexLocalMusicContent,1)，singer,simple_highlight_pos(AuxIndexLocalMusicContent,2), album, simple_highlight_pos(AuxIndexLocalMusicContent,3) from AuxIndexLocalMusicContent"
+                          " where AuxIndexLocalMusicContent match simple_query('%1') order by rank").arg(keyword);
+
+    bool res = testSql.exec(sql);
+    qDebug() << testSql.lastQuery();
+    qDebug() << res << testSql.lastError().text();
+    while(testSql.next())
+    {
+        musicDataStruct temp;
+        temp.title  = testSql.value(1).toString();
+        temp.singer = testSql.value(2).toString();
+        temp.album  = testSql.value(3).toString();
+        temp.filepath = testSql.value(4).toString();
+        temp.time = testSql.value(5).toString();
+        qDebug() << testSql.value(0).toString() << temp.title << temp.singer << temp.album << temp.filepath << temp.time;
+    }
+
+
+//    qDebug() << "—————————————主搜索功能测试结束———————————————";
+//    QList<musicDataStruct> titleSongsList;
+//    QList<QString> singersList;
+//    QList<QString> albumsList;
+//    int Number = 4;
+//    getCurtEstimatedListByKeyword(keyword, Number, titleSongsList, singersList, albumsList);
+//    qDebug() << "匹配到的歌曲：";
+//    for(auto song : titleSongsList)
 //    {
-//        musicDataStruct temp;
-//        temp.title  = testSql.value(1).toString();
-//        temp.singer = testSql.value(2).toString();
-//        temp.album  = testSql.value(3).toString();
-//        temp.filepath = testSql.value(4).toString();
-//        temp.time = testSql.value(5).toString();
-//        qDebug() << testSql.value(0).toString() << temp.title << temp.singer << temp.album << temp.filepath << temp.time;
+//        qDebug() << song.title << song.filepath;
 //    }
-    qDebug() << "—————————————主搜索功能测试结束———————————————";
-    QList<musicDataStruct> titleSongsList;
-    QList<QString> singersList;
-    QList<QString> albumsList;
-    int Number = 4;
-    getCurtEstimatedListByKeyword(keyword, Number, titleSongsList, singersList, albumsList);
-    qDebug() << "匹配到的歌曲：";
-    for(auto song : titleSongsList)
-    {
-        qDebug() << song.title << song.filepath;
-    }
-    qDebug() << "匹配到的歌手：";
-    for(auto singer : singersList)
-    {
-        qDebug() << singer;
-        qDebug() << "根据该歌手匹配歌曲列表：";
-        QList<musicDataStruct> temp1;
-        getSongInfoListBySinger(temp1, singer);
-        for(auto item : temp1)
-        {
-            qDebug() << item.title << item.singer << item.album;
-        }
-    }
-    qDebug() << "匹配到的专辑：";
-    for(auto album : albumsList)
-    {
-        qDebug() << album;
-        qDebug() << "根据该专辑匹配歌曲列表：";
-        QList<musicDataStruct> temp2;
-        getSongInfoListByAlbum(temp2, album);
-        for(auto item : temp2)
-        {
-            qDebug() << item.title << item.singer << item.album;
-        }
-    }
+//    qDebug() << "匹配到的歌手：";
+//    for(auto singer : singersList)
+//    {
+//        qDebug() << singer;
+//        qDebug() << "根据该歌手匹配歌曲列表：";
+//        QList<musicDataStruct> temp1;
+//        getSongInfoListBySinger(temp1, singer);
+//        for(auto item : temp1)
+//        {
+//            qDebug() << item.title << item.singer << item.album;
+//        }
+//    }
+//    qDebug() << "匹配到的专辑：";
+//    for(auto album : albumsList)
+//    {
+//        qDebug() << album;
+//        qDebug() << "根据该专辑匹配歌曲列表：";
+//        QList<musicDataStruct> temp2;
+//        getSongInfoListByAlbum(temp2, album);
+//        for(auto item : temp2)
+//        {
+//            qDebug() << item.title << item.singer << item.album;
+//        }
+//    }
+//    qDebug() << "——————————单列模糊匹配测试完毕——————————";
+
 //    for(int i = 0; i < resList.size(); i++)
 //    {
 //        musicDataStruct temp = resList.at(i);
 //        qDebug() << temp.title << temp.time << temp.singer << temp.album;
 //    }
 
+}
+
+void MusicDataBase::testPerformance()
+{
+    // 测试性能
+    QList<QString> list;
+    list.append("cyx");
+    list.append("chenyixun");
+    list.append("chenyi");
+    list.append("陈");
+    list.append("陈奕迅");
+    QString keyword;
+    for(int j = 0; j < list.size(); j++)
+    {
+        keyword = list.at(j);
+        qDebug() << "————————当前测试keyword：" << keyword;
+        QSqlQuery testSql(m_database);
+        QString sql = QString("select * from AuxIndexLocalMusicContent"
+                              " where AuxIndexLocalMusicContent match simple_query('%1')").arg(keyword);
+        QString sqlOrder = QString("select * from AuxIndexLocalMusicContent"
+                              " where AuxIndexLocalMusicContent match simple_query('%1') order by rank").arg(keyword);
+
+        int execNum = 100;
+        bool res = true;
+        qDebug() << "测试未排序：---------------------";
+        struct timeval tpstart,tpend;
+        float timeuse;
+        gettimeofday(&tpstart,NULL);
+        for(int i = 0; i < execNum; i++)
+        {
+            res &= testSql.exec(sql);
+        }
+        gettimeofday(&tpend,NULL);
+        timeuse=(1000000*(tpend.tv_sec-tpstart.tv_sec) + tpend.tv_usec-tpstart.tv_usec) / 100.0;
+        qDebug() <<"测试时长：" << timeuse<< "us";
+
+        int n = 0;
+        while(testSql.next())
+        {
+    //        qDebug() << testSql.value(1).toString();
+            n++;
+        }
+        qDebug() << "返回条数" << n;
+
+        qDebug() << "测试已排序：---------------------";
+        gettimeofday(&tpstart,NULL);
+        for(int i = 0; i < execNum; i++)
+        {
+            res &= testSql.exec(sqlOrder);
+        }
+        gettimeofday(&tpend,NULL);
+        timeuse=(1000000*(tpend.tv_sec-tpstart.tv_sec) + tpend.tv_usec-tpstart.tv_usec) / 100.0;
+        qDebug() <<"测试时长：" << timeuse<< "us";
+
+        n = 0;
+        while(testSql.next())
+        {
+    //        qDebug() << testSql.value(1).toString();
+            n++;
+        }
+        qDebug() << "返回条数" << n;
+    }
 }

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
 <!-- Written by QtCreator 4.11.0, 2021-04-26T23:03:04. -->
+=======
+<<<<<<< HEAD
+<!-- Written by QtCreator 4.11.0, 2021-04-19T00:39:31. -->
+=======
+<!-- Written by QtCreator 4.11.0, 2021-04-26T17:31:32. -->
+>>>>>>> 3f7991133d12591d28cce91b0d46c608ea26c9ad
+>>>>>>> ceac45b5868a1cfff6f43aa2ac9c1dcb679c0601
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -123,7 +131,11 @@
       <value type="QString" key="QtProjectManager.QMakeBuildStep.QMakeArguments"></value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.QMakeForced">false</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.SeparateDebugInfo">false</value>
+<<<<<<< HEAD
       <value type="bool" key="QtProjectManager.QMakeBuildStep.UseQtQuickCompiler">false</value>
+=======
+      <value type="bool" key="QtProjectManager.QMakeBuildStep.UseQtQuickCompiler">true</value>
+>>>>>>> 3f7991133d12591d28cce91b0d46c608ea26c9ad
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.1">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -171,7 +183,11 @@
       <value type="QString" key="QtProjectManager.QMakeBuildStep.QMakeArguments"></value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.QMakeForced">false</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.SeparateDebugInfo">true</value>
+<<<<<<< HEAD
       <value type="bool" key="QtProjectManager.QMakeBuildStep.UseQtQuickCompiler">false</value>
+=======
+      <value type="bool" key="QtProjectManager.QMakeBuildStep.UseQtQuickCompiler">true</value>
+>>>>>>> 3f7991133d12591d28cce91b0d46c608ea26c9ad
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.1">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -282,8 +298,13 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+<<<<<<< HEAD
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/liangxin/QtDemo/hezuo/kylin-music/kylin-music.pro</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/liangxin/QtDemo/hezuo/kylin-music/kylin-music.pro</value>
+=======
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/phdreamer/ph-content/kylin-music/kylin-music.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/phdreamer/ph-content/kylin-music/kylin-music.pro</value>
+>>>>>>> 3f7991133d12591d28cce91b0d46c608ea26c9ad
     <value type="QString" key="RunConfiguration.Arguments"></value>
     <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
@@ -294,7 +315,11 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
+<<<<<<< HEAD
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/liangxin/QtDemo/hezuo/build-kylin-music-unknown_6c18a7-Debug</value>
+=======
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/phdreamer/ph-content/build-kylin-music-fsn-Debug</value>
+>>>>>>> 3f7991133d12591d28cce91b0d46c608ea26c9ad
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

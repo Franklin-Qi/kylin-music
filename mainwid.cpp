@@ -656,8 +656,6 @@ void MainWid::initDataBase()//数据库
     }
     qDebug() << "数据库加载成功";
 
-    // ph-code test
-    g_db->testSearch();
 }
 
 int MainWid::kylin_music_play_request(QString path)
