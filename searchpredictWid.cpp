@@ -63,8 +63,8 @@ void searchPredictWid::initStyleSheet ()
     QString str_itemHeight = QString("QListWidget::item{height:%1px;}").arg (QString::number (itemHeight));
     //QString str_labelHeight = QString("QLabel{height:%1px;}").arg (QString::number (labelHeight));
     int searchPredictWidHeight = 3*labelHeight+singerLwHeight+albumLwHeight+songLwHeight;
-    qDebug()<<singerLwHeight<<"    "<<albumLwHeight<<"  "<<songLwHeight;
-    qDebug()<<"the searchPredictHeight is:"<<searchPredictWidHeight;
+    //qDebug()<<singerLwHeight<<"    "<<albumLwHeight<<"  "<<songLwHeight;
+    //qDebug()<<"the searchPredictHeight is:"<<searchPredictWidHeight;
     this->predictWid->setObjectName ("predictWid");
     mainLayout->setSpacing (0);
     //测试看效果
@@ -165,7 +165,7 @@ void searchPredictWid::initStyleSheet ()
     int height = labelHeight;
     mainLayout->setAlignment(Qt::AlignTop);
     if(singerLwHeight>0){
-        qDebug()<<"singerLwHeight is: "<<singerLwHeight;
+        //qDebug()<<"singerLwHeight is: "<<singerLwHeight;
         mainLayout->addWidget (predictSingerLab );
         mainLayout->addWidget (predictSingerLw);
         height += labelHeight+singerLwHeight;
@@ -198,11 +198,11 @@ void searchPredictWid::initStyleSheet ()
 
 void searchPredictWid::initListen()
 {
-    qDebug()<<"the labelHeight is:"<<labelHeight;
-    qDebug()<<"the itemHeight is:"<<itemHeight;
-    qDebug()<<"the singerNum is:"<<singerNum;
-    qDebug()<<"the albumNum is:"<<albumNum;
-    qDebug()<<"the songNum is:"<<songNum;
+    //qDebug()<<"the labelHeight is:"<<labelHeight;
+    //qDebug()<<"the itemHeight is:"<<itemHeight;
+    //qDebug()<<"the singerNum is:"<<singerNum;
+    //qDebug()<<"the albumNum is:"<<albumNum;
+    //qDebug()<<"the songNum is:"<<songNum;
 }
 
 void searchPredictWid::initConnect (){
@@ -213,13 +213,13 @@ void searchPredictWid::initConnect (){
 }
 
 void searchPredictWid::do_itemClicked (QListWidgetItem *item){
-    qDebug()<<"call do_itemClicked function";
-    qDebug()<<"the objectName is: "<<item->listWidget ()->objectName ();
+    //qDebug()<<"call do_itemClicked function";
+    //qDebug()<<"the objectName is: "<<item->listWidget ()->objectName ();
     if(item->listWidget ()->objectName () == "predictSingerLw_lx"){
         QList<QLabel*>labels =  predictSingerLw->itemWidget (item)->findChildren<QLabel*>();
         foreach(QLabel* label,labels){
             QString field = label->text ();
-            qDebug()<<"the text in label is:"<<field;
+            //qDebug()<<"the text in label is:"<<field;
             //emit 0 就是singer，1是album，2song，
             int choose = 0;
             musicDataStruct music;
@@ -230,7 +230,7 @@ void searchPredictWid::do_itemClicked (QListWidgetItem *item){
         QList<QLabel*>labels =  predictAlbumLw->itemWidget (item)->findChildren<QLabel*>();
         foreach(QLabel* label,labels){
             QString field = label->text ();
-            qDebug()<<"the text in label is:"<<field;
+            //qDebug()<<"the text in label is:"<<field;
             //emit 0 就是singer，1是album，2song，
             int choose = 1;
             musicDataStruct music;
@@ -241,7 +241,7 @@ void searchPredictWid::do_itemClicked (QListWidgetItem *item){
         QList<QLabel*>labels =  predictSongLw->itemWidget (item)->findChildren<QLabel*>();
         foreach(QLabel* label,labels){
             QString field = label->text ();
-            qDebug()<<"the text in label is:"<<field;
+            //qDebug()<<"the text in label is:"<<field;
             //emit 0 就是singer，1是album，2song，
             int choose = 2;
             musicDataStruct music = this->songList.at (predictSongLw->currentRow ());
@@ -253,7 +253,7 @@ void searchPredictWid::do_itemClicked (QListWidgetItem *item){
     QList<QLabel*>labels =  predictSingerLw->itemWidget (item)->findChildren<QLabel*>();
     foreach(QLabel* label,labels){
         QString field = label->text ();
-        qDebug()<<"the text in label is:"<<field;
+        //qDebug()<<"the text in label is:"<<field;
         //emit 0 就是singer，1是album，2song，
         int choose = 0;
         emit searchForField (field,choose);

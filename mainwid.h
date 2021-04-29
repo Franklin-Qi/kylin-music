@@ -203,7 +203,6 @@ public slots:
     void on_listWidget_doubleClicked_lx(QListWidgetItem* item); //test:lx 搜索播放相关
     //test:lx 预测搜索框
     void predictWidClickShow(QString& field,int& choose,musicDataStruct& music);
-    void testLx();
     void onSearchPredict_lx();
     void onSearchPredict();
     void hideSearchEdit();

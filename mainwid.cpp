@@ -41,8 +41,6 @@ MainWid::MainWid(QString str, QWidget *parent)
     initAction();//初始化事件
     initSystemTray();//初始化托盘
 
-    //test:lx
-    //qDebug()<<"test lx rightchangewid: "<<mySideBar->rightChangeWid->count ();
 
     if(argName != "")
     {
@@ -51,8 +49,7 @@ MainWid::MainWid(QString str, QWidget *parent)
     initStyle();//初始化样式
     qDebug() << "Mainwindow displayed at " << QDateTime::currentDateTime().toString("    yyyy-MM-dd hh:mm:ss.zzz"); //设置显示格式
 
-    //test:lx
-    //myTitleBar->searchEdit->setText ("as");
+
 
     mySideBar->rightChangeWid->setCurrentIndex (0);
 
@@ -313,15 +310,16 @@ void MainWid::onPlaylistChanged(int index)
     //if(mySideBar->currentSelectList == -10)
     if(index == -10)
     {
-        qDebug()<< __FILE__ << " " <<__LINE__ <<"onPlaylistChanged";
+        //qDebug()<< __FILE__ << " " <<__LINE__ <<"onPlaylistChanged";
         connect(myPlaySongArea->searchBufferPlayer,SIGNAL(positionChanged(qint64)),
             this,SLOT(playlist_positionChange(qint64)),Qt::UniqueConnection);  //滑块进度条位置改变
         connect(myPlaySongArea->searchBufferPlayer,SIGNAL(durationChanged(qint64)),
             this,SLOT(playlist_durationChange(qint64)),Qt::UniqueConnection);
-        qDebug()<<"onPlayListchanged,index=  "<<index;
+        //qDebug()<<"onPlayListchanged,index=  "<<index;
     }
     else
     {
+
         if(mySideBar->musicListChangeWid[index]->m_musicInitialed == false){
             qDebug()<< __FILE__ << " " <<__LINE__ <<"QMediaPlayer Not initialed";
             return ;
@@ -995,7 +993,7 @@ void MainWid::play_Song()
 void MainWid::pause()
 {
     if(mySideBar->currentMusicPlaylist==-10){
-        qDebug()<<"call lx`s pause";
+
         if(myTitleBar->searchResultWidget->musicInfoWidget->count ()>0)
         {
             if(myPlaySongArea->searchBufferPlayer->state() == QMediaPlayer::PlayingState)
@@ -1114,7 +1112,6 @@ void MainWid::play()
 {
     //test:lx
     if(mySideBar->currentMusicPlaylist==-10){
-        qDebug()<<"call lx`s play";
         if(myTitleBar->searchResultWidget->musicInfoWidget->count ()>0)
         {
             if(myPlaySongArea->searchBufferPlayer->state() != QMediaPlayer::PlayingState)
@@ -1278,7 +1275,6 @@ void MainWid::play()
 //test:lx 搜索预测相关
 void MainWid::onSearchPredict (){
     QString enterStr = myTitleBar->searchEdit->text().trimmed();
-    qDebug() << "搜索" <<"输入栏" << enterStr;
     //    searchEdit->clear();
 
     if(enterStr == "")
@@ -1304,14 +1300,9 @@ void MainWid::onSearchPredict (){
     }
 }
 
-//test:lx 测试相关
-void MainWid::testLx (){
-    qDebug()<<"call testLx() function!!";
-}
 
 //预测搜索框里输入的字段
 void MainWid::onSearchPredict_lx(){
-    qDebug()<<"call onSearchPredict_lx;";
     QString enterStr = myTitleBar->searchEdit->text().trimmed();
     if(enterStr == "")
     {
@@ -1353,7 +1344,6 @@ void MainWid::onSearchPredict_lx(){
         delete preWid;
         preWid = new searchPredictWid(this,singer1,album1,title1);
     }
-    qDebug()<<"the height of Wid: "<<preWid->predictWid->height ();
     connect(preWid,SIGNAL(searchForField(QString&,int&,musicDataStruct&)),
             this,SLOT(predictWidClickShow(QString&,int&,musicDataStruct&)));
     preWid->predictWid->raise ();
@@ -1458,9 +1448,7 @@ void MainWid::onSearchPredict_lx(){
     QString str_a;
 
     str_a = QString::number (a);
-    qDebug()<<str_a;
     QString str2 = QString("height:%1px;").arg (str_a);
-    qDebug()<<"str2 is: "<<str2;
 }
 
 void MainWid::hideSearchEdit(){
@@ -1509,7 +1497,6 @@ void MainWid::on_sidebarWidget_customContextMenuRequested(const QPoint &pos)    
 }
 //test:lx
 void MainWid::on_musicInfoWidget_customContextMenuRequested_lx(const QPoint& pos){
-    qDebug()<<"call on_musicInfoWidget_customContextMenuRequested_lx";
     int ret;
     QListWidgetItem* curItem1 = myTitleBar->searchResultWidget->musicInfoWidget->itemAt(pos);
     if(curItem1 == NULL)
@@ -1588,7 +1575,6 @@ void MainWid::on_musicInfoWidget_customContextMenuRequested_lx(const QPoint& pos
 }
 void MainWid::on_musicInfoWidget_customContextMenuRequested(const QPoint &pos)
 {
-    qDebug()<<"on_musicInfoWidget_customContextMenuRequested!!!!";
     int ret;
     QListWidgetItem *curItem1 = mySideBar->myMusicListWid->musicInfoWidget->itemAt(pos);
 
@@ -1806,8 +1792,8 @@ void MainWid::add_music_to_songlist_lx(QAction *listact)
         qDebug() << "从歌曲列表中获取歌曲信息失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return;
     }
-    qDebug()<<"add song path is:"<<filePath;
-    qDebug()<<"add song list is:"<<listact->text ();
+    //qDebug()<<"add song path is:"<<filePath;
+    //qDebug()<<"add song list is:"<<listact->text ();
     QString* str_lx=new QString;
     *str_lx = listact->text ();
     if(str_lx->startsWith("新建歌单")){
@@ -1821,7 +1807,7 @@ void MainWid::add_music_to_songlist_lx(QAction *listact)
     delete str_lx;
     str_lx = NULL;
 
-    qDebug()<<"the ret is:"<<ret;
+    //qDebug()<<"the ret is:"<<ret;
     if(ret == DB_OP_SUCC)
     {
         QListWidgetItem *item1=new QListWidgetItem(mySideBar->musicListChangeWid[listindex]->musicInfoWidget);
@@ -2458,19 +2444,10 @@ void MainWid::getPlayListStop()
 //test:lx 从歌曲列表里删除，目前不知道到底是不是该启用，所以暂时先不实现这个功能
 void MainWid::deleteMusicFromLocalList_lx()
 {
-    qDebug()<<"call deleteMusicFromLocalList_lx function;";
     int row = myTitleBar->searchResultWidget->musicInfoWidget->currentIndex ().row ();
-    qDebug()<<"the right mouseBtn select: "<<row;
     QListWidgetItem* item1=myTitleBar->searchResultWidget->musicInfoWidget->item(row);
     myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1)->setStyleSheet ("background:red;");
-    qDebug()<<item1->isSelected ();
-    qDebug()<<myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1)->objectName ();
     SongItem* songitem_lx=dynamic_cast<SongItem*>(myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1));
-    qDebug()<<songitem_lx->filepath_lx;
-    qDebug()<<typeid(myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1)).name ();
-//    QWidget* wid_lx = myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (myTitleBar->searchResultWidget->musicInfoWidget->item(row));
-//    QLabel* label_lx = wid_lx->findChild<QLabel*>("songTimeLabel");
-//    qDebug()<<"the time is: "<<label_lx->text ();
 }
 
 // 从歌曲列表里删除
@@ -2561,7 +2538,6 @@ void MainWid::deleteMusicFromLocalList()
 //test:lx 歌曲信息
 void MainWid::getSongInfoAct_lx ()
 {
-    //qDebug()<<"call getSongInfoAct_lx";
     int ret;
     musicDataStruct fileData;
     mySongInfoWidget = new SongInfoWidget;
@@ -2571,7 +2547,6 @@ void MainWid::getSongInfoAct_lx ()
     QListWidgetItem* item1 = myTitleBar->searchResultWidget->musicInfoWidget->item (row);
     SongItem* songitem_lx = dynamic_cast<SongItem*>((myTitleBar->searchResultWidget->musicInfoWidget->itemWidget (item1)));
     QString musicPath = songitem_lx->filepath_lx;
-    qDebug()<<"musicPath is:"<<musicPath;
     ret = g_db->getSongInfoFromLocalMusic(musicPath, fileData);
     if(ret == DB_OP_SUCC)
     {
@@ -2807,7 +2782,7 @@ void MainWid::updatehistorywidget(int value)
 
 //test:lx 双击搜索列表的歌曲播放
 void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
-    //qDebug()<<"call on_listwidget_doubleClicked_lx";
+
     mySideBar->currentMusicPlaylist=-10;
     //假如其他的播放器正在播放，我要把他给解决了
     if(mySideBar->myMusicListWid->Music!=NULL){
@@ -2839,7 +2814,10 @@ void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
     myPlaySongArea->playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                            "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                            "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-
+    m_MiniWidget->m_playStateBtn->setIconSize(QSize(36,36));
+    m_MiniWidget->m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
+                                                "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
+                                                "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
     onPlaylistIndexChanged();
     //qDebug()<<"myPlaySongArea->searchBufferPlaylist->currentIndex:"<<myPlaySongArea->searchBufferPlaylist->currentIndex ();
     //myTitleBar->searchResultWidget->musicInfoWidget->
@@ -2849,7 +2827,6 @@ void MainWid::on_listWidget_doubleClicked_lx (QListWidgetItem *item){
 void MainWid::on_listWidget_doubleClicked(QListWidgetItem *item)//双击本地音乐播放playlist
 {
 
-    qDebug()<<"call on_listWidget_doubleClicked";//test:lx
 
     int row;
     int ret;
@@ -2860,7 +2837,10 @@ void MainWid::on_listWidget_doubleClicked(QListWidgetItem *item)//双击本地�
     default_photo = default_photo.scaled(40,40,Qt::KeepAspectRatio);
     myPlaySongArea->coverPhotoLabel->setPixmap(default_photo);
     m_MiniWidget->m_coverLabel->setPixmap(default_photo);
-
+    //test:lx
+    if(myPlaySongArea->searchBufferPlayer!=NULL){
+        myPlaySongArea->searchBufferPlayer->stop ();
+    }
     if (mySideBar->currentMusicPlaylist == -2) {
         mySideBar->currentMusicPlaylist = mySideBar->currentSelectList;
     }
@@ -2956,6 +2936,9 @@ void MainWid::on_musicListChangeWid_doubleClicked(QListWidgetItem *item)
         if (mySideBar->currentMusicPlaylist == -1)
         {
             mySideBar->myMusicListWid->Music->stop();
+        }
+        else if(mySideBar->currentMusicPlaylist==-10){
+            myPlaySongArea->searchBufferPlayer->stop ();
         }
         else
         {
@@ -3217,7 +3200,6 @@ void MainWid::on_lastBtn_clicked()             //上一首
 
     //test:lx 搜索界面的上一曲
     if(mySideBar->currentMusicPlaylist==-10){
-        qDebug()<<"call on_lastBtn_clicked";
         myPlaySongArea->searchBufferPlayer->stop ();
         myPlaySongArea->searchBufferPlaylist->setCurrentIndex (myPlaySongArea->searchBufferPlaylist->previousIndex ());
         myPlaySongArea->searchBufferPlayer->play ();
@@ -3371,7 +3353,7 @@ void MainWid::on_nextBtn_clicked()      //下一首
 {
     //test:lx
     if(mySideBar->currentMusicPlaylist == -10){
-        qDebug()<<"call on_nextBtn_clicked";
+
         myPlaySongArea->searchBufferPlayer->stop ();
         myPlaySongArea->searchBufferPlaylist->setCurrentIndex (myPlaySongArea->searchBufferPlaylist->nextIndex ());
         myPlaySongArea->searchBufferPlayer->play ();
@@ -3848,7 +3830,7 @@ void MainWid::slidePress() //滑动条鼠标按下
 {
     if(mySideBar->currentSelectList==-10)
     {
-        qDebug()<<"call sliderPress _lx";
+        //qDebug()<<"call sliderPress _lx";
         myPlaySongArea->searchBufferPlayer->pause();
 
         myPlaySongArea->playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
@@ -3913,8 +3895,8 @@ void MainWid::slideRelease()   //滑动条鼠标弹起
 {
     if(mySideBar->currentSelectList==-10)
     {
-        qDebug()<<"call sliderRelease _lx";
-        qDebug()<<"this sliderrealease at position: "<<hSlider->value ();
+        //qDebug()<<"call sliderRelease _lx";
+        //qDebug()<<"this sliderrealease at position: "<<hSlider->value ();
         myPlaySongArea->searchBufferPlayer->setPosition (hSlider->value ());
         myPlaySongArea->searchBufferPlayer->play();
 
@@ -4965,6 +4947,7 @@ void MainWid::onPlaylistIndexChanged(){
     ret = g_db->getSongInfoFromLocalMusic(filepath,musicdata);
     if(ret == DB_OP_SUCC){
         myPlaySongArea->songText (musicdata.title);
+        m_MiniWidget->m_songNameLab->setText (musicdata.title);
     }
     else{
         qDebug()<<"there are some problems;";
