@@ -20,9 +20,16 @@ void searchPredictWid::initTools (QWidget* parent)
 {
     predictWid = new QWidget(parent);
     mainLayout = new QVBoxLayout(predictWid);
-    predictSingerLab = new QLabel("Singer");
-    predictAlbumLab = new QLabel("Album");
-    predictSongLab = new QLabel("Song" );
+    predictSingerLab = new QLabel("歌手");
+    /*
+    predictSingerLab->setText (
+                QObject::tr("<font color = red>%1</font>").arg("abc")+
+            QObject::tr("<font color = blue>%1</font>").arg("efg")+
+            "hij");
+    */
+
+    predictAlbumLab = new QLabel("专辑");
+    predictSongLab = new QLabel("歌曲" );
     predictSingerLw = new QListWidget();
     predictSingerLw->setObjectName ("predictSingerLw_lx");
     predictAlbumLw = new QListWidget( );
@@ -70,14 +77,22 @@ void searchPredictWid::initStyleSheet ()
                                               );
     //已经完成
     */
-    this->predictWid->setStyleSheet("QListWidget{background-color:#FFFACD;border:0px;}"
+    this->predictWid->setStyleSheet("QListWidget{background-color:#F9F9F9;border:0px;}"
                                        "QListWidget::item:selected{background-color:#FFFACD;}"
-                                       "QListWidget::item:hover{background-color:blue;}"
-                                              "QWidget#predictWid{background:#FFFACD;}"
+                                       "QListWidget::item:hover{background-color:#40A9FB;border-radius:8px;}"
+                                              "QWidget#predictWid{background:#F9F9F9;border-radius:8px;}"
                                                 +str_itemHeight
                                               );
 
+    QGraphicsDropShadowEffect *shadow_effect = new QGraphicsDropShadowEffect(this);
+        shadow_effect->setOffset(0, 0);
 
+        //阴影颜色
+        shadow_effect->setColor(QColor(38, 78, 119, 127));
+
+        //阴影半径
+        shadow_effect->setBlurRadius(22);
+    this->predictWid->setGraphicsEffect (shadow_effect);
     //predictWid->setFixedHeight (searchPredictWidHeight+100);
     //predictWid->setFixedHeight (600);
     //predictWid->setMaximumHeight (600);
@@ -156,7 +171,8 @@ void searchPredictWid::initStyleSheet ()
         height += labelHeight+singerLwHeight;
         QLabel* fixLine = new QLabel;
         fixLine->setFixedHeight (3);
-        fixLine->setStyleSheet ("background:blue;");
+        fixLine->setStyleSheet ("background:black;");
+        mainLayout->addSpacing (2);
         mainLayout->addWidget (fixLine);
     }
     if(albumLwHeight>0){
@@ -166,7 +182,8 @@ void searchPredictWid::initStyleSheet ()
         height += labelHeight+albumLwHeight;
         QLabel* fixLine = new QLabel;
         fixLine->setFixedHeight (3);
-        fixLine->setStyleSheet ("background:blue;");
+        fixLine->setStyleSheet ("background:black;");
+        mainLayout->addSpacing (2);
         mainLayout->addWidget (fixLine);
     }
     if(songLwHeight>0){

@@ -134,7 +134,8 @@ void TitleBar::initTitle()
 //    searchEdit->setContentsMargins(0,4,0,0);
     //searchEdit->hide();
     searchBtn = new QPushButton(searchEdit);
-
+    //test:lx
+    //searchBtn->setStyleSheet ("background:red;");
     searchBtn->setFixedSize(16,16);
     searchBtn->setCursor(Qt::PointingHandCursor);
 //    searchBtn->setIcon(QIcon::fromTheme("search-symbolic"));
@@ -381,6 +382,8 @@ void TitleBar::titlecolor()
                                  border-image:url(:/img/default/search.png);}\
                                  QPushButton::hover{border-image:url(:/img/hover/search.png);}");
 
+
+
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"
                               "QPushButton::hover{background:#D4DBE9;opacity:0.04;}"
@@ -406,9 +409,11 @@ void TitleBar::titlecolor()
 
         searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
 
+
         searchBtn->setStyleSheet("QPushButton{background:transparent;\
                                  border-image:url(:/img/default/search.png);}\
                                  QPushButton::hover{border-image:url(:/img/hover/search.png);}");
+
 
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"

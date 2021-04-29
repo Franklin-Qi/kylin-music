@@ -5145,7 +5145,11 @@ void MainWid::showSearchResultWidget_lx(){
 }
 
 void MainWid::showSearchResultWidget_lx2(){
-
+    //mySideBar->PlayListBtn->setFocusPolicy (Qt::NoFocus);
+//    mySideBar->PlayListBtn->setIcon(QIcon(":/img/default/songlist.png"));
+//    mySideBar->PlayListBtn->setStyleSheet("QToolButton{padding-left:15px;margin-left:10px;\
+//                        font-size: 14px;background-color:#FAFAFA;color:#303133;border-radius:16px;}"
+//                        "QToolButton::hover{background-color:#EEEEEE;border-radius:16px;}");
     QString enterStr = myTitleBar->searchEdit->text().trimmed();
     mySideBar->currentSelectList=-10;
     if(enterStr != "")

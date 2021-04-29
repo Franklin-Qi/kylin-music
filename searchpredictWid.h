@@ -9,6 +9,7 @@
 #include<QString>
 #include<QDebug>
 #include<QObject>
+#include<QGraphicsDropShadowEffect>
 
 
 #include"musicDataBase.h"
