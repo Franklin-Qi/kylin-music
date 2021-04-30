@@ -19,7 +19,6 @@
 #define WIDGETSTYLE_H
 
 #include <QGSettings>
-#include <QCollator>
 
 #define KYLINRECORDER "org.kylin-music-data.settings"
 #define FITTHEMEWINDOW "org.ukui.style"

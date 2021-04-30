@@ -172,9 +172,13 @@ void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
+<<<<<<< HEAD
 //    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicSlot);
     connect(addMusicFileAction,&QAction::triggered,this,&TableOne::addMusicSlot);
     connect(addDirMusicAction,&QAction::triggered,this,&TableOne::addDirMusicSlot);
+=======
+    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicSlot);
+>>>>>>> upstream/feature-refactor
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
     connect(n_addMusicButton,&QPushButton::clicked,this,&TableOne::addMusicSlot);
@@ -328,6 +332,7 @@ void TableOne::addToOtherList(QAction *listNameAction)
     }
 }
 void TableOne::addMusicSlot()
+<<<<<<< HEAD
 {
     QFileDialog *fileDialog = new QFileDialog;
 
@@ -452,6 +457,43 @@ void TableOne::addDirMusicSlot()
 
 void TableOne::addMusicToDatebase(QStringList fileNames)
 {
+=======
+{
+    qDebug() << "添加歌曲";
+    //获取歌曲路径
+    QStringList songFiles = QFileDialog::getOpenFileNames(this, tr("Open the file"),"","音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid)");  //歌曲文件
+    qDebug() << songFiles;
+    addMusicToDatebase(songFiles);
+}
+
+void TableOne::addDirMusicSlot()
+{
+    QFileDialog *fileDialog = new QFileDialog;
+    fileDialog->setFileMode(QFileDialog::Directory);
+    QStringList m_fileNames;
+    if (fileDialog->exec())
+    {
+        m_fileNames = fileDialog->selectedFiles();
+    }
+    qDebug() << m_fileNames;
+    foreach (QString dirPath, m_fileNames) {
+        QDir dir(dirPath);
+        QStringList nameFilters;
+        nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.spx" << "*.flac";
+        QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+        for(int i = 0; i < fileNames.count(); i++)
+        {
+            fileNames[i] = QString(dirPath + "/" + fileNames[i]);
+        }
+        qDebug() << fileNames;
+        addMusicToDatebase(fileNames);
+    }
+
+}
+
+void TableOne::addMusicToDatebase(QStringList fileNames)
+{
+>>>>>>> upstream/feature-refactor
     MusicFileInformation::getInstance().addFile(fileNames);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
@@ -466,9 +508,14 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         }
         if(ret == 0){
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
+<<<<<<< HEAD
 //            m_model->add(date);
             selectListChanged(nowListName);
 //            emit countChanges();
+=======
+            m_model->add(date);
+            emit countChanges();
+>>>>>>> upstream/feature-refactor
         }
         else{
             QMessageBox msg;

@@ -276,6 +276,7 @@
     </message>
     <message>
         <location filename="../UI/tableview/tablehistory.cpp" line="106"/>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tablehistory.cpp" line="224"/>
         <source>Prompt information</source>
         <translation>提示信息</translation>
@@ -311,6 +312,43 @@
         <translation>歌曲不存在</translation>
     </message>
     <message>
+=======
+        <location filename="../UI/tableview/tablehistory.cpp" line="219"/>
+        <source>Prompt information</source>
+        <translation>提示信息</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="163"/>
+        <source>Total </source>
+        <translation>共 </translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="163"/>
+        <source> songs</source>
+        <translation> 首</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="187"/>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="188"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="189"/>
+        <source>Play the next one</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="219"/>
+        <source>The song doesn&apos;t exist</source>
+        <translation>歌曲不存在</translation>
+    </message>
+    <message>
+>>>>>>> upstream/feature-refactor
         <location filename="../UI/tableview/tablehistory.cpp" line="106"/>
         <source>Clear the playlist?</source>
         <translation>清空播放列表？</translation>
@@ -319,40 +357,70 @@
 <context>
     <name>TableOne</name>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="70"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="88"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="71"/>
+        <source>Add</source>
+        <translation>添加歌曲</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="80"/>
+>>>>>>> upstream/feature-refactor
         <source>Song</source>
         <translation>歌曲</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="89"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="81"/>
+>>>>>>> upstream/feature-refactor
         <source>Singer</source>
         <translation>歌手</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="90"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="82"/>
+>>>>>>> upstream/feature-refactor
         <source>Album</source>
         <translation>专辑</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="91"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="83"/>
+>>>>>>> upstream/feature-refactor
         <source>Time</source>
         <translation>时长</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="115"/>
         <location filename="../UI/tableview/tableone.cpp" line="248"/>
         <location filename="../UI/tableview/tableone.cpp" line="461"/>
         <location filename="../UI/tableview/tableone.cpp" line="546"/>
         <location filename="../UI/tableview/tableone.cpp" line="561"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="106"/>
+        <location filename="../UI/tableview/tableone.cpp" line="237"/>
+        <location filename="../UI/tableview/tableone.cpp" line="355"/>
+        <location filename="../UI/tableview/tableone.cpp" line="439"/>
+        <location filename="../UI/tableview/tableone.cpp" line="454"/>
+>>>>>>> upstream/feature-refactor
         <source>Song List</source>
         <translation>歌曲列表</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="142"/>
         <source>There are no songs!</source>
         <translation>还没有歌曲！</translation>
@@ -404,16 +472,78 @@
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="545"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="133"/>
+        <source>There are no songs!</source>
+        <translation>还没有歌曲！</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="134"/>
+        <source>Add Local Songs</source>
+        <translation>添加本地歌曲</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="135"/>
+        <source>Add Local Folder</source>
+        <translation>添加本地文件夹</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="177"/>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="178"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="179"/>
+        <source>View song information</source>
+        <translation>查看歌曲信息</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="180"/>
+        <source>Add to songlist</source>
+        <translation>添加到歌单</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="309"/>
+        <source>Add failed!</source>
+        <translation>添加失败！</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="370"/>
+        <source>Failed to add song file!</source>
+        <translation>添加歌曲文件失败！</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="438"/>
+        <source>Total </source>
+        <translation>共 </translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="438"/>
+>>>>>>> upstream/feature-refactor
         <source> songs</source>
         <translation> 首</translation>
     </message>
     <message>
+<<<<<<< HEAD
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="318"/>
+>>>>>>> upstream/feature-refactor
         <source>Open the file</source>
         <translation type="vanished">打开文件</translation>
     </message>
     <message>
+<<<<<<< HEAD
         <location filename="../UI/tableview/tableone.cpp" line="325"/>
         <location filename="../UI/tableview/tableone.cpp" line="476"/>
+=======
+        <location filename="../UI/tableview/tableone.cpp" line="309"/>
+        <location filename="../UI/tableview/tableone.cpp" line="369"/>
+>>>>>>> upstream/feature-refactor
         <source>Prompt information</source>
         <translation>提示信息</translation>
     </message>
@@ -587,6 +717,7 @@
         <location filename="../UI/player/miniwidget.cpp" line="50"/>
         <source>单曲循环</source>
         <translation></translation>
+<<<<<<< HEAD
     </message>
     <message>
         <location filename="../UI/player/miniwidget.cpp" line="539"/>
@@ -607,6 +738,8 @@
         <location filename="../UI/player/miniwidget.cpp" line="554"/>
         <source>Random</source>
         <translation type="unfinished">随机播放</translation>
+=======
+>>>>>>> upstream/feature-refactor
     </message>
 </context>
 </TS>
