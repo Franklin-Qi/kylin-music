@@ -183,7 +183,7 @@ void TableHistory::addMusicToHistoryListSlot()
 }
 void TableHistory::initRightMenu()
 {
-    m_menu = new QMenu(m_tableHistory);
+    m_menu = new QMenu;
     playRow = new QAction(tr("Play"));
     removeRow = new QAction(tr("Delete"));
     playNextRow = new QAction(tr("Play the next one"));
@@ -199,7 +199,12 @@ void TableHistory::initRightMenu()
 }
 void TableHistory::showRightMenu(const QPoint &pos)
 {
-    qDebug() << "鼠标位置 " << pos;
+    QModelIndex index = m_tableHistory->indexAt(pos);
+    if(index.row() < 0)
+    {
+        return;
+    }
+    qDebug() << "鼠标位置 " << pos << index.row();
     m_menu->exec(QCursor::pos());
 }
 void TableHistory::playSongs()

@@ -80,6 +80,8 @@ signals:
     void singalChangePath(QString path);
     void currentIndexAndCurrentList(int index,QString listname);
     void signalPlayMode(int playModel);
+
+    void signalNotPlaying();
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);

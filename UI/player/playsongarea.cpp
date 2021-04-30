@@ -197,6 +197,7 @@ void PlaySongArea::initConnect()
     connect(hSlider,SIGNAL(sliderReleased()),this,SLOT(slotSlideReleased()));
     connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
+    connect(&playController::getInstance(),&playController::signalNotPlaying,this,&PlaySongArea::slotNotPlaying);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -363,8 +364,16 @@ void PlaySongArea::slotSongInfo(QString path)
     g_db->getSongInfoFromDB(filePath, musicStruct);
     //使用库解析总时间
     m_time = musicStruct.time;
-    playingLabel->setText(musicStruct.title);
-    emit signalPlayingLab(musicStruct.title);
+    if(musicStruct.title == "")
+    {
+        playingLabel->setText(tr("Music Player"));
+        emit signalPlayingLab(tr("Music Player"));
+    }
+    else
+    {
+        playingLabel->setText(musicStruct.title);
+        emit signalPlayingLab(musicStruct.title);
+    }
     slotFavExixts();
 }
 
@@ -397,13 +406,26 @@ void PlaySongArea::slotPositionChanged(qint64 position)
     QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
     QString str_time = duration.toString("mm:ss");
     QString length = str_time + "/" + m_time;
-    timeLabel->setText(length);
-    emit signalTimeLab(length);
+    if(m_time == "")
+    {
+        timeLabel->setText("00:00/00:00");
+        emit signalTimeLab("00:00/00:00");
+    }
+    else
+    {
+        timeLabel->setText(length);
+        emit signalTimeLab(length);
+    }
+}
+
+void PlaySongArea::slotNotPlaying()
+{
+    playingLabel->setText(tr("Music Player"));
+    timeLabel->setText("00:00/00:00");
 }
 
 void PlaySongArea::slotDurationChanged(qint64 duration)
 {
-    qDebug() << "duration" << duration;
     hSlider->setRange(0,static_cast<int>(duration));
     hSlider->setEnabled(duration>0);
     hSlider->setPageStep(static_cast<int>(duration)/10);

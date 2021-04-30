@@ -34,6 +34,8 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QMessageBox>
+#include "UIControl/base/musicDataBase.h"
+#include "UI/base/mylabel.h"
 
 class AllPupWindow :public QWidget
 {
@@ -62,6 +64,27 @@ public slots:
 private:
     void inpupdialog();
 
+};
+class  MusicInfoDialog : public QDialog
+{
+public:
+    explicit MusicInfoDialog(musicDataStruct date);
+    ~MusicInfoDialog();
+    musicDataStruct musicDate;
+private:
+    MyLabel *songNameLabel;
+    MyLabel *singerLabel;
+    MyLabel *albumLabel;
+    MyLabel *filePathLabel;
+    MyLabel *fileTypeLabel;
+    MyLabel *fileTimeLabel;
+    MyLabel *fileSizeLable;
+
+    QLabel *musicInfoLabel;
+
+    QVBoxLayout *mainVLayout;
+
+    void initStyle();
 };
 
 #endif // ALLPUPWINDOW_H

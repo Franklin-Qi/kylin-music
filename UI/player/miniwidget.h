@@ -78,6 +78,8 @@ public slots:
     void slotPlayModeClicked();
     //设置图标
     void setPlayMode(int playModel);
+    //没有歌曲在播放
+    void slotNotPlaying();
 public:
     QFrame *m_mainFrame;
 

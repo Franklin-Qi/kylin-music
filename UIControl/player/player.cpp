@@ -290,6 +290,9 @@ void playController::slotIndexChange(int index)
     qDebug() << "-----index-----" << index;
     if(index == -1)
     {
+        emit signalNotPlaying();
+        //当index == -1时，会调用positionChanged导致时长显示错误
+        emit singalChangePath("");
         return;
     }
     QMediaContent content = m_playlist->media(index);

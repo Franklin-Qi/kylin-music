@@ -19,6 +19,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QFileSystemWatcher>
+#include <QStandardPaths>
 
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -28,6 +30,7 @@
 #include "UIControl/base/musicfileinformation.h"
 #include "UI/base/mylabel.h"
 #include "UI/base/widgetstyle.h"
+#include "UI/base/allpupwindow.h"
 
 class TableOne : public QWidget
 {
@@ -56,6 +59,7 @@ private:
     void deleteSongs();
     void playSongs();
     void showInfo();
+    MusicInfoDialog *infoDialog;
     void addToOtherList(QAction *listNameAction);
 
     void addMusicSlot(); // 添加歌曲文件槽函数
@@ -68,8 +72,11 @@ private:
     QAction * removeRow;
     QAction * showInfoRow;
     QMenu * addToOtherListMenu;
-    QMap<int, QString> getSelectedTaskIdList();
+    QMap<int,QString> getSelectedTaskIdList();
 
+    QMenu *add_menu;
+    QAction *addMusicFileAction;
+    QAction *addDirMusicAction;
 
     void mouseMoveEvent(QMouseEvent *event)override;
     TableViewDelegate *delegate;

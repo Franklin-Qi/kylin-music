@@ -72,6 +72,15 @@ void TableOne::initUI()
     addMusicButton->setIconSize(QSize(16,16));
 //    addMusicButton->setText(tr("   Add"));
     addMusicButton->setFixedSize(100,30);
+    addMusicButton->setPopupMode(QToolButton::InstantPopup);
+    add_menu = new QMenu(this);
+    addMusicFileAction = new QAction(this);
+    addDirMusicAction = new QAction(this);
+    addMusicFileAction->setText("添加歌曲文件");
+    addDirMusicAction->setText("添加文件夹");
+    add_menu->addAction(addMusicFileAction);
+    add_menu->addAction(addDirMusicAction);
+    addMusicButton->setMenu(add_menu);
 
     QHBoxLayout *tableTitleLayout = new QHBoxLayout();
     QWidget *tableTitleWidget = new QWidget(this);
@@ -163,7 +172,13 @@ void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
+<<<<<<< HEAD
+//    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicSlot);
+    connect(addMusicFileAction,&QAction::triggered,this,&TableOne::addMusicSlot);
+    connect(addDirMusicAction,&QAction::triggered,this,&TableOne::addDirMusicSlot);
+=======
     connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicSlot);
+>>>>>>> upstream/feature-refactor
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
     connect(n_addMusicButton,&QPushButton::clicked,this,&TableOne::addMusicSlot);
@@ -240,12 +255,13 @@ void TableOne::deleteSongs()
         }
         else
         {
-           ret = g_db->delMusicFromLocalMusic(iter.value());
+//           ret = g_db->delMusicFromLocalMusic(iter.value());
+           ret = g_db->delSongFromEveryWhere(iter.value());
 
         }
         if(ret == 0)
         {
-            m_model->remove(iter.key());
+//            m_model->remove(iter.key());
             playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
 //            if(nowListName == tr("I Love"))
@@ -253,7 +269,8 @@ void TableOne::deleteSongs()
             {
                 emit removeILoveFilepathSignal(iter.value());
             }
-            emit countChanges();
+//            emit countChanges();
+
             map1.remove(iter.key());
         }
         else
@@ -261,6 +278,7 @@ void TableOne::deleteSongs()
             qDebug() << "delete failed" << iter.value();
         }
     }
+    selectListChanged(nowListName);
 }
 
 void TableOne::playSongs()
@@ -282,6 +300,8 @@ void TableOne::showInfo()
     qDebug() << "显示歌曲信息";
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
+    infoDialog = new MusicInfoDialog(date);
+    infoDialog->exec();
     qDebug() << "歌曲信息：" << date.title << date.filepath << date.size;
 }
 
@@ -312,6 +332,132 @@ void TableOne::addToOtherList(QAction *listNameAction)
     }
 }
 void TableOne::addMusicSlot()
+<<<<<<< HEAD
+{
+    QFileDialog *fileDialog = new QFileDialog;
+
+    QList<QUrl> list = fileDialog->sidebarUrls();
+    int sidebarNum = 8;//最大添加U盘数，可以自己定义
+    QString home = QDir::homePath().section("/", -1, -1);
+    QString mnt = "/media/" + home + "/";
+    QDir mntDir(mnt);
+    mntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList filist = mntDir.entryInfoList();
+    QList<QUrl> mntUrlList;
+    for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
+        QFileInfo fi = filist.at(i);
+        mntUrlList << QUrl("file://" + fi.filePath());
+    }
+
+    QFileSystemWatcher fsw(fileDialog);
+    fsw.addPath("/media/" + home + "/");
+    connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
+    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+        QDir wmntDir(path);
+        wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        QFileInfoList wfilist = wmntDir.entryInfoList();
+        mntUrlList.clear();
+        for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
+                       QFileInfo fi = wfilist.at(i);
+                 mntUrlList << QUrl("file://" + fi.filePath());
+             }
+             fileDialog->setSidebarUrls(list + mntUrlList);
+
+             fileDialog->update();
+        });
+
+    connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+        fileDialog->setSidebarUrls(list);
+    });
+    fileDialog->setSidebarUrls(list + mntUrlList);
+    fileDialog->setNameFilter("音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid)");
+    //设置视图模式
+    fileDialog->setViewMode(QFileDialog::Detail);
+    //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
+    fileDialog->setFileMode(QFileDialog::ExistingFiles);
+    fileDialog->setOption(QFileDialog::HideNameFilterDetails);
+    QStringList songFiles;
+    if(QFileDialog::Accepted == fileDialog->exec())
+    {
+        songFiles = fileDialog->selectedFiles();
+    }
+
+    for( int i = 0; i < songFiles.length(); i++ )
+    {
+        songFiles.at(i);
+    }
+    qDebug() << "songFiles" << songFiles;
+    addMusicToDatebase(songFiles);
+}
+
+void TableOne::addDirMusicSlot()
+{
+    QFileDialog *fileDialog = new QFileDialog;
+
+    QList<QUrl> list = fileDialog->sidebarUrls();
+    int sidebarNum = 8;//最大添加U盘数，可以自己定义
+    QString home = QDir::homePath().section("/", -1, -1);
+    QString mnt = "/media/" + home + "/";
+    QDir mntDir(mnt);
+    mntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList filist = mntDir.entryInfoList();
+    QList<QUrl> mntUrlList;
+    for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
+        QFileInfo fi = filist.at(i);
+        mntUrlList << QUrl("file://" + fi.filePath());
+    }
+
+    QFileSystemWatcher fsw(fileDialog);
+    fsw.addPath("/media/" + home + "/");
+    connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
+    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+        QDir wmntDir(path);
+        wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        QFileInfoList wfilist = wmntDir.entryInfoList();
+        mntUrlList.clear();
+        for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
+                       QFileInfo fi = wfilist.at(i);
+                 mntUrlList << QUrl("file://" + fi.filePath());
+             }
+             fileDialog->setSidebarUrls(list + mntUrlList);
+
+             fileDialog->update();
+        });
+
+        connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+            fileDialog->setSidebarUrls(list);
+        });
+
+    //自己QFileDialog的用法，这里只是列子
+//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid"));
+
+    fileDialog->setSidebarUrls(list + mntUrlList);
+
+    fileDialog->setFileMode(QFileDialog::Directory);
+    QStringList m_fileNames;
+    if (fileDialog->exec())
+    {
+        m_fileNames = fileDialog->selectedFiles();
+    }
+    qDebug() << m_fileNames;
+    foreach (QString dirPath, m_fileNames) {
+        QDir dir(dirPath);
+        QStringList nameFilters;
+        nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" <<  "*.amr" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+        QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+        for(int i = 0; i < fileNames.count(); i++)
+        {
+            fileNames[i] = QString(dirPath + "/" + fileNames[i]);
+        }
+        qDebug() << fileNames;
+        addMusicToDatebase(fileNames);
+    }
+
+}
+
+void TableOne::addMusicToDatebase(QStringList fileNames)
+{
+=======
 {
     qDebug() << "添加歌曲";
     //获取歌曲路径
@@ -347,6 +493,7 @@ void TableOne::addDirMusicSlot()
 
 void TableOne::addMusicToDatebase(QStringList fileNames)
 {
+>>>>>>> upstream/feature-refactor
     MusicFileInformation::getInstance().addFile(fileNames);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
@@ -361,8 +508,14 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         }
         if(ret == 0){
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
+<<<<<<< HEAD
+//            m_model->add(date);
+            selectListChanged(nowListName);
+//            emit countChanges();
+=======
             m_model->add(date);
             emit countChanges();
+>>>>>>> upstream/feature-refactor
         }
         else{
             QMessageBox msg;
@@ -490,8 +643,10 @@ void TableOne::getHightLightIndex(int index, QString listName)
 {
     nowPlayListName = listName;
     heightLightIndex = index;
-    if(listName == nowListName)
-    {
+    if(listName == nowListName){
+        setHightLightAndSelect();
+    } else {
+        heightLightIndex = -1;
         setHightLightAndSelect();
     }
 }
