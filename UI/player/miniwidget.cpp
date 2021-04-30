@@ -254,10 +254,12 @@ void miniWidget::init_miniWidget()
 
     m_songNameLab = new MyLabel;
     m_songNameLab->setFixedSize(180,20);
+    m_songNameLab->setText(tr("Music Player"));
     m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
     m_timeLab->setFixedSize(180,14);
+    m_timeLab->setText(tr("00:00/00:00"));
     m_timeLab->setAlignment(Qt::AlignLeft);
 
     m_vInfoLayout->setMargin(3);
@@ -372,6 +374,7 @@ void miniWidget::initConnect()
     connect(m_loveBtn,&QPushButton::clicked,this,&miniWidget::slotFav);
     connect(m_orderBtn,&QPushButton::clicked,this,&miniWidget::slotPlayModeClicked);
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&miniWidget::setPlayMode);
+    connect(&playController::getInstance(),&playController::signalNotPlaying,this,&miniWidget::slotNotPlaying);
 }
 
 void miniWidget::playerStateChange(playController::PlayState newState)
@@ -557,6 +560,12 @@ void miniWidget::setPlayMode(int playModel)
     default:
         break;
     }
+}
+
+void miniWidget::slotNotPlaying()
+{
+    m_songNameLab->setText(tr("Music Player"));
+    m_timeLab->setText("00:00/00:00");
 }
 
 void miniWidget::songText(QString songName)

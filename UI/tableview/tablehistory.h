@@ -38,6 +38,8 @@ public:
     void changeNumber();
     void setHighlight(int index);
     void initStyle();
+    void initTableStyle();
+    bool isHightLight = false;
 public slots:
     void showHistroryPlayList();
     void addMusicToHistoryListSlot();
@@ -59,13 +61,17 @@ private:
     QToolButton *deleteAllBtn;
     QWidget *historyTitileWidget;
     void deleteAllClicked();
-    void initTableStyle();
 
     QAction *playRow;
     QAction *removeRow;
     QAction *playNextRow;
     QMenu *m_menu;
     QString nowListName = "historyList";
+
+    QWidget *nullPageWidget;
+    QVBoxLayout *nullPageLayout;
+    QLabel *nullIconLabel;
+    QLabel *nullTextLabel;
 
 };
 

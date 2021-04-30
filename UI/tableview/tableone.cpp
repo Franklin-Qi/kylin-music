@@ -38,7 +38,6 @@ void TableOne::initTableViewStyle()
     tableView->hideColumn(4);
     tableView->hideColumn(5);
     tableView->hideColumn(6);
-    tableView->resize(800,1000);
     tableView->show();
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
@@ -66,21 +65,30 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(addMusicButton,1,Qt::AlignRight);
     listTitleHBoxLayout->setMargin(0);
     listTitleHBoxLayout->setSpacing(0);
+    titleWid->setFixedHeight(40);
 
-
-    addMusicButton->setText(tr("添加歌曲"));
+    addMusicButton->setText(tr("Add"));
     addMusicButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     addMusicButton->setIconSize(QSize(16,16));
 //    addMusicButton->setText(tr("   Add"));
     addMusicButton->setFixedSize(100,30);
+    addMusicButton->setPopupMode(QToolButton::InstantPopup);
+    add_menu = new QMenu(this);
+    addMusicFileAction = new QAction(this);
+    addDirMusicAction = new QAction(this);
+    addMusicFileAction->setText("添加歌曲文件");
+    addDirMusicAction->setText("添加文件夹");
+    add_menu->addAction(addMusicFileAction);
+    add_menu->addAction(addDirMusicAction);
+    addMusicButton->setMenu(add_menu);
 
     QHBoxLayout *tableTitleLayout = new QHBoxLayout();
     QWidget *tableTitleWidget = new QWidget(this);
     tableTitleWidget->setLayout(tableTitleLayout);
-    QLabel *songNameTitle = new QLabel(tr("歌曲"));
-    QLabel *singerTitle = new QLabel(tr("歌手"));
-    QLabel *albumTitle = new QLabel(tr("专辑"));
-    QLabel *songtimeTitle = new QLabel(tr("时长"));
+    QLabel *songNameTitle = new QLabel(tr("Song"));
+    QLabel *singerTitle = new QLabel(tr("Singer"));
+    QLabel *albumTitle = new QLabel(tr("Album"));
+    QLabel *songtimeTitle = new QLabel(tr("Time"));
     songtimeTitle->setAlignment(Qt::AlignRight);
     songtimeTitle->setFixedWidth(60);
     tableTitleLayout->setAlignment(Qt::AlignLeft);
@@ -89,6 +97,7 @@ void TableOne::initUI()
     tableTitleLayout->addWidget(albumTitle,1);
     tableTitleLayout->addStretch(0);
     tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
+    tableTitleLayout->addSpacing(10);
     tableTitleLayout->setSpacing(0);
     tableTitleLayout->setContentsMargins(3.5,0,2.5,0);
     songNameTitle->setStyleSheet("color:#8F9399;");
@@ -96,12 +105,8 @@ void TableOne::initUI()
     albumTitle->setStyleSheet("color:#8F9399;");
     songtimeTitle->setStyleSheet("color:#8F9399;");
 
+
     tableView = new TableBaseView();
-    tableLayout->addWidget(titleWid);
-    tableLayout->addSpacing(10);
-    tableLayout->addWidget(tableTitleWidget);
-    tableLayout->addSpacing(10);
-    tableLayout->addWidget(tableView);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
     tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
@@ -118,31 +123,72 @@ void TableOne::initUI()
     m_model = new MusicListModel;
     m_model->add(resList);
     m_model->setView(*tableView);
+
+    m_musicWidget = new QWidget(this);
+    m_historyLayout = new QVBoxLayout();
+    m_musicWidget->setLayout(m_historyLayout);
+    m_historyLayout->addWidget(tableTitleWidget);
+    m_historyLayout->addWidget(tableView);
+    m_historyLayout->setSpacing(8);
+    m_historyLayout->setMargin(0);
+
+    nullPageWidget = new QWidget(this);
+    nullPageHLayout = new QHBoxLayout();
+    nullPageVLayout = new QVBoxLayout();
+    nullPageIconLabel = new QLabel(this);
+    nullPageTextLabel = new QLabel(this);
+    n_addDirMusicButton = new QPushButton(this);
+    n_addMusicButton = new QPushButton(this);
+    nullPageTextLabel->setText(tr("There are no songs!"));
+    n_addMusicButton->setText(tr("Add Local Songs"));
+    n_addDirMusicButton->setText(tr("Add Local Folder"));
+    nullPageIconLabel->setPixmap(QPixmap(":/img/default/pict1.png").scaled(164,164));
+
+    nullPageWidget->setLayout(nullPageVLayout);
+    nullPageVLayout->addStretch();
+    nullPageVLayout->addWidget(nullPageIconLabel);
+    nullPageIconLabel->setAlignment(Qt::AlignHCenter);
+    nullPageVLayout->addWidget(nullPageTextLabel);
+    nullPageTextLabel->setAlignment(Qt::AlignHCenter);
+    nullPageVLayout->addLayout(nullPageHLayout);
+    nullPageVLayout->addStretch();
+    nullPageHLayout->addWidget(n_addMusicButton);
+    nullPageHLayout->addWidget(n_addDirMusicButton);
+    nullPageVLayout->setAlignment(Qt::AlignCenter);
+
+    tableLayout->addWidget(titleWid,Qt::AlignTop);
+    tableLayout->addSpacing(10);
+    tableLayout->addWidget(m_musicWidget);
+    tableLayout->addWidget(nullPageWidget);
+
     initTableViewStyle();
-    int num = m_model->count();
-    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
     listTitleLabel->setFixedWidth(120);
     listTotalNumLabel->setFixedWidth(120);
     listTitleLabel->setText(nowListName);
+    changeNumber();
 }
 
 void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
     connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
-    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicToLocalOrPlayList);
+//    connect(addMusicButton,&QToolButton::clicked,this,&TableOne::addMusicSlot);
+    connect(addMusicFileAction,&QAction::triggered,this,&TableOne::addMusicSlot);
+    connect(addDirMusicAction,&QAction::triggered,this,&TableOne::addDirMusicSlot);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
+    connect(n_addMusicButton,&QPushButton::clicked,this,&TableOne::addMusicSlot);
+    connect(n_addDirMusicButton,&QPushButton::clicked,this,&TableOne::addDirMusicSlot);
 }
 
 void TableOne::initRightMenu()
 {
     m_menu = new QMenu(tableView);
 
-    playRow = new QAction("播放");
-    removeRow = new QAction("删除");
-    showInfoRow = new QAction("查看歌曲信息");
-    addToOtherListMenu = new QMenu("添加到歌单");
+    playRow = new QAction(tr("Play"));
+    removeRow = new QAction(tr("Delete"));
+    showInfoRow = new QAction(tr("View song information"));
+    addToOtherListMenu = new QMenu(tr("Add to songlist"));
     connect(playRow,&QAction::triggered,this,&TableOne::playSongs);
     connect(removeRow,&QAction::triggered,this,&TableOne::deleteSongs);
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
@@ -205,12 +251,13 @@ void TableOne::deleteSongs()
         }
         else
         {
-           ret = g_db->delMusicFromLocalMusic(iter.value());
+//           ret = g_db->delMusicFromLocalMusic(iter.value());
+           ret = g_db->delSongFromEveryWhere(iter.value());
 
         }
         if(ret == 0)
         {
-            m_model->remove(iter.key());
+//            m_model->remove(iter.key());
             playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
 //            if(nowListName == tr("I Love"))
@@ -218,7 +265,8 @@ void TableOne::deleteSongs()
             {
                 emit removeILoveFilepathSignal(iter.value());
             }
-            emit countChanges();
+//            emit countChanges();
+
             map1.remove(iter.key());
         }
         else
@@ -226,6 +274,7 @@ void TableOne::deleteSongs()
             qDebug() << "delete failed" << iter.value();
         }
     }
+    selectListChanged(nowListName);
 }
 
 void TableOne::playSongs()
@@ -247,6 +296,8 @@ void TableOne::showInfo()
     qDebug() << "显示歌曲信息";
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
+    infoDialog = new MusicInfoDialog(date);
+    infoDialog->exec();
     qDebug() << "歌曲信息：" << date.title << date.filepath << date.size;
 }
 
@@ -271,25 +322,143 @@ void TableOne::addToOtherList(QAction *listNameAction)
                 emit addILoveFilepathSignal(it.value());
             }
         }else{
-            QMessageBox::warning(this,"提示","添加失败");
+            QMessageBox::warning(this,tr("Prompt information"),tr("Add failed!"));
         }
         it++;
     }
 }
-void TableOne::addMusicToLocalOrPlayList()
+void TableOne::addMusicSlot()
 {
-    qDebug() << "添加歌曲";
-    //获取歌曲路径
-    QStringList songFiles = QFileDialog::getOpenFileNames(this, tr("Open the file"),"","音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid)");  //歌曲文件
-    qDebug() << songFiles;
-    MusicFileInformation::getInstance().addFile(songFiles);
+    QFileDialog *fileDialog = new QFileDialog;
+
+    QList<QUrl> list = fileDialog->sidebarUrls();
+    int sidebarNum = 8;//最大添加U盘数，可以自己定义
+    QString home = QDir::homePath().section("/", -1, -1);
+    QString mnt = "/media/" + home + "/";
+    QDir mntDir(mnt);
+    mntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList filist = mntDir.entryInfoList();
+    QList<QUrl> mntUrlList;
+    for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
+        QFileInfo fi = filist.at(i);
+        mntUrlList << QUrl("file://" + fi.filePath());
+    }
+
+    QFileSystemWatcher fsw(fileDialog);
+    fsw.addPath("/media/" + home + "/");
+    connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
+    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+        QDir wmntDir(path);
+        wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        QFileInfoList wfilist = wmntDir.entryInfoList();
+        mntUrlList.clear();
+        for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
+                       QFileInfo fi = wfilist.at(i);
+                 mntUrlList << QUrl("file://" + fi.filePath());
+             }
+             fileDialog->setSidebarUrls(list + mntUrlList);
+
+             fileDialog->update();
+        });
+
+    connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+        fileDialog->setSidebarUrls(list);
+    });
+    fileDialog->setSidebarUrls(list + mntUrlList);
+    fileDialog->setNameFilter("音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid)");
+    //设置视图模式
+    fileDialog->setViewMode(QFileDialog::Detail);
+    //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
+    fileDialog->setFileMode(QFileDialog::ExistingFiles);
+    fileDialog->setOption(QFileDialog::HideNameFilterDetails);
+    QStringList songFiles;
+    if(QFileDialog::Accepted == fileDialog->exec())
+    {
+        songFiles = fileDialog->selectedFiles();
+    }
+
+    for( int i = 0; i < songFiles.length(); i++ )
+    {
+        songFiles.at(i);
+    }
+    qDebug() << "songFiles" << songFiles;
+    addMusicToDatebase(songFiles);
+}
+
+void TableOne::addDirMusicSlot()
+{
+    QFileDialog *fileDialog = new QFileDialog;
+
+    QList<QUrl> list = fileDialog->sidebarUrls();
+    int sidebarNum = 8;//最大添加U盘数，可以自己定义
+    QString home = QDir::homePath().section("/", -1, -1);
+    QString mnt = "/media/" + home + "/";
+    QDir mntDir(mnt);
+    mntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList filist = mntDir.entryInfoList();
+    QList<QUrl> mntUrlList;
+    for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
+        QFileInfo fi = filist.at(i);
+        mntUrlList << QUrl("file://" + fi.filePath());
+    }
+
+    QFileSystemWatcher fsw(fileDialog);
+    fsw.addPath("/media/" + home + "/");
+    connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
+    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+        QDir wmntDir(path);
+        wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        QFileInfoList wfilist = wmntDir.entryInfoList();
+        mntUrlList.clear();
+        for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
+                       QFileInfo fi = wfilist.at(i);
+                 mntUrlList << QUrl("file://" + fi.filePath());
+             }
+             fileDialog->setSidebarUrls(list + mntUrlList);
+
+             fileDialog->update();
+        });
+
+        connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+            fileDialog->setSidebarUrls(list);
+        });
+
+    //自己QFileDialog的用法，这里只是列子
+//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.flac *.wav *.ape *.amr *.m4a *.ac3 *.aac *.mid"));
+
+    fileDialog->setSidebarUrls(list + mntUrlList);
+
+    fileDialog->setFileMode(QFileDialog::Directory);
+    QStringList m_fileNames;
+    if (fileDialog->exec())
+    {
+        m_fileNames = fileDialog->selectedFiles();
+    }
+    qDebug() << m_fileNames;
+    foreach (QString dirPath, m_fileNames) {
+        QDir dir(dirPath);
+        QStringList nameFilters;
+        nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" <<  "*.amr" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+        QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+        for(int i = 0; i < fileNames.count(); i++)
+        {
+            fileNames[i] = QString(dirPath + "/" + fileNames[i]);
+        }
+        qDebug() << fileNames;
+        addMusicToDatebase(fileNames);
+    }
+
+}
+
+void TableOne::addMusicToDatebase(QStringList fileNames)
+{
+    MusicFileInformation::getInstance().addFile(fileNames);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
     int ret;
     foreach (const musicDataStruct date, resList) {
         if(nowListName != tr("Song List")){
             ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
-            qDebug() << "111111" << ret;
         }
         else{
             ret = g_db->addMusicToLocalMusic(date);
@@ -297,31 +466,18 @@ void TableOne::addMusicToLocalOrPlayList()
         }
         if(ret == 0){
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
-//            if(nowListName == tr("I Love"))
-//            {
-//                emit addILoveFilepathSignal(date.filepath);
-//            }
-            m_model->add(date);
-            emit countChanges();
+//            m_model->add(date);
+            selectListChanged(nowListName);
+//            emit countChanges();
         }
         else{
-//            QMessageBox::warning(this,tr("Prompt information"),date.filepath+tr("歌曲文件添加失败！"));
             QMessageBox msg;
             msg.setWindowTitle(tr("Prompt information"));
-            msg.setText(date.filepath+tr("歌曲文件添加失败！"));
+            msg.setText(date.filepath+tr("Failed to add song file!"));
             msg.exec();
             qDebug() << "添加数据库失败.";
         }
     }
-//    QFileDialog *fileDialog = new QFileDialog;
-//    fileDialog->setFileMode(QFileDialog::Directory);
-//    QStringList m_fileNames;
-//    if (fileDialog->exec())
-//    {
-//        m_fileNames = fileDialog->selectedFiles();
-//    }
-//    qDebug() << m_fileNames;
-
 }
 
 QMap<int,QString> TableOne::getSelectedTaskIdList()
@@ -384,7 +540,17 @@ void TableOne::setHightLightAndSelect()
 void TableOne::changeNumber()
 {
     int num = m_model->count();
-    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
+//    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
+    listTotalNumLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
+    if(num == 0 && nowListName == tr("Song List")) {
+        m_musicWidget->hide();
+        nullPageWidget->show();
+        addMusicButton->hide();
+    } else {
+        m_musicWidget->show();
+        nullPageWidget->hide();
+        addMusicButton->show();
+    }
 }
 
 QList<musicDataStruct> TableOne::getMusicList()
@@ -430,8 +596,10 @@ void TableOne::getHightLightIndex(int index, QString listName)
 {
     nowPlayListName = listName;
     heightLightIndex = index;
-    if(listName == nowListName)
-    {
+    if(listName == nowListName){
+        setHightLightAndSelect();
+    } else {
+        heightLightIndex = -1;
         setHightLightAndSelect();
     }
 }

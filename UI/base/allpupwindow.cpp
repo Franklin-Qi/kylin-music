@@ -152,3 +152,67 @@ void AllPupWindow::dlgcolor()
     }
 }
 
+
+MusicInfoDialog::MusicInfoDialog(musicDataStruct date)
+{
+    musicDate = date;
+    initStyle();
+}
+
+MusicInfoDialog::~MusicInfoDialog()
+{
+
+}
+
+
+void MusicInfoDialog::initStyle()
+{
+    mainVLayout = new QVBoxLayout(this);
+    this->setLayout(mainVLayout);
+    songNameLabel = new MyLabel(this);
+    singerLabel = new MyLabel(this);
+    albumLabel = new MyLabel(this);
+    filePathLabel = new MyLabel(this);
+    fileTypeLabel = new MyLabel(this);
+    fileTimeLabel = new MyLabel(this);
+    fileSizeLable = new MyLabel(this);
+    musicInfoLabel = new QLabel(this);
+    musicInfoLabel->setText(tr("Music Information"));
+    musicInfoLabel->setFixedHeight(24);
+
+    songNameLabel->setFixedHeight(24);
+    singerLabel->setFixedHeight(24);
+    albumLabel->setFixedHeight(24);
+    fileTypeLabel->setFixedHeight(24);
+    fileSizeLable->setFixedHeight(24);
+    fileTimeLabel->setFixedHeight(24);
+    filePathLabel->setFixedHeight(24);
+
+    mainVLayout->setAlignment(Qt::AlignTop);
+    mainVLayout->addWidget(musicInfoLabel);
+    mainVLayout->addWidget(songNameLabel);
+    mainVLayout->addWidget(singerLabel);
+    mainVLayout->addWidget(albumLabel);
+    mainVLayout->addWidget(fileTypeLabel);
+    mainVLayout->addWidget(fileSizeLable);
+    mainVLayout->addWidget(fileTimeLabel);
+    mainVLayout->addWidget(filePathLabel);
+
+    mainVLayout->setSpacing(10);
+    mainVLayout->setContentsMargins(32,20,32,20);
+
+    if(musicDate.title != "")
+    {
+        songNameLabel->setText(tr("Song Name : ") + musicDate.title);
+        singerLabel  ->setText(tr("Singer : ") + musicDate.singer);
+        albumLabel   ->setText(tr("Album : ") + musicDate.album);
+        fileTypeLabel->setText(tr("File Type : ") + musicDate.filetype);
+        fileSizeLable->setText(tr("File Size : ") + musicDate.size);
+        fileTimeLabel->setText(tr("File Time : ") + musicDate.time);
+        filePathLabel->setText(tr("File Path : ") + musicDate.filepath);
+
+    }
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
+    this->setFixedSize(376,405);
+}

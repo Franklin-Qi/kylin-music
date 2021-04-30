@@ -364,7 +364,7 @@ void Widget::changeDarkTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     historyListTable->initStyle();
-    historyListTable->setHighlight(-1);
+    historyListTable->initTableStyle();
 }
 
 //切换浅色主题

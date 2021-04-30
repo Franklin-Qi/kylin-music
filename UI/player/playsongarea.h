@@ -80,6 +80,9 @@ public slots:
     void slotSlideReleased();
     //接收mini窗口我喜欢按钮改变
     void slotFavBtnChange(QString filePath);
+
+    //没有歌曲在播放
+    void slotNotPlaying();
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
