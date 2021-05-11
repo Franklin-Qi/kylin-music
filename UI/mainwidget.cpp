@@ -114,7 +114,7 @@ void Widget::initAllComponent()
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
-    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
+//    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
     //窗体显示在中间
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
     this->move((availableGeometry.width() - this->width())/2, (availableGeometry.height() - this->height())/2);

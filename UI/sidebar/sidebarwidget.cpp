@@ -22,15 +22,20 @@ void SideBarWidget::initWidget()
     //logo
     QHBoxLayout *logoLayout = new QHBoxLayout();
     QLabel *logoNameLabel = new QLabel(this);
-    logoNameLabel->setFixedSize(120,30);
     logoNameLabel->setText(tr("Music Player"));
     logoPushButton = new QPushButton(this);
     logoPushButton->setFixedSize(24,24);
-    logoPushButton->setIconSize(QSize(24,24));
+    logoPushButton->setIconSize(QSize(25,25));
+    logoPushButton->setIcon(QIcon::fromTheme("kylin-music"));
+
+    logoLayout->setSpacing(0);
+    logoLayout->setMargin(8);
     logoLayout->addWidget(logoPushButton,Qt::AlignLeft);
-    logoLayout->setSpacing(8);
+    logoLayout->addSpacing(8);
     logoLayout->addWidget(logoNameLabel,0,Qt::AlignLeft);
-    logoLayout->setContentsMargins(8,8,0,0);
+    logoLayout->addStretch();
+
+//    logoLayout->setContentsMargins(8,8,0,0);
 
     //音乐库
     QHBoxLayout *libraryLayout = new QHBoxLayout();
@@ -168,7 +173,9 @@ void SideBarWidget::sidecolor()
         mainWid->setStyleSheet("#mainWid{width: 210px;\
                       background: #1F2022;\
                       }");
-        logoPushButton->setStyleSheet("border-image:url(:/img/kylin-music-logo.png);");
+        logoPushButton->setStyleSheet("QPushButton{border:0px;background:transparent;}"
+                                      "QPushButton::hover{border:0px;background:transparent;}"
+                                      "QPushButton::pressed{border:0px;background:transparent;}");
         myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
         libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
     }
@@ -187,7 +194,9 @@ void SideBarWidget::sidecolor()
         mainWid->setStyleSheet("#mainWid{width: 210px;\
                       background: #FAFAFA;\
                       }");
-        logoPushButton->setStyleSheet("border-image:url(:/img/kylin-music-logo.png);");
+        logoPushButton->setStyleSheet("QPushButton{border:0px;background:transparent;}"
+                                      "QPushButton::hover{border:0px;background:transparent;}"
+                                      "QPushButton::pressed{border:0px;background:transparent;}");
         myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
         libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
     }

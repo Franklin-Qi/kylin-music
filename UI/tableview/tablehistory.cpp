@@ -237,7 +237,6 @@ void TableHistory::deleteSongs()
     }
 }
 
-
 void TableHistory::playNextRowClicked()
 {
 
