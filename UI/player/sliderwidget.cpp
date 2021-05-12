@@ -26,6 +26,8 @@ void SliderWidget::initUi()
                                                    padding-left:-1px;\
                                                    padding-right:-1px;\
                                                    border-radius:2px;\
+                                                   padding-top:-1px;\
+                                                   padding-bottom:-1px;\
                                                    }"
                            "QSlider::add-page:vertical{background:#3790FA;}"
                            "QSlider::sub-page:vertical{background:#ECEEF5;}"
@@ -39,6 +41,7 @@ void SliderWidget::initUi()
                                margin-bottom: -4px;\
                                margin-right: -3px;\
                                border-radius: 4px;\
+                               margin: 0 -3px;\
                            }"
                            );
 

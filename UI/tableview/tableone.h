@@ -65,6 +65,8 @@ private:
     void addMusicSlot(); // 添加歌曲文件槽函数
     void addDirMusicSlot();  //添加文件夹槽函数
     void addMusicToDatebase(QStringList fileNames);
+
+    void importSongs(QString path);
     QMenu *m_menu;  //新建一个Menu属性
     QSqlQueryModel *tableModel;
 
@@ -78,7 +80,6 @@ private:
     QAction *addMusicFileAction;
     QAction *addDirMusicAction;
 
-    void mouseMoveEvent(QMouseEvent *event)override;
     TableViewDelegate *delegate;
 
     QHBoxLayout *listTitleHBoxLayout;
@@ -101,6 +102,10 @@ public slots:
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event)Q_DECL_OVERRIDE;
 private:
     QWidget *m_musicWidget;
     QVBoxLayout *m_historyLayout;
