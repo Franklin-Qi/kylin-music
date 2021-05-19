@@ -121,7 +121,7 @@ void Widget::initAllComponent()
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
-    musicListTable = new TableOne(tr("Song List"),this);
+    musicListTable = new TableOne(ALLMUSIC,this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
 
@@ -141,6 +141,7 @@ void Widget::initAllComponent()
     QWidget *rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(m_titleBar);
+    mainVBoxLayout->addSpacing(6);
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
     mainHBoxLayout = new QHBoxLayout();
@@ -150,7 +151,7 @@ void Widget::initAllComponent()
     mainHBoxLayout->addWidget(rightVWidget);
     mainHBoxLayout->setSpacing(0);
     mainHBoxLayout->setMargin(0);
-    mainVBoxLayout->setSpacing(10);
+    mainVBoxLayout->setSpacing(0);
     mainVBoxLayout->setMargin(0);
     this->resize(960,640);
     this->setLayout(mainHBoxLayout);

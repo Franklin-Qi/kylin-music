@@ -216,9 +216,12 @@ void TableHistory::playSongs()
     int ret = g_db->addMusicToHistoryMusic(date.filepath);
     if(ret == 0){
         QStringList pathList;
-        pathList = m_model->getPathList();
+        pathList = m_model->getPathList(nowListName);
+        qDebug() << "调用播放接口，设置" << nowListName <<"为当前播放列表";
         playController::getInstance().setCurPlaylist(nowListName,pathList);
+        qDebug() << "调用播放接口，设置" << index <<"为当前播放歌曲索引";
         playController::getInstance().play(nowListName,index);
+        qDebug() << "调用接口为添加到数据库";
         addMusicToHistoryListSlot();
     }else{
         QMessageBox::about(this,tr("Prompt information"),tr("The song doesn't exist"));

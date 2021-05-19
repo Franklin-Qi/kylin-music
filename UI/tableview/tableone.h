@@ -49,6 +49,9 @@ public:
 
     QList<musicDataStruct> getMusicList();
 
+    void playMusicforIndex(QString listName,int index);
+    //通过列表名和索引值播放相应歌曲
+    void showTitleText(QString listName);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定

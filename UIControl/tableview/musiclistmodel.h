@@ -20,7 +20,7 @@ public:
     void clear();
     void setView(QTableView &view);
     musicDataStruct getItem(int i);
-    QStringList getPathList();
+    QStringList getPathList(QString listName);
     void getMusicDateList(QList<musicDataStruct> list);
     QStandardItemModel m_model;
 private:

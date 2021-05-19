@@ -220,7 +220,7 @@ void SideBarWidget::getPlayListName()
     //    newPlayListLayout->setContentsMargins(24,0,24,0);
         newPlayListLayout->setSpacing(6);
         listName = playListName.at(i);
-        if(listName == "我喜欢")
+        if(listName == FAV)
         {
             newBtn->setText(tr("I Love"));
         }
@@ -361,6 +361,7 @@ void SideBarWidget::renamePlayList()
                         playListName[i] = text;
                     }
                 }
+                g_db->renamePlayList(btnText,text); // 从数据库中重命名
                 emit playListRenamed(btnText,text);   //fff
                 renameSongListPup->pupDialog->hide();
             }

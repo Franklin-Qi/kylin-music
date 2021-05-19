@@ -86,6 +86,7 @@ void PlaySongArea::initWidget()
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
     listBtn->setToolTip(tr("Play List"));
+    listBtn->hide();
 
     coverPhotoLabel = new QLabel(this);
     coverPhotoLabel->setFixedSize(40,40);
@@ -357,7 +358,7 @@ void PlaySongArea::setPlayMode(int playModel)
 
 void PlaySongArea::slotSongInfo(QString path)
 {
-    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
+    qDebug() << "playsongarea :::: path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
 
     filePath = path.remove("file://");
     musicDataStruct musicStruct;
@@ -375,6 +376,7 @@ void PlaySongArea::slotSongInfo(QString path)
         emit signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
+    qDebug() << "playsongarea slot SongInfo 运行成功";
 }
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)

@@ -118,12 +118,15 @@ void playController::curPlaylist()
 }
 void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
+    qDebug() << "进入函数 setCurPlaylist";
     if (m_curList.compare(name)==0)
     {
+        qDebug() << "setCurPlaylist m_curList.compare(name)==0";
         return ;
     }
 
     if (m_playlist == nullptr || m_player == nullptr) {
+        qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
     }
 
@@ -142,6 +145,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
+    qDebug() << "完成函数 setCurPlaylist";
 }
 void playController::addSongToCurList(QString name, QString songPath)
 {
