@@ -29,25 +29,20 @@ void TableOne::initStyle()
 
 void TableOne::initTableViewStyle()
 {
+    qDebug() << "进入 initTableViewStyle";
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,50);
-
-//    tableView->setStyleSheet("QTableView{border:none;}"
-//                             "QTableView::item:selected{color:black;background:#F0F0F0;border:none;}");
-
     tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->setAutoScroll(true);
     tableView->verticalScrollBarPolicy();
-    tableView->hideColumn(4);
-    tableView->hideColumn(5);
-    tableView->hideColumn(6);
     tableView->show();
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     tableView->setAutoFillBackground(true);
     tableView->setAlternatingRowColors(false);
+    qDebug() << "完成 initTableViewStyle";
 }
 
 void TableOne::initUI()
@@ -67,7 +62,7 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(listTotalNumLabel);
     listTitleHBoxLayout->addStretch(0);
     listTitleHBoxLayout->addWidget(addMusicButton,1,Qt::AlignRight);
-    listTitleHBoxLayout->setMargin(0);
+    listTitleHBoxLayout->setContentsMargins(25,0,10,0);
     listTitleHBoxLayout->setSpacing(0);
     titleWid->setFixedHeight(40);
 
@@ -97,13 +92,15 @@ void TableOne::initUI()
     songtimeTitle->setFixedWidth(60);
     tableTitleLayout->setAlignment(Qt::AlignLeft);
     tableTitleLayout->addWidget(songNameTitle,1);
+    tableTitleLayout->addSpacing(20);
     tableTitleLayout->addWidget(singerTitle,1);
+    tableTitleLayout->addSpacing(20);
     tableTitleLayout->addWidget(albumTitle,1);
     tableTitleLayout->addStretch(0);
     tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
-    tableTitleLayout->addSpacing(10);
+//    tableTitleLayout->addSpacing(10);
     tableTitleLayout->setSpacing(0);
-    tableTitleLayout->setContentsMargins(3.5,0,2.5,0);
+    tableTitleLayout->setContentsMargins(25,0,10,0);
     songNameTitle->setStyleSheet("color:#8F9399;");
     singerTitle->setStyleSheet("color:#8F9399;");
     albumTitle->setStyleSheet("color:#8F9399;");
@@ -116,14 +113,7 @@ void TableOne::initUI()
     tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
     QList<musicDataStruct> resList;
     int ret;
-    if(nowListName == tr("Song List"))
-    {
-        ret = g_db->getSongInfoListFromLocalMusic(resList);
-    }
-    else
-    {
-        ret = g_db->getSongInfoListFromPlayList(resList,nowListName);
-    }
+    ret = g_db->getSongInfoListFromDB(resList,nowListName);
     m_model = new MusicListModel;
     m_model->add(resList);
     m_model->setView(*tableView);
@@ -134,7 +124,7 @@ void TableOne::initUI()
     m_historyLayout->addWidget(tableTitleWidget);
     m_historyLayout->addWidget(tableView);
     m_historyLayout->setSpacing(8);
-    m_historyLayout->setMargin(0);
+    m_historyLayout->setContentsMargins(0,0,20,0);
 
     nullPageWidget = new QWidget(this);
     nullPageHLayout = new QHBoxLayout();
@@ -164,14 +154,24 @@ void TableOne::initUI()
     tableLayout->addSpacing(10);
     tableLayout->addWidget(m_musicWidget);
     tableLayout->addWidget(nullPageWidget);
+    tableLayout->setMargin(0);
 
     initTableViewStyle();
     listTitleLabel->setFixedWidth(120);
     listTotalNumLabel->setFixedWidth(120);
-    listTitleLabel->setText(nowListName);
+    showTitleText(nowListName);
     changeNumber();
 }
-
+void TableOne::showTitleText(QString listName)
+{
+    if(listName == ALLMUSIC) {
+        listTitleLabel->setText(tr("Song List"));
+    } else if(listName == FAV){
+        listTitleLabel->setText(tr("I Love"));
+    } else {
+        listTitleLabel->setText(listName);
+    }
+}
 void TableOne::initConnect()
 {
     connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
@@ -225,7 +225,14 @@ void TableOne::showRightMenu(const QPoint &pos)
             qDebug() << allList[i];
             QAction *listNameAct = new QAction;
             addToOtherListMenu->addAction(listNameAct);
-            listNameAct->setText(allList[i]);
+            if(allList[i] != FAV)
+            {
+                listNameAct->setText(allList[i]);
+            }
+            else
+            {
+                listNameAct->setText(tr("I Love"));
+            }
         }
     }
     else
@@ -249,7 +256,7 @@ void TableOne::deleteSongs()
         iter--;
         qDebug() << "Iterator " << iter.key(); // 迭代器
         int ret;
-        if(nowListName != tr("Song List"))
+        if(nowListName != ALLMUSIC)
         {
            ret = g_db->delMusicFromPlayList(iter.value(),nowListName);
         }
@@ -265,7 +272,7 @@ void TableOne::deleteSongs()
             playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
 //            if(nowListName == tr("I Love"))
-            if(nowListName == "我喜欢")
+            if(nowListName == tr("I Love"))
             {
                 emit removeILoveFilepathSignal(iter.value());
             }
@@ -283,18 +290,24 @@ void TableOne::deleteSongs()
 
 void TableOne::playSongs()
 {
-    qDebug() << "播放";
+    qDebug() << "进入播放 playSongs";
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     qDebug() << "tableView->selectedIndexes();" << index << date.filepath;
-    QStringList pathList;
-    pathList = m_model->getPathList();
-    playController::getInstance().setCurPlaylist(nowListName,pathList);
-    playController::getInstance().play(nowListName,index);
+    playMusicforIndex(nowListName,index);
     g_db->addMusicToHistoryMusic(date.filepath);
     emit addMusicToHistoryListSignal();
+    qDebug() << "完成播放 playSongs" ;
 }
-
+void TableOne::playMusicforIndex(QString listName, int index)
+{
+    QStringList pathList;
+    pathList = m_model->getPathList(listName);
+    qDebug() << "调用播放接口，设置" << listName <<"为当前播放列表";
+    playController::getInstance().setCurPlaylist(listName,pathList);
+    qDebug() << "调用播放接口，设置" << index <<"为当前播放歌曲索引";
+    playController::getInstance().play(listName,index);
+}
 void TableOne::showInfo()
 {
     qDebug() << "显示歌曲信息";
@@ -385,7 +398,7 @@ void TableOne::addMusicSlot()
     {
         songFiles.at(i);
     }
-    qDebug() << "songFiles" << songFiles;
+    qDebug() << "TableOne::addMusicSlot() ::: songFiles" << songFiles;
     addMusicToDatebase(songFiles);
 }
 
@@ -461,26 +474,26 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     resList = MusicFileInformation::getInstance().resList;
     int ret;
     foreach (const musicDataStruct date, resList) {
-        if(nowListName != tr("Song List")){
+        if(nowListName != ALLMUSIC){
             ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
         }
         else{
             ret = g_db->addMusicToLocalMusic(date);
 
         }
-        if(ret == 0){
-            playController::getInstance().addSongToCurList(nowListName,date.filepath);
-//            m_model->add(date);
-            selectListChanged(nowListName);
+//        if(ret == 0){
+        playController::getInstance().addSongToCurList(nowListName,date.filepath);
+        //            m_model->add(date);
+        selectListChanged(nowListName);
 //            emit countChanges();
-        }
-        else{
-            QMessageBox msg;
-            msg.setWindowTitle(tr("Prompt information"));
-            msg.setText(date.filepath+tr("Failed to add song file!"));
-            msg.exec();
-            qDebug() << "添加数据库失败.";
-        }
+//        }
+//        else{
+//            QMessageBox msg;
+//            msg.setWindowTitle(tr("Prompt information"));
+//            msg.setText(date.filepath+tr("Failed to add song file!"));
+//            msg.exec();
+//            qDebug() << "添加数据库失败.";
+//        }
     }
 }
 
@@ -501,9 +514,14 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
 
 void TableOne::setHightLightAndSelect()
 {
+    //列表中歌曲为空时，跳过高亮判断
+    qDebug() << "列表中歌曲为空时，跳过高亮判断" << m_model->count();
+    if(m_model->count() == 0) {
+        return;
+    }
     if(WidgetStyle::themeColor == 0)
     {
-        for (int i=0 ;i<4 ;i++ )
+        for (int i=0 ;i < 4 ;i++ )
         {
             for(int j = 0; j < m_model->count() ; j++)
             {
@@ -546,7 +564,7 @@ void TableOne::changeNumber()
     int num = m_model->count();
 //    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
     listTotalNumLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
-    if(num == 0 && nowListName == tr("Song List")) {
+    if(num == 0 && nowListName == ALLMUSIC) {
         m_musicWidget->hide();
         nullPageWidget->show();
         addMusicButton->hide();
@@ -561,29 +579,29 @@ QList<musicDataStruct> TableOne::getMusicList()
 {
     QList<musicDataStruct> resList;
     int ret;
-    if(nowListName == tr("Song List"))
-    {
-        ret = g_db->getSongInfoListFromLocalMusic(resList);
-
-    }
-    else
-    {
-        ret = g_db->getSongInfoListFromPlayList(resList,nowListName);
-    }
+    ret = g_db->getSongInfoListFromDB(resList,nowListName);
     m_model->clear();
     m_model->add(resList);
     initTableViewStyle();
-
     return resList;
 }
+
+
 void TableOne::selectListChanged(QString listname)
 {
     qDebug() << "歌单名" <<listname;
     m_model->clear();
-    nowListName = listname;
+    if(listname == tr("Song List")) {
+        nowListName = ALLMUSIC;
+    } else if(listname == tr("I Love")) {
+        nowListName = FAV;
+    } else {
+        nowListName = listname;
+    }
+    qDebug() << "selectChanged " << nowListName;
     getMusicList();
     changeNumber();
-    listTitleLabel->setText(listname);
+    showTitleText(listname);
     setHightLightAndSelect();
 }
 

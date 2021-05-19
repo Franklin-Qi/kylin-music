@@ -66,7 +66,7 @@ private:
     QAction *removeRow;
     QAction *playNextRow;
     QMenu *m_menu;
-    QString nowListName = "historyList";
+    QString nowListName = "HistoryPlayList";
 
     QWidget *nullPageWidget;
     QVBoxLayout *nullPageLayout;
