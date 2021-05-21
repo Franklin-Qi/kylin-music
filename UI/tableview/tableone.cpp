@@ -278,6 +278,7 @@ void TableOne::deleteSongs()
             }
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
 //            if(nowListName == tr("I Love"))
+
             if(nowListName == FAV)
             {
                 emit removeILoveFilepathSignal(iter.value());
