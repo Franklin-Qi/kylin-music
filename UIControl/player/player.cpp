@@ -1,5 +1,7 @@
 #include <QDebug>
 #include "player.h"
+#include "UIControl/base/musicDataBase.h"
+#include "UIControl/base/musicfileinformation.h"
 
 bool playController::play(QString playlist, int index)
 {
@@ -41,6 +43,11 @@ bool playController::play()
 }
 bool playController::pause()
 {
+    if (m_player == nullptr) {
+        return false;
+    }
+    m_player->pause();
+
     return true;
 }
 bool playController::stop()
@@ -118,12 +125,15 @@ void playController::curPlaylist()
 }
 void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
+    qDebug() << "进入函数 setCurPlaylist";
     if (m_curList.compare(name)==0)
     {
+        qDebug() << "setCurPlaylist m_curList.compare(name)==0";
         return ;
     }
 
     if (m_playlist == nullptr || m_player == nullptr) {
+        qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
     }
 
@@ -142,6 +152,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
+    qDebug() << "完成函数 setCurPlaylist";
 }
 void playController::addSongToCurList(QString name, QString songPath)
 {
@@ -167,8 +178,24 @@ void playController::removeSongFromCurList(QString name, int index)
         emit currentIndexAndCurrentList(cr_index,m_curList);
         //删除正在播放的歌曲时，正在播放的歌曲名和时长实时更新
         slotIndexChange(cr_index);
+        qDebug() << " <name> :" << name;
+//        if(name == ALLMUSIC)
+//        {
+
+//        }
     }
 }
+
+//void playController::removeMedia(QString name, int index)
+//{
+//    if (name.compare(m_curList) != 0) {
+//        qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
+//        return;
+//    }
+//    if (m_playlist != nullptr) {
+//        m_playlist->removeMedia(index);
+//    }
+//}
 
 playController::PlayState playController::getState()
 {
@@ -223,7 +250,8 @@ void playController::onNextSong()
     m_playlist->next();
     m_player->play();
     curPlaylist();
-    qDebug() << " next之后"<< m_playlist->currentIndex() << m_curIndex;
+    qDebug() << " 下一首"<< m_playlist->currentIndex() << m_curIndex;
+    qDebug() << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << m_curList;
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
 }
@@ -237,6 +265,12 @@ void playController::onPreviousSong()
     m_player->play();
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
+}
+
+void playController::setCurList(QString renameList)
+{
+    qDebug() << "renameList" << renameList;
+    m_curList = renameList;
 }
 void playController::onError()
 {

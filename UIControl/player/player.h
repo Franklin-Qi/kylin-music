@@ -59,6 +59,7 @@ public:
     void setCurPlaylist(QString name, QStringList songPaths);
     void addSongToCurList(QString name, QString songPath);
     void removeSongFromCurList(QString name, int index);
+//    void removeMedia(QString name, int index);
     PlayState getState();
     PlayMode mode() const;
     QMediaPlayer* getPlayer()
@@ -87,6 +88,7 @@ public slots:
     void onPositionChanged(double value);
     void onNextSong();
     void onPreviousSong();
+    void setCurList(QString renameList);
 private slots:
     void onError();
     void onMediaStatusChanged();

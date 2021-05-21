@@ -1,4 +1,5 @@
 #include "sidebarwidget.h"
+#include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/widgetstyle.h"
 
@@ -220,7 +221,7 @@ void SideBarWidget::getPlayListName()
     //    newPlayListLayout->setContentsMargins(24,0,24,0);
         newPlayListLayout->setSpacing(6);
         listName = playListName.at(i);
-        if(listName == "我喜欢")
+        if(listName == FAV)
         {
             newBtn->setText(tr("I Love"));
         }
@@ -354,6 +355,7 @@ void SideBarWidget::renamePlayList()
                 }
 
                 tmp->setText(text);
+                playController::getInstance().setCurList(text);
                 for(int i = 0; i < playListName.size();i++)
                 {
                     if(btnText == playListName[i])
@@ -361,6 +363,7 @@ void SideBarWidget::renamePlayList()
                         playListName[i] = text;
                     }
                 }
+                g_db->renamePlayList(btnText,text); // 从数据库中重命名
                 emit playListRenamed(btnText,text);   //fff
                 renameSongListPup->pupDialog->hide();
             }
@@ -368,6 +371,7 @@ void SideBarWidget::renamePlayList()
             {
                 QString listName = btnText;
                 tmp->setText(listName);
+                playController::getInstance().setCurList(listName);
                 renameSongListPup->pupDialog->hide();
             }
         }
@@ -393,8 +397,21 @@ void SideBarWidget::removePlayList(QString text)
                  tmp = *(i+1);
                  tmp->click();
              }
+             //删除歌单时，删除改播放歌单的所有media
+             int ret;
+             QList<musicDataStruct> musicDateList;
+             ret = g_db->getSongInfoListFromPlayList(musicDateList,text);
+             if(ret == DB_OP_SUCC)
+             {
+                 for(int i = 0; i < musicDateList.size(); i++)
+                 {
+                     qDebug() << "musicDateList.size()" << musicDateList.size();
+                     playController::getInstance().removeSongFromCurList(text, 0);
+                 }
+             }
              (*i)->deleteLater();
              g_db->delPlayList(text);
+             playListName.removeOne(text);
          }
      }
     emit playListRemoved(text);

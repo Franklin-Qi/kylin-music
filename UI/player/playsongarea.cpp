@@ -2,6 +2,7 @@
 #include "UI/base/widgetstyle.h"
 #include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
+#define VOLUME 5
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
 {
@@ -86,6 +87,7 @@ void PlaySongArea::initWidget()
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
     listBtn->setToolTip(tr("Play List"));
+    listBtn->hide();
 
     coverPhotoLabel = new QLabel(this);
     coverPhotoLabel->setFixedSize(40,40);
@@ -228,6 +230,24 @@ void PlaySongArea::slotVolumeChanged(int values)
     playController::getInstance().getPlayer()->setVolume(values);
 }
 
+void PlaySongArea::volumeIncrease()
+{
+    int value = m_volSliderWid->vSlider->value() + VOLUME;
+    if(value > 100)
+        value = 100;
+    m_volSliderWid->vSlider->setValue(value);
+    playController::getInstance().getPlayer()->setVolume(value);
+}
+
+void PlaySongArea::volumeReduce()
+{
+    int value = m_volSliderWid->vSlider->value() - VOLUME;
+    if(value < 0)
+        value = 0;
+    m_volSliderWid->vSlider->setValue(value);
+    playController::getInstance().getPlayer()->setVolume(value);
+}
+
 void PlaySongArea::slotVolSliderWidget()
 {
     if(m_volSliderWid->isVisible())
@@ -357,7 +377,7 @@ void PlaySongArea::setPlayMode(int playModel)
 
 void PlaySongArea::slotSongInfo(QString path)
 {
-    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
+    qDebug() << "playsongarea :::: path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
 
     filePath = path.remove("file://");
     musicDataStruct musicStruct;
@@ -375,6 +395,7 @@ void PlaySongArea::slotSongInfo(QString path)
         emit signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
+    qDebug() << "playsongarea slot SongInfo 运行成功";
 }
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)
