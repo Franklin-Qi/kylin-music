@@ -57,6 +57,11 @@ public slots:
     //命令参数
     int kylin_music_play_request(QString cmd1, QString cmd2 = "", QString cmd3 = "");
 private slots:
+    void onPrepareForShutdown(bool Shutdown);
+    void onPrepareForSleep(bool isSleep);
+    void client_get(QString str);
+    void inputDevice_get(QString str);
+    void slotPrepareForSwitchuser();
 protected:
     void resizeEvent(QResizeEvent *event)override;
 //    void mousePressEvent(QResizeEvent *event)override;
@@ -69,9 +74,10 @@ private:
     void initAllComponent();
     void allConnect();
     void initGSettings();
-
+    void moveWidget(QString newWidth, QString newHeight);
     void changeDarkTheme();
     void changeLightTheme();
+
 private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;

@@ -69,6 +69,79 @@ void Widget::initDbus()//初始化dbus
     {
         qDebug()<<"初始化DBUS失败";
     }
+    //S3 S4策略
+    QDBusConnection::systemBus().connect(QString("org.freedesktop.login1"),
+                                         QString("/org/freedesktop/login1"),
+                                         QString("org.freedesktop.login1.Manager"),
+                                         QString("PrepareForShutdown"), this,
+                                         SLOT(onPrepareForShutdown(bool)));
+    QDBusConnection::systemBus().connect(QString("org.freedesktop.login1"),
+                                         QString("/org/freedesktop/login1"),
+                                         QString("org.freedesktop.login1.Manager"),
+                                         QString("PrepareForSleep"), this,
+                                         SLOT(onPrepareForSleep(bool)));
+
+    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.monitorkey.interface", "monitorkey", this, SLOT(client_get(QString)));
+    QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "DbusSingleTest",this, SLOT(inputDevice_get(QString)));
+    QDBusConnection::sessionBus().connect(QString("org.gnome.SessionManager"),
+                                          QString("/org/gnome/SessionManager"),
+                                          QString("org.gnome.SessionManager"),
+                                          QString("PrepareForSwitchuser"), this,
+                                          SLOT(slotPrepareForSwitchuser()));
+}
+
+void Widget::onPrepareForShutdown(bool Shutdown)
+{
+    //目前只做事件监听，不处理
+    qDebug()<<"onPrepareForShutdown"<<Shutdown;
+}
+
+void Widget::onPrepareForSleep(bool isSleep)
+{
+    //990
+    //空指针检验
+    //------此处空指针校验（如果用了指针）------
+    qDebug() << "----睡眠";
+    //系统事件
+    if(isSleep)
+    {
+        qDebug() << "睡眠";
+        playController::getInstance().pause();
+    }
+}
+
+void Widget::client_get(QString str)
+{
+    qDebug()<<"MainWindow:"<<str;
+    QString key = str.split(":").first();
+    QString s = str.split(":").last();
+    qDebug() << "----key----" << key;
+    qDebug() << "----s----" << s;
+    if(s == "1")
+    {
+        qDebug() << "----s----" << s;
+        playController::getInstance().play();
+    }
+    else if(s == "2" || key == "163")
+    {
+        playController::getInstance().onNextSong();
+    }
+    else if(s == "3" || key == "165")
+    {
+        playController::getInstance().onPreviousSong();
+    }
+}
+
+void Widget::inputDevice_get(QString str)
+{
+    qDebug() << "str" << str;
+    playController::getInstance().pause();
+}
+
+void Widget::slotPrepareForSwitchuser()
+{
+    qDebug() << "切换用户";
+    playController::getInstance().pause();
 }
 
 int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
@@ -107,6 +180,61 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         playController::getInstance().play();
         return 0;
     }
+    if(cmd1=="-i"||cmd1=="-increase")
+    {
+        //------调高音量------
+        playSongArea->volumeIncrease();
+        return 0;
+    }
+    if(cmd1=="-r"||cmd1=="-reduce")
+    {
+        //------减少音量------
+        playSongArea->volumeReduce();
+        return 0;
+    }
+    if(cmd1=="-S"||cmd1=="-Sequential")
+    {
+        //------顺序播放------
+        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Sequential);
+        return 0;
+    }
+    if(cmd1=="-C"||cmd1=="-CurrentItemInLoop")
+    {
+        //------单曲循环------
+        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        return 0;
+    }
+    if(cmd1=="-L"||cmd1=="-Loop")
+    {
+        //------列表循环------
+        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Loop);
+        return 0;
+    }
+    if(cmd1=="-R"||cmd1=="-Random")
+    {
+        //------随机播放------
+        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Random);
+        return 0;
+    }
+    if(cmd1=="-m"||cmd1=="-move")
+    {
+        if(cmd2!=""&&cmd3!="")
+        {
+            //------窗口移动------
+            moveWidget(cmd2, cmd3);
+            return 0;
+        }
+    }
+    if(cmd1=="-c"||cmd1=="-close")
+    {
+        //------窗口关闭------
+        this->close();
+        return 0;
+    }
+    QStringList list;
+    list << cmd1;
+//    musicListTable->addMusicToDatebase(list);
+    return 0;
 }
 
 void Widget::initAllComponent()
@@ -290,6 +418,13 @@ void Widget::slotShowMiniWidget()
     m_miniWidget->activateWindow();
     animation->start(QAbstractAnimation::DeleteWhenStopped);
     animation_mini->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void Widget::moveWidget(QString newWidth, QString newHeight)
+{
+    int newX = newWidth.toInt();
+    int newY = newHeight.toInt();
+    this->move(newX, newY);
 }
 
 void Widget::slotClose()

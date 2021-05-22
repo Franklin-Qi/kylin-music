@@ -90,7 +90,7 @@ private:
     QLabel *listTotalNumLabel;
     void initStyle();
     int heightLightIndex = -1;
-    QString nowPlayListName;
+    QString nowPlayListName;  //后端播放器中正在播放的列表名
 signals:
     void sendPathToPlayer(QString fp);
     void countChanges();

@@ -54,8 +54,10 @@ public slots:
     void slotFavIsExixts(QString filePath);
     //显示音量界面
     void slotVolSliderWidget();
-//    void increaseVolume();   //音量调高
-//    void reduceVolume();     //音量调低
+    //音量调高
+    void volumeIncrease();
+    //音量调低
+    void volumeReduce();
     //改变音量
     void slotVolumeChanged(int values);
     //我喜欢按钮

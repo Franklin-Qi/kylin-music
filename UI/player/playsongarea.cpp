@@ -2,6 +2,7 @@
 #include "UI/base/widgetstyle.h"
 #include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
+#define VOLUME 5
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
 {
@@ -227,6 +228,24 @@ void PlaySongArea::slotVolumeChanged(int values)
     }
     qDebug() << "values" << values;
     playController::getInstance().getPlayer()->setVolume(values);
+}
+
+void PlaySongArea::volumeIncrease()
+{
+    int value = m_volSliderWid->vSlider->value() + VOLUME;
+    if(value > 100)
+        value = 100;
+    m_volSliderWid->vSlider->setValue(value);
+    playController::getInstance().getPlayer()->setVolume(value);
+}
+
+void PlaySongArea::volumeReduce()
+{
+    int value = m_volSliderWid->vSlider->value() - VOLUME;
+    if(value < 0)
+        value = 0;
+    m_volSliderWid->vSlider->setValue(value);
+    playController::getInstance().getPlayer()->setVolume(value);
 }
 
 void PlaySongArea::slotVolSliderWidget()

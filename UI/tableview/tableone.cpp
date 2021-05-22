@@ -75,8 +75,8 @@ void TableOne::initUI()
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
     addDirMusicAction = new QAction(this);
-    addMusicFileAction->setText("添加本地歌曲");
-    addDirMusicAction->setText("添加本地文件夹");
+    addMusicFileAction->setText(tr("Add local songs"));
+    addDirMusicAction->setText(tr("Add local folders"));
     add_menu->addAction(addMusicFileAction);
     add_menu->addAction(addDirMusicAction);
     addMusicButton->setMenu(add_menu);
@@ -256,23 +256,30 @@ void TableOne::deleteSongs()
         iter--;
         qDebug() << "Iterator " << iter.key(); // 迭代器
         int ret;
+        int index;
+        if(nowListName != nowPlayListName && nowListName == ALLMUSIC) {
+            index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,iter.value());
+        }
         if(nowListName != ALLMUSIC)
         {
            ret = g_db->delMusicFromPlayList(iter.value(),nowListName);
         }
         else
         {
-//           ret = g_db->delMusicFromLocalMusic(iter.value());
            ret = g_db->delSongFromEveryWhere(iter.value());
-
         }
         if(ret == 0)
         {
 //            m_model->remove(iter.key());
-            playController::getInstance().removeSongFromCurList(nowListName,iter.key());
+            if(nowListName != nowPlayListName && nowListName == ALLMUSIC && index != -1) {
+                playController::getInstance().removeSongFromCurList(nowPlayListName,index);
+            } else {
+                playController::getInstance().removeSongFromCurList(nowListName,iter.key());
+            }
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
 //            if(nowListName == tr("I Love"))
-            if(nowListName == tr("I Love"))
+
+            if(nowListName == FAV)
             {
                 emit removeILoveFilepathSignal(iter.value());
             }
@@ -339,7 +346,7 @@ void TableOne::addToOtherList(QAction *listNameAction)
                 emit addILoveFilepathSignal(it.value());
             }
         }else{
-            QMessageBox::warning(this,tr("Prompt information"),tr("Add failed!"));
+//            QMessageBox::warning(this,tr("Prompt information"),tr("Add failed!"));
         }
         it++;
     }
@@ -585,7 +592,6 @@ QList<musicDataStruct> TableOne::getMusicList()
     initTableViewStyle();
     return resList;
 }
-
 
 void TableOne::selectListChanged(QString listname)
 {

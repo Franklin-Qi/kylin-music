@@ -82,7 +82,7 @@ void MyToolButton::requestCustomContextMenu(const QPoint &pos)
     pauseAct->setText(tr("Pause"));
     renameAct->setText(tr("Rename"));
     deleteAct->setText(tr("Delete"));
-    menu->addAction(playAct);
+//    menu->addAction(playAct);
 //    menu->addAction(pauseAct);
 
     QString text = this->text();
