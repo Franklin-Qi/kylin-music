@@ -148,6 +148,7 @@ void SideBarWidget::initWidget()
 void SideBarWidget::initConnect()
 {
     connect(myPlayListBtn,&QPushButton::clicked,this,&SideBarWidget::addPlayList);
+    connect(playListBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newSonglistPup->confirmBtn,SIGNAL(clicked(bool)),this,SLOT(addItemToSongList()));
     connect(newSonglistPup->enterLineEdit,SIGNAL(returnPressed()),this,SLOT(addItemToSongList()));
 
@@ -320,7 +321,7 @@ QString SideBarWidget::newPlayListName()
 
 void SideBarWidget::playAll(QString btnText)
 {
-
+    emit signalPlayAll(btnText);
 }
 
 void SideBarWidget::rename(QString text)

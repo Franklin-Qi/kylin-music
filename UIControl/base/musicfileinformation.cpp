@@ -10,7 +10,7 @@ extern "C" {
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "mp3" << "ogg" << "wma" << "flac" << "wav" << "ape" << "amr" << "m4a" << "ac3" << "aac" << "mid";
+    musicType << "mp3" << "ogg" << "wma" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac" << "mid";
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {

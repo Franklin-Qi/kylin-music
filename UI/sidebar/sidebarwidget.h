@@ -42,6 +42,8 @@ signals:
     void playListRenamed(QString oldName,QString newName);
     void playListAdded(QString listName);
 
+    void signalPlayAll(QString listName);
+
 private:
     void initWidget();
     void initConnect();
