@@ -67,7 +67,9 @@ private:
 };
 class  MusicInfoDialog : public QDialog
 {
+    Q_OBJECT
 public:
+
     explicit MusicInfoDialog(musicDataStruct date);
     ~MusicInfoDialog();
     musicDataStruct musicDate;
