@@ -77,7 +77,8 @@ private:
     void moveWidget(QString newWidth, QString newHeight);
     void changeDarkTheme();
     void changeLightTheme();
-
+    void importFile(QStringList list);
+    QStringList getPath(QString playListName);
 private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
@@ -90,5 +91,8 @@ private:
     miniWidget *m_miniWidget;
 
     bool Minimize = false;       //最大化和还原俩个状态
+    //判断是否为第一个实例
+    bool isFirstObject = false;
+    QStringList argName;
 };
 #endif // WIDGET_H

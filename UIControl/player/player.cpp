@@ -65,7 +65,10 @@ void playController::setSongIndex(int index)
         qDebug() << "m_playlist is null";
         return;
     }
-
+    if(index < 0)
+    {
+        return;
+    }
     if (index > m_playlist->mediaCount()) {
         return;
     }

@@ -15,11 +15,23 @@ Widget::Widget(QStringList str, QWidget *parent)
     qDebug() << "数据库加载成功";
     initAllComponent();
     allConnect();
-    initGSettings();
     //单例
     Single(str);
     //初始化dbus
     initDbus();
+    initGSettings();
+    if(!argName.isEmpty())
+    {
+        int num = argName.size();
+        switch (num) {
+        case 1:
+            kylin_music_play_request(argName[0]);
+            break;
+        default:
+            break;
+        }
+    }
+    isFirstObject = false;
 }
 
 Widget::~Widget()
@@ -51,9 +63,10 @@ void Widget::Single(QStringList path)   //单例
             interface.call( "kylin_music_play_request", str);
         else if(path.size() == 4)
             interface.call( "kylin_music_play_request", str, path[2], path[3]);
-        qDebug()<<"麒麟音乐正在运行";
         exit(0);
     }
+    isFirstObject = true;//我是首个对象
+    argName << str;
 }
 
 void Widget::initDbus()//初始化dbus
@@ -152,6 +165,21 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         KWindowSystem::forceActiveWindow(this->winId());
         return 0;
     }
+    qDebug() << "---cmd1--" << cmd1;
+    qDebug() << "---isFirstObject--" << isFirstObject;
+    if(isFirstObject&&!QFileInfo::exists(cmd1))
+    {
+        qDebug() << "close" << cmd1;
+        if(cmd1=="-c"||cmd1=="-close")
+        {
+            //------窗口关闭------
+            this->close();
+            exit(0);
+        }
+        isFirstObject = false;
+        return 0;
+    }
+
     //下一首
     if(cmd1 == "-n" || cmd1 == "-next")
     {
@@ -233,8 +261,62 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     }
     QStringList list;
     list << cmd1;
-//    musicListTable->addMusicToDatebase(list);
+    importFile(list);
+
     return 0;
+}
+
+void Widget::importFile(QStringList list)
+{
+    MusicFileInformation::getInstance().addFile(list);
+    QList<musicDataStruct> resList;
+    resList = MusicFileInformation::getInstance().resList;
+    int ret;
+
+    foreach (const musicDataStruct date, resList)
+    {
+        ret = g_db->addMusicToLocalMusic(date);
+        if(ret == DB_OP_SUCC)
+        {
+            playController::getInstance().addSongToCurList(ALLMUSIC,date.filepath);
+            musicListTable->selectListChanged(tr("Song List"));
+            QStringList pathList = getPath(ALLMUSIC);
+            playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
+            int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,date.filepath);
+            playController::getInstance().play(ALLMUSIC,index);
+        }
+    }
+    int ref;
+    ref = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+    if(ref == DB_OP_SUCC)
+    {
+        for(int i = 0;i < list.size();i++)
+        {
+            if(resList.at(i).filepath == list.at(i))
+            {
+                QStringList pathList = getPath(ALLMUSIC);
+                playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
+                int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,resList.at(i).filepath);
+                if(index == -1)
+                {
+                    return;
+                }
+                playController::getInstance().play(ALLMUSIC,index);
+            }
+        }
+    }
+}
+
+QStringList Widget::getPath(QString playListName)
+{
+    QStringList path;
+    int ret;
+    QList<musicDataStruct> resList;
+    ret = g_db->getSongInfoListFromDB(resList,playListName);
+    foreach (const musicDataStruct date, resList) {
+        path.append(date.filepath);
+    }
+    return path;
 }
 
 void Widget::initAllComponent()
@@ -301,6 +383,7 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
     connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
+    connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
 
     connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);

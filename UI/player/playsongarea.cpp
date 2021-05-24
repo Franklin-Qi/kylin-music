@@ -400,7 +400,6 @@ void PlaySongArea::slotSongInfo(QString path)
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)
 {
-    qDebug() << "PlaySongArea  ----- newState" << newState;
     if(newState == playController::PlayState::PLAY_STATE)
     {
         playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"

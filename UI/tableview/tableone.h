@@ -105,6 +105,8 @@ public slots:
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 
+    void playAll(QString listName);  //播放全部歌曲
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;

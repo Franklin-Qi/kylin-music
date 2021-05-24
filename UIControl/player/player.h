@@ -100,6 +100,7 @@ private slots:
     void slotIndexChange(int index);
 
 private:
+    //当前播放列表名
     QString m_curList;
     int m_curIndex;
     QMediaPlayer* m_player;
