@@ -321,6 +321,9 @@ void TableOne::showInfo()
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     infoDialog = new MusicInfoDialog(date);
+    //将弹窗应用居中显示
+    QRect availableGeometry = this->parentWidget()->parentWidget()->geometry();
+    infoDialog->move(availableGeometry.center() - infoDialog->rect().center());
     infoDialog->exec();
     qDebug() << "歌曲信息：" << date.title << date.filepath << date.size;
 }
