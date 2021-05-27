@@ -2,23 +2,24 @@
 #include "player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/base/musicfileinformation.h"
+#include "UI/player/playsongarea.h"
 
 bool playController::play(QString playlist, int index)
 {
     qDebug() << "正在播放"  << playlist << index;
     if (playlist.compare(m_curList)==0) {
-        if (index == m_curIndex) {
-            if (m_player->state() == QMediaPlayer::State::PlayingState){
-                play();
-            }else {
-                pause();
-            }
-        }
-        else {
+//        if (index == m_curIndex) {
+//            if (m_player->state() == QMediaPlayer::State::PlayingState){
+//                play();
+//            }else {
+//                pause();
+//            }
+//        }
+//        else {
             stop();
             setSongIndex(index);
             play();
-        }
+//        }
         return true;
     }
     return false;
@@ -128,7 +129,7 @@ void playController::curPlaylist()
 }
 void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
-    qDebug() << "进入函数 setCurPlaylist";
+    qDebug() << "进入函数 0 setCurPlaylist";
     if (m_curList.compare(name)==0)
     {
         qDebug() << "setCurPlaylist m_curList.compare(name)==0";
@@ -139,7 +140,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
     }
-
+    qDebug() << "进入函数 1 setCurPlaylist";
     disconnect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     m_curList = name;
     m_playlist->clear();
@@ -151,6 +152,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
     if (m_player != nullptr) {
         m_player->setPlaylist(m_playlist);
     }
+    qDebug() << "进入函数 2 setCurPlaylist";
     m_player->stop();
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
@@ -169,19 +171,74 @@ void playController::addSongToCurList(QString name, QString songPath)
 }
 void playController::removeSongFromCurList(QString name, int index)
 {
-    if (name.compare(m_curList) != 0) {
+    if (name.compare(m_curList) != 0)
+    {
         qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
         return;
     }
     if (m_playlist != nullptr) {
-        m_playlist->removeMedia(index);
+//        m_playlist->removeMedia(index);
         //判断删除后 播放歌曲的index    当前只判断了删除正在播放的歌曲    还没做删除正在播放之前的歌曲和之后的歌曲
-        auto cr_index = m_playlist->currentIndex();
-        emit curIndexChanged(cr_index);
-        emit currentIndexAndCurrentList(cr_index,m_curList);
+            qDebug() << "m_playlist->currentIndex();" << m_playlist->currentIndex();
+            int count = m_playlist->mediaCount();
+
+            if(m_curIndex == index)
+            {
+                stop();
+                if(m_curIndex == count - 1)
+                {
+                    m_curIndex = 0;
+                    m_playlist->removeMedia(index);
+                    if(m_playlist->mediaCount() == 0)
+                    {
+                        m_curIndex = -1;
+                    }
+                    setSongIndex(m_curIndex);
+                }
+                else
+                {
+                    m_playlist->removeMedia(index);
+                    if(m_playlist->mediaCount() == 0)
+                    {
+                        m_curIndex = -1;
+                    }
+//                    setSongIndex(m_curIndex);
+                    setSongIndex(m_curIndex);
+                }
+                m_player->play();
+            }
+            else if(m_curIndex > index)
+            {
+                int position = 0;
+                if(m_player->state()==QMediaPlayer::PlayingState)
+                {
+                    position = m_player->position();
+                    qDebug() << "position" << position;
+                }
+                m_player->stop();
+                m_playlist->removeMedia(index);
+                m_curIndex = m_curIndex - 1;
+                setSongIndex(m_curIndex);
+                m_player->setPosition(position);
+                PlaySongArea::getInstance().hSlider->setValue(position);
+                m_player->play();
+            }
+            else if(m_curIndex < index)
+            {
+                m_playlist->removeMedia(index);
+            }
+
+            emit curIndexChanged(m_curIndex);
+            emit currentIndexAndCurrentList(m_curIndex,m_curList);
+            slotIndexChange(m_curIndex);
+//        auto cr_index = m_playlist->currentIndex();
+//        emit curIndexChanged(cr_index);
+//        emit currentIndexAndCurrentList(cr_index,m_curList);
         //删除正在播放的歌曲时，正在播放的歌曲名和时长实时更新
-        slotIndexChange(cr_index);
+//        slotIndexChange(cr_index);
         qDebug() << " <name> :" << name;
+//        qDebug() << "position" << position;
+        qDebug() << "m_curIndex" << m_curIndex;
 //        if(name == ALLMUSIC)
 //        {
 
@@ -332,6 +389,7 @@ void playController::slotIndexChange(int index)
         emit singalChangePath("");
         return;
     }
+    m_curIndex = index;
     QMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
     emit currentIndexAndCurrentList(index,m_curList);

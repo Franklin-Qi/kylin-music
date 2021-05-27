@@ -81,6 +81,29 @@
     </message>
 </context>
 <context>
+    <name>MusicListModel</name>
+    <message>
+        <location filename="../UIControl/tableview/musiclistmodel.cpp" line="7"/>
+        <source>Song</source>
+        <translation>歌曲</translation>
+    </message>
+    <message>
+        <location filename="../UIControl/tableview/musiclistmodel.cpp" line="8"/>
+        <source>Singer</source>
+        <translation>歌手</translation>
+    </message>
+    <message>
+        <location filename="../UIControl/tableview/musiclistmodel.cpp" line="9"/>
+        <source>Album</source>
+        <translation>专辑</translation>
+    </message>
+    <message>
+        <location filename="../UIControl/tableview/musiclistmodel.cpp" line="10"/>
+        <source>Time</source>
+        <translation>时长</translation>
+    </message>
+</context>
+<context>
     <name>MyToolButton</name>
     <message>
         <location filename="../UI/sidebar/mytoolbutton.cpp" line="81"/>

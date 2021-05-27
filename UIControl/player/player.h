@@ -102,6 +102,7 @@ private slots:
 private:
     //当前播放列表名
     QString m_curList;
+    //当前播放的索引
     int m_curIndex;
     QMediaPlayer* m_player;
     QMediaPlaylist* m_playlist;

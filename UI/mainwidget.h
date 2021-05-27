@@ -31,6 +31,7 @@
 #include "UI/tableview/tablehistory.h"
 #include "UI/titlebar/titlebar.h"
 #include "UI/player/miniwidget.h"
+#include "UIControl/base/daemonipcdbus.h"
 
 class Widget : public QWidget
 {
@@ -64,6 +65,7 @@ private slots:
     void slotPrepareForSwitchuser();
 protected:
     void resizeEvent(QResizeEvent *event)override;
+    void keyPressEvent(QKeyEvent *event)override;
 //    void mousePressEvent(QResizeEvent *event)override;
 private:
     //初始化dbus
@@ -89,10 +91,14 @@ private:
     PlaySongArea *playSongArea;
     TitleBar *m_titleBar;
     miniWidget *m_miniWidget;
+    QWidget *rightVWidget;
 
     bool Minimize = false;       //最大化和还原俩个状态
+
     //判断是否为第一个实例
     bool isFirstObject = false;
     QStringList argName;
+signals:
+    void signalShowGuide();
 };
 #endif // WIDGET_H

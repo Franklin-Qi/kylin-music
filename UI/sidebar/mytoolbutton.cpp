@@ -14,6 +14,12 @@ MyToolButton::MyToolButton()
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this,&MyToolButton::customContextMenuRequested,this,&MyToolButton::selectChanged);
     connect(this,&MyToolButton::customContextMenuRequested,this,&MyToolButton::requestCustomContextMenu);
+
+    //限制应用内字体固定大小
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    this->setFont(sizeFont);
+
 }
 
 MyToolButton::~MyToolButton()
@@ -74,6 +80,9 @@ void MyToolButton::defaultStyle()
 void MyToolButton::requestCustomContextMenu(const QPoint &pos)
 {
     QMenu *menu = new QMenu(this);
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    menu->setFont(sizeFont);
     QAction *playAct = new QAction(this);
     QAction *pauseAct = new QAction(this);
     renameAct = new QAction(this);

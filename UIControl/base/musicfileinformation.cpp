@@ -5,8 +5,10 @@ extern "C" {
 
 #include <QTimer>
 #include <QAbstractButton>
+#include <QDirIterator>
 
 #include "musicfileinformation.h"
+#include "UI/mainwidget.h"
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
@@ -14,25 +16,134 @@ MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
+    m_successCount = 0;
+    m_failCount = 0;
+    m_allMUisc = 0;
+    int allSongs = addFile.size();
     resList.clear();
-    if(!addFile.isEmpty())
+
+    for(auto &filepath : addFile)
     {
-        for(int i = 0; i < addFile.size(); i++)
+        if(filepath.isEmpty())
         {
-            musicdataStruct.filepath = addFile.at(i);
+            continue;
+        }
+        QFileInfo fileInfo(filepath);
+        if(fileInfo.isDir())
+        {
+            QStringList nameFilters;
+            nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+            //适合用于大目录
+            QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
+            while (iter.hasNext())
+            {
+                QString strpath = iter.next();
+                musicdataStruct.filepath = strpath;
+                fileInfo.setFile(musicdataStruct.filepath);
+                fileType(fileInfo);          //文件类型
+                fileSize(fileInfo);      //文件大小
+                if(musicType.indexOf(musicdataStruct.filetype) != -1)
+                {
+                    m_allMUisc++;
+                    QStringList list = fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
+                    if(musicdataStruct.time == "")
+                    {
+                        m_failCount++;
+                    }
+                    else
+                    {
+                        m_successCount++;
+                        m_allMUisc++;
+                        resList.append(musicdataStruct);
+                    }
+                }
+                else
+                {
+                    qDebug() << "添加文件失败";
+                }
+            }
+        }
+        else if(fileInfo.isFile())
+        {
+            musicdataStruct.filepath = filepath;
             fileInfo.setFile(musicdataStruct.filepath);
             fileType(fileInfo);          //文件类型
             fileSize(fileInfo);      //文件大小
             if(musicType.indexOf(musicdataStruct.filetype) != -1)
             {
-                fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
-                resList.append(musicdataStruct);
+                QStringList list = fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
+                if(musicdataStruct.time == "")
+                {
+                    m_failCount++;
+                }
+                else
+                {
+                    m_successCount++;
+                    m_allMUisc++;
+                    resList.append(musicdataStruct);
+                }
             }
             else
             {
                 qDebug() << "添加文件失败";
             }
         }
+    }
+    slotImportFinished(m_successCount, m_failCount, allSongs);
+//    resList.clear();
+//    if(!addFile.isEmpty())
+//    {
+//        for(int i = 0; i < addFile.size(); i++)
+//        {
+//            musicdataStruct.filepath = addFile.at(i);
+//            fileInfo.setFile(musicdataStruct.filepath);
+//            fileType(fileInfo);          //文件类型
+//            fileSize(fileInfo);      //文件大小
+//            if(musicType.indexOf(musicdataStruct.filetype) != -1)
+//            {
+//                QStringList list = fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
+//                if(musicdataStruct.time == "")
+//                {
+//                    m_failCount++;
+//                }
+//                else
+//                {
+//                    m_successCount++;
+//                }
+//                resList.append(musicdataStruct);
+//            }
+//            else
+//            {
+//                qDebug() << "添加文件失败";
+//            }
+//        }
+//    }
+//    slotImportFinished(m_successCount, m_failCount);
+}
+
+void MusicFileInformation::slotImportFinished(int successCount, int m_failCount, int allSongs)
+{
+    qDebug() << "successCount" << successCount;
+    qDebug() << "" << m_allMUisc;
+    if(successCount > 0)
+    {
+        if(m_allMUisc == 1)
+        {
+            return;
+        }
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
+    }
+    else
+    {
+        if(allSongs == 0)
+        {
+            return;
+        }
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("添加失败"),QMessageBox::Yes);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
     }
 }
 
@@ -87,6 +198,7 @@ inline int MusicFileInformation::preNum(unsigned char byte) {
 
 QStringList MusicFileInformation::fileInformation(QString filepath)
 {
+    QFileInfo fileInfo(filepath);
     QStringList information;
     QByteArray byteArray = filepath.toLocal8Bit();
     TagLib::FileRef f(byteArray.data());
@@ -163,7 +275,6 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         }
     }
     TagLib::PropertyMap propertyMap = f.file() ->properties();
-
     QString musicName = propertyMap["TITLE"].toString().toCString(true);
     if(filterTextCode(musicName).isEmpty())
         musicName = fileInfo.completeBaseName();
@@ -193,6 +304,7 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
 
 QStringList MusicFileInformation::updateSongInfoFromLocal(QString filepath)
 {
+    QFileInfo fileInfo(filepath);
     QStringList lists;
     int importFailCount = 0;
     musicdataStruct.time = "";
@@ -239,9 +351,7 @@ QStringList MusicFileInformation::updateSongInfoFromLocal(QString filepath)
         }
         else
         {
-            QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Add failed, no valid music file found"),QMessageBox::Yes);
-            warn->button(QMessageBox::Yes)->setText("确定");
-            warn->exec();
+            QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Add failed, no valid music file found"),QMessageBox::Ok);
             QStringList str;
             musicdataStruct.singer = "";
             musicdataStruct.album = "";

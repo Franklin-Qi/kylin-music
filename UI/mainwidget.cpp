@@ -32,6 +32,7 @@ Widget::Widget(QStringList str, QWidget *parent)
         }
     }
     isFirstObject = false;
+
 }
 
 Widget::~Widget()
@@ -324,6 +325,7 @@ void Widget::initAllComponent()
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
+    this->setObjectName("mainWidget");
 //    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
     //窗体显示在中间
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
@@ -348,7 +350,7 @@ void Widget::initAllComponent()
     hints.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(m_miniWidget->winId(), hints);
 
-    QWidget *rightVWidget = new QWidget(this);
+    rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(m_titleBar);
     mainVBoxLayout->addSpacing(6);
@@ -412,6 +414,7 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&miniWidget::slotFavBtnChange);
     connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&miniWidget::slotPlayingLab);
     connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
+    connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -448,24 +451,35 @@ void Widget::initGSettings()//初始化GSettings
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "resizeEvent" << this->width() << this->height();
+    qDebug() << "resizeEvent" << this->width() << this->height() << qApp->primaryScreen()->size();
     historyListTable->resize(320,this->height() - playSongArea->height()+20);
     int x = this->width()-historyListTable->width();
+    int max_w = qApp->primaryScreen()->size().width();
+    int max_h = qApp->primaryScreen()->size().height()-46;
 //    int y = this->height()-playSongArea->height()-historyListTable->height();
     historyListTable->move(x,2);
-    if(this->isMaximized() == true)
+    if(this->width() >= max_w && this->height()>= max_h)
     {
         m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
         Minimize = true;
         m_titleBar->maximumBtn->setToolTip(tr("reduction"));
     }
-    else if(this->isMaximized() == false)
+    else if(this->isMaximized() == false || (this->width() < (max_w-20)) || this->height() < (max_h-20))
     {
         Minimize = false;
         m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
         m_titleBar->maximumBtn->setToolTip(tr("maximize"));
     }
     QWidget::resizeEvent(event);
+}
+
+//键盘F1响应唤出用户手册
+void Widget::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_F1) {
+            emit signalShowGuide();
+        }
+    QWidget::keyPressEvent(event);
 }
 
 //void Widget::mousePressEvent(QResizeEvent *event)
@@ -582,8 +596,9 @@ void Widget::changeDarkTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
-    historyListTable->initStyle();
-    historyListTable->initTableStyle();
+//    historyListTable->initStyle();
+//    historyListTable->initTableStyle();
+
 }
 
 //切换浅色主题
@@ -597,6 +612,6 @@ void Widget::changeLightTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
-    historyListTable->initStyle();
-    historyListTable->setHighlight(-1);
+//    historyListTable->initStyle();
+//    historyListTable->setHighlight(-1);
 }

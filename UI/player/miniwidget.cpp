@@ -120,7 +120,8 @@ void miniWidget::minicolor()
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#252526;}");
         m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
-        m_coverLabel->setPixmap(QPixmap(":/img/kylin-music-logo.png").scaled(48,48));
+//        m_coverLabel->setPixmap(QPixmap(":/img/fengmian.png").scaled(48,48));
+        m_coverLabel->setStyleSheet("border-image:url(:/img/fengmian.png);");
 
         m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#F9F9F9;font-size:14px;}");
 
@@ -176,7 +177,8 @@ void miniWidget::minicolor()
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#FFFFFF;}");
         m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
-        m_coverLabel->setPixmap(QPixmap(":/img/kylin-music-logo.png").scaled(48,48));
+        m_coverLabel->setStyleSheet("border-image:url(:/img/fengmian.png);");
+//        coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
         m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#303133;font-size:14px;}");
 
@@ -246,7 +248,7 @@ void miniWidget::init_miniWidget()
 
     /*******************************************/
     m_coverLabel = new QLabel;
-    m_coverLabel->setFixedSize(42,42);
+    m_coverLabel->setFixedSize(40,40);
     m_coverLabel->setCursor(Qt::PointingHandCursor);
 
     /************************************/
@@ -258,7 +260,7 @@ void miniWidget::init_miniWidget()
     m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
-    m_timeLab->setFixedSize(180,14);
+    m_timeLab->setFixedSize(180,20);
     m_timeLab->setText(tr("00:00/00:00"));
     m_timeLab->setAlignment(Qt::AlignLeft);
 
@@ -348,6 +350,13 @@ void miniWidget::init_miniWidget()
     m_HMainLayout->setMargin(0);
     m_HMainLayout->addWidget(m_mainFrame);
     m_HMainLayout->addWidget(coverWid);
+
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    m_songNameLab->setFont(sizeFont);
+    m_timeLab->setFont(sizeFont);
+
 
 //    QFrame *controlFrame = new QFrame(this);
 //    controlFrame->setLayout(m_vSysLayout);
@@ -470,8 +479,14 @@ void miniWidget::slotFavExixtsDark()
 
 void miniWidget::slotFavIsExixts(QString filePath)
 {
+    qDebug() << "---------- filePath -------- " << filePath;
     if(g_db->checkSongIsInFav(filePath))
     {
+        //由于mini歌曲title是播放区传送故判断 ""
+        if(m_songNameLab->text() == "")
+        {
+            return;
+        }
         m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
 
     }
