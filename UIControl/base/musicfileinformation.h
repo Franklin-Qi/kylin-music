@@ -42,6 +42,8 @@ signals:
     void durations();
 private:
     QStringList updateSongInfoFromLocal(QString filepath);
+    //成功添加多少首歌曲
+    void slotImportFinished(int successCount, int m_failCount ,int allSongs);
 private:
 //    QList<musicDataStruct> resList;
     musicDataStruct musicdataStruct;
@@ -50,7 +52,7 @@ private:
     QString Dir;
     QStringList matchMp3Files;
 
-    QFileInfo fileInfo;
+//    QFileInfo fileInfo;
     QString MD5Str;
     QStringList MD5List;
     QDir matchDir;
@@ -64,6 +66,9 @@ private:
     QStringList musicType;
     qint64 dur;
     bool success = false;
+    int m_successCount;
+    int m_failCount;
+    int m_allMUisc;
 };
 
 #endif // MUSICFILEINFORMATION_H

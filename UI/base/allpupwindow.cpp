@@ -106,6 +106,15 @@ void AllPupWindow::inpupdialog()
 //    connect(addSongListBtn, SIGNAL(clicked(bool)), this, SLOT(addSongList()));
     connect(closeBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
     connect(cancelBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
+
+    //限制应用内字体固定大小
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    confirmBtn->setFont(sizeFont);
+    cancelBtn->setFont(sizeFont);
+    titleLab->setFont(sizeFont);
+    enterLineEdit->setFont(sizeFont);
+
 }
 
 void AllPupWindow::dlgcolor()
@@ -155,6 +164,8 @@ void AllPupWindow::dlgcolor()
 
 MusicInfoDialog::MusicInfoDialog(musicDataStruct date)
 {
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
     musicDate = date;
     initStyle();
 }
@@ -212,7 +223,18 @@ void MusicInfoDialog::initStyle()
         filePathLabel->setText(tr("File Path : ") + musicDate.filepath);
 
     }
-    this->setAutoFillBackground(true);
-    this->setBackgroundRole(QPalette::Base);
     this->setFixedSize(376,405);
+
+    //限制应用内字体固定大小
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    songNameLabel->setFont(sizeFont);
+    singerLabel->setFont(sizeFont);
+    albumLabel->setFont(sizeFont);
+    fileTypeLabel->setFont(sizeFont);
+    fileSizeLable->setFont(sizeFont);
+    fileTimeLabel->setFont(sizeFont);
+    filePathLabel->setFont(sizeFont);
+    musicInfoLabel->setFont(sizeFont);
+
 }

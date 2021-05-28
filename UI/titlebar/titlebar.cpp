@@ -19,11 +19,13 @@
 #include <QFile>
 
 #include "titlebar.h"
+#include "UI/mainwidget.h"
 
 
 TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 {
     setMouseTracking(true);
+    this->installEventFilter(this);
     initTitle();
     titlecolor();
 }
@@ -234,6 +236,22 @@ void TitleBar::initTitle()
 //    titleLayout->setSpacing(0);
     titleLayout->setContentsMargins(0,4,4,0);
 
+}
+
+bool TitleBar::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == this)
+    {
+        if (event->type() == QEvent::MouseButtonDblClick)           //判断类型
+        {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+            if (mouseEvent->button() == Qt::LeftButton) //判断左键
+            {
+                Widget::mutual->slotShowMaximized();
+            }
+        }
+    }
+    return QWidget::eventFilter(watched,event);
 }
 
 void TitleBar::searchMusic()

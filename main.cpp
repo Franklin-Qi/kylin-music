@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
         a.installTranslator(&trans_global);
         a.installTranslator(&trans_menu);
     }
+    qApp->setProperty("noChangeSystemFontSize", true);
 #ifndef QT_NO_TRANSLATION
     QString translatorFileName = QLatin1String("qt_");
     translatorFileName += QLocale::system().name();

@@ -4,15 +4,14 @@
 
 MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
 {
-    QStringList list;
-    list.append("Title");
-    list.append("Singer");
-    list.append("Album");
-    list.append("Time");
+    titleList.append(tr("Song"));
+    titleList.append(tr("Singer"));
+    titleList.append(tr("Album"));
+    titleList.append(tr("Time"));
 //    list.append("Path");
 //    list.append("Type");
 //    list.append("Size");
-    m_model.setHorizontalHeaderLabels(list); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
+    m_model.setHorizontalHeaderLabels(titleList); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
 }
 
 bool MusicListModel::add(musicDataStruct info)
@@ -43,6 +42,14 @@ bool MusicListModel::add(musicDataStruct info)
         item0->setData(info.filepath, Qt::DecorationRole);
         item1->setData(info.filetype, Qt::DecorationRole);
         item2->setData(info.size, Qt::DecorationRole);
+
+
+        QFont sizeFont;
+        sizeFont.setPixelSize(14);
+        item0->setFont(sizeFont);
+        item1->setFont(sizeFont);
+        item2->setFont(sizeFont);
+        item3->setFont(sizeFont);
 
         item0->setEditable(false);
         item1->setEditable(false);

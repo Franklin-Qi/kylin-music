@@ -2,15 +2,11 @@
 #define TableOne_H
 
 #include <QWidget>
-#include <QListView>
 #include <QLabel>
 #include <QToolButton>
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QStandardItem>
-#include <QSqlRelationalTableModel>
-#include <QSqlTableModel>
-#include <QSqlQueryModel>
 #include <QDebug>
 #include <QHeaderView>
 #include <QMenu>
@@ -21,6 +17,8 @@
 #include <QMouseEvent>
 #include <QFileSystemWatcher>
 #include <QStandardPaths>
+#include <QScrollArea>
+#include <QScrollBar>
 
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -37,7 +35,8 @@ class TableOne : public QWidget
     Q_OBJECT
 public:
     explicit TableOne(QString listName,QWidget *parent = nullptr);
-
+    ~TableOne();
+public:
     MusicListModel *m_model;
 //    QTableView *tableView;
     TableBaseView *tableView;
@@ -69,7 +68,7 @@ private:
     void addDirMusicSlot();  //添加文件夹槽函数
     void addMusicToDatebase(QStringList fileNames);
 
-    void importSongs(QString path);
+//    void importSongs(QString path);
     QMenu *m_menu;  //新建一个Menu属性
     QSqlQueryModel *tableModel;
 
@@ -121,6 +120,10 @@ private:
     QPushButton *n_addDirMusicButton;
     QLabel *nullPageIconLabel;
     QLabel *nullPageTextLabel;
+
+
+    QHeaderView *horizonHeader;
+
 };
 
 #endif // TableOne_H

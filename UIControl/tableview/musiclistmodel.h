@@ -23,6 +23,7 @@ public:
     QStringList getPathList(QString listName);
     void getMusicDateList(QList<musicDataStruct> list);
     QStandardItemModel m_model;
+    QStringList titleList;
 private:
     QList<musicDataStruct> resList;
 

@@ -11,6 +11,8 @@ PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
     initWidget();
     initConnect();
     playcolor();
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
 }
 
 void PlaySongArea::initWidget()
@@ -174,6 +176,13 @@ void PlaySongArea::initWidget()
     m_vmainLayout->setSpacing(0);
 
     this->setLayout(m_vmainLayout);
+
+
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    playingLabel->setFont(sizeFont);
+    timeLabel->setFont(sizeFont);
 }
 
 void PlaySongArea::initConnect()
@@ -267,12 +276,30 @@ void PlaySongArea::slotFav()
     qDebug() << "我喜欢按钮要添加的路径" << filePath;
     if(g_db->checkSongIsInFav(filePath))
     {
+        QList<musicDataStruct> resList;
+        int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
         int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
-        if(ret == DB_OP_SUCC)
+        if(ref == DB_OP_SUCC)
         {
             qDebug() << "添加歌曲路径" << filePath;
 //            emit signalAddFromFavButton("我喜欢");
             qDebug() << "从我喜欢删除";
+            //根据歌单名title值查询对应歌单列表
+//            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
+            if(ret == DB_OP_SUCC)
+            {
+                qDebug() << "resList.size()" << resList.size();
+                for(int i = 0; i < resList.size(); i++)
+                {
+                    if(resList.at(i).filepath == filePath)
+                    {
+                        qDebug() << "**********i" << i;
+                        playController::getInstance().removeSongFromCurList("我喜欢", i);
+                        emit signalRefreshFav("我喜欢");
+                        break;
+                    }
+                }
+            }
         }
     }
     else
@@ -281,12 +308,14 @@ void PlaySongArea::slotFav()
         int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
         if(ref == DB_OP_SUCC)
         {
+            playController::getInstance().addSongToCurList("我喜欢", filePath);
             qDebug() << "删除歌曲路径" << filePath;
 //            emit signalDelFromFavButton("我喜欢");
+//            emit signalRefreshFav("我喜欢");
             qDebug() << "添加到我喜欢";
         }
+//        emit signalRefreshFav("我喜欢");
     }
-
     slotFavExixts();
 //    if(favBtn->isVisible())
 //    {
@@ -569,6 +598,11 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
     qDebug() << "---------- filePath -------- " << filePath;
     if(g_db->checkSongIsInFav(filePath))
     {
+        qDebug() << playingLabel->text();
+        if(playingLabel->text() == tr("Music Player"))
+        {
+            return;
+        }
         favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
 
     }

@@ -2,6 +2,7 @@
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/widgetstyle.h"
+#include "UI/mainwidget.h"
 
 SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
 {
@@ -142,7 +143,18 @@ void SideBarWidget::initWidget()
 
 
     this->setAutoFillBackground(true);
-//    this->setBackgroundRole(QPalette::Window);
+
+    //限制应用内字体固定大小
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    myPlayListBtn->setFont(sizeFont);
+    playListBtn->setFont(sizeFont);
+    logoPushButton->setFont(sizeFont);
+    libraryLabel->setFont(sizeFont);
+    myPlayListLabel->setFont(sizeFont);
+    logoNameLabel->setFont(sizeFont);
+
+
 }
 
 void SideBarWidget::initConnect()
@@ -165,8 +177,7 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
-        setStyleSheet("width: 210px;\
-                             background: #1F2022;");
+        setStyleSheet("SideBarWidget{background: #1F2022;}");
         logoWid->setStyleSheet("width: 210px;\
                              background: #1F2022;");
         sideWid->setStyleSheet("#sideWid{width: 210px;\
@@ -261,10 +272,7 @@ void SideBarWidget::addItemToSongList()
             if(playListName.at(i) == text)
             {
                 newSonglistPup->pupDialog->hide();
-        //        QMessageBox::about(this,tr("提示信息"),tr("歌单名已存在！！！"));
-                QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Yes);
-                warn->button(QMessageBox::Yes)->setText("确定");
-                warn->exec();
+                QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                 return ;
             }
         }
@@ -347,10 +355,7 @@ void SideBarWidget::renamePlayList()
                     if(playListName.at(i) == text)
                     {
                         renameSongListPup->pupDialog->hide();
-                //        QMessageBox::about(this,tr("提示信息"),tr("歌单名已存在！！！"));
-                        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Yes);
-                        warn->button(QMessageBox::Yes)->setText("确定");
-                        warn->exec();
+                        QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                         return ;
                     }
                 }

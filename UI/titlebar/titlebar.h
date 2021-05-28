@@ -90,7 +90,7 @@ public slots:
 
 protected:
 //    virtual void mouseDoubleClickEvent(QMouseEvent *event);
-
+    bool eventFilter(QObject *watched, QEvent *event);
 private slots:
     //进行最小化、最大化、还原、关闭
 //    void slot_showMaximized();

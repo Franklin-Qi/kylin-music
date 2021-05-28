@@ -16,15 +16,22 @@ void TableBaseView::initStyle()
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
     setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
+//    setAutoScroll(false);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setAutoFillBackground(true);
     setAlternatingRowColors(false);
 
-    this->setStyleSheet("QTableView{border:none;}");
-    this->horizontalHeader()->setVisible(false);// 水平不可见
-    this->verticalHeader()->setVisible(false);// 垂直不可见
-    this->setAutoScroll(true);
-    this->verticalScrollBarPolicy();
+    this->setStyleSheet("QTableView{border:none;}"
+                        "QTableView::item{min-height:60px;}");
+//    this->horizontalHeader()->setVisible(false);// 水平不可见
+//    this->verticalHeader()->setVisible(false);// 垂直不可见
+    this->setAutoScroll(false);
+//    this->verticalScrollBarPolicy();
     this->setAutoFillBackground(true);
+    //限制应用内字体固定大小
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    this->setFont(sizeFont);
 
 }
 

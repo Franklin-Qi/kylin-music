@@ -68,6 +68,19 @@ void menuModule::initAction(){
     setThemeFromLocalThemeSetting(themeActions);
     themeUpdate();
     connect(themeMenu,&QMenu::triggered,this,&menuModule::triggerThemeMenu);
+
+    //键盘F1响应唤出用户手册绑定
+    connect(Widget::mutual,&Widget::signalShowGuide,this,&menuModule::helpAction);
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    m_menu->setFont(sizeFont);
+    bodyAppName->setFont(sizeFont);
+    titleText->setFont(sizeFont);
+    bodyAppVersion->setFont(sizeFont);
+    bodyAppDescribe->setFont(sizeFont);
+    bodySupport->setFont(sizeFont);
+
 }
 
 void menuModule::setThemeFromLocalThemeSetting(QList<QAction* > themeActions)
@@ -221,7 +234,7 @@ QHBoxLayout* menuModule::initTitleBar(){
     connect(titleBtnClose,&QPushButton::clicked,[=](){aboutWindow->close();});
     QHBoxLayout *hlyt = new QHBoxLayout;
     titleText->setText(tr("Music Player"));
-    titleText->setStyleSheet("font-size:14px;");
+//    titleText->setStyleSheet("font-size:14px;");
     hlyt->setSpacing(0);
     hlyt->setMargin(4);
     hlyt->addSpacing(4);
@@ -250,27 +263,27 @@ QVBoxLayout* menuModule::initBody(){
                                 "It covers a variety of music formats play tool,"
                                 "easy to operate."));
     bodyAppDescribe->setFixedWidth(356);
-    bodyAppDescribe->setStyleSheet("font-size:14px;");
+//    bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
-    bodyAppName->setFixedHeight(28);
+//    bodyAppName->setFixedHeight(28);
     bodyAppName->setText(tr("Music Player"));
 
-    bodyAppName->setStyleSheet("font-size:18px;");
-    bodyAppVersion->setFixedHeight(24);
+//    bodyAppName->setStyleSheet("font-size:18px;");
+//    bodyAppVersion->setFixedHeight(24);
     bodyAppVersion->setText(tr("Version: ") + appVersion);
     bodyAppVersion->setAlignment(Qt::AlignLeft);
-    bodyAppVersion->setStyleSheet("font-size:14px;");
+//    bodyAppVersion->setStyleSheet("font-size:14px;");
 
     connect(bodySupport,&QLabel::linkActivated,this,[=](const QString url){
         QDesktopServices::openUrl(QUrl(url));
     });
     bodySupport->setContextMenuPolicy(Qt::NoContextMenu);
-    bodySupport->setFixedHeight(24);
-    bodySupport->setStyleSheet("font-size:14px;");
+    bodySupport->setFixedHeight(30);
+//    bodySupport->setStyleSheet("font-size:14px;");
     QVBoxLayout *vlyt = new QVBoxLayout;
     vlyt->setMargin(0);
     vlyt->setSpacing(0);
-    vlyt->addSpacing(20);
+//    vlyt->addSpacing(20);
     vlyt->addWidget(bodyIcon,0,Qt::AlignHCenter);
     vlyt->addSpacing(16);
     vlyt->addWidget(bodyAppName,0,Qt::AlignHCenter);

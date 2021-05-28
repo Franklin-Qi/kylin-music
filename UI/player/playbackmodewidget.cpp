@@ -12,48 +12,52 @@ PlayBackModeWidget::PlayBackModeWidget(QWidget *parent) : QDialog(parent)
 
 void PlayBackModeWidget::initWidget()
 {
-    setFixedSize(118,150);
+    setFixedSize(118,120);
     QVBoxLayout *vLayout = new QVBoxLayout;
 
     QHBoxLayout *loopLayout = new QHBoxLayout();
     loopBtn = new QToolButton(this);
-    loopBtn->setFixedSize(114, 30);
+    loopBtn->setFixedSize(118,30);
     loopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     loopBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
     loopBtn->setIconSize(QSize(16,16));
     loopBtn->setText(tr("Loop"));
     loopLayout->addWidget(loopBtn);
     loopLayout->setMargin(0);
+    loopLayout->setSpacing(0);
 
     QHBoxLayout *randomLayout = new QHBoxLayout();
     randomBtn = new QToolButton(this);
-    randomBtn->setFixedSize(114, 30);
+    randomBtn->setFixedSize(118,30);
     randomBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     randomBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle"));
     randomBtn->setIconSize(QSize(16,16));
     randomBtn->setText(tr("Random"));
     randomLayout->addWidget(randomBtn);
     randomLayout->setMargin(0);
+    randomLayout->setSpacing(0);
 
     QHBoxLayout *sequentialLayout = new QHBoxLayout();
     sequentialBtn = new QToolButton(this);
-    sequentialBtn->setFixedSize(114, 30);
+    sequentialBtn->setFixedSize(118,30);
     sequentialBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     sequentialBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
     sequentialBtn->setIconSize(QSize(16,16));
     sequentialBtn->setText(tr("Sequential"));
     sequentialLayout->addWidget(sequentialBtn);
     sequentialLayout->setMargin(0);
+    sequentialLayout->setSpacing(0);
 
     QHBoxLayout *currentItemInLoopLayout = new QHBoxLayout();
     currentItemInLoopBtn = new QToolButton(this);
-    currentItemInLoopBtn->setFixedSize(114, 30);
+    currentItemInLoopBtn->setFixedSize(118,30);
     currentItemInLoopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     currentItemInLoopBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
     currentItemInLoopBtn->setIconSize(QSize(16,16));
     currentItemInLoopBtn->setText(tr("CurrentItemInLoop"));
     currentItemInLoopLayout->addWidget(currentItemInLoopBtn);
     currentItemInLoopLayout->setMargin(0);
+    currentItemInLoopLayout->setSpacing(0);
 
     vLayout->addLayout(loopLayout,Qt::AlignTop);
     vLayout->addLayout(randomLayout,Qt::AlignVCenter);
@@ -64,6 +68,14 @@ void PlayBackModeWidget::initWidget()
     this->setLayout(vLayout);
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    loopBtn->setFont(sizeFont);
+    randomBtn->setFont(sizeFont);
+    sequentialBtn->setFont(sizeFont);
+    currentItemInLoopBtn->setFont(sizeFont);
+
 }
 
 bool PlayBackModeWidget::nativeEvent(const QByteArray &eventType, void *message, long *result)
@@ -102,8 +114,6 @@ void PlayBackModeWidget::changePlayModePos(int posX, int posY, int width, int he
 
 void PlayBackModeWidget::playModecolor()
 {
-//    this->setAutoFillBackground(true);
-//    this->setBackgroundRole(QPalette::Base);
 //
 //    loopBtn->setAutoRaise(true);
 //    randomBtn->setAutoRaise(true);

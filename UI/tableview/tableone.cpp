@@ -2,15 +2,22 @@
 #include <QDirIterator>
 
 #include "tableone.h"
+#include "UI/mainwidget.h"
 
 TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
 {
     nowListName = listName;
-    setAcceptDrops(true);;
+    setObjectName("TableOne");
+    setAcceptDrops(true);
     initUI();
     initRightMenu();
     initConnect();
     initStyle();
+
+}
+
+TableOne::~TableOne()
+{
 
 }
 
@@ -31,17 +38,36 @@ void TableOne::initTableViewStyle()
 {
     qDebug() << "进入 initTableViewStyle";
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,50);
-    tableView->horizontalHeader()->setVisible(false);// 水平不可见
+    tableView->setColumnWidth(3,45);
+//    tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
-    tableView->setAutoScroll(true);
-    tableView->verticalScrollBarPolicy();
+//    tableView->setAutoScroll(true);
+//    tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     tableView->show();
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
     tableView->setAutoFillBackground(true);
+//    tableView->setBackgroundRole(QPalette::Base);
     tableView->setAlternatingRowColors(false);
+
+    horizonHeader = tableView->horizontalHeader();
+    horizonHeader->setEnabled(false);
+    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
+    horizonHeader->setHighlightSections(false);
+    if(WidgetStyle::themeColor == 0) {
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
+                                                                border: none;border-bottom: 1px solid white;\
+                                                                border-right: 1px solid white;border-bottom: 1px transparent;\
+                                                                background-color:white;font-size:16px;color:#8F9399;}");
+    } else {
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
+                                                        border: none;border-bottom: 1px solid #1F2022;\
+                                                        border-right: 1px solid #1F2022;border-bottom: 1px transparent;\
+                                                        background-color:#1F2022;font-size:16px;color:#8F9399;}");
+    }
+
+    horizonHeader->setDefaultAlignment(Qt::AlignLeft);
     qDebug() << "完成 initTableViewStyle";
 }
 
@@ -118,6 +144,8 @@ void TableOne::initUI()
     m_model->add(resList);
     m_model->setView(*tableView);
 
+    tableTitleWidget->hide();
+
     m_musicWidget = new QWidget(this);
     m_historyLayout = new QVBoxLayout();
     m_musicWidget->setLayout(m_historyLayout);
@@ -161,6 +189,16 @@ void TableOne::initUI()
     listTotalNumLabel->setFixedWidth(120);
     showTitleText(nowListName);
     changeNumber();
+
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    add_menu->setFont(sizeFont);
+    listTotalNumLabel->setFont(sizeFont);
+    addMusicButton->setFont(sizeFont);
+    n_addDirMusicButton->setFont(sizeFont);
+    n_addMusicButton->setFont(sizeFont);
+    nullPageTextLabel->setFont(sizeFont);
 }
 void TableOne::showTitleText(QString listName)
 {
@@ -198,6 +236,12 @@ void TableOne::initRightMenu()
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
     connect(addToOtherListMenu,&QMenu::triggered,this,&TableOne::addToOtherList);
 
+    //限制应用字体不随着主题变化
+    QFont sizeFont;
+    sizeFont.setPixelSize(14);
+    m_menu->setFont(sizeFont);
+    addToOtherListMenu->setFont(sizeFont);
+
     tableView->installEventFilter(this);
 }
 
@@ -222,7 +266,6 @@ void TableOne::showRightMenu(const QPoint &pos)
     {
         for(int i = 0 ;i < allList.size() ;i++)
         {
-            qDebug() << allList[i];
             QAction *listNameAct = new QAction;
             addToOtherListMenu->addAction(listNameAct);
             if(allList[i] != FAV)
@@ -256,7 +299,7 @@ void TableOne::deleteSongs()
         iter--;
         qDebug() << "Iterator " << iter.key(); // 迭代器
         int ret;
-        int index;
+        int index = -1;
         if(nowListName != nowPlayListName && nowListName == ALLMUSIC) {
             index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,iter.value());
         }
@@ -271,9 +314,11 @@ void TableOne::deleteSongs()
         if(ret == 0)
         {
 //            m_model->remove(iter.key());
-            if(nowListName != nowPlayListName && nowListName == ALLMUSIC && index != -1) {
+            if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1) {
+                qDebug() << "删除结果" << ret << "index" <<index;
                 playController::getInstance().removeSongFromCurList(nowPlayListName,index);
             } else {
+                qDebug() << "删除结果" << ret << "iter.key" <<iter.key();
                 playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             }
             qDebug() << "删除结果" << ret << "filepath" <<iter.value();
@@ -356,8 +401,8 @@ void TableOne::addToOtherList(QAction *listNameAction)
 }
 void TableOne::addMusicSlot()
 {
-    QFileDialog *fileDialog = new QFileDialog;
-
+    QFileDialog *fileDialog = new QFileDialog(Widget::mutual);
+//    fileDialog->setParent(Widget::mutual);
     QList<QUrl> list = fileDialog->sidebarUrls();
     int sidebarNum = 8;//最大添加U盘数，可以自己定义
     QString home = QDir::homePath().section("/", -1, -1);
@@ -414,7 +459,7 @@ void TableOne::addMusicSlot()
 
 void TableOne::addDirMusicSlot()
 {
-    QFileDialog *fileDialog = new QFileDialog;
+    QFileDialog *fileDialog = new QFileDialog(Widget::mutual);
 
     QList<QUrl> list = fileDialog->sidebarUrls();
     int sidebarNum = 8;//最大添加U盘数，可以自己定义
@@ -483,20 +528,22 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
     int ret;
-    foreach (const musicDataStruct date, resList) {
-        if(nowListName != ALLMUSIC){
+    foreach (const musicDataStruct date, resList)
+    {
+        if(nowListName != ALLMUSIC)
+        {
             ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
         }
         else{
             ret = g_db->addMusicToLocalMusic(date);
 
         }
-//        if(ret == 0){
-        playController::getInstance().addSongToCurList(nowListName,date.filepath);
-        //            m_model->add(date);
-        selectListChanged(nowListName);
+        if(ret == 0){
+            playController::getInstance().addSongToCurList(nowListName,date.filepath);
+            //            m_model->add(date);
+            selectListChanged(nowListName);
 //            emit countChanges();
-//        }
+        }
 //        else{
 //            QMessageBox msg;
 //            msg.setWindowTitle(tr("Prompt information"));
@@ -526,7 +573,7 @@ void TableOne::setHightLightAndSelect()
 {
     //列表中歌曲为空时，跳过高亮判断
     qDebug() << "列表中歌曲为空时，跳过高亮判断" << m_model->count();
-    if(m_model->count() == 0) {
+    if(m_model->count() == 0 || heightLightIndex < 0 || heightLightIndex >= m_model->count()) {
         return;
     }
     if(WidgetStyle::themeColor == 0)
@@ -668,20 +715,22 @@ void TableOne::dropEvent(QDropEvent *event)
     QStringList localpath;
     for(auto &url : urls)
     {
-        QFileInfo fileInfo(url.toLocalFile());
-        if(fileInfo.isFile())
-        {
-            localpath << url.toLocalFile();
-            if(!localpath.isEmpty())
-            {
-                addMusicToDatebase(localpath);
-            }
-        }
-        else if(fileInfo.isDir())
-        {
-            importSongs(fileInfo.filePath());
-        }
+        localpath << url.toLocalFile();
     }
+
+    if(!localpath.isEmpty())
+    {
+        addMusicToDatebase(localpath);
+    }
+
+//    for(auto filepath : localpath)
+//    {
+//        QFileInfo fileInfo(filepath);
+//        if(fileInfo.isDir())
+//        {
+//            importSongs(fileInfo.filePath());
+//        }
+//    }
 }
 
 void TableOne::mouseMoveEvent(QMouseEvent *event)
@@ -691,17 +740,17 @@ void TableOne::mouseMoveEvent(QMouseEvent *event)
     emit hoverIndexChanged(index);
 }
 
-void TableOne::importSongs(QString path)
-{
-    QStringList nameFilters;
-    QStringList files;
-    nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
-    //适合用于大目录
-    QDirIterator iter(path,nameFilters,QDir::Files,QDirIterator::Subdirectories);
-    while (iter.hasNext())
-    {
-        QString strpath = iter.next();
-        files << strpath;
-    }
-    addMusicToDatebase(files);
-}
+//void TableOne::importSongs(QString path)
+//{
+//    QStringList nameFilters;
+//    QStringList files;
+//    nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+//    //适合用于大目录
+//    QDirIterator iter(path,nameFilters,QDir::Files,QDirIterator::Subdirectories);
+//    while (iter.hasNext())
+//    {
+//        QString strpath = iter.next();
+//        files << strpath;
+//    }
+//    addMusicToDatebase(files);
+//}

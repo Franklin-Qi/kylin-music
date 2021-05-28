@@ -23,10 +23,18 @@ class PlaySongArea : public QWidget
 public:
     explicit PlaySongArea(QWidget *parent = nullptr);
 public:
+    static PlaySongArea& getInstance()
+    {
+        static PlaySongArea instance;
+        return instance;
+    }
+public:
      void playcolor();
 public:
       SliderWidget *m_volSliderWid;
       PlayBackModeWidget *m_playBackModeWid;
+      //播放滑动条
+      MusicSlider *hSlider;
 signals:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
@@ -35,6 +43,8 @@ signals:
     void signalPlayingLab(QString playing);
     //正在播放时长
     void signalTimeLab(QString time);
+    //刷新我喜欢界面
+    void signalRefreshFav(QString listName);
 //    //按钮添加到我喜欢刷新界面
 //    void signalAddFromFavButton(QString listName);
 //    //按钮从我喜欢删除刷新界面
@@ -121,8 +131,8 @@ private:
     MyLabel *playingLabel;
     //时长
     QLabel *timeLabel;
-    //播放滑动条
-    MusicSlider *hSlider;
+//    //播放滑动条
+//    MusicSlider *hSlider;
     //保存库解析总时间
     QString m_time;
     //路径
