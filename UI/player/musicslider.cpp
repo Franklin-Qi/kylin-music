@@ -1,6 +1,6 @@
 #include "musicslider.h"
 
-MusicSlider::MusicSlider(QWidget *parent):QSlider(parent)
+MusicSlider::MusicSlider(QWidget *parent):QSlider(parent),m_isPlaying(false)
 {
     //现在进度条样式已基本符合要求，但是两端稍微有点瑕疵，暂搁置
     //逻辑也稍微有点问题，如果不选择歌曲，进度条应该禁止操作
@@ -15,10 +15,17 @@ void MusicSlider::initStyle()
 
     this->setFixedHeight(22);
     this->setOrientation(Qt::Horizontal);
-    this->setStyleSheet("QSlider::groove:horizontal{padding-left:0px;height: 2px;background:#3790FA;}"
-                        "QSlider::sub-page:horizontal{left: 10px;right:10px;background:#3790FA;}"
+//    this->setMinimum(0);
+//    this->setMaximum(1000);
+    this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                        "QSlider::sub-page:horizontal{background:#3790FA;}"
                         "QSlider::add-page:horizontal{background:#ECEEF5;}"
                         );
+}
+
+void MusicSlider::isPlaying(bool isPlaying)
+{
+    m_isPlaying = isPlaying;
 }
 
 bool MusicSlider::eventFilter(QObject * obj, QEvent * ev)
@@ -26,56 +33,58 @@ bool MusicSlider::eventFilter(QObject * obj, QEvent * ev)
     if (obj == this && ev->type() == QEvent::Leave)
     {
         this->setStyleSheet(
-                    "   QSlider::groove:horizontal{                 "
-                    "           padding-left:0px;                   "
-                    "           height: 2px;                        "
-                    "           border:0px;                         "
-                    "   }                                           "
-                    "   QSlider::sub-page:horizontal{               "
-                    "           background:#3790FA;      "
-                    "   }                                           "
-                    "   QSlider::add-page:horizontal{               "
-                    "           background:#ECEEF5;      "
-                    "   }                                           "
-                    "   QSlider::handle:horizontal{          "
-                    "           width:24px;                         "
-                    "           height:24px;                        "
-                    "           margin-top: -11px;                  "
-                    "           margin-left: -12px;                 "
-                    "           margin-bottom: -11px;               "
-                    "           margin-right: -12px;                "
-                    "   }                                           "
+                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                    "QSlider::sub-page:horizontal{background:#3790FA;}"
+                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
                     );
     }
     else if (obj == this && ev->type() == QEvent::Enter)
     {
         this->setStyleSheet(
-                    "   QSlider::groove:horizontal{                 "
-                    "           padding-left:0px;                   "
-                    "           height: 2px;                        "
-                    "           border:0px;                         "
-                    "   }                                           "
-                    "   QSlider::sub-page:horizontal{               "
-                    "           background:#3790FA;                 "
-                    "   }                                           "
-                    "   QSlider::add-page:horizontal{               "
-                    "           background:#ECEEF5;                 "
-                    "   }                                           "
-                    "   QSlider::handle:horizontal {                "
-                    "           width:24px;                         "
-                    "           height:24px;                        "
-                    "           margin-top: -11px;                  "
-                    "           margin-left: -12px;                 "
-                    "           margin-bottom: -11px;               "
-                    "           margin-right: -12px;                "
-                    "           border-image:url(:/img/default/point.png); "
-                    "   }                                           "
+                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                    "QSlider::sub-page:horizontal{background:#3790FA;}"
+                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
+                    "QSlider::handle:horizontal {\
+                            width:12px;\
+                            height:12px;\
+                            margin-top: -5px;\
+                            margin-left: 0px;\
+                            margin-bottom: -5px;\
+                            margin-right: 0px;\
+                            border-image:url(:/img/default/point.png);\
+                    }"
                     );
+//        this->setStyleSheet( "   QSlider::groove:horizontal{                 "
+//                             "           padding-left:0px;                   "
+//                             "           height: 2px;                        "
+//                             "           border:0px;                         "
+//                             "   }                                           "
+//                            "QSlider::sub-page:horizontal {background: #3790FA;}"
+
+//                            "QSlider::add-page:horizontal {background: #ECEEF5;}"
+
+//                            "QSlider::handle:horizontal {\
+//                                background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
+//                                stop:0 #3790FA, stop:0.1 #3790FA);\
+//                                width: 10px;\
+//                                height:10px;\
+//                                margin-top: -5px;\
+//                                margin-left: 0px;\
+//                                margin-bottom: -5px;\
+//                                margin-right: 0px;\
+//                                border-radius: 5px;\
+//                            }"
+//                            );
     }
     else if(obj == this)
     {
+        if(m_isPlaying == false)
+        {
+            return QWidget::eventFilter(obj, ev);
+        }
         if (ev->type()==QEvent::MouseButtonPress)           //判断类型
         {
+            qDebug() << "m_isPlaying" << m_isPlaying;
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(ev);
             if (mouseEvent->button() == Qt::LeftButton) //判断左键
             {

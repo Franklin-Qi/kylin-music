@@ -1,5 +1,6 @@
 #include "sliderwidget.h"
 #include "UI/base/widgetstyle.h"
+#include "UIControl/player/player.h"
 //#include "UI/player/xatom-helper.h" 
 
 SliderWidget::SliderWidget(QWidget *parent) : QDialog(parent)
@@ -19,7 +20,7 @@ void SliderWidget::initUi()
     vSlider->setOrientation(Qt::Vertical);
     vSlider->setMinimum(0);
     vSlider->setMaximum(100);
-    vSlider->setValue(50);
+    vSlider->setValue(playController::getInstance().getVolume());
     vSlider->setStyleSheet(
                            "QSlider::groove:vertical {height: 70px;width: 4px;\
                                                    border: 1px solid #4A708B;\

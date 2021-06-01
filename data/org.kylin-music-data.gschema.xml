@@ -15,6 +15,11 @@
              <summary>auto</summary>
              <description>auto</description>
          </key>
+         <key name="volume" type="i" >
+             <default>50</default>
+             <summary>volume</summary>
+             <description>volume</description>
+         </key>
 
      </schema>
 </schemalist>

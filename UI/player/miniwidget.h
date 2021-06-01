@@ -55,6 +55,8 @@ protected:
 signals:
     //发送信号mini窗口我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
+    //刷新我喜欢列表
+    void signalRefreshFav(QString listName);
 private:
     void initAction();
     void initConnect();

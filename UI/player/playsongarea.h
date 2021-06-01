@@ -33,8 +33,6 @@ public:
 public:
       SliderWidget *m_volSliderWid;
       PlayBackModeWidget *m_playBackModeWid;
-      //播放滑动条
-      MusicSlider *hSlider;
 signals:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
@@ -131,8 +129,8 @@ private:
     MyLabel *playingLabel;
     //时长
     QLabel *timeLabel;
-//    //播放滑动条
-//    MusicSlider *hSlider;
+    //播放滑动条
+    MusicSlider *hSlider;
     //保存库解析总时间
     QString m_time;
     //路径
