@@ -41,11 +41,36 @@ void PlaySongArea::initWidget()
     volumeBtn = new QPushButton(this);
     volumeBtn->setFixedSize(25,25);
     volumeBtn->setCursor(Qt::PointingHandCursor);
-    volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
-    volumeBtn->setProperty("isWindowButton", 0x1);
-    volumeBtn->setProperty("useIconHighlightEffect", 0x2);
-    volumeBtn->setFlat(true);
     volumeBtn->setToolTip(tr("Volume"));    //音量
+    int volume = playController::getInstance().getVolume();
+    if(volume == 0)
+    {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
+        volumeBtn->setProperty("isWindowButton", 0x1);
+        volumeBtn->setProperty("useIconHighlightEffect", 0x2);
+        volumeBtn->setFlat(true);
+    }
+    else if(volume > 0 && volume <= 33)
+    {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-low-symbolic"));
+        volumeBtn->setProperty("isWindowButton", 0x1);
+        volumeBtn->setProperty("useIconHighlightEffect", 0x2);
+        volumeBtn->setFlat(true);
+    }
+    else if(volume > 33 && volume <= 77)
+    {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-medium-symbolic"));
+        volumeBtn->setProperty("isWindowButton", 0x1);
+        volumeBtn->setProperty("useIconHighlightEffect", 0x2);
+        volumeBtn->setFlat(true);
+    }
+    else
+    {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
+        volumeBtn->setProperty("isWindowButton", 0x1);
+        volumeBtn->setProperty("useIconHighlightEffect", 0x2);
+        volumeBtn->setFlat(true);
+    }
 
     m_volSliderWid = new SliderWidget(this);
     MotifWmHints hint;
@@ -64,7 +89,7 @@ void PlaySongArea::initWidget()
     m_playBackModeWid->hide();
 
     hSlider = new MusicSlider(this);
-
+    hSlider->setDisabled(true);
     favBtn = new QPushButton;
     favBtn->setFixedSize(16,16);
 //    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
@@ -213,15 +238,17 @@ void PlaySongArea::initConnect()
 
 void PlaySongArea::slotVolumeChanged(int values)
 {
-    if(values == 0)
+    playController::getInstance().setVolume(values);
+    int volume = playController::getInstance().getVolume();
+    if(volume == 0)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
     }
-    else if(values > 0 && values <= 33)
+    else if(volume > 0 && volume <= 33)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-low-symbolic"));
     }
-    else if(values > 33 && values <= 77)
+    else if(volume > 33 && volume <= 77)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-medium-symbolic"));
     }
@@ -229,14 +256,6 @@ void PlaySongArea::slotVolumeChanged(int values)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
     }
-    if(values > 100) {
-        values = 100;
-    }
-    if(values < 0) {
-        values = 0;
-    }
-    qDebug() << "values" << values;
-    playController::getInstance().getPlayer()->setVolume(values);
 }
 
 void PlaySongArea::volumeIncrease()
@@ -245,7 +264,6 @@ void PlaySongArea::volumeIncrease()
     if(value > 100)
         value = 100;
     m_volSliderWid->vSlider->setValue(value);
-    playController::getInstance().getPlayer()->setVolume(value);
 }
 
 void PlaySongArea::volumeReduce()
@@ -254,7 +272,6 @@ void PlaySongArea::volumeReduce()
     if(value < 0)
         value = 0;
     m_volSliderWid->vSlider->setValue(value);
-    playController::getInstance().getPlayer()->setVolume(value);
 }
 
 void PlaySongArea::slotVolSliderWidget()
@@ -295,6 +312,7 @@ void PlaySongArea::slotFav()
                     {
                         qDebug() << "**********i" << i;
                         playController::getInstance().removeSongFromCurList("我喜欢", i);
+                        //作为已知问题，刷新我喜欢界面，界面自动跳转到我喜欢（当前是歌曲列表）[刷新界面时，界面切换]
                         emit signalRefreshFav("我喜欢");
                         break;
                     }
@@ -420,6 +438,7 @@ void PlaySongArea::slotSongInfo(QString path)
     }
     else
     {
+        hSlider->isPlaying(true);
         playingLabel->setText(musicStruct.title);
         emit signalPlayingLab(musicStruct.title);
     }
@@ -469,6 +488,10 @@ void PlaySongArea::slotPositionChanged(qint64 position)
 
 void PlaySongArea::slotNotPlaying()
 {
+    //滑块可以点击，无法跳转
+    hSlider->isPlaying(false);
+    //禁用
+    hSlider->setDisabled(true);
     playingLabel->setText(tr("Music Player"));
     timeLabel->setText("00:00/00:00");
 }
@@ -492,6 +515,10 @@ void PlaySongArea::slotSlideReleased()
 
 void PlaySongArea::setPosition(int position)
 {
+//    qDebug() << "position" << position;
+//    qDebug() << "playController::getInstance().getPlayer()->position()" << playController::getInstance().getPlayer()->position();
+//    qDebug() << "playController::getInstance().getPlayer()->position() - position" << playController::getInstance().getPlayer()->position() - position;
+    //判断播放的位置 - 滑块的位置是否大于0.1s
     if (qAbs(playController::getInstance().getPlayer()->position() - position) > 99)
        playController::getInstance().getPlayer()->setPosition(position);
 }
@@ -535,13 +562,38 @@ void PlaySongArea::movePlayModeWid()
 
 void PlaySongArea::slotPlayClicked()
 {
-    if(playController::getInstance().getPlayer()->state() == QMediaPlayer::PlayingState)
+    if(playingLabel->text() == tr("Music Player"))
     {
-        playController::getInstance().getPlayer()->pause();
+        QList<musicDataStruct> resList;
+        int ret = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+        if(ret == DB_OP_SUCC)
+        {
+            if(resList.size() == 0)
+            {
+                return;
+            }
+            if(resList.size() >= 1)
+            {
+                QStringList paths;
+                for(int i = 0; i < resList.size(); i++)
+                {
+                    paths << resList.at(i).filepath;
+                }
+                playController::getInstance().setCurPlaylist(ALLMUSIC,paths);
+                playController::getInstance().play(ALLMUSIC,0);
+            }
+        }
     }
     else
     {
-        playController::getInstance().getPlayer()->play();
+        if(playController::getInstance().getPlayer()->state() == QMediaPlayer::PlayingState)
+        {
+            playController::getInstance().getPlayer()->pause();
+        }
+        else
+        {
+            playController::getInstance().getPlayer()->play();
+        }
     }
 }
 

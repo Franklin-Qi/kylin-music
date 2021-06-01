@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QGSettings>
 
 class playController : public QObject {
     Q_OBJECT
@@ -32,6 +33,7 @@ private:
     playController(playController const&);
     playController& operator=(playController const&);
     ~playController();
+    void init();
 
 public:
     //新增接口 fyf
@@ -43,7 +45,6 @@ public:
     bool pause();
     bool stop();
 
-    void setVolume(int vol);
     int volume();
 
     void setPlayPosition(int pos);
@@ -72,6 +73,10 @@ public:
     }
 
     void setPosition(int position);
+    //获取音量
+    int getVolume();
+    //设置音量
+    void setVolume(int volume);
 signals:
     void curPositionChanged(qint64);
     void curDurationChanged(qint64);
@@ -106,7 +111,11 @@ private:
     int m_curIndex;
     QMediaPlayer* m_player;
     QMediaPlaylist* m_playlist;
+    QGSettings *volumeSetting = nullptr;
     bool isInitialed = false;
+    //在列表里歌曲（判断本地歌曲是否存在）没有播放的情况下，当前函数掉了多少次，要是歌曲在播放（找到本地路径存在，x重新计数
+    int x = 0;
+    int m_volume = 50;
 };
 
 #endif // PLAYER_H

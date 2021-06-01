@@ -13,12 +13,15 @@ class MusicSlider : public QSlider
     Q_OBJECT
 public:
     MusicSlider(QWidget *parent);
-
+    void isPlaying(bool isPlaying);
 protected:
     bool eventFilter(QObject * obj, QEvent * ev) Q_DECL_OVERRIDE;
     void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
 private:
     void initStyle();
+
+private:
+    bool m_isPlaying;
 };
 
 #endif // MUSICSLIDER_H

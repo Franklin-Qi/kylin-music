@@ -20,7 +20,7 @@
 
 #include <QGSettings>
 
-#define KYLINRECORDER "org.kylin-music-data.settings"
+#define KYLINMUSIC "org.kylin-music-data.settings"
 #define FITTHEMEWINDOW "org.ukui.style"
 
 //static int themeColor = 0;   //test  主题颜色适配--浅色

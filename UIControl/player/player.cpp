@@ -3,6 +3,7 @@
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/base/musicfileinformation.h"
 #include "UI/player/playsongarea.h"
+#include "UI/base/widgetstyle.h"
 
 bool playController::play(QString playlist, int index)
 {
@@ -149,6 +150,8 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         m_playlist->addMedia(QUrl::fromLocalFile(path));
     }
 
+    //到这个判断闪退(待解决)
+    qDebug() << "进入函数 5 setCurPlaylist";
     if (m_player != nullptr) {
         m_player->setPlaylist(m_playlist);
     }
@@ -213,14 +216,14 @@ void playController::removeSongFromCurList(QString name, int index)
                 if(m_player->state()==QMediaPlayer::PlayingState)
                 {
                     position = m_player->position();
-                    qDebug() << "position" << position;
                 }
                 m_player->stop();
                 m_playlist->removeMedia(index);
                 m_curIndex = m_curIndex - 1;
                 setSongIndex(m_curIndex);
                 m_player->setPosition(position);
-                PlaySongArea::getInstance().hSlider->setValue(position);
+                //歌曲删除重新播放(跨函数调用)
+//                PlaySongArea::getInstance().hSlider->setValue(position);
                 m_player->play();
             }
             else if(m_curIndex < index)
@@ -236,9 +239,6 @@ void playController::removeSongFromCurList(QString name, int index)
 //        emit currentIndexAndCurrentList(cr_index,m_curList);
         //删除正在播放的歌曲时，正在播放的歌曲名和时长实时更新
 //        slotIndexChange(cr_index);
-        qDebug() << " <name> :" << name;
-//        qDebug() << "position" << position;
-        qDebug() << "m_curIndex" << m_curIndex;
 //        if(name == ALLMUSIC)
 //        {
 
@@ -282,12 +282,40 @@ playController::playController()
         return;
     }
     m_player->setPlaylist(m_playlist);
+    init();
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(m_player,&QMediaPlayer::stateChanged,this,&playController::slotStateChanged);
     connect(m_playlist,&QMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
 }
+
+void playController::init()
+{
+    volumeSetting = new QGSettings(KYLINMUSIC);
+    m_volume = volumeSetting->get("volume").toInt();
+    m_player->setVolume(m_volume);
+}
+
+int playController::getVolume()
+{
+    return m_volume;
+}
+
+void playController::setVolume(int volume)
+{
+    if(volume > 100) {
+        volume = 100;
+    }
+    if(volume < 0) {
+        volume = 0;
+    }
+
+    m_volume = volume;
+    volumeSetting->set("volume", volume);
+    m_player->setVolume(volume);
+}
+
 void playController::onCurrentIndexChanged()
 {
     qDebug() << "onCurrentIndexChanged";
@@ -392,8 +420,24 @@ void playController::slotIndexChange(int index)
     m_curIndex = index;
     QMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
-    emit currentIndexAndCurrentList(index,m_curList);
-    emit singalChangePath(path);
+    QFileInfo file(path.remove("file://"));
+    if(file.exists())
+    {
+        x = 0;
+        emit currentIndexAndCurrentList(index,m_curList);
+        emit singalChangePath(path);
+    }
+    else
+    {
+        x++;
+        if(x > m_playlist->mediaCount())
+        {
+            x = 0;
+            index = -1;
+            m_playlist->setCurrentIndex(index);
+            return;
+        }
+    }
 }
 
 void playController::setPosition(int position)
