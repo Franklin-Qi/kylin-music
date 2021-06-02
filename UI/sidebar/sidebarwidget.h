@@ -24,6 +24,7 @@ public:
     AllPupWindow *newSonglistPup;
     //重命名歌单弹窗界面
     AllPupWindow *renameSongListPup;
+    MyToolButton *playListBtn;
 public slots:
     //添加歌单弹窗输入框
     void addPlayList();
@@ -53,7 +54,7 @@ private:
     QString newPlayListName();
 private:
     //歌曲列表 QToolButton
-    MyToolButton *playListBtn;
+    //MyToolButton *playListBtn;
     //我喜欢 QToolButton
 //    MyToolButton *loveBun;
     //添加歌单按钮

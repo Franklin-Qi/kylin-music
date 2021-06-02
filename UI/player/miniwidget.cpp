@@ -416,6 +416,11 @@ void miniWidget::slotSongInfo(QString path)
     slotFavExixts();
 }
 
+void miniWidget::slotText(QString btnText)
+{
+    listName = btnText;
+}
+
 void miniWidget::slotFav()
 {
     qDebug() << "miniWidget  我喜欢按钮要添加的路径" << filePath;
@@ -436,8 +441,11 @@ void miniWidget::slotFav()
                     if(resList.at(i).filepath == filePath)
                     {
                         playController::getInstance().removeSongFromCurList("我喜欢", i);
-                        //作为已知问题，刷新我喜欢界面，界面自动跳转到我喜欢（当前是歌曲列表）[刷新界面时，界面切换]
-                        emit signalRefreshFav("我喜欢");
+                        //当前为我喜欢界面才刷新
+                        if(listName == "我喜欢")
+                        {
+                            emit signalRefreshFav("我喜欢");
+                        }
                         break;
                     }
                 }
@@ -446,11 +454,14 @@ void miniWidget::slotFav()
     }
     else
     {
-
         int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
         if(ref == DB_OP_SUCC)
         {
             playController::getInstance().addSongToCurList("我喜欢", filePath);
+            if(listName == "我喜欢")
+            {
+                emit signalRefreshFav("我喜欢");
+            }
         }
     }
     slotFavExixts();

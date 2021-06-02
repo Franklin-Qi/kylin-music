@@ -72,6 +72,8 @@ public slots:
     void slotFav();
     //改变播放模式弹窗
     void slotPlayBackModeChanged();
+    //判断当前点击的按钮是否为我喜欢（歌单名）
+    void slotText(QString btnText);
 
     void slotLoopClicked();
     void slotRandomClicked();
@@ -135,6 +137,8 @@ private:
     QString m_time;
     //路径
     QString filePath;
+    //歌单名
+    QString listName;
 };
 
 #endif // PLAYSONGAREA_H

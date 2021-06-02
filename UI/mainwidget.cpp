@@ -386,6 +386,7 @@ void Widget::allConnect()
     connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
     connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
+    connect(sideBarWid,&SideBarWidget::playListBtnCliced,playSongArea,&PlaySongArea::slotText);
 
     connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
@@ -416,6 +417,7 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
     connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
+    connect(sideBarWid,&SideBarWidget::playListBtnCliced,m_miniWidget,&miniWidget::slotText);
 }
 
 void Widget::initGSettings()//初始化GSettings

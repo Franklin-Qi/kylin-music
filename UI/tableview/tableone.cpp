@@ -228,11 +228,13 @@ void TableOne::initRightMenu()
     m_menu = new QMenu(tableView);
 
     playRow = new QAction(tr("Play"));
-    removeRow = new QAction(tr("Delete"));
+    removeRow = new QAction(tr("Delete from list"));
+    removeLocalRow = new QAction(tr("Remove from local"));
     showInfoRow = new QAction(tr("View song information"));
     addToOtherListMenu = new QMenu(tr("Add to songlist"));
     connect(playRow,&QAction::triggered,this,&TableOne::playSongs);
     connect(removeRow,&QAction::triggered,this,&TableOne::deleteSongs);
+    connect(removeLocalRow,&QAction::triggered,this,&TableOne::deleteLocalSongs);
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
     connect(addToOtherListMenu,&QMenu::triggered,this,&TableOne::addToOtherList);
 
@@ -257,6 +259,7 @@ void TableOne::showRightMenu(const QPoint &pos)
     m_menu->addAction(playRow);      //添加动作到菜单
     m_menu->addMenu(addToOtherListMenu);
     m_menu->addAction(removeRow);  //添加动作到菜单
+    m_menu->addAction(removeLocalRow);
     m_menu->addAction(showInfoRow); //添加动作到菜单
     QMap<int,QString> map1 = getSelectedTaskIdList();
     addToOtherListMenu->clear();
@@ -338,6 +341,90 @@ void TableOne::deleteSongs()
         }
     }
     selectListChanged(nowListName);
+}
+
+void TableOne::deleteLocalSongs()
+{
+    QMap<int,QString> map1 = getSelectedTaskIdList();
+    while (!map1.empty())
+    {
+        QMap<int,QString>::iterator iter;
+        iter = map1.end();
+        iter--;
+        QFile file(iter.value());
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Are you sure you want to delete it locally?"),QMessageBox::Yes | QMessageBox::No);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->button(QMessageBox::No)->setText("取消");
+        int result = warn->exec();
+        if(result == QMessageBox::Yes)
+        {
+            qDebug() << "QMessageBox::Yes";
+        }
+        else
+        {
+            qDebug() << "QMessageBox::No";
+            return;
+        }
+        if(file.exists())
+        {
+            //移入回收站(作为已知)
+//            deleteImage(iter.value());
+            //删除到回收站不成功从磁盘删除
+            file.remove();
+        }
+        int ret;
+        int index = -1;
+        if(nowListName != nowPlayListName && nowListName == ALLMUSIC)
+        {
+            index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,iter.value());
+        }
+        if(nowListName != ALLMUSIC)
+        {
+           ret = g_db->delMusicFromPlayList(iter.value(),nowListName);
+        }
+        else
+        {
+           ret = g_db->delSongFromEveryWhere(iter.value());
+        }
+        if(ret == 0)
+        {
+            if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1)
+            {
+                playController::getInstance().removeSongFromCurList(nowPlayListName,index);
+            }
+            else
+            {
+                playController::getInstance().removeSongFromCurList(nowListName,iter.key());
+            }
+
+            if(nowListName == FAV)
+            {
+                emit removeILoveFilepathSignal(iter.value());
+            }
+
+            map1.remove(iter.key());
+        }
+        else
+        {
+            qDebug() << "delete failed" << iter.value();
+        }
+    }
+    selectListChanged(nowListName);
+}
+
+void TableOne::deleteImage(const QString &savepath)
+{
+    _processStart("gio",QStringList() << "trash" << savepath);
+}
+
+void TableOne::_processStart(const QString &cmd, QStringList arguments)
+{
+    QString cmdTmp = cmd;
+    for(QString &x : arguments){
+        cmdTmp += " ";
+        cmdTmp += x;
+    }
+    system(cmdTmp.toLocal8Bit().data());
 }
 
 void TableOne::playSongs()
