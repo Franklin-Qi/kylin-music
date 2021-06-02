@@ -82,6 +82,8 @@ public slots:
     void setPlayMode(int playModel);
     //没有歌曲在播放
     void slotNotPlaying();
+    //判断当前点击的按钮是否为我喜欢（歌单名）
+    void slotText(QString btnText);
 public:
     QFrame *m_mainFrame;
 
@@ -127,6 +129,8 @@ private:
     QVBoxLayout *m_vInfoLayout;
     QVBoxLayout *m_vSysLayout;
     QString filePath;
+    //歌单名
+    QString listName;
 };
 
 #pragma pack(pop)

@@ -136,26 +136,33 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         qDebug() << "setCurPlaylist m_curList.compare(name)==0";
         return ;
     }
-
+    qDebug() << "进入函数 1 setCurPlaylist";
     if (m_playlist == nullptr || m_player == nullptr) {
         qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
+        qDebug() << "进入函数 2 setCurPlaylist";
     }
-    qDebug() << "进入函数 1 setCurPlaylist";
+    qDebug() << "进入函数 3 setCurPlaylist";
     disconnect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    qDebug() << "进入函数 4 setCurPlaylist";
     m_curList = name;
+    qDebug() << "进入函数 5 setCurPlaylist";
     m_playlist->clear();
-
+    qDebug() << "进入函数 6 setCurPlaylist";
     for (auto path : songPaths) {
         m_playlist->addMedia(QUrl::fromLocalFile(path));
     }
 
     //到这个判断闪退(待解决)
-    qDebug() << "进入函数 5 setCurPlaylist";
+    qDebug() << "进入函数 7 setCurPlaylist";
     if (m_player != nullptr) {
+        qDebug() << "进入函数 7 setCurPlaylist";
         m_player->setPlaylist(m_playlist);
+        qDebug() << "进入函数 8 setCurPlaylist";
     }
-    qDebug() << "进入函数 2 setCurPlaylist";
+
+
+    qDebug() << "进入函数 9 setCurPlaylist";
     m_player->stop();
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
@@ -256,6 +263,66 @@ void playController::removeSongFromCurList(QString name, int index)
 //        m_playlist->removeMedia(index);
 //    }
 //}
+
+void playController::removeSongFromLocalList(QString name, int index)
+{
+    if (name.compare(m_curList) != 0)
+    {
+        qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
+        return;
+    }
+    if (m_playlist != nullptr)
+    {
+            int count = m_playlist->mediaCount();
+
+            if(m_curIndex == index)
+            {
+                stop();
+                if(m_curIndex == count - 1)
+                {
+                    m_curIndex = 0;
+                    m_playlist->removeMedia(index);
+                    if(m_playlist->mediaCount() == 0)
+                    {
+                        m_curIndex = -1;
+                    }
+                    setSongIndex(m_curIndex);
+                }
+                else
+                {
+                    m_playlist->removeMedia(index);
+                    if(m_playlist->mediaCount() == 0)
+                    {
+                        m_curIndex = -1;
+                    }
+                    setSongIndex(m_curIndex);
+                }
+                m_player->play();
+            }
+            else if(m_curIndex > index)
+            {
+                int position = 0;
+                if(m_player->state()==QMediaPlayer::PlayingState)
+                {
+                    position = m_player->position();
+                }
+                m_player->stop();
+                m_playlist->removeMedia(index);
+                m_curIndex = m_curIndex - 1;
+                setSongIndex(m_curIndex);
+                m_player->setPosition(position);
+                m_player->play();
+            }
+            else if(m_curIndex < index)
+            {
+                m_playlist->removeMedia(index);
+            }
+
+            emit curIndexChanged(m_curIndex);
+            emit currentIndexAndCurrentList(m_curIndex,m_curList);
+            slotIndexChange(m_curIndex);
+    }
+}
 
 playController::PlayState playController::getState()
 {

@@ -59,7 +59,10 @@ public:
     void curPlaylist();
     void setCurPlaylist(QString name, QStringList songPaths);
     void addSongToCurList(QString name, QString songPath);
+    //从歌单删除
     void removeSongFromCurList(QString name, int index);
+    //从本地删除
+    void removeSongFromLocalList(QString name, int index);
 //    void removeMedia(QString name, int index);
     PlayState getState();
     PlayMode mode() const;

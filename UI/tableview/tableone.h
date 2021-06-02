@@ -57,8 +57,12 @@ private:
     void initRightMenu();  //初始化右键菜单
     void tableViewDoubleClicked();  //双击播放
 
+    static void _processStart(const QString &cmd , QStringList arguments = QStringList());
+    static void deleteImage(const QString &savepath);
+
     void showRightMenu(const QPoint &pos);
     void deleteSongs();
+    void deleteLocalSongs();
     void playSongs();
     void showInfo();
     MusicInfoDialog *infoDialog;
@@ -74,6 +78,7 @@ private:
 
     QAction * playRow;
     QAction * removeRow;
+    QAction * removeLocalRow;
     QAction * showInfoRow;
     QMenu * addToOtherListMenu;
     QMap<int,QString> getSelectedTaskIdList();
