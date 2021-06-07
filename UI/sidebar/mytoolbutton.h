@@ -21,6 +21,7 @@ public:
 public:
     QAction *deleteAct;
     QAction *renameAct;
+    QString buttonListName = "";
 signals:
     void playall(QString text);
     void renamePlayList(QString text);

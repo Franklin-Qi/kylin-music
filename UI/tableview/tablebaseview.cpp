@@ -1,5 +1,6 @@
 
 #include "tablebaseview.h"
+#include "UI/base/widgetstyle.h"
 
 TableBaseView::TableBaseView(QTableView *parent)
 {
@@ -18,16 +19,23 @@ void TableBaseView::initStyle()
     setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
 //    setAutoScroll(false);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setAutoFillBackground(true);
+//    setAutoFillBackground(true);
     setAlternatingRowColors(false);
 
-    this->setStyleSheet("QTableView{border:none;}"
-                        "QTableView::item{min-height:60px;}");
+    this->setStyleSheet("{border:none;}");
+//    if (WidgetStyle::themeColor == 1)
+//    {
+//        this->setStyleSheet("background:#252526;border:none;");
+//    }
+//    else if(WidgetStyle::themeColor == 0)
+//    {
+//        this->setStyleSheet("background:#FFFFFF;border:none;");
+//    }
 //    this->horizontalHeader()->setVisible(false);// 水平不可见
 //    this->verticalHeader()->setVisible(false);// 垂直不可见
     this->setAutoScroll(false);
 //    this->verticalScrollBarPolicy();
-    this->setAutoFillBackground(true);
+//    this->setAutoFillBackground(false);
     //限制应用内字体固定大小
     QFont sizeFont;
     sizeFont.setPixelSize(14);

@@ -7,7 +7,8 @@ PlayBackModeWidget::PlayBackModeWidget(QWidget *parent) : QDialog(parent)
     setAttribute(Qt::WA_StyledBackground,true);
     initWidget();
     playModecolor();
-
+//    this->setAutoFillBackground(true);
+//    this->setBackgroundRole(QPalette::Base);
 }
 
 void PlayBackModeWidget::initWidget()
@@ -20,9 +21,13 @@ void PlayBackModeWidget::initWidget()
     loopBtn->setFixedSize(118,30);
     loopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     loopBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+    loopBtn->setProperty("useIconHighlightEffect", 0x8);
+//    loopBtn->setProperty("useIconHighlightEffect", 0x2);
+//    loopBtn->setFocusPolicy(Qt::NoFocus);
+//    loopBtn->setProperty("isImportant",true);
     loopBtn->setIconSize(QSize(16,16));
     loopBtn->setText(tr("Loop"));
-    loopLayout->addWidget(loopBtn);
+//    loopLayout->addWidget(loopBtn);
     loopLayout->setMargin(0);
     loopLayout->setSpacing(0);
 
@@ -30,7 +35,11 @@ void PlayBackModeWidget::initWidget()
     randomBtn = new QToolButton(this);
     randomBtn->setFixedSize(118,30);
     randomBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    randomBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle"));
+    randomBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
+    randomBtn->setProperty("useIconHighlightEffect", 0x8);
+//    randomBtn->setProperty("useIconHighlightEffect", 0x2);
+//    randomBtn->setFocusPolicy(Qt::NoFocus);
+//    randomBtn->setProperty("isImportant",true);
     randomBtn->setIconSize(QSize(16,16));
     randomBtn->setText(tr("Random"));
     randomLayout->addWidget(randomBtn);
@@ -41,7 +50,11 @@ void PlayBackModeWidget::initWidget()
     sequentialBtn = new QToolButton(this);
     sequentialBtn->setFixedSize(118,30);
     sequentialBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    sequentialBtn->setIcon(QIcon::fromTheme("media-playlist-repeat"));
+    sequentialBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
+    sequentialBtn->setProperty("useIconHighlightEffect", 0x8);
+//    sequentialBtn->setProperty("useIconHighlightEffect", 0x2);
+//    sequentialBtn->setFocusPolicy(Qt::NoFocus);
+//    sequentialBtn->setProperty("isImportant",true);
     sequentialBtn->setIconSize(QSize(16,16));
     sequentialBtn->setText(tr("Sequential"));
     sequentialLayout->addWidget(sequentialBtn);
@@ -53,6 +66,10 @@ void PlayBackModeWidget::initWidget()
     currentItemInLoopBtn->setFixedSize(118,30);
     currentItemInLoopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     currentItemInLoopBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+    currentItemInLoopBtn->setProperty("useIconHighlightEffect", 0x8);
+//    currentItemInLoopBtn->setProperty("useIconHighlightEffect", 0x2);
+//    currentItemInLoopBtn->setFocusPolicy(Qt::NoFocus);
+//    currentItemInLoopBtn->setProperty("isImportant",true);
     currentItemInLoopBtn->setIconSize(QSize(16,16));
     currentItemInLoopBtn->setText(tr("CurrentItemInLoop"));
     currentItemInLoopLayout->addWidget(currentItemInLoopBtn);
@@ -66,8 +83,7 @@ void PlayBackModeWidget::initWidget()
     vLayout->setMargin(0);
     vLayout->setSpacing(0);
     this->setLayout(vLayout);
-    this->setAutoFillBackground(true);
-    this->setBackgroundRole(QPalette::Base);
+
     //限制应用字体不随着主题变化
     QFont sizeFont;
     sizeFont.setPixelSize(14);
@@ -120,31 +136,39 @@ void PlayBackModeWidget::playModecolor()
 //    sequentialBtn->setAutoRaise(true);
 //    currentItemInLoopBtn->setAutoRaise(true);
 
+//    if(WidgetStyle::themeColor == 1)
+//    {
+//        loopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
+//                               "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+//        randomBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
+//                                 "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+//        sequentialBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
+//                                     "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+//        currentItemInLoopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
+//                                            "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+//    }
+//    else if(WidgetStyle::themeColor == 0)
+//    {
+//        loopBtn->setStyleSheet("QToolButton{padding-left:7px;\
+//                               background-color:#FFFFFF;color:#303133;border-radius:4px;}"
+//                               "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+//        randomBtn->setStyleSheet("QToolButton{padding-left:7px;\
+//                                 background-color:#FFFFFF;color:#303133;border-radius:4px;}"
+//                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+//        sequentialBtn->setStyleSheet("QToolButton{padding-left:7px;\
+//                                     background-color:#FFFFFF;color:#303133;border-radius:4px;}"
+//                                     "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+//        currentItemInLoopBtn->setStyleSheet("QToolButton{padding-left:7px;\
+//                                            background-color:#FFFFFF;color:#303133;border-radius:4px;}"
+//                                            "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+//    }
     if(WidgetStyle::themeColor == 1)
     {
-        loopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
-                               "QToolButton::hover{background-color:#303032;border-radius:4px;}");
-        randomBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
-                                 "QToolButton::hover{background-color:#303032;border-radius:4px;}");
-        sequentialBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
-                                     "QToolButton::hover{background-color:#303032;border-radius:4px;}");
-        currentItemInLoopBtn->setStyleSheet("QToolButton{padding-left:7px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
-                                            "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+        this->setStyleSheet("background-color:#252526;");
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        loopBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                               background-color:#FFFFFF;color:#303133;border-radius:4px;}"
-                               "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
-        randomBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                 background-color:#FFFFFF;color:#303133;border-radius:4px;}"
-                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
-        sequentialBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                     background-color:#FFFFFF;color:#303133;border-radius:4px;}"
-                                     "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
-        currentItemInLoopBtn->setStyleSheet("QToolButton{padding-left:7px;\
-                                            background-color:#FFFFFF;color:#303133;border-radius:4px;}"
-                                            "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+        this->setStyleSheet("background-color:#FFFFFF;");
     }
 }
 

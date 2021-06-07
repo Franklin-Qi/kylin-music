@@ -13,6 +13,7 @@ TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
     initRightMenu();
     initConnect();
     initStyle();
+    tableView->setAlternatingRowColors(false);
 
 }
 
@@ -31,14 +32,29 @@ void TableOne::initStyle()
     listTotalNumLabel->setStyleSheet("font-weight: 400;\
                                         border:none;\
                                         line-height: 14px;");
-
+    if (WidgetStyle::themeColor == 1)
+    {
+        this->setStyleSheet("#TableOne{background:red;border:none;}");
+        titleWid->setStyleSheet("#titleWid{background:#252526;}");
+        nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
+        tableView->setStyleSheet("#tableView{background:#252526;border:none;}");
+        tableView->setAlternatingRowColors(false);
+    }
+    else if(WidgetStyle::themeColor == 0)
+    {
+        this->setStyleSheet("#TableOne{background:#FFFFFF;border:none;}");
+        titleWid->setStyleSheet("#titleWid{background:#FFFFFF;}");
+        nullPageWidget->setStyleSheet("#nullPageWidget{background:#FFFFFF;}");
+        tableView->setStyleSheet("#tableView{background:#FFFFFF;border:none;}");
+        tableView->setAlternatingRowColors(false);
+    }
 }
 
 void TableOne::initTableViewStyle()
 {
     qDebug() << "进入 initTableViewStyle";
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,45);
+    tableView->setColumnWidth(3,20);
 //    tableView->horizontalHeader()->setVisible(false);// 水平不可见
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
 //    tableView->setAutoScroll(true);
@@ -47,7 +63,7 @@ void TableOne::initTableViewStyle()
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
-    tableView->setAutoFillBackground(true);
+//    tableView->setAutoFillBackground(true);
 //    tableView->setBackgroundRole(QPalette::Base);
     tableView->setAlternatingRowColors(false);
 
@@ -62,9 +78,9 @@ void TableOne::initTableViewStyle()
                                                                 background-color:white;font-size:16px;color:#8F9399;}");
     } else {
         horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
-                                                        border: none;border-bottom: 1px solid #1F2022;\
-                                                        border-right: 1px solid #1F2022;border-bottom: 1px transparent;\
-                                                        background-color:#1F2022;font-size:16px;color:#8F9399;}");
+                                                        border: none;border-bottom: 1px solid #252526;\
+                                                        border-right: 1px solid #252526;border-bottom: 1px transparent;\
+                                                        background-color:#252526;font-size:16px;color:#8F9399;}");
     }
 
     horizonHeader->setDefaultAlignment(Qt::AlignLeft);
@@ -80,23 +96,48 @@ void TableOne::initUI()
     listTotalNumLabel = new QLabel(this);
     addMusicButton = new QToolButton(this);
     listTitleHBoxLayout = new QHBoxLayout();
+    playAllButton = new QToolButton(this);
 
-    QWidget *titleWid = new QWidget(this);
+
+    titleWid = new QWidget(this);
+    titleWid->setObjectName("titleWid");
     titleWid->setLayout(listTitleHBoxLayout);
     listTitleHBoxLayout->setAlignment(Qt::AlignLeft);
     listTitleHBoxLayout->addWidget(listTitleLabel);
     listTitleHBoxLayout->addWidget(listTotalNumLabel);
     listTitleHBoxLayout->addStretch(0);
-    listTitleHBoxLayout->addWidget(addMusicButton,1,Qt::AlignRight);
-    listTitleHBoxLayout->setContentsMargins(25,0,10,0);
+    listTitleHBoxLayout->addWidget(playAllButton,1,Qt::AlignRight);
+    listTitleHBoxLayout->addSpacing(16);
+    listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
+    listTitleHBoxLayout->setContentsMargins(25,20,10,30);
     listTitleHBoxLayout->setSpacing(0);
-    titleWid->setFixedHeight(40);
+    titleWid->setFixedHeight(80);
+
+    playAllButton->setText(tr("Play All"));
+    playAllButton->setIconSize(QSize(16,16));
+    playAllButton->setIcon(QIcon(":/img/default/play_w.png"));
+    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    playAllButton->setIconSize(QSize(16,16));
+//    addMusicButton->setText(tr("   Add"));
+    playAllButton->setFixedSize(112,36);
+    playAllButton->setPopupMode(QToolButton::InstantPopup);
+    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
+                                 "QToolButton::hover{background-color: #40A9FB;}"
+                                 "QToolButton::pressed{background-color: #296CD9;}");
+//    playAllButton->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
 
     addMusicButton->setText(tr("Add"));
     addMusicButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     addMusicButton->setIconSize(QSize(16,16));
+
+    addMusicButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    addMusicButton->setProperty("useIconHighlightEffect", 0x8);
+//    addMusicButton->setProperty("useIconHighlightEffect", 0x2);
+//    addMusicButton->setFocusPolicy(Qt::NoFocus);
+//    addMusicButton->setProperty("isImportant",true);
+
 //    addMusicButton->setText(tr("   Add"));
-    addMusicButton->setFixedSize(100,30);
+    addMusicButton->setFixedSize(112,36);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
@@ -126,7 +167,8 @@ void TableOne::initUI()
     tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
 //    tableTitleLayout->addSpacing(10);
     tableTitleLayout->setSpacing(0);
-    tableTitleLayout->setContentsMargins(25,0,10,0);
+    tableTitleLayout->setMargin(0);
+//    tableTitleLayout->setContentsMargins(25,0,10,0);
     songNameTitle->setStyleSheet("color:#8F9399;");
     singerTitle->setStyleSheet("color:#8F9399;");
     albumTitle->setStyleSheet("color:#8F9399;");
@@ -134,6 +176,7 @@ void TableOne::initUI()
 
 
     tableView = new TableBaseView();
+    tableView->setObjectName("tableView");
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
     tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
@@ -151,16 +194,22 @@ void TableOne::initUI()
     m_musicWidget->setLayout(m_historyLayout);
     m_historyLayout->addWidget(tableTitleWidget);
     m_historyLayout->addWidget(tableView);
-    m_historyLayout->setSpacing(8);
-    m_historyLayout->setContentsMargins(0,0,20,0);
+    m_historyLayout->setSpacing(0);
+    m_historyLayout->setMargin(0);
+
+//    m_historyLayout->setContentsMargins(0,0,20,0);
 
     nullPageWidget = new QWidget(this);
+    nullPageWidget->setObjectName("nullPageWidget");
+
     nullPageHLayout = new QHBoxLayout();
     nullPageVLayout = new QVBoxLayout();
     nullPageIconLabel = new QLabel(this);
     nullPageTextLabel = new QLabel(this);
     n_addDirMusicButton = new QPushButton(this);
+    n_addDirMusicButton->setFixedSize(134,36);
     n_addMusicButton = new QPushButton(this);
+    n_addMusicButton->setFixedSize(134,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     n_addMusicButton->setText(tr("Add Local Songs"));
     n_addDirMusicButton->setText(tr("Add Local Folder"));
@@ -175,14 +224,17 @@ void TableOne::initUI()
     nullPageVLayout->addLayout(nullPageHLayout);
     nullPageVLayout->addStretch();
     nullPageHLayout->addWidget(n_addMusicButton);
+    nullPageHLayout->setSpacing(16);
     nullPageHLayout->addWidget(n_addDirMusicButton);
     nullPageVLayout->setAlignment(Qt::AlignCenter);
 
     tableLayout->addWidget(titleWid,Qt::AlignTop);
-    tableLayout->addSpacing(10);
+//    tableLayout->addSpacing(10);
     tableLayout->addWidget(m_musicWidget);
     tableLayout->addWidget(nullPageWidget);
     tableLayout->setMargin(0);
+//    tableLayout->setContentsMargins(0,0,30,0);
+    tableLayout->setSpacing(0);
 
     initTableViewStyle();
     listTitleLabel->setFixedWidth(120);
@@ -190,12 +242,14 @@ void TableOne::initUI()
     showTitleText(nowListName);
     changeNumber();
 
+
     //限制应用字体不随着主题变化
     QFont sizeFont;
     sizeFont.setPixelSize(14);
     add_menu->setFont(sizeFont);
     listTotalNumLabel->setFont(sizeFont);
     addMusicButton->setFont(sizeFont);
+    playAllButton->setFont(sizeFont);
     n_addDirMusicButton->setFont(sizeFont);
     n_addMusicButton->setFont(sizeFont);
     nullPageTextLabel->setFont(sizeFont);
@@ -221,6 +275,7 @@ void TableOne::initConnect()
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
     connect(n_addMusicButton,&QPushButton::clicked,this,&TableOne::addMusicSlot);
     connect(n_addDirMusicButton,&QPushButton::clicked,this,&TableOne::addDirMusicSlot);
+    connect(playAllButton,&QToolButton::clicked,this,&TableOne::playAllButtonClicked);
 }
 
 void TableOne::initRightMenu()
@@ -368,7 +423,7 @@ void TableOne::deleteLocalSongs()
         if(file.exists())
         {
             //移入回收站(作为已知)
-//            deleteImage(iter.value());
+            deleteImage(iter.value());
             //删除到回收站不成功从磁盘删除
             file.remove();
         }
@@ -419,13 +474,18 @@ void TableOne::deleteImage(const QString &savepath)
 
 void TableOne::_processStart(const QString &cmd, QStringList arguments)
 {
-    QString cmdTmp = cmd;
-    for(QString &x : arguments){
-        cmdTmp += " ";
-        cmdTmp += x;
-    }
-    system(cmdTmp.toLocal8Bit().data());
+    Widget::mutual->process->start(cmd,arguments);
+    Widget::mutual->process->waitForStarted();
+    Widget::mutual->process->waitForFinished();
 }
+
+void TableOne::processLog()
+{
+    qDebug()<<"*******process error*******\n"
+           << QString::fromLocal8Bit(Widget::mutual->process->readAllStandardError())
+           <<"\n*******process error*******";
+}
+
 
 void TableOne::playSongs()
 {
@@ -434,8 +494,8 @@ void TableOne::playSongs()
     musicDataStruct date = m_model->getItem(index);
     qDebug() << "tableView->selectedIndexes();" << index << date.filepath;
     playMusicforIndex(nowListName,index);
-    g_db->addMusicToHistoryMusic(date.filepath);
-    emit addMusicToHistoryListSignal();
+//    g_db->addMusicToHistoryMusic(date.filepath);
+//    emit addMusicToHistoryListSignal();
     qDebug() << "完成播放 playSongs" ;
 }
 void TableOne::playMusicforIndex(QString listName, int index)
@@ -462,29 +522,37 @@ void TableOne::showInfo()
 
 void TableOne::addToOtherList(QAction *listNameAction)
 {
+    int successCount = 0;
+    int failCount = 0;
     QString listName = listNameAction->text();
     qDebug() << listName;
+    if(listName == tr("I Love")) {
+        listName = FAV;
+    }
     QMap<int,QString> map1 = getSelectedTaskIdList();
+    int allCount = map1.size();
     QMap<int,QString>::Iterator it = map1.begin();
     while(it != map1.end())
     {
         qDebug()<<it.key()<<"\t"<<it.value();
         int ret = g_db->addMusicToPlayList(it.value(),listName);
-        if(ret == 0)
+        if(ret == DB_OP_SUCC)
         {
+            successCount++;
             playController::getInstance().addSongToCurList(listName,it.value());
 //            if(listName == tr("I Love"))
             qDebug() << "------------------- listName -------------" << listName;
-            if(listName == "我喜欢")
+            if(listName == FAV)
             {
                 qDebug() << "---------------- it.value() it.value() ------------" << it.value();
                 emit addILoveFilepathSignal(it.value());
             }
         }else{
-//            QMessageBox::warning(this,tr("Prompt information"),tr("Add failed!"));
+            failCount++;
         }
         it++;
     }
+    importFinished(successCount, failCount, allCount);
 }
 void TableOne::addMusicSlot()
 {
@@ -611,9 +679,15 @@ void TableOne::addDirMusicSlot()
 
 void TableOne::addMusicToDatebase(QStringList fileNames)
 {
+    //成功数量
+    int successCount = 0;
+    //失败数量
+    int failCount = 0;
     MusicFileInformation::getInstance().addFile(fileNames);
+    int allCount = MusicFileInformation::getInstance().getCount();
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
+
     int ret;
     foreach (const musicDataStruct date, resList)
     {
@@ -625,19 +699,42 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
             ret = g_db->addMusicToLocalMusic(date);
 
         }
-        if(ret == 0){
+        if(ret == DB_OP_SUCC)
+        {
+            successCount++;
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
-            //            m_model->add(date);
-            selectListChanged(nowListName);
-//            emit countChanges();
         }
-//        else{
-//            QMessageBox msg;
-//            msg.setWindowTitle(tr("Prompt information"));
-//            msg.setText(date.filepath+tr("Failed to add song file!"));
-//            msg.exec();
-//            qDebug() << "添加数据库失败.";
-//        }
+        else
+        {
+            failCount++;
+        }
+    }
+    selectListChanged(nowListName);
+    importFinished(successCount, failCount, allCount);
+}
+
+void TableOne::importFinished(int successCount, int m_failCount, int allCount)
+{
+    qDebug() << "successCount" << successCount;
+    if(successCount > 0)
+    {
+        if(allCount == 1)
+        {
+            return;
+        }
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes,Widget::mutual);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
+    }
+    else
+    {
+        if(allCount == 0)
+        {
+            return;
+        }
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Add failed"),QMessageBox::Yes,Widget::mutual);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
     }
 }
 
@@ -660,7 +757,7 @@ void TableOne::setHightLightAndSelect()
 {
     //列表中歌曲为空时，跳过高亮判断
     qDebug() << "列表中歌曲为空时，跳过高亮判断" << m_model->count();
-    if(m_model->count() == 0 || heightLightIndex < 0 || heightLightIndex >= m_model->count()) {
+    if(m_model->count() == 0 ||  heightLightIndex >= m_model->count()) {
         return;
     }
     if(WidgetStyle::themeColor == 0)
@@ -712,10 +809,12 @@ void TableOne::changeNumber()
         m_musicWidget->hide();
         nullPageWidget->show();
         addMusicButton->hide();
+        playAllButton->hide();
     } else {
         m_musicWidget->show();
         nullPageWidget->hide();
         addMusicButton->show();
+        playAllButton->show();
     }
 }
 
@@ -759,6 +858,7 @@ void TableOne::playListRenamed(QString oldName, QString newName)
 
 void TableOne::getHightLightIndex(int index, QString listName)
 {
+    qDebug() << "getHightLightIndex" <<listName << index;
     nowPlayListName = listName;
     heightLightIndex = index;
     if(listName == nowListName){
@@ -766,6 +866,7 @@ void TableOne::getHightLightIndex(int index, QString listName)
     } else {
         heightLightIndex = -1;
         setHightLightAndSelect();
+        heightLightIndex = index;
     }
 }
 
@@ -781,6 +882,11 @@ void TableOne::playAll(QString listName)
         return;
     }
     playMusicforIndex(listName,0);
+}
+
+void TableOne::playAllButtonClicked()
+{
+    playAll(nowListName);
 }
 
 void TableOne::dragEnterEvent(QDragEnterEvent *event)

@@ -36,14 +36,13 @@ public:
     QList<musicDataStruct> resList;
     void addFile(const QStringList &addFile);
     int findIndexFromPlayList(QString listname, QString filepath);
+    int getCount();
 public slots:
     void durationChange(qint64 duration);
 signals:
     void durations();
 private:
     QStringList updateSongInfoFromLocal(QString filepath);
-    //成功添加多少首歌曲
-    void slotImportFinished(int successCount, int m_failCount ,int allSongs);
 private:
 //    QList<musicDataStruct> resList;
     musicDataStruct musicdataStruct;
@@ -66,9 +65,7 @@ private:
     QStringList musicType;
     qint64 dur;
     bool success = false;
-    int m_successCount;
-    int m_failCount;
-    int m_allMUisc;
+    int musicCount;
 };
 
 #endif // MUSICFILEINFORMATION_H

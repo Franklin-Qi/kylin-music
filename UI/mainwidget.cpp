@@ -14,12 +14,12 @@ Widget::Widget(QStringList str, QWidget *parent)
     }
     qDebug() << "数据库加载成功";
     initAllComponent();
+    initGSettings();
     allConnect();
     //单例
     Single(str);
     //初始化dbus
     initDbus();
-    initGSettings();
     if(!argName.isEmpty())
     {
         int num = argName.size();
@@ -32,6 +32,8 @@ Widget::Widget(QStringList str, QWidget *parent)
         }
     }
     isFirstObject = false;
+    //命令行删除到回收站
+    process = new QProcess;
 
 }
 
@@ -267,9 +269,15 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     return 0;
 }
 
+void Widget::slotText(QString btnText)
+{
+    listName = btnText;
+}
+
 void Widget::importFile(QStringList list)
 {
-    MusicFileInformation::getInstance().addFile(list);
+//    MusicFileInformation::getInstance().addFile(list);
+    musicListTable->addMusicToDatebase(list);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
     int ret;
@@ -280,7 +288,11 @@ void Widget::importFile(QStringList list)
         if(ret == DB_OP_SUCC)
         {
             playController::getInstance().addSongToCurList(ALLMUSIC,date.filepath);
-            musicListTable->selectListChanged(tr("Song List"));
+//            musicListTable->selectListChanged(tr("Song List"));
+            if(listName == ALLMUSIC)
+            {
+                emit signalRefreshList(ALLMUSIC);
+            }
             QStringList pathList = getPath(ALLMUSIC);
             playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
             int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,date.filepath);
@@ -288,24 +300,32 @@ void Widget::importFile(QStringList list)
         }
     }
     int ref;
-    ref = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
-    if(ref == DB_OP_SUCC)
+    if(resList.size() > 0)
     {
-        for(int i = 0;i < list.size();i++)
+        ref = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+        if(ref == DB_OP_SUCC)
         {
-            if(resList.at(i).filepath == list.at(i))
+            for(int i = 0;i < list.size();i++)
             {
-                QStringList pathList = getPath(ALLMUSIC);
-                playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
-                int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,resList.at(i).filepath);
-                if(index == -1)
+                if(resList.at(i).filepath == list.at(i))
                 {
-                    return;
+                    QStringList pathList = getPath(ALLMUSIC);
+                    playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
+                    if(listName == ALLMUSIC)
+                    {
+                        emit signalRefreshList(ALLMUSIC);
+                    }
+                    int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,resList.at(i).filepath);
+                    if(index == -1)
+                    {
+                        return;
+                    }
+                    playController::getInstance().play(ALLMUSIC,index);
                 }
-                playController::getInstance().play(ALLMUSIC,index);
             }
         }
     }
+    sideBarWid->playListBtn->click();
 }
 
 QStringList Widget::getPath(QString playListName)
@@ -353,7 +373,7 @@ void Widget::initAllComponent()
     rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
     mainVBoxLayout->addWidget(m_titleBar);
-    mainVBoxLayout->addSpacing(6);
+//    mainVBoxLayout->addSpacing(6);
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
     mainHBoxLayout = new QHBoxLayout();
@@ -367,8 +387,16 @@ void Widget::initAllComponent()
     mainVBoxLayout->setMargin(0);
     this->resize(960,640);
     this->setLayout(mainHBoxLayout);
-    this->setAutoFillBackground(true);
-    this->setBackgroundRole(QPalette::Base);
+//    this->setAutoFillBackground(true);
+//    this->setBackgroundRole(QPalette::Base);
+    if (WidgetStyle::themeColor == 1)
+    {
+        this->setStyleSheet("{background:#252526;}");
+    }
+    else if(WidgetStyle::themeColor == 0)
+    {
+        this->setStyleSheet("{background:#FFFFFF;}");
+    }
 
     historyListTable = new TableHistory(this);
     MotifWmHints hint;
@@ -401,6 +429,8 @@ void Widget::allConnect()
 //    connect(m_miniWidget->m_orderBtn,&QPushButton::clicked,this,&Widget::slotPlayModeChanged);
     connect(m_miniWidget->m_closeBtn,&QPushButton::clicked,this,&Widget::slotCloseMiniWidget);
 //    connect(m_miniWidget->m_loveBtn,&QPushButton::clicked,this,&Widget::slotAddLike);
+    connect(sideBarWid,&SideBarWidget::playListBtnCliced,this,&Widget::slotText);
+    connect(this,&Widget::signalRefreshList,musicListTable,&TableOne::selectListChanged);
 
     connect(musicListTable,&TableOne::addILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
     connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
@@ -599,14 +629,24 @@ void Widget::changeDarkTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
+    musicListTable->initStyle();
 //    historyListTable->initStyle();
 //    historyListTable->initTableStyle();
+//    musicListTable->setStyleSheet("{background:red;border:none;}");
+//    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
+    musicListTable->tableView->setAlternatingRowColors(false);
+    musicListTable->tableView->setShowGrid(false);
+    playSongArea->m_volSliderWid->initColor();
+    playSongArea->m_playBackModeWid->playModecolor();
+    this->setStyleSheet("#mainWidget{background:#252526;}");
+
 
 }
 
 //切换浅色主题
 void Widget::changeLightTheme()
 {
+    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
@@ -615,6 +655,11 @@ void Widget::changeLightTheme()
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
+    musicListTable->initStyle();
+//    musicListTable->setStyleSheet("{background:#FFFFFF;border:none;}");
+    musicListTable->tableView->setAlternatingRowColors(false);
+    playSongArea->m_volSliderWid->initColor();
+    playSongArea->m_playBackModeWid->playModecolor();
 //    historyListTable->initStyle();
 //    historyListTable->setHighlight(-1);
 }
