@@ -51,7 +51,10 @@ void SideBarWidget::initWidget()
     QHBoxLayout *playListBtnLayout = new QHBoxLayout();
     playListBtn = new MyToolButton;
     playListBtn->setText(tr("Song List"));
+//    playListBtn->setIcon(QIcon::fromTheme("ukui-folder-music-symbolic"));
     playListBtn->setStatusTip(IS_SELECT);
+    playListBtn->buttonListName = ALLMUSIC;
+    playListBtn->defaultStyle();
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
 //    playListBtnLayout->setContentsMargins(24,0,24,0);
     connect(playListBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnCliced);
@@ -236,10 +239,14 @@ void SideBarWidget::getPlayListName()
         if(listName == FAV)
         {
             newBtn->setText(tr("I Love"));
+            newBtn->buttonListName = FAV;
+            newBtn->defaultStyle();
         }
         else
         {
             newBtn->setText(listName);
+            newBtn->buttonListName = "";
+            newBtn->defaultStyle();
         }
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
@@ -278,6 +285,8 @@ void SideBarWidget::addItemToSongList()
         }
 
         newBtn->setText(text);
+        newBtn->buttonListName = "";
+        newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
         playListName.append(text);
         newSonglistPup->pupDialog->hide();
@@ -288,6 +297,8 @@ void SideBarWidget::addItemToSongList()
     {
         QString listName = newPlayListName();
         newBtn->setText(listName);
+        newBtn->buttonListName = "";
+        newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
         playListName.append(listName);
         newSonglistPup->pupDialog->hide();

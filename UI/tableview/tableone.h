@@ -19,6 +19,7 @@
 #include <QStandardPaths>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QProcess>
 
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -51,14 +52,21 @@ public:
     void playMusicforIndex(QString listName,int index);
     //通过列表名和索引值播放相应歌曲
     void showTitleText(QString listName);
+
+    void initStyle();
+     void addMusicToDatebase(QStringList fileNames);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
     void initRightMenu();  //初始化右键菜单
     void tableViewDoubleClicked();  //双击播放
 
-    static void _processStart(const QString &cmd , QStringList arguments = QStringList());
     static void deleteImage(const QString &savepath);
+    static void _processStart(const QString &cmd , QStringList arguments = QStringList());
+    void processLog();
+
+    //成功添加多少首歌曲
+    void importFinished(int successCount, int failCount, int allCount);
 
     void showRightMenu(const QPoint &pos);
     void deleteSongs();
@@ -70,7 +78,7 @@ private:
 
     void addMusicSlot(); // 添加歌曲文件槽函数
     void addDirMusicSlot();  //添加文件夹槽函数
-    void addMusicToDatebase(QStringList fileNames);
+//    void addMusicToDatebase(QStringList fileNames);
 
 //    void importSongs(QString path);
     QMenu *m_menu;  //新建一个Menu属性
@@ -90,9 +98,10 @@ private:
     TableViewDelegate *delegate;
 
     QHBoxLayout *listTitleHBoxLayout;
-    QToolButton *addMusicButton;
+    QToolButton *addMusicButton;  //添加歌曲按钮
+    QToolButton *playAllButton;
+
     QLabel *listTotalNumLabel;
-    void initStyle();
     int heightLightIndex = -1;
     QString nowPlayListName;  //后端播放器中正在播放的列表名
 signals:
@@ -110,6 +119,7 @@ public slots:
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 
     void playAll(QString listName);  //播放全部歌曲
+    void playAllButtonClicked();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
@@ -126,9 +136,8 @@ private:
     QLabel *nullPageIconLabel;
     QLabel *nullPageTextLabel;
 
-
     QHeaderView *horizonHeader;
-
+    QWidget *titleWid;
 };
 
 #endif // TableOne_H

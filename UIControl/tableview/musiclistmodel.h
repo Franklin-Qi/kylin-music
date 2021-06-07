@@ -24,6 +24,7 @@ public:
     void getMusicDateList(QList<musicDataStruct> list);
     QStandardItemModel m_model;
     QStringList titleList;
+    QStandardItem* item[4];
 private:
     QList<musicDataStruct> resList;
 

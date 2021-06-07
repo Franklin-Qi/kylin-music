@@ -16,10 +16,7 @@ MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
-    m_successCount = 0;
-    m_failCount = 0;
-    m_allMUisc = 0;
-    int allSongs = addFile.size();
+    int count = 0;
     resList.clear();
 
     for(auto &filepath : addFile)
@@ -44,22 +41,12 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 fileSize(fileInfo);      //文件大小
                 if(musicType.indexOf(musicdataStruct.filetype) != -1)
                 {
-                    m_allMUisc++;
-                    QStringList list = fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
-                    if(musicdataStruct.time == "")
+                    count++;
+                    fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
+                    if(musicdataStruct.time != "")
                     {
-                        m_failCount++;
-                    }
-                    else
-                    {
-                        m_successCount++;
-                        m_allMUisc++;
                         resList.append(musicdataStruct);
                     }
-                }
-                else
-                {
-                    qDebug() << "添加文件失败";
                 }
             }
         }
@@ -71,25 +58,16 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             fileSize(fileInfo);      //文件大小
             if(musicType.indexOf(musicdataStruct.filetype) != -1)
             {
-                QStringList list = fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
-                if(musicdataStruct.time == "")
+                count++;
+                fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
+                if(musicdataStruct.time != "")
                 {
-                    m_failCount++;
-                }
-                else
-                {
-                    m_successCount++;
-                    m_allMUisc++;
                     resList.append(musicdataStruct);
                 }
             }
-            else
-            {
-                qDebug() << "添加文件失败";
-            }
         }
     }
-    slotImportFinished(m_successCount, m_failCount, allSongs);
+    musicCount = count;
 //    resList.clear();
 //    if(!addFile.isEmpty())
 //    {
@@ -121,30 +99,9 @@ void MusicFileInformation::addFile(const QStringList &addFile)
 //    slotImportFinished(m_successCount, m_failCount);
 }
 
-void MusicFileInformation::slotImportFinished(int successCount, int m_failCount, int allSongs)
+int MusicFileInformation::getCount()
 {
-    qDebug() << "successCount" << successCount;
-    qDebug() << "" << m_allMUisc;
-    if(successCount > 0)
-    {
-        if(m_allMUisc == 1)
-        {
-            return;
-        }
-        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes);
-        warn->button(QMessageBox::Yes)->setText("确定");
-        warn->exec();
-    }
-    else
-    {
-        if(allSongs == 0)
-        {
-            return;
-        }
-        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("添加失败"),QMessageBox::Yes);
-        warn->button(QMessageBox::Yes)->setText("确定");
-        warn->exec();
-    }
+    return musicCount;
 }
 
 QString MusicFileInformation::filterTextCode(QString str)

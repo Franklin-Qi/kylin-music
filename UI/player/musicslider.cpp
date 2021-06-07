@@ -1,4 +1,5 @@
 #include "musicslider.h"
+#include "UI/base/widgetstyle.h"
 
 MusicSlider::MusicSlider(QWidget *parent):QSlider(parent),m_isPlaying(false)
 {
@@ -17,10 +18,19 @@ void MusicSlider::initStyle()
     this->setOrientation(Qt::Horizontal);
 //    this->setMinimum(0);
 //    this->setMaximum(1000);
-    this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
-                        "QSlider::sub-page:horizontal{background:#3790FA;}"
-                        "QSlider::add-page:horizontal{background:#ECEEF5;}"
-                        );
+    if(WidgetStyle::themeColor == 1) {
+        this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                            "QSlider::sub-page:horizontal{background:#3790FA;}"
+                            "QSlider::add-page:horizontal{background:#4D4D4D;}"
+                            );
+    }
+    else if(WidgetStyle::themeColor == 0) {
+        this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                            "QSlider::sub-page:horizontal{background:#3790FA;}"
+                            "QSlider::add-page:horizontal{background:#ECEEF5;}"
+                            );
+    }
+
 }
 
 void MusicSlider::isPlaying(bool isPlaying)
@@ -32,28 +42,47 @@ bool MusicSlider::eventFilter(QObject * obj, QEvent * ev)
 {
     if (obj == this && ev->type() == QEvent::Leave)
     {
-        this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
-                    "QSlider::sub-page:horizontal{background:#3790FA;}"
-                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
-                    );
+        initStyle();
+//        this->setStyleSheet(
+//                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+//                    "QSlider::sub-page:horizontal{background:#3790FA;}"
+//                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
+//                    );
     }
     else if (obj == this && ev->type() == QEvent::Enter)
     {
-        this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
-                    "QSlider::sub-page:horizontal{background:#3790FA;}"
-                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
-                    "QSlider::handle:horizontal {\
-                            width:12px;\
-                            height:12px;\
-                            margin-top: -5px;\
-                            margin-left: 0px;\
-                            margin-bottom: -5px;\
-                            margin-right: 0px;\
-                            border-image:url(:/img/default/point.png);\
-                    }"
-                    );
+        if(WidgetStyle::themeColor == 1)
+        {
+            this->setStyleSheet(
+                        "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                        "QSlider::sub-page:horizontal{background:#3790FA;}"
+                        "QSlider::add-page:horizontal{background:#4D4D4D;}"
+                        "QSlider::handle:horizontal {\
+                                width:12px;\
+                                height:12px;\
+                                margin-top: -5px;\
+                                margin-left: 0px;\
+                                margin-bottom: -5px;\
+                                margin-right: 0px;\
+                                border-image:url(:/img/default/point.png);\
+                        }");
+        } else if (WidgetStyle::themeColor == 0){
+            this->setStyleSheet(
+                        "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                        "QSlider::sub-page:horizontal{background:#3790FA;}"
+                        "QSlider::add-page:horizontal{background:#ECEEF5;}"
+                        "QSlider::handle:horizontal {\
+                                width:12px;\
+                                height:12px;\
+                                margin-top: -5px;\
+                                margin-left: 0px;\
+                                margin-bottom: -5px;\
+                                margin-right: 0px;\
+                                border-image:url(:/img/default/point.png);\
+                        }"
+                        );
+        }
+
 //        this->setStyleSheet( "   QSlider::groove:horizontal{                 "
 //                             "           padding-left:0px;                   "
 //                             "           height: 2px;                        "

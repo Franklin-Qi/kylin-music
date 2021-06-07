@@ -8,6 +8,22 @@ MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
     titleList.append(tr("Singer"));
     titleList.append(tr("Album"));
     titleList.append(tr("Time"));
+
+//    for(int i= 0; i < 4;i++ )
+//    {
+//        item[i] = new QStandardItem();
+
+//    }
+//    item[0]->setData(titleList.at(0),Qt::DisplayRole);
+//    item[1]->setData(titleList.at(1),Qt::DisplayRole);
+//    item[2]->setData(titleList.at(2),Qt::DisplayRole);
+//    item[3]->setData(titleList.at(3),Qt::DisplayRole);
+
+//    for(int i= 0; i < 4;i++ )
+//    {
+//        item[i]->setTextAlignment(Qt::AlignLeft);
+//        m_model.setHorizontalHeaderItem(i,item[i]);
+//    }
 //    list.append("Path");
 //    list.append("Type");
 //    list.append("Size");

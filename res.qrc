@@ -120,5 +120,25 @@
         <file>translations/qt_zh_CN.qm</file>
         <file>img/default/null.png</file>
         <file>img/default/point.png</file>
+        <file>img/dark/ukui-play-love-symbolic.svg</file>
+        <file>img/dark/ukui-folder-music-symbolic.svg</file>
+        <file>img/dark/audio-card-symbolic.svg</file>
+        <file>img/default/ukui-play-love-symbolic.svg</file>
+        <file>img/default/ukui-folder-music-symbolic.svg</file>
+        <file>img/default/audio-card-symbolic.svg</file>
+        <file>img/clicked/ukui-play-love-symbolic.svg</file>
+        <file>img/clicked/ukui-folder-music-symbolic.svg</file>
+        <file>img/clicked/audio-card-symbolic.svg</file>
+        <file>img/hover/ukui-play-love-symbolic.svg</file>
+        <file>img/hover/ukui-folder-music-symbolic.svg</file>
+        <file>img/hover/audio-card-symbolic.svg</file>
+        <file>img/clicked/ukui-play-love-symbolic-w.svg</file>
+        <file>img/dark/ukui-play-love-symbolic-w.svg</file>
+        <file>img/default/ukui-play-love-symbolic-w.svg</file>
+        <file>img/hover/ukui-play-love-symbolic-w.svg</file>
+        <file>img/clicked/ukui-play-love-symbolic-w.png</file>
+        <file>img/dark/ukui-play-love-symbolic-w.png</file>
+        <file>img/default/ukui-play-love-symbolic-w.png</file>
+        <file>img/hover/ukui-play-love-symbolic-w.png</file>
     </qresource>
 </RCC>

@@ -1,10 +1,12 @@
 #include "mytoolbutton.h"
 #include "UI/base/widgetstyle.h"
+#include "UIControl/base/musicDataBase.h"
 #include <QDebug>
 
 MyToolButton::MyToolButton()
 {
-    defaultStyle();
+    //在按钮没有默认选中时，实例化时先调用（故注释）
+//    defaultStyle();
     this->setFixedSize(162,32);
     //文字在图标旁边
     this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -31,6 +33,7 @@ void MyToolButton::selectChanged()
 {
     if(this->statusTip() == IS_SELECT)
     {
+        emit selectButtonChanged(this->text());
         return;
     }
     emit selectButtonChanged(this->text());
@@ -52,8 +55,19 @@ void MyToolButton::defaultStyle()
 {
     if(this->statusTip() == IS_SELECT)
     {
-        this->setIcon(QIcon(":/img/default/songlist_w .png"));
-        this->setStyleSheet("QToolButton{background-color:qlineargradient(x1:0, y1:0, x2:1, y2:0,stop:0 #40A9FB,stop:1 #3790FA);padding-left:14px;color:#FFFFFF;border-radius: 4px;}");
+        this->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
+        if(buttonListName == ALLMUSIC)
+        {
+            this->setIcon(QIcon(":/img/clicked/ukui-folder-music-symbolic.svg"));
+        }
+        else if(buttonListName == FAV)
+        {
+            this->setIcon(QIcon(":/img/clicked/ukui-play-love-symbolic.svg"));
+        }
+        else
+        {
+            this->setIcon(QIcon(":/img/clicked/audio-card-symbolic.svg"));
+        }
         return;
     }
     else if(this->statusTip() != IS_SELECT)
@@ -61,19 +75,40 @@ void MyToolButton::defaultStyle()
         if(WidgetStyle::themeColor == 0)
         {
             //padding-left:15px;  左内边距
-            this->setIcon(QIcon(":/img/default/songlist.png"));
             this->setStyleSheet("QToolButton{padding-left:14px;\
                                 background-color:#FAFAFA;color:#303133;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
+            if(buttonListName == ALLMUSIC)
+            {
+                this->setIcon(QIcon(":/img/default/ukui-folder-music-symbolic.svg"));
+            }
+            else if(buttonListName == FAV)
+            {
+                this->setIcon(QIcon(":/img/default/ukui-play-love-symbolic.svg"));
+            }
+            else
+            {
+                this->setIcon(QIcon(":/img/default/audio-card-symbolic.svg"));
+            }
         }
 
         else if(WidgetStyle::themeColor == 1)
         {
-            this->setIcon(QIcon(":/img/default/songlist_w .png"));
             this->setStyleSheet("QToolButton{padding-left:14px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#303032;border-radius:4px;}");
+            if(buttonListName == ALLMUSIC)
+            {
+                this->setIcon(QIcon(":/img/dark/ukui-folder-music-symbolic.svg"));
+            }
+            else if(buttonListName == FAV)
+            {
+                this->setIcon(QIcon(":/img/dark/ukui-play-love-symbolic.svg"));
+            }
+            else
+            {
+                this->setIcon(QIcon(":/img/dark/audio-card-symbolic.svg"));
+            }
         }
-
     }
 }
 

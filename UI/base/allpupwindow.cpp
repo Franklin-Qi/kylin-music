@@ -121,10 +121,13 @@ void AllPupWindow::dlgcolor()
 {
     if(WidgetStyle::themeColor == 1 )
     {
-        cancelBtn->setStyleSheet("border-radius:4px;border:1px solid #DDDFE7;color:#606265;");
+//        cancelBtn->setStyleSheet("PushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
+//                                 "QPushButton::hover{background:#4D4D4D;}");
+        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
+                                 "QPushButton::hover{background:#4D4D4D;}");
 
         enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;\
-                                     border: 1px solid #606265;color:#F9F9F9;");
+                                     border: 1px solid #606265;color:#F9F9F9;background:#3D3D41;");
 
         pupDialog->setStyleSheet("background-color:#3D3D41;");
 

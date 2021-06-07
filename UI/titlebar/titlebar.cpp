@@ -26,6 +26,7 @@ TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 {
     setMouseTracking(true);
     this->installEventFilter(this);
+    this->setObjectName("TitleBar");
     initTitle();
     titlecolor();
 }
@@ -299,7 +300,7 @@ void TitleBar::titlecolor()
         changeThemeColorMenu->setStyleSheet("QMenu{background-color:#303032;color:#F9F9F9;}"
                                             "QMenu::item:selected{background-color:#3D6BE5;}");
 
-        this->setStyleSheet(".widget{background-color:#252526;}");
+        this->setStyleSheet("#TitleBar{background-color:#252526;}");
 
 //        searchWidget->setStyleSheet("QListWidget{border:5px;background:#3D3D41;color:#F9F9F9; }"
 //                                    "QListWidget::Item{height:30px;color:#F9F9F9;}"
@@ -328,7 +329,7 @@ void TitleBar::titlecolor()
                                             "QMenu::item:selected{background-color:#3D6BE5;color:#FFFFFF;}");
 
 
-        this->setStyleSheet(".widget{background-color:#FFFFFF;}");
+        this->setStyleSheet("#TitleBar{background-color:#FFFFFF;}");
 
 //        searchWidget->setStyleSheet("QListWidget{border:5px;color:#303133; }"
 //                                    "QListWidget::Item{height:30px;color:#303133;}"

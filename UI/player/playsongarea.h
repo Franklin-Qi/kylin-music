@@ -16,6 +16,7 @@
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UI/tableview/tableone.h"
 #include "UI/base/mylabel.h"
+#include "UI/player/sliderwidget.h"
 
 class PlaySongArea : public QWidget
 {

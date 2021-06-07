@@ -7,8 +7,8 @@
 
 bool playController::play(QString playlist, int index)
 {
-    qDebug() << "正在播放"  << playlist << index;
-    if (playlist.compare(m_curList)==0) {
+    if (playlist.compare(m_curList)==0)
+    {
 //        if (index == m_curIndex) {
 //            if (m_player->state() == QMediaPlayer::State::PlayingState){
 //                play();
@@ -130,44 +130,31 @@ void playController::curPlaylist()
 }
 void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
-    qDebug() << "进入函数 0 setCurPlaylist";
     if (m_curList.compare(name)==0)
     {
         qDebug() << "setCurPlaylist m_curList.compare(name)==0";
         return ;
     }
-    qDebug() << "进入函数 1 setCurPlaylist";
     if (m_playlist == nullptr || m_player == nullptr) {
         qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
-        qDebug() << "进入函数 2 setCurPlaylist";
     }
-    qDebug() << "进入函数 3 setCurPlaylist";
     disconnect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
-    qDebug() << "进入函数 4 setCurPlaylist";
     m_curList = name;
-    qDebug() << "进入函数 5 setCurPlaylist";
     m_playlist->clear();
-    qDebug() << "进入函数 6 setCurPlaylist";
+
     for (auto path : songPaths) {
         m_playlist->addMedia(QUrl::fromLocalFile(path));
     }
-
-    //到这个判断闪退(待解决)
-    qDebug() << "进入函数 7 setCurPlaylist";
-    if (m_player != nullptr) {
-        qDebug() << "进入函数 7 setCurPlaylist";
-        m_player->setPlaylist(m_playlist);
-        qDebug() << "进入函数 8 setCurPlaylist";
-    }
-
-
-    qDebug() << "进入函数 9 setCurPlaylist";
     m_player->stop();
+    qDebug() << "进入函数 0 setCurPlaylist";
+    //到这个判断闪退(待解决)
+    if (m_player != nullptr) {
+        m_player->setPlaylist(m_playlist);
+    }
     m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
-    qDebug() << "完成函数 setCurPlaylist";
 }
 void playController::addSongToCurList(QString name, QString songPath)
 {

@@ -1,26 +1,17 @@
-kylin-music (1.1.0-2) v101; urgency=medium
-
-  * BUG号：无.
-  * 需求号或者任务号：无.
-  * 其他改动说明：新版音乐.
-  * 影响域：无.
-
- -- liujialin <liujialin@kylinos.cn>  Thu, 27 May 2021 18:35:35 +0800
-
 kylin-music (1.1.0-1) v101; urgency=medium
 
   * BUG号：无.
   * 需求号或者任务号：无.
-  * 其他改动说明：新版音乐.
+  * 其他改动说明：解决新版音乐0610 UI契合度.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Thu, 13 May 2021 19:05:33 +0800
+ -- liujialin <liujialin@kylinos.cn>  Mon, 07 Jun 2021 20:10:21 +0800
 
-kylin-music (1.1.0) v101; urgency=medium
+kylin-music (1.1.0-0) v101; urgency=medium
 
   * BUG号：无.
   * 需求号或者任务号：无.
   * 其他改动说明：新版音乐.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Sun, 25 Apr 2021 13:34:55 +0800
+ -- liujialin <liujialin@kylinos.cn>  Sat, 05 Jun 2021 09:55:35 +0800

@@ -20,6 +20,7 @@
 #include <fcntl.h>
 //窗体拉起
 #include <KWindowSystem>
+#include <QProcess>
 
 #include "UIControl/base/musicDataBase.h"
 #include "UI/tableview/tableone.h"
@@ -42,6 +43,7 @@ public:
     ~Widget();
 public:
     static Widget *mutual;          //指针类型静态成员变量
+    QProcess *process;
 public slots:
     //mini窗口
     void slotShowMiniWidget();
@@ -57,6 +59,8 @@ public slots:
     void slotCloseMiniWidget();
     //命令参数
     int kylin_music_play_request(QString cmd1, QString cmd2 = "", QString cmd3 = "");
+    //判断当前点击的按钮是否为歌曲列表（歌单名）
+    void slotText(QString btnText);
 private slots:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
@@ -81,6 +85,7 @@ private:
     void changeLightTheme();
     void importFile(QStringList list);
     QStringList getPath(QString playListName);
+
 private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
@@ -98,7 +103,11 @@ private:
     //判断是否为第一个实例
     bool isFirstObject = false;
     QStringList argName;
+    //歌单名
+    QString listName;
 signals:
     void signalShowGuide();
+    //刷新歌曲列表界面
+    void signalRefreshList(QString listName);
 };
 #endif // WIDGET_H
