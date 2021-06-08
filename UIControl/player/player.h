@@ -2,9 +2,9 @@
 #define PLAYER_H
 
 #include <QObject>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
 #include <QGSettings>
+#include "coreplayer/mmediaplayer.h"
+#include "coreplayer/mmediaplaylist.h"
 
 class playController : public QObject {
     Q_OBJECT
@@ -66,11 +66,11 @@ public:
 //    void removeMedia(QString name, int index);
     PlayState getState();
     PlayMode mode() const;
-    QMediaPlayer* getPlayer()
+    MMediaPlayer* getPlayer()
     {
         return m_player;
     }
-    QMediaPlaylist* getPlaylist()
+    MMediaPlaylist* getPlaylist()
     {
         return m_playlist;
     }
@@ -101,9 +101,9 @@ private slots:
     void onError();
     void onMediaStatusChanged();
     //状态改变
-    void slotStateChanged(QMediaPlayer::State newState);
+    void slotStateChanged(MMediaPlayer::State newState);
     //播放模式改变
-    void slotPlayModeChange(QMediaPlaylist::PlaybackMode mode);
+    void slotPlayModeChange(MMediaPlaylist::PlaybackMode mode);
     //获得当前播放的index
     void slotIndexChange(int index);
 
@@ -112,8 +112,8 @@ private:
     QString m_curList;
     //当前播放的索引
     int m_curIndex;
-    QMediaPlayer* m_player= nullptr;
-    QMediaPlaylist* m_playlist= nullptr;
+    MMediaPlayer* m_player;
+    MMediaPlaylist* m_playlist;
     QGSettings *volumeSetting = nullptr;
     bool isInitialed = false;
     //在列表里歌曲（判断本地歌曲是否存在）没有播放的情况下，当前函数掉了多少次，要是歌曲在播放（找到本地路径存在，x重新计数

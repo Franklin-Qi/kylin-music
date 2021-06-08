@@ -1,3 +1,12 @@
+kylin-music (1.1.1-0) v101; urgency=medium
+
+  * BUG号：无.
+  * 需求号或者任务号：无.
+  * 其他改动说明：替换播放库为MPV（解码库ffmpeg）
+  * 影响域：无.
+
+ -- liuyuhui <liuyuhui@kylinos.cn>  Mon, 07 Jun 2021 20:10:21 +0800
+
 kylin-music (1.1.0-1) v101; urgency=medium
 
   * BUG号：无.

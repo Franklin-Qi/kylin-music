@@ -182,8 +182,8 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         {
             importFailCount++;
             QEventLoop loop;
-            QMediaContent media(QUrl::fromLocalFile(filepath));
-            QMediaPlayer *music = new QMediaPlayer(this);    //添加歌曲当前位置闪退(没有定位到问题)（没有this）
+            MMediaContent media(QUrl::fromLocalFile(filepath));
+            MMediaPlayer *music = new MMediaPlayer(this);    //添加歌曲当前位置闪退(没有定位到问题)（没有this）
             music->setMedia(media);
             connect(music,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
             connect(this,SIGNAL(durations()),&loop,SLOT(quit()));
@@ -284,8 +284,8 @@ QStringList MusicFileInformation::updateSongInfoFromLocal(QString filepath)
     {
         importFailCount++;
         QEventLoop loop;
-        QMediaContent media(QUrl::fromLocalFile(filepath));
-        QMediaPlayer *music = new QMediaPlayer();
+        MMediaContent media(QUrl::fromLocalFile(filepath));
+        MMediaPlayer *music = new MMediaPlayer();
         music->setMedia(media);
         connect(music,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
         connect(this,SIGNAL(durations()),&loop,SLOT(quit()));

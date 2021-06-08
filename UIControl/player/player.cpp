@@ -10,7 +10,7 @@ bool playController::play(QString playlist, int index)
     if (playlist.compare(m_curList)==0)
     {
 //        if (index == m_curIndex) {
-//            if (m_player->state() == QMediaPlayer::State::PlayingState){
+//            if (m_player->state() == MMediaPlayer::State::PlayingState){
 //                play();
 //            }else {
 //                pause();
@@ -34,7 +34,7 @@ bool playController::play()
     if (m_player->isAvailable() == false) { //存疑
         return false;
     }
-    if (m_player->state() == QMediaPlayer::State::PlayingState) {
+    if (m_player->state() == MMediaPlayer::State::PlayingState) {
         m_player->pause();
     } else {
         m_player->play();
@@ -94,7 +94,7 @@ int playController::playmode()
         return -1;
     }
 
-    return static_cast<QMediaPlaylist::PlaybackMode>(m_playlist->playbackMode());
+    return static_cast<MMediaPlaylist::PlaybackMode>(m_playlist->playbackMode());
 }
 void playController::setPlaymode(int mode)
 {
@@ -107,9 +107,9 @@ void playController::setPlaymode(int mode)
     }
 
 //    if (mode < 0 || mode > 5) {
-//        m_playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemOnce);
+//        m_playlist->setPlaybackMode(MMediaPlaylist::PlaybackMode::CurrentItemOnce);
 //    } else
-        m_playlist->setPlaybackMode(static_cast<QMediaPlaylist::PlaybackMode>(mode));
+        m_playlist->setPlaybackMode(static_cast<MMediaPlaylist::PlaybackMode>(mode));
     qDebug() << "mode" << mode;
     qDebug() << "m_playlist" << m_playlist->playbackMode();
 }
@@ -123,7 +123,7 @@ void playController::curPlaylist()
     }
 
     for (auto i = 0; i < m_playlist->mediaCount(); i++) {
-        QMediaContent content = m_playlist->media(i);
+        MMediaContent content = m_playlist->media(i);
         qDebug() << "   "
                  << "media[" << i << "] is:" << content.canonicalUrl();
     }
@@ -139,7 +139,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
     }
-    disconnect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    disconnect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     m_curList = name;
     m_playlist->clear();
 
@@ -147,13 +147,12 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         m_playlist->addMedia(QUrl::fromLocalFile(path));
     }
     m_player->stop();
-    qDebug() << "进入函数 0 setCurPlaylist";
-    //到这个判断闪退(待解决)
-    if (m_player != nullptr) {
-        m_player->setPlaylist(m_playlist);
-    }
+    m_player->setPlaylist(nullptr);
+    m_player->setPlaylist(m_playlist);
+
+
     m_playlist->setCurrentIndex(-1);
-    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
 }
 void playController::addSongToCurList(QString name, QString songPath)
@@ -207,7 +206,7 @@ void playController::removeSongFromCurList(QString name, int index)
             else if(m_curIndex > index)
             {
                 int position = 0;
-                if(m_player->state()==QMediaPlayer::PlayingState)
+                if(m_player->state()==MMediaPlayer::PlayingState)
                 {
                     position = m_player->position();
                 }
@@ -289,7 +288,7 @@ void playController::removeSongFromLocalList(QString name, int index)
             else if(m_curIndex > index)
             {
                 int position = 0;
-                if(m_player->state()==QMediaPlayer::PlayingState)
+                if(m_player->state()==MMediaPlayer::PlayingState)
                 {
                     position = m_player->position();
                 }
@@ -313,11 +312,11 @@ void playController::removeSongFromLocalList(QString name, int index)
 
 playController::PlayState playController::getState()
 {
-    if(m_player->state() == QMediaPlayer::State::PlayingState)
+    if(m_player->state() == MMediaPlayer::State::PlayingState)
         return PlayState::PLAY_STATE;
-    else if(m_player->state() == QMediaPlayer::State::PausedState)
+    else if(m_player->state() == MMediaPlayer::State::PausedState)
         return PlayState::PAUSED_STATE;
-    else if(m_player->state() == QMediaPlayer::State::StoppedState)
+    else if(m_player->state() == MMediaPlayer::State::StoppedState)
         return PlayState::STOP_STATE;
 }
 
@@ -325,23 +324,23 @@ playController::playController()
     : m_curList(""),m_curIndex(-1)
 {
     qDebug() << "musicPlayer Create..";
-    m_player = new QMediaPlayer(this);
+    m_player = new MMediaPlayer(this);
     if (m_player == nullptr) {
         qDebug() << "failed to create player ";
         return;
     }
-    m_playlist = new QMediaPlaylist(m_player);
+    m_playlist = new MMediaPlaylist(m_player);
     if (m_playlist == nullptr) {
         qDebug() << "failed to create laylist";
         return;
     }
     m_player->setPlaylist(m_playlist);
     init();
-    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    m_playlist->setPlaybackMode(MMediaPlaylist::Loop);
     m_playlist->setCurrentIndex(-1);
-    connect(m_playlist,&QMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
-    connect(m_player,&QMediaPlayer::stateChanged,this,&playController::slotStateChanged);
-    connect(m_playlist,&QMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
+    connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
+    connect(m_player,&MMediaPlayer::stateChanged,this,&playController::slotStateChanged);
+    connect(m_playlist,&MMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
 }
 
 void playController::init()
@@ -438,27 +437,27 @@ bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 
 }
 
-void playController::slotStateChanged(QMediaPlayer::State newState)
+void playController::slotStateChanged(MMediaPlayer::State newState)
 {
-    if(newState == QMediaPlayer::State::PlayingState)
+    if(newState == MMediaPlayer::State::PlayingState)
         emit playerStateChange(playController::PlayState::PLAY_STATE);
-    else if(newState == QMediaPlayer::State::PausedState)
+    else if(newState == MMediaPlayer::State::PausedState)
         emit playerStateChange(playController::PlayState::PAUSED_STATE);
-    else if(newState == QMediaPlayer::State::StoppedState)
+    else if(newState == MMediaPlayer::State::StoppedState)
         emit playerStateChange(playController::PlayState::STOP_STATE);
 
 }
 
-void playController::slotPlayModeChange(QMediaPlaylist::PlaybackMode mode)
+void playController::slotPlayModeChange(MMediaPlaylist::PlaybackMode mode)
 {
-    if(mode == QMediaPlaylist::PlaybackMode::CurrentItemInLoop)
-        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::CurrentItemInLoop));
-    else if(mode == QMediaPlaylist::PlaybackMode::Sequential)
-        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Sequential));
-    else if(mode == QMediaPlaylist::PlaybackMode::Loop)
-        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Loop));
-    else if(mode == QMediaPlaylist::PlaybackMode::Random)
-        emit signalPlayMode(static_cast<QMediaPlaylist::PlaybackMode>(playController::PlayMode::Random));
+    if(mode == MMediaPlaylist::PlaybackMode::CurrentItemInLoop)
+        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::CurrentItemInLoop));
+    else if(mode == MMediaPlaylist::PlaybackMode::Sequential)
+        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Sequential));
+    else if(mode == MMediaPlaylist::PlaybackMode::Loop)
+        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Loop));
+    else if(mode == MMediaPlaylist::PlaybackMode::Random)
+        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Random));
 }
 
 void playController::slotIndexChange(int index)
@@ -472,7 +471,7 @@ void playController::slotIndexChange(int index)
         return;
     }
     m_curIndex = index;
-    QMediaContent content = m_playlist->media(index);
+    MMediaContent content = m_playlist->media(index);
     QString path = content.canonicalUrl().toString();
     QFileInfo file(path.remove("file://"));
     if(file.exists())
