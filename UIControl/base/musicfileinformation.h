@@ -10,8 +10,6 @@
 #include <QDebug>
 #include <QTime>
 #include <QEventLoop>
-#include <QMediaContent>
-#include <QMediaPlayer>
 
 //taglib
 #include <taglib/fileref.h>

@@ -16,7 +16,8 @@ Build-Depends: debhelper,
             libkf5windowsystem-dev,
             libavformat-dev,
             libukui-log4qt-dev,
-			pkgconf
+			pkgconf,
+			libmpv-dev,
 Standards-Version: 4.4.1
 Homepage: https://github.com/ubuntukylin/kylin-music
 #Vcs-Browser: https://github.com/ubuntukylin/kylin-music
@@ -25,13 +26,6 @@ Homepage: https://github.com/ubuntukylin/kylin-music
 Package: kylin-music
 Architecture: any
 Depends: libqt5sql5-sqlite,
-         libburner-media3-1,
-         gstreamer1.0-libav,
-         gstreamer1.0-plugins-bad,
-         gstreamer1.0-plugins-base,
-         gstreamer1.0-plugins-good,
-         gstreamer1.0-plugins-ugly,
-         gstreamer1.0-pulseaudio,
          ${shlibs:Depends}, 
 		 ${misc:Depends}
 Description: kylin-music
