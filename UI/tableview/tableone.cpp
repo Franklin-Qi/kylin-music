@@ -702,7 +702,16 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         if(ret == DB_OP_SUCC)
         {
             successCount++;
-            playController::getInstance().addSongToCurList(nowListName,date.filepath);
+            if(nowListName != ALLMUSIC)
+            {
+                playController::getInstance().addSongToCurList(nowListName,date.filepath);
+                playController::getInstance().addSongToCurList(ALLMUSIC,date.filepath);
+            }
+            else
+            {
+                playController::getInstance().addSongToCurList(nowListName,date.filepath);
+            }
+
         }
         else
         {

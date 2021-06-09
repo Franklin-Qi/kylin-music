@@ -277,6 +277,7 @@ void Widget::slotText(QString btnText)
 void Widget::importFile(QStringList list)
 {
 //    MusicFileInformation::getInstance().addFile(list);
+    sideBarWid->playListBtn->click();
     musicListTable->addMusicToDatebase(list);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
@@ -325,7 +326,6 @@ void Widget::importFile(QStringList list)
             }
         }
     }
-    sideBarWid->playListBtn->click();
 }
 
 QStringList Widget::getPath(QString playListName)
