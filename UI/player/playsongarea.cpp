@@ -593,7 +593,7 @@ void PlaySongArea::slotPlayClicked()
     }
     else
     {
-        if(playController::getInstance().getPlayer()->state() == QMediaPlayer::PlayingState)
+        if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
         {
             playController::getInstance().getPlayer()->pause();
         }

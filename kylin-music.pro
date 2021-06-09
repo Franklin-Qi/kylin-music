@@ -1,10 +1,12 @@
 QT       += core gui sql widgets
-QT       += multimedia multimediawidgets
 QT       += dbus x11extras KWindowSystem
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
+
+INCLUDEPATH += /usr/include/mpv/
+LIBS += -lmpv \
 
 LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 
@@ -73,6 +75,8 @@ SOURCES += \
     UIControl/base/daemonipcdbus.cpp \
     UIControl/base/musicDataBase.cpp \
     UIControl/base/musicfileinformation.cpp \
+    UIControl/player/coreplayer/mmediaplayer.cpp \
+    UIControl/player/coreplayer/mmediaplaylist.cpp \
     UIControl/player/player.cpp \
     UIControl/tableview/musiclistmodel.cpp \
     main.cpp
@@ -101,6 +105,8 @@ HEADERS += \
     UIControl/base/daemonipcdbus.h \
     UIControl/base/musicDataBase.h \
     UIControl/base/musicfileinformation.h \
+    UIControl/player/coreplayer/mmediaplayer.h \
+    UIControl/player/coreplayer/mmediaplaylist.h \
     UIControl/player/player.h \
     UIControl/tableview/musiclistmodel.h \
 

@@ -226,25 +226,25 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     if(cmd1=="-S"||cmd1=="-Sequential")
     {
         //------顺序播放------
-        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Sequential);
+        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::Sequential);
         return 0;
     }
     if(cmd1=="-C"||cmd1=="-CurrentItemInLoop")
     {
         //------单曲循环------
-        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::CurrentItemInLoop);
         return 0;
     }
     if(cmd1=="-L"||cmd1=="-Loop")
     {
         //------列表循环------
-        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Loop);
+        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::Loop);
         return 0;
     }
     if(cmd1=="-R"||cmd1=="-Random")
     {
         //------随机播放------
-        playController::getInstance().getPlaylist()->setPlaybackMode(QMediaPlaylist::Random);
+        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::Random);
         return 0;
     }
     if(cmd1=="-m"||cmd1=="-move")
