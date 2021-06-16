@@ -21,6 +21,7 @@
 #include <QMouseEvent>
 #include <QFrame>
 #include <QGraphicsDropShadowEffect>
+#include <QHeaderView>
 
 #include "tablebaseview.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -40,11 +41,14 @@ public:
     void initStyle();
     void initTableStyle();
     bool isHightLight = false;
+    void refreshHistoryTable();
 public slots:
     void showHistroryPlayList();
-    void addMusicToHistoryListSlot();
+//    void addMusicToHistoryListSlot();
+    void slotPlayIndexChanged(int index, QString listname);
+    void slotPlayPathChanged(QString songPath);
 signals:
-
+    void signalHistoryPlaying();
 private slots:
     void playSongs();
     void deleteSongs();
@@ -66,12 +70,15 @@ private:
     QAction *removeRow;
     QAction *playNextRow;
     QMenu *m_menu;
-    QString nowListName = "HistoryPlayList";
+    QString nowListName = HISTORY;
+    QString nowPlayListName = "";
+    int nowPlayIndex = -1;
 
     QWidget *nullPageWidget;
     QVBoxLayout *nullPageLayout;
     QLabel *nullIconLabel;
     QLabel *nullTextLabel;
+    QHeaderView *horizonHeader;
 
 };
 

@@ -22,8 +22,7 @@ void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 {
     QStyleOptionViewItem opt = option;
     if(index.row() == m_hoverrow ){
-        opt.state |= QStyle::State_MouseOver;
-//        qDebug() << "ForegroundRoles" << index.data(Qt::ForegroundRole).;
+        opt.state |= QStyle::State_Selected;
     } else {
         opt.state &= ~QStyle::State_MouseOver;
     }
