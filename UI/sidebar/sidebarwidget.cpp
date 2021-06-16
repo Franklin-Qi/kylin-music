@@ -203,12 +203,12 @@ void SideBarWidget::sidecolor()
             tmp->defaultStyle();
         }
         setStyleSheet("");
-        logoWid->setStyleSheet("width: 210px;background: #FAFAFA;");
+        logoWid->setStyleSheet("width: 210px;background: #F5F5F5;");
         sideWid->setStyleSheet("#sideWid{width: 210px;\
-                      background: #FAFAFA;\
+                      background: #F5F5F5;\
                       }");
         mainWid->setStyleSheet("#mainWid{width: 210px;\
-                      background: #FAFAFA;\
+                      background: #F5F5F5;\
                       }");
         logoPushButton->setStyleSheet("QPushButton{border:0px;background:transparent;}"
                                       "QPushButton::hover{border:0px;background:transparent;}"

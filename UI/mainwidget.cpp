@@ -411,7 +411,7 @@ void Widget::allConnect()
 {
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
-    connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
+//    connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
     connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,playSongArea,&PlaySongArea::slotText);
@@ -630,14 +630,16 @@ void Widget::changeDarkTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
-//    historyListTable->initStyle();
-//    historyListTable->initTableStyle();
+    historyListTable->initStyle();
+    historyListTable->refreshHistoryTable();
 //    musicListTable->setStyleSheet("{background:red;border:none;}");
 //    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
     musicListTable->tableView->setAlternatingRowColors(false);
     musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
+    historyListTable->initStyle();
+    historyListTable->refreshHistoryTable();
     this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
@@ -660,6 +662,7 @@ void Widget::changeLightTheme()
     musicListTable->tableView->setAlternatingRowColors(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
-//    historyListTable->initStyle();
-//    historyListTable->setHighlight(-1);
+    historyListTable->initStyle();
+    historyListTable->refreshHistoryTable();
+
 }

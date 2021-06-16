@@ -12,7 +12,7 @@ extern "C" {
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "mp3" << "ogg" << "wma" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac" << "mid";
+    musicType << "voc" << "aiff" << "au" << "dts" << "flv" << "m4p" << "m4r" << "mka" << "mmf" << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma" << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac" << "mid";
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
@@ -29,7 +29,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         if(fileInfo.isDir())
         {
             QStringList nameFilters;
-            nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+            nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
             //适合用于大目录
             QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
             while (iter.hasNext())

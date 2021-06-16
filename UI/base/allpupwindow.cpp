@@ -202,8 +202,32 @@ void MusicInfoDialog::initStyle()
     fileTimeLabel->setFixedHeight(24);
     filePathLabel->setFixedHeight(24);
 
+    buttonLayout = new QHBoxLayout();
+    cancelBtn = new QPushButton(this);
+    confirmBtn = new QPushButton(this);
+    btnWidget = new QWidget(this);
+
+    connect(cancelBtn,&QPushButton::clicked,this,&MusicInfoDialog::close);
+    connect(confirmBtn,&QPushButton::clicked,this,&MusicInfoDialog::close);
+
+    btnWidget->setLayout(buttonLayout);
+    buttonLayout->setAlignment(Qt::AlignRight);
+    buttonLayout->addWidget(confirmBtn);
+    buttonLayout->addWidget(cancelBtn);
+    buttonLayout->setMargin(0);
+    buttonLayout->setSpacing(16);
+
+
+    confirmBtn->setText(tr("confirm"));
+    confirmBtn->setFixedSize(80,30);
+//    cancelBtn->setText("取消");s
+    cancelBtn->setText(tr("Cancel"));
+    cancelBtn->setFixedSize(80,30);
+    cancelBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
+
     mainVLayout->setAlignment(Qt::AlignTop);
     mainVLayout->addWidget(musicInfoLabel);
+    mainVLayout->addSpacing(10);
     mainVLayout->addWidget(songNameLabel);
     mainVLayout->addWidget(singerLabel);
     mainVLayout->addWidget(albumLabel);
@@ -211,9 +235,11 @@ void MusicInfoDialog::initStyle()
     mainVLayout->addWidget(fileSizeLable);
     mainVLayout->addWidget(fileTimeLabel);
     mainVLayout->addWidget(filePathLabel);
+    mainVLayout->addSpacing(20);
+    mainVLayout->addWidget(btnWidget);
 
-    mainVLayout->setSpacing(10);
-    mainVLayout->setContentsMargins(32,20,32,20);
+    mainVLayout->setSpacing(8);
+    mainVLayout->setContentsMargins(32,20,32,0);
 
     if(musicDate.title != "")
     {
@@ -226,11 +252,14 @@ void MusicInfoDialog::initStyle()
         filePathLabel->setText(tr("File Path : ") + musicDate.filepath);
 
     }
-    this->setFixedSize(376,405);
+    this->setFixedSize(376,370);
 
     //限制应用内字体固定大小
     QFont sizeFont;
     sizeFont.setPixelSize(14);
+    QFont titleFont;
+    titleFont.setPixelSize(16);
+    titleFont.setBold(true);
     songNameLabel->setFont(sizeFont);
     singerLabel->setFont(sizeFont);
     albumLabel->setFont(sizeFont);
@@ -238,6 +267,6 @@ void MusicInfoDialog::initStyle()
     fileSizeLable->setFont(sizeFont);
     fileTimeLabel->setFont(sizeFont);
     filePathLabel->setFont(sizeFont);
-    musicInfoLabel->setFont(sizeFont);
+    musicInfoLabel->setFont(titleFont);
 
 }

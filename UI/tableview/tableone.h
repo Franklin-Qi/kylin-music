@@ -41,7 +41,7 @@ public:
     MusicListModel *m_model;
 //    QTableView *tableView;
     TableBaseView *tableView;
-    MyLabel *listTitleLabel;
+    QLabel *listTitleLabel;
     QString nowListName;
     void changeNumber();
     void initTableViewStyle();

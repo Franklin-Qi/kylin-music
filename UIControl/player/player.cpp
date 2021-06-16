@@ -205,19 +205,21 @@ void playController::removeSongFromCurList(QString name, int index)
             }
             else if(m_curIndex > index)
             {
-                int position = 0;
-                if(m_player->state()==MMediaPlayer::PlayingState)
-                {
-                    position = m_player->position();
-                }
-                m_player->stop();
+//                int position = 0;
+//                if(m_player->state()==MMediaPlayer::PlayingState)
+//                {
+//                    position = m_player->position();
+//                }
+//                m_player->stop();
                 m_playlist->removeMedia(index);
                 m_curIndex = m_curIndex - 1;
+                //只负责高亮歌曲
                 setSongIndex(m_curIndex);
-                m_player->setPosition(position);
+//                m_player->setPosition(position);
                 //歌曲删除重新播放(跨函数调用)
 //                PlaySongArea::getInstance().hSlider->setValue(position);
-                m_player->play();
+                //MPV setPosition已经设置播放，不用再次设置播放
+//                m_player->play();
             }
             else if(m_curIndex < index)
             {

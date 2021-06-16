@@ -1,4 +1,5 @@
 #include "tablehistory.h"
+#include "UI/mainwidget.h"
 
 TableHistory::TableHistory(QWidget *parent) : QWidget(parent)
 {
@@ -16,6 +17,7 @@ void TableHistory::initSetModel()
     m_tableHistory = new TableBaseView;
     qDebug() << m_tableHistory;
     m_tableHistory->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_tableHistory->setSelectionMode(QAbstractItemView::SingleSelection);
     m_model = new MusicListModel;
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
@@ -23,7 +25,7 @@ void TableHistory::initSetModel()
     m_model->setView(*m_tableHistory);
 
     historyTitileLabel = new QLabel(this);
-    historyTitileLabel->setText(tr("HistoryPlayList"));
+    historyTitileLabel->setText(tr("PlayList"));
     listCountLabel = new QLabel(this);
     historyTitileWidget = new QWidget(this);
     historyTitileWidget->setFixedHeight(64);
@@ -31,7 +33,7 @@ void TableHistory::initSetModel()
     deleteAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     deleteAllBtn->setIconSize(QSize(16,16));
     deleteAllBtn->setIcon(QIcon(":/img/default/delete.png"));
-    deleteAllBtn->setText(tr("清空"));
+    deleteAllBtn->setText(tr("Empty"));
     titleHBoxLayout = new QHBoxLayout();
     historyTitileWidget->setLayout(titleHBoxLayout);
     titleHBoxLayout->addWidget(historyTitileLabel,Qt::AlignLeft);
@@ -65,7 +67,7 @@ void TableHistory::initSetModel()
     this->setFixedWidth(320);
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Base);
-
+    horizonHeader = m_tableHistory->horizontalHeader();
     changeNumber();
 
 
@@ -81,7 +83,7 @@ void TableHistory::initStyle()
         m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA");
 
     }
-    if(WidgetStyle::themeColor == 1)
+    else if(WidgetStyle::themeColor == 1)
     {
         qDebug() << "color " << WidgetStyle::themeColor;
         this->setStyleSheet("background-color:#1F2022");
@@ -98,18 +100,26 @@ void TableHistory::initStyle()
     listCountLabel->setStyleSheet("font-weight: 400;\
                                         border:none;\
                                         line-height: 14px;");
+    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
+
 
 }
 
 void TableHistory::deleteAllClicked()
 {
-    QMessageBox msg(QMessageBox::Warning,tr("Prompt information"),tr("Clear the playlist?"),QMessageBox::Yes|QMessageBox::No,this);
+    QMessageBox msg(QMessageBox::Warning,tr("Prompt information"),tr("Clear the playlist?"),QMessageBox::Yes|QMessageBox::No,Widget::mutual);
     int ret = msg.exec();
     if(ret == QMessageBox::Yes)
     {
-        m_model->clear();
-        g_db->emptyHistoryMusic();
-        changeNumber();
+        int result = g_db->emptyHistoryMusic();
+        if(result == DB_OP_SUCC) {
+            m_model->clear();
+            changeNumber();
+        }
+        else {
+            return;
+        }
+
     }
     else
     {
@@ -117,19 +127,55 @@ void TableHistory::deleteAllClicked()
     }
 
 }
+void TableHistory::slotPlayIndexChanged(int index, QString listname)
+{
+    if(listname == HISTORY) {
+        nowPlayListName = HISTORY;
+        nowPlayIndex = index;
+        refreshHistoryTable();
+    }
+    else {
+        nowPlayListName = listname;
+    }
+}
+
+void TableHistory::slotPlayPathChanged(QString songPath)
+{
+    if(nowPlayListName != HISTORY && songPath != "") {
+        int ret = g_db->addMusicToHistoryMusic(songPath);
+        if(ret == DB_OP_SUCC) {
+            nowPlayIndex = 0;
+            refreshHistoryTable();
+        }
+        else {
+            return;
+        }
+    }
+}
 
 void TableHistory::initTableStyle()
 {
     m_tableHistory->hideColumn(2);
-    m_tableHistory->hideColumn(4);
-    m_tableHistory->hideColumn(5);
-    m_tableHistory->hideColumn(6);
+    m_tableHistory->setColumnWidth(3,40);
+    m_tableHistory->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+    m_tableHistory->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     m_tableHistory->setAutoFillBackground(true);
+    m_tableHistory->verticalHeader()->setVisible(false);// 垂直不可见
     m_tableHistory->setAlternatingRowColors(false);
-    if(isHightLight == false) {
-        setHighlight(-1);
+    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
+    horizonHeader->setDefaultAlignment(Qt::AlignLeft);
+    horizonHeader->setEnabled(false);
+    horizonHeader->setHighlightSections(false);
+    if(WidgetStyle::themeColor == 0) {
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
+                                                                border: none;border-bottom: 1px solid #FAFAFA;\
+                                                                border-right: 1px solid #FAFAFA;border-bottom: 1px transparent;\
+                                                                background-color:#FAFAFA;font-size:16px;color:#8F9399;}");
     } else {
-        setHighlight(0);
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
+                                                        border: none;border-bottom: 1px solid #1F2022;\
+                                                        border-right: 1px solid #1F2022;border-bottom: 1px transparent;\
+                                                        background-color:#1F2022;font-size:16px;color:#8F9399;}");
     }
 }
 
@@ -140,6 +186,9 @@ void TableHistory::initConnect()
     connect(deleteAllBtn,&QToolButton::clicked,this,&TableHistory::deleteAllClicked);
     connect(m_tableHistory,&TableHistory::customContextMenuRequested,this,&TableHistory::showRightMenu);
     connect(m_tableHistory,&TableBaseView::doubleClicked,this,&TableHistory::playSongs);
+    connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableHistory::slotPlayIndexChanged);
+    connect(&playController::getInstance(),&playController::singalChangePath,this,&TableHistory::slotPlayPathChanged);
+
 
 }
 void TableHistory::showHistroryPlayList()
@@ -153,8 +202,7 @@ void TableHistory::showHistroryPlayList()
     {
         this->hide();
     }
-    qDebug() << m_tableHistory;
-    qDebug() << m_tableHistory->alternatingRowColors();
+    qDebug() << m_tableHistory << m_tableHistory->alternatingRowColors();
     m_tableHistory->setAlternatingRowColors(false);
 }
 void TableHistory::changeNumber()
@@ -170,17 +218,27 @@ void TableHistory::changeNumber()
         m_tableHistory->show();
     }
 }
-
-void TableHistory::addMusicToHistoryListSlot()
+void TableHistory::refreshHistoryTable()
 {
     m_model->clear();
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
-    isHightLight = true;
     changeNumber();
     initTableStyle();
+    qDebug() << "refreshHistoryTable" << nowPlayIndex;
+    setHighlight(nowPlayIndex);
 }
+//void TableHistory::addMusicToHistoryListSlot()
+//{
+//    m_model->clear();
+//    QList<musicDataStruct> resList;
+//    g_db->getSongInfoListFromHistoryMusic(resList);
+//    m_model->add(resList);
+//    isHightLight = true;
+//    changeNumber();
+//    initTableStyle();
+//}
 void TableHistory::initRightMenu()
 {
     m_menu = new QMenu;
@@ -213,31 +271,29 @@ void TableHistory::playSongs()
     int index = m_tableHistory->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     qDebug() << "m_tableHistory->selectedIndexes();" << index << date.filepath;
-    int ret = g_db->addMusicToHistoryMusic(date.filepath);
-    if(ret == 0){
-        QStringList pathList;
-        pathList = m_model->getPathList(nowListName);
-        qDebug() << "调用播放接口，设置" << nowListName <<"为当前播放列表";
-        playController::getInstance().setCurPlaylist(nowListName,pathList);
-        qDebug() << "调用播放接口，设置" << index <<"为当前播放歌曲索引";
-        playController::getInstance().play(nowListName,index);
-        qDebug() << "调用接口为添加到数据库";
-        addMusicToHistoryListSlot();
-    }else{
-        QMessageBox::about(this,tr("Prompt information"),tr("The song doesn't exist"));
-        g_db->delMusicFromHistoryMusic(date.filepath);
-        m_model->remove(index);
-    }
+    QStringList pathList;
+    pathList = m_model->getPathList(nowListName);
+    qDebug() << "调用播放接口，设置" << nowListName <<"为当前播放列表";
+    playController::getInstance().setCurPlaylist(nowListName,pathList);
+    qDebug() << "调用播放接口，设置" << index <<"为当前播放歌曲索引";
+    playController::getInstance().play(nowListName,index);
+    emit signalHistoryPlaying();
 }
 void TableHistory::deleteSongs()
 {
     int index = m_tableHistory->currentIndex().row();
+//    if(index == nowPlayIndex && nowPlayListName != HISTORY) {
+//        QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("歌曲列表或歌单中正在播放此歌曲，无法删除~"));
+//        return;
+//    }
     musicDataStruct date = m_model->getItem(index);
+//    g_db->delMusicFromPlayList(date.filepath,nowListName);
+    playController::getInstance().removeSongFromCurList(nowListName,index);
     g_db->delMusicFromHistoryMusic(date.filepath);
-    addMusicToHistoryListSlot();
-    if(index == 0) {
-        setHighlight(-1);
+    if(index == nowPlayIndex && nowPlayListName != HISTORY) {
+        nowPlayIndex = -1;
     }
+    refreshHistoryTable();
 }
 
 void TableHistory::playNextRowClicked()
@@ -247,6 +303,12 @@ void TableHistory::playNextRowClicked()
 
 void TableHistory::setHighlight(int index)
 {
+    qDebug() <<" 历史列表高亮" << index << m_model->count();
+    if(m_model->count() == 0 ||  index >= m_model->count()) {
+        qDebug() << "退出";
+        return;
+    }
+    qDebug() << "-------------111";
     if(WidgetStyle::themeColor == 0)
     {
         for (int i = 0 ;i<4 ;i++ )
@@ -281,7 +343,7 @@ void TableHistory::setHighlight(int index)
             for (int i = 0 ; i<4 ;i++ )
             {
 //                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
-                m_model->m_model.item(0,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+                m_model->m_model.item(index,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
             }
         }
     }

@@ -114,7 +114,6 @@ void PlaySongArea::initWidget()
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
     listBtn->setToolTip(tr("Play List"));
-    listBtn->hide();
 
     coverPhotoLabel = new QLabel(this);
     coverPhotoLabel->setFixedSize(40,40);

@@ -86,6 +86,11 @@ private:
 
     QVBoxLayout *mainVLayout;
 
+    QHBoxLayout *buttonLayout;
+    QWidget *btnWidget;
+    QPushButton *cancelBtn;
+    QPushButton *confirmBtn;
+
     void initStyle();
 };
 
