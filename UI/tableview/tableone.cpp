@@ -605,7 +605,7 @@ void TableOne::addMusicSlot()
         fileDialog->setSidebarUrls(list);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
-    fileDialog->setNameFilter("音乐文件(*.mp3 *.ogg *.wma *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid)");
+    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4p *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid)");
     //设置视图模式
     fileDialog->setViewMode(QFileDialog::Detail);
     //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
@@ -664,7 +664,7 @@ void TableOne::addDirMusicSlot()
         });
 
     //自己QFileDialog的用法，这里只是列子
-//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid"));
+//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid"));
 
     fileDialog->setSidebarUrls(list + mntUrlList);
 
@@ -678,7 +678,7 @@ void TableOne::addDirMusicSlot()
     foreach (QString dirPath, m_fileNames) {
         QDir dir(dirPath);
         QStringList nameFilters;
-        nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
         QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
         for(int i = 0; i < fileNames.count(); i++)
         {
@@ -715,16 +715,7 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         if(ret == DB_OP_SUCC)
         {
             successCount++;
-            if(nowListName != ALLMUSIC)
-            {
-                playController::getInstance().addSongToCurList(nowListName,date.filepath);
-                playController::getInstance().addSongToCurList(ALLMUSIC,date.filepath);
-            }
-            else
-            {
-                playController::getInstance().addSongToCurList(nowListName,date.filepath);
-            }
-
+            playController::getInstance().addSongToCurList(nowListName,date.filepath);
         }
         else
         {
@@ -959,7 +950,7 @@ void TableOne::mouseMoveEvent(QMouseEvent *event)
 //{
 //    QStringList nameFilters;
 //    QStringList files;
-//    nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+//    nameFilters << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
 //    //适合用于大目录
 //    QDirIterator iter(path,nameFilters,QDir::Files,QDirIterator::Subdirectories);
 //    while (iter.hasNext())

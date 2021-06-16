@@ -76,7 +76,7 @@ void MyToolButton::defaultStyle()
         {
             //padding-left:15px;  左内边距
             this->setStyleSheet("QToolButton{padding-left:14px;\
-                                background-color:#FAFAFA;color:#303133;border-radius:4px;}"
+                                background-color:#F5F5F5;color:#303133;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
             if(buttonListName == ALLMUSIC)
             {
