@@ -476,7 +476,6 @@ void PlaySongArea::playerStateChange(playController::PlayState newState)
 
 void PlaySongArea::slotPositionChanged(qint64 position)
 {
-    hSlider->setValue(static_cast<int>(position));
     QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
     QString str_time = duration.toString("mm:ss");
     QString length = str_time + "/" + m_time;
@@ -490,6 +489,16 @@ void PlaySongArea::slotPositionChanged(qint64 position)
         timeLabel->setText(length);
         emit signalTimeLab(length);
     }
+
+    if(hSlider->signalsBlocked())
+    {
+        return;
+    }
+    hSlider->blockSignals(true);
+    hSlider->setValue(static_cast<int>(position));
+
+    hSlider->blockSignals(false);
+    hSlider->update();
 }
 
 void PlaySongArea::slotNotPlaying()
