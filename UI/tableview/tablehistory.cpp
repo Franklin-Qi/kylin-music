@@ -80,7 +80,7 @@ void TableHistory::initStyle()
         this->setStyleSheet("background:#FAFAFA");
         historyTitileWidget->setStyleSheet("background:#FAFAFA");
         nullPageWidget->setStyleSheet("background:#FAFAFA");
-        m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA");
+        m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA;");
 
     }
     else if(WidgetStyle::themeColor == 1)
@@ -89,7 +89,7 @@ void TableHistory::initStyle()
         this->setStyleSheet("background-color:#1F2022");
         historyTitileWidget->setStyleSheet("background:#1F2022");
         nullPageWidget->setStyleSheet("background:#1F2022");
-        m_tableHistory->setStyleSheet("border:none;background-color:#1F2022");
+        m_tableHistory->setStyleSheet("border:none;background-color:#1F2022;");
     }
 
     historyTitileLabel->setStyleSheet("width:96px;height:24px;"
