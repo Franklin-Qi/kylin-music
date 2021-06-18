@@ -1614,8 +1614,16 @@ int MusicDataBase::addNewSongToPlayList(const musicDataStruct& fileData,const QS
     int checkListRes = checkIfSongExistsInPlayList(fileData.filepath,playListName);
     if(SONG_NOT_FOUND != checkListRes)
     {
-        qDebug() << "db" << checkListRes;
-        return DB_OP_ADD_REPEAT;
+        if(DB_OP_SUCC == checkListRes)
+        {
+            qDebug() << "歌曲重复添加";
+            return DB_OP_ADD_REPEAT;
+        }
+        else
+        {
+            qDebug() << "检查歌曲是否存在失败，失败码为：" << checkListRes;
+            return checkListRes;
+        }
     }
     else
     {
