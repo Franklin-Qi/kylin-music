@@ -1615,7 +1615,7 @@ int MusicDataBase::addNewSongToPlayList(const musicDataStruct& fileData,const QS
     if(SONG_NOT_FOUND != checkListRes)
     {
         qDebug() << "db" << checkListRes;
-        return checkListRes;
+        return DB_OP_ADD_REPEAT;
     }
     else
     {
