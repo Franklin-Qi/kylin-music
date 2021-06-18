@@ -58,7 +58,6 @@ void Widget::Single(QStringList path)   //单例
     }
     if (lockf(fd, F_TLOCK, 0))
     {
-        qDebug() << "path.size" << path.size();
         QDBusInterface interface( "org.ukui.kylin_music", "/org/ukui/kylin_music","org.ukui.kylin_music.play", QDBusConnection::sessionBus());
         if(path.size() == 1)
             interface.call( "kylin_music_play_request", str);
@@ -168,11 +167,8 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         KWindowSystem::forceActiveWindow(this->winId());
         return 0;
     }
-    qDebug() << "---cmd1--" << cmd1;
-    qDebug() << "---isFirstObject--" << isFirstObject;
     if(isFirstObject&&!QFileInfo::exists(cmd1))
     {
-        qDebug() << "close" << cmd1;
         if(cmd1=="-c"||cmd1=="-close")
         {
             //------窗口关闭------
@@ -221,6 +217,24 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //------减少音量------
         playSongArea->volumeReduce();
+        return 0;
+    }
+    if(cmd1=="-sta"||cmd1=="-state")
+    {
+        //------检测当前播放状态
+        getState();
+        return 0;
+    }
+    if(cmd1=="-init"||cmd1=="-initialization")
+    {
+        //------初始化音乐
+        initMusic();
+        return 0;
+    }
+    if(cmd1=="-t"||cmd1=="-title")
+    {
+        //------当前播放歌曲名
+        title();
         return 0;
     }
     if(cmd1=="-S"||cmd1=="-Sequential")
@@ -340,6 +354,69 @@ QStringList Widget::getPath(QString playListName)
     return path;
 }
 
+void Widget::getState()
+{
+    if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
+    {
+        qDebug() << "当前播放状态 ：播放";
+    }
+    else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
+    {
+        qDebug() << "当前播放状态 ：暂停";
+    }
+    else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
+    {
+        qDebug() << "当前播放状态 ：停止";
+    }
+}
+
+void Widget::initMusic()
+{
+    QStringList playListName;
+    g_db->getPlayList(playListName);
+    for(auto listName : playListName)
+    {
+        if(listName == FAV)
+        {
+            continue;
+        }
+        sideBarWid->removePlayList(listName);
+    }
+    QList<musicDataStruct> retList;
+    int sef = g_db->getSongInfoListFromDB(retList,FAV);
+    if(sef == DB_OP_SUCC)
+    {
+        for(int i = 0;i < retList.size();i++)
+        {
+            int set = g_db->delMusicFromPlayList(retList.at(i).filepath,FAV);
+            if(set == DB_OP_SUCC)
+            {
+                for(int i = 0; i < retList.size(); i++)
+                {
+                    playController::getInstance().removeSongFromCurList(FAV, 0);
+                }
+            }
+        }
+    }
+    QList<musicDataStruct> resList;
+    int ret = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+    if(ret == DB_OP_SUCC)
+    {
+        for(int i = 0;i < resList.size();i++)
+        {
+            int ref = g_db->delSongFromEveryWhere(resList.at(i).filepath);
+            if(ref == DB_OP_SUCC)
+            {
+                for(int i = 0; i < resList.size(); i++)
+                {
+                    playController::getInstance().removeSongFromCurList(ALLMUSIC, 0);
+                }
+            }
+        }
+    }
+    sideBarWid->playListBtn->click();
+}
+
 void Widget::initAllComponent()
 {
 //    this->setWindowFlag(Qt::FramelessWindowHint);
@@ -448,6 +525,7 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,m_miniWidget,&miniWidget::slotText);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -616,6 +694,16 @@ void Widget::slotRecoverNormalWidget()
 void Widget::slotCloseMiniWidget()
 {
     this->close();
+}
+
+void Widget::slotPlayingTitle(QString title)
+{
+    m_playTitle = title;
+}
+
+void Widget::title()
+{
+    qDebug() << "正在播放的歌曲名 ：" << m_playTitle;
 }
 
 //切换深色主题
