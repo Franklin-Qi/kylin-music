@@ -54,7 +54,7 @@ public:
     void showTitleText(QString listName);
 
     void initStyle();
-     void addMusicToDatebase(QStringList fileNames);
+    void addMusicToDatebase(QStringList fileNames);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定

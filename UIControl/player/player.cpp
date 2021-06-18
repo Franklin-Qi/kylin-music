@@ -389,12 +389,10 @@ void playController::onNextSong()
         qDebug() << "m_playlist or m_player is nullptr";
         return;
     }
-    qDebug() << " 当前"<< m_playlist->currentIndex();
     m_playlist->next();
     m_player->play();
     curPlaylist();
-    qDebug() << " 下一首"<< m_playlist->currentIndex() << m_curIndex;
-    qDebug() << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << m_curList;
+    qDebug() << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << m_curList;
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
 }
@@ -412,7 +410,6 @@ void playController::onPreviousSong()
 
 void playController::setCurList(QString renameList)
 {
-    qDebug() << "renameList" << renameList;
     m_curList = renameList;
 }
 void playController::onError()
@@ -425,7 +422,6 @@ void playController::onMediaStatusChanged()
 }
 playController::~playController(/* args */)
 {
-    qDebug() << "musicPlayer destroy..";
     if (m_playlist != nullptr) {
         m_playlist->deleteLater();
     }
@@ -464,7 +460,6 @@ void playController::slotPlayModeChange(MMediaPlaylist::PlaybackMode mode)
 
 void playController::slotIndexChange(int index)
 {
-    qDebug() << "-----index-----" << index;
     if(index == -1)
     {
         emit signalNotPlaying();

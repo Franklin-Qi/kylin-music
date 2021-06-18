@@ -67,7 +67,6 @@ void TableHistory::initSetModel()
     this->setFixedWidth(320);
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Base);
-    horizonHeader = m_tableHistory->horizontalHeader();
     changeNumber();
 
 
@@ -100,8 +99,6 @@ void TableHistory::initStyle()
     listCountLabel->setStyleSheet("font-weight: 400;\
                                         border:none;\
                                         line-height: 14px;");
-    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
-
 
 }
 
@@ -156,27 +153,14 @@ void TableHistory::slotPlayPathChanged(QString songPath)
 void TableHistory::initTableStyle()
 {
     m_tableHistory->hideColumn(2);
+    m_tableHistory->setColumnWidth(0,150);
+    m_tableHistory->setColumnWidth(1,80);
     m_tableHistory->setColumnWidth(3,40);
-    m_tableHistory->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-    m_tableHistory->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     m_tableHistory->setAutoFillBackground(true);
     m_tableHistory->verticalHeader()->setVisible(false);// 垂直不可见
+    m_tableHistory->horizontalHeader()->setVisible(false);
     m_tableHistory->setAlternatingRowColors(false);
-    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
-    horizonHeader->setDefaultAlignment(Qt::AlignLeft);
-    horizonHeader->setEnabled(false);
-    horizonHeader->setHighlightSections(false);
-    if(WidgetStyle::themeColor == 0) {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
-                                                                border: none;border-bottom: 1px solid #FAFAFA;\
-                                                                border-right: 1px solid #FAFAFA;border-bottom: 1px transparent;\
-                                                                background-color:#FAFAFA;font-size:16px;color:#8F9399;}");
-    } else {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
-                                                        border: none;border-bottom: 1px solid #1F2022;\
-                                                        border-right: 1px solid #1F2022;border-bottom: 1px transparent;\
-                                                        background-color:#1F2022;font-size:16px;color:#8F9399;}");
-    }
+
 }
 
 
@@ -229,16 +213,6 @@ void TableHistory::refreshHistoryTable()
     qDebug() << "refreshHistoryTable" << nowPlayIndex;
     setHighlight(nowPlayIndex);
 }
-//void TableHistory::addMusicToHistoryListSlot()
-//{
-//    m_model->clear();
-//    QList<musicDataStruct> resList;
-//    g_db->getSongInfoListFromHistoryMusic(resList);
-//    m_model->add(resList);
-//    isHightLight = true;
-//    changeNumber();
-//    initTableStyle();
-//}
 void TableHistory::initRightMenu()
 {
     m_menu = new QMenu;
@@ -248,7 +222,7 @@ void TableHistory::initRightMenu()
 
     m_menu->addAction(playRow);
     m_menu->addAction(removeRow);
-    m_menu->addAction(playNextRow);
+//    m_menu->addAction(playNextRow);
     connect(playRow,&QAction::triggered,this,&TableHistory::playSongs);
     connect(removeRow,&QAction::triggered,this,&TableHistory::deleteSongs);
     connect(playNextRow,&QAction::triggered,this,&TableHistory::playNextRowClicked);

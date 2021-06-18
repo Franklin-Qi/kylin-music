@@ -133,6 +133,9 @@ int main(int argc, char *argv[])
                       "-s -start  播放\n"
                       "-i -increase  调高音量\n"
                       "-r -reduce    调低音量\n"
+                      "-sta -state            当前播放状态\n"
+                      "-t -title              当前播放的歌曲名\n"
+                      "-init -initialization  初始化音乐\n"
                       "-S -Sequential           顺序播放\n"
                       "-C -CurrentItemInLoop    单曲循环\n"
                       "-L -Loop                 列表循环\n"
@@ -146,7 +149,8 @@ int main(int argc, char *argv[])
         if(!QFileInfo::exists(str)&&str!="-b"&&str!="-back"&&str!="-n"&&str!="-next"&&str!="-p"&&str!="-pause"&&
                 str!="-s"&&str!="-start"&&str!="-i"&&str!="-increase"&&str!="-r"&&str!="-reduce"&&str!="-S"&&
                 str!="-Sequential"&&str!="-C"&&str!="-CurrentItemInLoop"&&str!="-L"&&str!="-Loop"&&str!="-R"&&
-                str!="-Random"&&str!="-m"&&str!="-move"&&str!="-c"&&str!="-close")
+                str!="-Random"&&str!="-m"&&str!="-move"&&str!="-c"&&str!="-close"&&str!="-sta"&&str!="-state"&&
+                str!="-t"&&str!="-title"&&str!="-init"&&str!="-initialization")
         {
             qDebug()<<"参数不合规，请使用--h或者--help参数获取帮助";
             return -1;

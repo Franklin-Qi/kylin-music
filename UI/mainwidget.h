@@ -57,6 +57,10 @@ public slots:
     void slotRecoverNormalWidget();
     //mini 关闭窗体
     void slotCloseMiniWidget();
+    //获取当前播放歌曲的名称
+    void slotPlayingTitle(QString title);
+    //当前播放歌曲的名称
+    void title();
     //命令参数
     int kylin_music_play_request(QString cmd1, QString cmd2 = "", QString cmd3 = "");
     //判断当前点击的按钮是否为歌曲列表（歌单名）
@@ -85,7 +89,10 @@ private:
     void changeLightTheme();
     void importFile(QStringList list);
     QStringList getPath(QString playListName);
-
+    //获取当前播放歌曲的状态
+    void getState();
+    //初始化音乐
+    void initMusic();
 private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;
@@ -105,6 +112,8 @@ private:
     QStringList argName;
     //歌单名
     QString listName;
+    //正在播放歌曲的title
+    QString m_playTitle;
 signals:
     void signalShowGuide();
     //刷新歌曲列表界面
