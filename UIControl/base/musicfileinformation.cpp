@@ -252,7 +252,6 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
     musicdataStruct.singer = musicSinger;
     musicdataStruct.album = musicAlbum;
     musicdataStruct.time = musicTime;
-    qDebug() << "527 音频音频音频音频音频" << musicdataStruct.time;
     QStringList audioFileInformation;
     audioFileInformation << musicdataStruct.title << musicdataStruct.singer
                          << musicdataStruct.album << musicdataStruct.time;
@@ -388,6 +387,5 @@ int MusicFileInformation::findIndexFromPlayList(QString listname,QString filepat
             }
         }
     }
-    qDebug() << "从数据库中根据路径查找索引值:" << listname << filepath << "索引值 ：： " << index;
     return index;
 }
