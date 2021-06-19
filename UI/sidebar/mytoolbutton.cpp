@@ -37,7 +37,6 @@ void MyToolButton::selectChanged()
         return;
     }
     emit selectButtonChanged(this->text());
-//    qDebug() << this->text() << "歌单名";
     QList<MyToolButton *> list = this->parent()->parent()->parent()->findChildren<MyToolButton *>();
     for(MyToolButton *tmp : list)
     {

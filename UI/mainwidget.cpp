@@ -58,7 +58,6 @@ void Widget::Single(QStringList path)   //单例
     }
     if (lockf(fd, F_TLOCK, 0))
     {
-        qDebug() << "path.size" << path.size();
         QDBusInterface interface( "org.ukui.kylin_music", "/org/ukui/kylin_music","org.ukui.kylin_music.play", QDBusConnection::sessionBus());
         if(path.size() == 1)
             interface.call( "kylin_music_play_request", str);
@@ -128,14 +127,10 @@ void Widget::onPrepareForSleep(bool isSleep)
 
 void Widget::client_get(QString str)
 {
-    qDebug()<<"MainWindow:"<<str;
     QString key = str.split(":").first();
     QString s = str.split(":").last();
-    qDebug() << "----key----" << key;
-    qDebug() << "----s----" << s;
     if(s == "1")
     {
-        qDebug() << "----s----" << s;
         playController::getInstance().play();
     }
     else if(s == "2" || key == "163")
@@ -168,11 +163,8 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         KWindowSystem::forceActiveWindow(this->winId());
         return 0;
     }
-    qDebug() << "---cmd1--" << cmd1;
-    qDebug() << "---isFirstObject--" << isFirstObject;
     if(isFirstObject&&!QFileInfo::exists(cmd1))
     {
-        qDebug() << "close" << cmd1;
         if(cmd1=="-c"||cmd1=="-close")
         {
             //------窗口关闭------
@@ -221,6 +213,24 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     {
         //------减少音量------
         playSongArea->volumeReduce();
+        return 0;
+    }
+    if(cmd1=="-sta"||cmd1=="-state")
+    {
+        //------检测当前播放状态
+        getState();
+        return 0;
+    }
+    if(cmd1=="-init"||cmd1=="-initialization")
+    {
+        //------初始化音乐
+        initMusic();
+        return 0;
+    }
+    if(cmd1=="-t"||cmd1=="-title")
+    {
+        //------当前播放歌曲名
+        title();
         return 0;
     }
     if(cmd1=="-S"||cmd1=="-Sequential")
@@ -340,12 +350,76 @@ QStringList Widget::getPath(QString playListName)
     return path;
 }
 
+void Widget::getState()
+{
+    if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
+    {
+        qDebug() << "当前播放状态 ：播放";
+    }
+    else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
+    {
+        qDebug() << "当前播放状态 ：暂停";
+    }
+    else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
+    {
+        qDebug() << "当前播放状态 ：停止";
+    }
+}
+
+void Widget::initMusic()
+{
+    QStringList playListName;
+    g_db->getPlayList(playListName);
+    for(auto listName : playListName)
+    {
+        if(listName == FAV)
+        {
+            continue;
+        }
+        sideBarWid->removePlayList(listName);
+    }
+    QList<musicDataStruct> retList;
+    int sef = g_db->getSongInfoListFromDB(retList,FAV);
+    if(sef == DB_OP_SUCC)
+    {
+        for(int i = 0;i < retList.size();i++)
+        {
+            int set = g_db->delMusicFromPlayList(retList.at(i).filepath,FAV);
+            if(set == DB_OP_SUCC)
+            {
+                for(int i = 0; i < retList.size(); i++)
+                {
+                    playController::getInstance().removeSongFromCurList(FAV, 0);
+                }
+            }
+        }
+    }
+    QList<musicDataStruct> resList;
+    int ret = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+    if(ret == DB_OP_SUCC)
+    {
+        for(int i = 0;i < resList.size();i++)
+        {
+            int ref = g_db->delSongFromEveryWhere(resList.at(i).filepath);
+            if(ref == DB_OP_SUCC)
+            {
+                for(int i = 0; i < resList.size(); i++)
+                {
+                    playController::getInstance().removeSongFromCurList(ALLMUSIC, 0);
+                }
+            }
+        }
+    }
+    sideBarWid->playListBtn->click();
+    historyListTable->refreshHistoryTable();
+}
+
 void Widget::initAllComponent()
 {
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
-    this->setObjectName("mainWidget");
+//    this->setObjectName("mainWidget");
 //    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
     //窗体显示在中间
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
@@ -389,14 +463,14 @@ void Widget::initAllComponent()
     this->setLayout(mainHBoxLayout);
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Base);
-    if (WidgetStyle::themeColor == 1)
-    {
-        this->setStyleSheet("{background:#252526;}");
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
-        this->setStyleSheet("{background:#FFFFFF;}");
-    }
+//    if (WidgetStyle::themeColor == 1)
+//    {
+//        this->setStyleSheet("{background:#252526;}");
+//    }
+//    else if(WidgetStyle::themeColor == 0)
+//    {
+//        this->setStyleSheet("{background:#FFFFFF;}");
+//    }
 
     historyListTable = new TableHistory(this);
     MotifWmHints hint;
@@ -448,6 +522,7 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,m_miniWidget,&miniWidget::slotText);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -467,7 +542,6 @@ void Widget::initGSettings()//初始化GSettings
 
         connect(themeData,&QGSettings::changed,this,[=]()
         {
-            qDebug() << "主题颜色" << themeData->get("style-name").toString();
             if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
                 WidgetStyle::themeColor = 1;
                 changeDarkTheme();
@@ -484,7 +558,6 @@ void Widget::initGSettings()//初始化GSettings
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "resizeEvent" << this->width() << this->height() << qApp->primaryScreen()->size();
     historyListTable->resize(320,this->height() - playSongArea->height()+20);
     int x = this->width()-historyListTable->width();
     int max_w = qApp->primaryScreen()->size().width();
@@ -514,11 +587,6 @@ void Widget::keyPressEvent(QKeyEvent *event)
         }
     QWidget::keyPressEvent(event);
 }
-
-//void Widget::mousePressEvent(QResizeEvent *event)
-//{
-//    qDebug() << QCursor::pos();
-//}
 
 void Widget::slotShowMiniWidget()
 {
@@ -618,6 +686,16 @@ void Widget::slotCloseMiniWidget()
     this->close();
 }
 
+void Widget::slotPlayingTitle(QString title)
+{
+    m_playTitle = title;
+}
+
+void Widget::title()
+{
+    qDebug() << "正在播放的歌曲名 ：" << m_playTitle;
+}
+
 //切换深色主题
 void Widget::changeDarkTheme()
 {
@@ -640,7 +718,7 @@ void Widget::changeDarkTheme()
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
     historyListTable->refreshHistoryTable();
-    this->setStyleSheet("#mainWidget{background:#252526;}");
+//    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
 }
@@ -648,7 +726,7 @@ void Widget::changeDarkTheme()
 //切换浅色主题
 void Widget::changeLightTheme()
 {
-    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
+//    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();

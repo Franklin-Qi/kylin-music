@@ -54,7 +54,7 @@ public:
     void showTitleText(QString listName);
 
     void initStyle();
-     void addMusicToDatebase(QStringList fileNames);
+    void addMusicToDatebase(QStringList fileNames);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
@@ -125,6 +125,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event)Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 private:
     QWidget *m_musicWidget;
     QVBoxLayout *m_historyLayout;
@@ -138,6 +139,8 @@ private:
 
     QHeaderView *horizonHeader;
     QWidget *titleWid;
+
+    int showScrollbarNumber = 10;
 };
 
 #endif // TableOne_H
