@@ -696,6 +696,7 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         }
         if(ret == DB_OP_SUCC)
         {
+            qDebug() << "nowListName" << nowListName << date.filepath << ret;
             successCount++;
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
         }
