@@ -42,6 +42,8 @@ public:
     void initTableStyle();
     bool isHightLight = false;
     void refreshHistoryTable();
+    void deleteAllClicked();
+
 public slots:
     void showHistroryPlayList();
 //    void addMusicToHistoryListSlot();
@@ -64,7 +66,6 @@ private:
     QLabel *historyTitileLabel;
     QToolButton *deleteAllBtn;
     QWidget *historyTitileWidget;
-    void deleteAllClicked();
 
     QAction *playRow;
     QAction *removeRow;

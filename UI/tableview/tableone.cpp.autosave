@@ -525,7 +525,6 @@ void TableOne::addToOtherList(QAction *listNameAction)
     int successCount = 0;
     int failCount = 0;
     QString listName = listNameAction->text();
-    qDebug() << listName;
     if(listName == tr("I Love")) {
         listName = FAV;
     }
@@ -534,7 +533,6 @@ void TableOne::addToOtherList(QAction *listNameAction)
     QMap<int,QString>::Iterator it = map1.begin();
     while(it != map1.end())
     {
-        qDebug()<<it.key()<<"\t"<<it.value();
         int ret = g_db->addMusicToPlayList(it.value(),listName);
         if(ret == DB_OP_SUCC)
         {
@@ -696,7 +694,6 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         }
         if(ret == DB_OP_SUCC)
         {
-            qDebug() << "nowListName" << nowListName << date.filepath << ret;
             successCount++;
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
         }

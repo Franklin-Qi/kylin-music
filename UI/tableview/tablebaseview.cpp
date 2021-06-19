@@ -21,18 +21,6 @@ void TableBaseView::initStyle()
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 //    setAutoFillBackground(true);
     setAlternatingRowColors(false);
-
-    this->setStyleSheet("{border:none;}");
-//    if (WidgetStyle::themeColor == 1)
-//    {
-//        this->setStyleSheet("background:#252526;border:none;");
-//    }
-//    else if(WidgetStyle::themeColor == 0)
-//    {
-//        this->setStyleSheet("background:#FFFFFF;border:none;");
-//    }
-//    this->horizontalHeader()->setVisible(false);// 水平不可见
-//    this->verticalHeader()->setVisible(false);// 垂直不可见
     this->setAutoScroll(false);
 //    this->verticalScrollBarPolicy();
 //    this->setAutoFillBackground(false);

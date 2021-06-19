@@ -110,22 +110,19 @@ void playController::setPlaymode(int mode)
 //        m_playlist->setPlaybackMode(MMediaPlaylist::PlaybackMode::CurrentItemOnce);
 //    } else
         m_playlist->setPlaybackMode(static_cast<MMediaPlaylist::PlaybackMode>(mode));
-    qDebug() << "mode" << mode;
-    qDebug() << "m_playlist" << m_playlist->playbackMode();
 }
 
 void playController::curPlaylist()
 {
     // Print Playlist information
-    qDebug() << "Current playlist name:" << m_curList;
     if (m_playlist == nullptr) {
         return;
     }
 
     for (auto i = 0; i < m_playlist->mediaCount(); i++) {
         MMediaContent content = m_playlist->media(i);
-        qDebug() << "   "
-                 << "media[" << i << "] is:" << content.canonicalUrl();
+//        qDebug() << "   "
+//                 << "media[" << i << "] is:" << content.canonicalUrl();
     }
 }
 void playController::setCurPlaylist(QString name, QStringList songPaths)
@@ -136,7 +133,6 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
         return ;
     }
     if (m_playlist == nullptr || m_player == nullptr) {
-        qDebug() << "m_playlist == nullptr || m_player == nullptr";
         return;
     }
     disconnect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
@@ -241,16 +237,6 @@ void playController::removeSongFromCurList(QString name, int index)
     }
 }
 
-//void playController::removeMedia(QString name, int index)
-//{
-//    if (name.compare(m_curList) != 0) {
-//        qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
-//        return;
-//    }
-//    if (m_playlist != nullptr) {
-//        m_playlist->removeMedia(index);
-//    }
-//}
 
 void playController::removeSongFromLocalList(QString name, int index)
 {
@@ -325,7 +311,6 @@ playController::PlayState playController::getState()
 playController::playController()
     : m_curList(""),m_curIndex(-1)
 {
-    qDebug() << "musicPlayer Create..";
     m_player = new MMediaPlayer(this);
     if (m_player == nullptr) {
         qDebug() << "failed to create player ";
@@ -392,7 +377,6 @@ void playController::onNextSong()
     m_playlist->next();
     m_player->play();
     curPlaylist();
-    qDebug() << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << m_curList;
     auto index = m_playlist->currentIndex();
     emit curIndexChanged(index);
 }

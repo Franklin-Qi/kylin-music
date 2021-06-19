@@ -127,14 +127,10 @@ void Widget::onPrepareForSleep(bool isSleep)
 
 void Widget::client_get(QString str)
 {
-    qDebug()<<"MainWindow:"<<str;
     QString key = str.split(":").first();
     QString s = str.split(":").last();
-    qDebug() << "----key----" << key;
-    qDebug() << "----s----" << s;
     if(s == "1")
     {
-        qDebug() << "----s----" << s;
         playController::getInstance().play();
     }
     else if(s == "2" || key == "163")
@@ -415,6 +411,7 @@ void Widget::initMusic()
         }
     }
     sideBarWid->playListBtn->click();
+    historyListTable->refreshHistoryTable();
 }
 
 void Widget::initAllComponent()
@@ -422,7 +419,7 @@ void Widget::initAllComponent()
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
-    this->setObjectName("mainWidget");
+//    this->setObjectName("mainWidget");
 //    this->setWindowIcon(QIcon(":/img/kylin-music.png"));
     //窗体显示在中间
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
@@ -466,14 +463,14 @@ void Widget::initAllComponent()
     this->setLayout(mainHBoxLayout);
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Base);
-    if (WidgetStyle::themeColor == 1)
-    {
-        this->setStyleSheet("{background:#252526;}");
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
-        this->setStyleSheet("{background:#FFFFFF;}");
-    }
+//    if (WidgetStyle::themeColor == 1)
+//    {
+//        this->setStyleSheet("{background:#252526;}");
+//    }
+//    else if(WidgetStyle::themeColor == 0)
+//    {
+//        this->setStyleSheet("{background:#FFFFFF;}");
+//    }
 
     historyListTable = new TableHistory(this);
     MotifWmHints hint;
@@ -545,7 +542,6 @@ void Widget::initGSettings()//初始化GSettings
 
         connect(themeData,&QGSettings::changed,this,[=]()
         {
-            qDebug() << "主题颜色" << themeData->get("style-name").toString();
             if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
                 WidgetStyle::themeColor = 1;
                 changeDarkTheme();
@@ -562,7 +558,6 @@ void Widget::initGSettings()//初始化GSettings
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "resizeEvent" << this->width() << this->height() << qApp->primaryScreen()->size();
     historyListTable->resize(320,this->height() - playSongArea->height()+20);
     int x = this->width()-historyListTable->width();
     int max_w = qApp->primaryScreen()->size().width();
@@ -592,11 +587,6 @@ void Widget::keyPressEvent(QKeyEvent *event)
         }
     QWidget::keyPressEvent(event);
 }
-
-//void Widget::mousePressEvent(QResizeEvent *event)
-//{
-//    qDebug() << QCursor::pos();
-//}
 
 void Widget::slotShowMiniWidget()
 {
@@ -728,7 +718,7 @@ void Widget::changeDarkTheme()
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
     historyListTable->refreshHistoryTable();
-    this->setStyleSheet("#mainWidget{background:#252526;}");
+//    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
 }
@@ -736,7 +726,7 @@ void Widget::changeDarkTheme()
 //切换浅色主题
 void Widget::changeLightTheme()
 {
-    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
+//    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();

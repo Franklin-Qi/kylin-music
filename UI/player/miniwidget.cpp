@@ -237,8 +237,8 @@ void miniWidget::init_miniWidget()
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
 
-    m_HMainLayout = new QHBoxLayout(this);
-    m_hLayout = new QHBoxLayout(this);
+    m_HMainLayout = new QHBoxLayout();
+    m_hLayout = new QHBoxLayout();
 
     m_mainFrame = new QFrame;
     m_mainFrame->setFixedSize(300,60);

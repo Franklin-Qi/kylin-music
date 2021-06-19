@@ -109,10 +109,14 @@ void PlaySongArea::initWidget()
 
     //历史播放列表
     listBtn = new QPushButton;
-    listBtn->setFixedSize(16,16);
+    listBtn->setFixedSize(25,25);
     listBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
+    listBtn->setIcon(QIcon::fromTheme("ukui-play-list-symbolic"));
+    listBtn->setProperty("isWindowButton", 0x1);
+    listBtn->setProperty("useIconHighlightEffect", 0x2);
+    listBtn->setFlat(true);
     listBtn->setToolTip(tr("Play List"));
 
     coverPhotoLabel = new QLabel(this);
@@ -294,7 +298,6 @@ void PlaySongArea::slotText(QString btnText)
 
 void PlaySongArea::slotFav()
 {
-    qDebug() << "我喜欢按钮要添加的路径" << filePath;
     if(g_db->checkSongIsInFav(filePath))
     {
         QList<musicDataStruct> resList;
@@ -302,9 +305,7 @@ void PlaySongArea::slotFav()
         int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
         if(ref == DB_OP_SUCC)
         {
-            qDebug() << "添加歌曲路径" << filePath;
 //            emit signalAddFromFavButton("我喜欢");
-            qDebug() << "从我喜欢删除";
             //根据歌单名title值查询对应歌单列表
 //            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
             if(ret == DB_OP_SUCC)
@@ -331,7 +332,6 @@ void PlaySongArea::slotFav()
         if(ref == DB_OP_SUCC)
         {
             playController::getInstance().addSongToCurList("我喜欢", filePath);
-            qDebug() << "删除歌曲路径" << filePath;
 //            emit signalDelFromFavButton("我喜欢");
             if(listName == "我喜欢")
             {
@@ -430,8 +430,6 @@ void PlaySongArea::setPlayMode(int playModel)
 
 void PlaySongArea::slotSongInfo(QString path)
 {
-    qDebug() << "playsongarea :::: path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
-
     filePath = path.remove("file://");
     musicDataStruct musicStruct;
     g_db->getSongInfoFromDB(filePath, musicStruct);
@@ -449,7 +447,6 @@ void PlaySongArea::slotSongInfo(QString path)
         emit signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
-    qDebug() << "playsongarea slot SongInfo 运行成功";
 }
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)
@@ -542,7 +539,6 @@ void PlaySongArea::resizeEvent(QResizeEvent *event)
 {
     moveVolSliderWid();
     movePlayModeWid();
-    qDebug() << "play width" << this->width();
     playingLabel->setFixedWidth(this->width()/3.6);
     QWidget::resizeEvent(event);
 }
@@ -625,7 +621,6 @@ void PlaySongArea::slotNext()
 void PlaySongArea::listBtnClicked()
 {
     emit showHistoryListBtnClicked();
-    qDebug() << "void PlaySongArea::listBtnClicked()";
 }
 
 void PlaySongArea::slotFavExixts()
@@ -690,12 +685,10 @@ void PlaySongArea::slotFavExixtsDark()
 
 void PlaySongArea::slotFavIsExixts(QString filePath)
 {
-    qDebug() << "---------- filePath -------- " << filePath;
     if(WidgetStyle::themeColor == 1)
     {
         if(g_db->checkSongIsInFav(filePath))
         {
-            qDebug() << playingLabel->text();
             if(playingLabel->text() == tr("Music Player"))
             {
                 return;
@@ -714,7 +707,6 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
     {
         if(g_db->checkSongIsInFav(filePath))
         {
-            qDebug() << playingLabel->text();
             if(playingLabel->text() == tr("Music Player"))
             {
                 return;
@@ -737,7 +729,6 @@ void PlaySongArea::slotFavBtnChange(QString filePath)
     {
         if(g_db->checkSongIsInFav(filePath))
         {
-            qDebug() << playingLabel->text();
             if(playingLabel->text() == tr("Music Player"))
             {
                 return;
@@ -756,7 +747,6 @@ void PlaySongArea::slotFavBtnChange(QString filePath)
     {
         if(g_db->checkSongIsInFav(filePath))
         {
-            qDebug() << playingLabel->text();
             if(playingLabel->text() == tr("Music Player"))
             {
                 return;
@@ -814,7 +804,7 @@ void PlaySongArea::playcolor()
 //                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
         slotFavExixtsDark();
 
-        listBtn->setIcon(QIcon(":/img/dark/icon_songlist_h@2x.png"));
+//        listBtn->setIcon(QIcon(":/img/dark/icon_songlist_h@2x.png"));
 //        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/dark/icon_songlist_h@2x.png);}"
 //                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
 //                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
@@ -864,9 +854,9 @@ void PlaySongArea::playcolor()
 //                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
         slotFavExixts();
 
-        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/default/songlist.png)}"
-                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
-                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
+//        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/default/songlist.png)}"
+//                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
+//                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
