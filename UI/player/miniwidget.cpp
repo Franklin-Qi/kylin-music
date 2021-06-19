@@ -264,11 +264,12 @@ void miniWidget::init_miniWidget()
     m_timeLab->setText(tr("00:00/00:00"));
     m_timeLab->setAlignment(Qt::AlignLeft);
 
-    m_vInfoLayout->setMargin(3);
-    m_vInfoLayout->setSpacing(3);
+//    m_vInfoLayout->setMargin(3);
+//    m_vInfoLayout->setSpacing(3);
     m_vInfoLayout->addWidget(m_songNameLab);
-    m_vInfoLayout->addSpacing(8);
+//    m_vInfoLayout->addSpacing(8);
     m_vInfoLayout->addWidget(m_timeLab);
+//    m_vInfoLayout->setAlignment(Qt::AlignVCenter);
 
     /******************************************/
     m_palyFrame = new QFrame;
@@ -616,12 +617,7 @@ void miniWidget::slotPlayModeClicked()
     case 2:
         ++playMode;
         break;
-
-    case 3:
-        ++playMode;
-        break;
-
-   case 4:
+   case 3:
         playMode = 1;
     default:
         break;
@@ -638,16 +634,11 @@ void miniWidget::setPlayMode(int playModel)
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 2:
-        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
-        m_orderBtn->setToolTip(tr("Sequential"));
-        playController::getInstance().setPlaymode(playController::Sequential);
-        break;
-    case 3:
         m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
         m_orderBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
-    case 4:
+    case 3:
         m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
         m_orderBtn->setToolTip(tr("Random"));
         playController::getInstance().setPlaymode(playController::Random);

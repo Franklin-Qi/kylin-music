@@ -13,9 +13,9 @@ PlayBackModeWidget::PlayBackModeWidget(QWidget *parent) : QDialog(parent)
 
 void PlayBackModeWidget::initWidget()
 {
-    setFixedSize(118,120);
+    setFixedSize(118,90);
     QVBoxLayout *vLayout = new QVBoxLayout;
-
+    vLayout->setAlignment(Qt::AlignTop);
     QHBoxLayout *loopLayout = new QHBoxLayout();
     loopBtn = new QToolButton(this);
     loopBtn->setFixedSize(118,30);
@@ -48,6 +48,7 @@ void PlayBackModeWidget::initWidget()
 
     QHBoxLayout *sequentialLayout = new QHBoxLayout();
     sequentialBtn = new QToolButton(this);
+    sequentialBtn->hide();
     sequentialBtn->setFixedSize(118,30);
     sequentialBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     sequentialBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
@@ -78,7 +79,7 @@ void PlayBackModeWidget::initWidget()
 
     vLayout->addLayout(loopLayout,Qt::AlignTop);
     vLayout->addLayout(randomLayout,Qt::AlignVCenter);
-    vLayout->addLayout(sequentialLayout,Qt::AlignVCenter);
+//    vLayout->addLayout(sequentialLayout,Qt::AlignVCenter);
     vLayout->addLayout(currentItemInLoopLayout,Qt::AlignBottom);
     vLayout->setMargin(0);
     vLayout->setSpacing(0);

@@ -233,12 +233,12 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         title();
         return 0;
     }
-    if(cmd1=="-S"||cmd1=="-Sequential")
-    {
-        //------顺序播放------
-        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::Sequential);
-        return 0;
-    }
+//    if(cmd1=="-S"||cmd1=="-Sequential")
+//    {
+//        //------顺序播放------
+//        playController::getInstance().getPlaylist()->setPlaybackMode(MMediaPlaylist::Sequential);
+//        return 0;
+//    }
     if(cmd1=="-C"||cmd1=="-CurrentItemInLoop")
     {
         //------单曲循环------
