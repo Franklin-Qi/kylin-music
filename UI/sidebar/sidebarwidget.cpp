@@ -223,7 +223,6 @@ void SideBarWidget::getPlayListName()
     int ret = g_db->getPlayList(playListName);
     if(ret != DB_OP_SUCC)
     {
-        qDebug() << playListName;
         qDebug() << "获取歌单名信息失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return;
     }
@@ -252,6 +251,16 @@ void SideBarWidget::getPlayListName()
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
         connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnCliced);
+
+        QString name = playController::getInstance().getPlayListName();
+        if(listName == name )
+        {
+            m_lastBtn = newBtn;
+        }
+    }
+    if(m_lastBtn != nullptr)
+    {
+        m_lastBtn->clicked();
     }
 }
 
@@ -422,7 +431,6 @@ void SideBarWidget::removePlayList(QString text)
              {
                  for(int i = 0; i < musicDateList.size(); i++)
                  {
-                     qDebug() << "musicDateList.size()" << musicDateList.size();
                      playController::getInstance().removeSongFromCurList(text, 0);
                  }
              }

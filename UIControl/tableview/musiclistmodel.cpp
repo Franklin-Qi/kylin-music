@@ -172,7 +172,6 @@ QStringList MusicListModel::getPathList(QString listName)
     foreach (const musicDataStruct date, musicInfoList) {
         pathList.append(date.filepath);
     }
-    qDebug() <<  "getPathList成功！" << pathList;
     return pathList;
 }
 

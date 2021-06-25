@@ -123,6 +123,8 @@ public:
     int getSongInfoListFromDB(QList<musicDataStruct>& resList,const QString& playListName);
     //检查歌曲是是我喜欢的歌曲
     bool checkSongIsInFav(const QString& filePath);
+    //检查歌单列表是否存在
+    int checkPlayListExist(const QString& playListName);
 
 protected:
     explicit MusicDataBase(QObject *parent = nullptr);
@@ -144,8 +146,8 @@ private:
     int checkIfSongExistsInHistoryMusic(const QString& filePath);
     //检查歌曲是否在我喜欢中存在
     int checkIfSongExistsInFavorMusic(const QString& filePath);
-    //检查歌单列表是否存在
-    int checkPlayListExist(const QString& playListName);
+//    //检查歌单列表是否存在
+//    int checkPlayListExist(const QString& playListName);
     //检查歌曲是否在歌单列表中存在
     int checkIfSongExistsInPlayList(const QString& filePath, const QString& playListName);
     //获取歌曲在歌曲总表中的index

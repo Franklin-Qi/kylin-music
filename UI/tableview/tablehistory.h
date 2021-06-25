@@ -29,7 +29,7 @@
 #include "UIControl/player/player.h"
 #include "UI/base/widgetstyle.h"
 
-class TableHistory : public QWidget
+class TableHistory : public QDialog
 {
     Q_OBJECT
 public:
@@ -43,14 +43,17 @@ public:
     bool isHightLight = false;
     void refreshHistoryTable();
     void deleteAllClicked();
-
+    void changePlayHistoryPos(int posX, int posY, int width, int height);
 public slots:
     void showHistroryPlayList();
 //    void addMusicToHistoryListSlot();
     void slotPlayIndexChanged(int index, QString listname);
     void slotPlayPathChanged(QString songPath);
+protected:
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result)override;
 signals:
     void signalHistoryPlaying();
+    void signalHistoryBtnChecked(bool checked);
 private slots:
     void playSongs();
     void deleteSongs();
@@ -80,7 +83,11 @@ private:
     QLabel *nullIconLabel;
     QLabel *nullTextLabel;
     QHeaderView *horizonHeader;
-
+private:
+    int playHistoryPosX;
+    int playHistoryPosY;
+    int playHistoryPosWidth;
+    int playHistoryPosHeight;
 };
 
 #endif // TABLEHISTORY_H

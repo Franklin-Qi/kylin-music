@@ -9,7 +9,6 @@ MMediaPlaylist::MMediaPlaylist(QObject *parent)
 QString MMediaPlaylist::getPlayFileName()
 {
     if (m_playerList.isEmpty()) {
-        qDebug()<<"播放列表为空";
         return "";
     }
     if (m_index >= m_playerList.length()) {

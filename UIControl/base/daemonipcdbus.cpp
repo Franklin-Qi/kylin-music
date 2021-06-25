@@ -40,7 +40,6 @@ void DaemonIpcDbus::showGuide(QString appName)
     memset(service_name, 0, SERVICE_NAME_SIZE);
     snprintf(service_name, SERVICE_NAME_SIZE, "%s_%d",KYLIN_USER_GUIDE_SERVICE,getuid());
 
-    qDebug() << "service_name  " << service_name;
     // 用来构造一个在D-Bus上传递的Message
     QDBusMessage m = QDBusMessage::createMethodCall(QString(service_name),KYLIN_USER_GUIDE_PATH,KYLIN_USER_GUIDE_INTERFACE,"showGuide");
     // 给QDBusMessage增加一个参数;
@@ -58,6 +57,4 @@ void DaemonIpcDbus::showGuide(QString appName)
     else {
         qDebug()<<"showGuide In fail!\n";
     }
-
-    qDebug()<<"bRet:"<<bRet;
 }
