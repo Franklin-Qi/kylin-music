@@ -1,7 +1,7 @@
 #include "tablehistory.h"
 #include "UI/mainwidget.h"
 
-TableHistory::TableHistory(QWidget *parent) : QWidget(parent)
+TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 {
     initSetModel();
     initStyle();
@@ -148,6 +148,33 @@ void TableHistory::slotPlayPathChanged(QString songPath)
     }
 }
 
+bool TableHistory::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    Q_UNUSED(result);
+    if(eventType != "xcb_generic_event_t")
+    {
+        return false;
+    }
+
+    xcb_generic_event_t *event = (xcb_generic_event_t*)message;
+    switch (event->response_type & ~0x80)
+    {
+        case XCB_FOCUS_OUT:
+            QRect rect(playHistoryPosX, playHistoryPosY, -playHistoryPosWidth, playHistoryPosHeight);
+            if(rect.contains(QCursor::pos(), false))
+            {
+                return 0;
+            }
+            else
+            {
+                this->hide();
+                emit signalHistoryBtnChecked(false);
+                break;
+            }
+    }
+    return false;
+}
+
 void TableHistory::initTableStyle()
 {
     m_tableHistory->hideColumn(2);
@@ -175,13 +202,17 @@ void TableHistory::initConnect()
 }
 void TableHistory::showHistroryPlayList()
 {
-    if(this->isHidden())
+    if(this->isVisible())
     {
-        this->show();
+        this->hide();
+        signalHistoryBtnChecked(false);
     }
     else
     {
-        this->hide();
+        Widget::mutual->movePlayHistoryWid();
+        this->show();
+        signalHistoryBtnChecked(true);
+        this->raise();
     }
     m_tableHistory->setAlternatingRowColors(false);
 }
@@ -263,6 +294,14 @@ void TableHistory::deleteSongs()
 void TableHistory::playNextRowClicked()
 {
 
+}
+
+void TableHistory::changePlayHistoryPos(int posX, int posY, int width, int height)
+{
+    playHistoryPosX = posX;
+    playHistoryPosY = posY;
+    playHistoryPosWidth = width;
+    playHistoryPosHeight = height;
 }
 
 void TableHistory::setHighlight(int index)

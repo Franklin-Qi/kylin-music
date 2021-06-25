@@ -130,7 +130,7 @@ void MyToolButton::requestCustomContextMenu(const QPoint &pos)
 
     QString text = this->text();
     QString btnText = text;
-//    qDebug()<< btnText <<__FILE__<< "," <<__FUNCTION__<< "," <<__LINE__;
+
     connect(menu,&QMenu::triggered,this,[ = ](QAction * action)
     {
 

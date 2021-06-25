@@ -75,6 +75,8 @@ private:
     QLabel *myPlayListLabel;
     //获取歌单名
     QString btnText;
+    //保存程序关闭之前歌单按钮
+    MyToolButton *m_lastBtn = nullptr;
 };
 
 #endif // SIDEBARWIDGET_H

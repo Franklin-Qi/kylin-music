@@ -411,8 +411,6 @@ void miniWidget::playerStateChange(playController::PlayState newState)
 
 void miniWidget::slotSongInfo(QString path)
 {
-    qDebug() << "path" << path << __FILE__ << "," << __FUNCTION__ << "," << __LINE__;
-
     filePath = path.remove("file://");
     slotFavExixts();
 }
@@ -424,7 +422,6 @@ void miniWidget::slotText(QString btnText)
 
 void miniWidget::slotFav()
 {
-    qDebug() << "miniWidget  我喜欢按钮要添加的路径" << filePath;
     if(g_db->checkSongIsInFav(filePath))
     {
         QList<musicDataStruct> resList;
@@ -436,7 +433,6 @@ void miniWidget::slotFav()
 //            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
             if(ret == DB_OP_SUCC)
             {
-                qDebug() << "resList.size()" << resList.size();
                 for(int i = 0; i < resList.size(); i++)
                 {
                     if(resList.at(i).filepath == filePath)

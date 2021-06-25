@@ -20,6 +20,16 @@
              <summary>volume</summary>
              <description>volume</description>
          </key>
+         <key name="playlistname" type="s" >
+             <default>""</default>
+             <summary>playListName</summary>
+             <description>playListName</description>
+         </key>
+         <key name="path" type="s" >
+             <default>""</default>
+             <summary>path</summary>
+             <description>path</description>
+         </key>
 
      </schema>
 </schemalist>

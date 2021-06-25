@@ -129,8 +129,8 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
     if (m_curList.compare(name)==0)
     {
-        qDebug() << "setCurPlaylist m_curList.compare(name)==0";
-        return ;
+        qDebug() << "setCurPlaylist m_curList.compare(name)==0" << m_curList << name;
+//        return ;
     }
     if (m_playlist == nullptr || m_player == nullptr) {
         return;
@@ -335,6 +335,9 @@ void playController::init()
     volumeSetting = new QGSettings(KYLINMUSIC);
     m_volume = volumeSetting->get("volume").toInt();
     m_player->setVolume(m_volume);
+    playSetting = new QGSettings(KYLINMUSIC);
+    m_playListName = playSetting->get("playlistname").toString();
+    m_curList = m_playListName;
 }
 
 int playController::getVolume()
@@ -449,6 +452,9 @@ void playController::slotIndexChange(int index)
         emit signalNotPlaying();
         //当index == -1时，会调用positionChanged导致时长显示错误
         emit singalChangePath("");
+        m_path = "";
+        playSetting->set("playlistname", m_curList);
+        playSetting->set("path", "");
         return;
     }
     m_curIndex = index;
@@ -460,6 +466,9 @@ void playController::slotIndexChange(int index)
         x = 0;
         emit currentIndexAndCurrentList(index,m_curList);
         emit singalChangePath(path);
+        m_path = path;
+        playSetting->set("playlistname", m_curList);
+        playSetting->set("path", path);
     }
     else
     {
@@ -478,4 +487,14 @@ void playController::setPosition(int position)
 {
     if (qAbs(m_player->position() - position) > 99)
        m_player->setPosition(position);
+}
+
+QString playController::getPlayListName()
+{
+    return playSetting->get("playlistname").toString();
+}
+
+QString playController::getPath()
+{
+    return playSetting->get("path").toString();
 }

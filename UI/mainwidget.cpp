@@ -116,7 +116,6 @@ void Widget::onPrepareForSleep(bool isSleep)
     //990
     //空指针检验
     //------此处空指针校验（如果用了指针）------
-    qDebug() << "----睡眠";
     //系统事件
     if(isSleep)
     {
@@ -427,7 +426,7 @@ void Widget::initAllComponent()
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
-    musicListTable = new TableOne(ALLMUSIC,this);
+    musicListTable = new TableOne(playController::getInstance().getPlayListName(),this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
 
@@ -485,6 +484,7 @@ void Widget::allConnect()
 {
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
+    connect(historyListTable,&TableHistory::signalHistoryBtnChecked,playSongArea,&PlaySongArea::slotHistoryBtnChecked);
 //    connect(musicListTable,&TableOne::addMusicToHistoryListSignal,historyListTable,&TableHistory::addMusicToHistoryListSlot);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
     connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
@@ -558,12 +558,10 @@ void Widget::initGSettings()//初始化GSettings
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
-    historyListTable->resize(320,this->height() - playSongArea->height()+20);
-    int x = this->width()-historyListTable->width();
     int max_w = qApp->primaryScreen()->size().width();
     int max_h = qApp->primaryScreen()->size().height()-46;
-//    int y = this->height()-playSongArea->height()-historyListTable->height();
-    historyListTable->move(x,2);
+
+    movePlayHistoryWid();
     if(this->width() >= max_w && this->height()>= max_h)
     {
         m_titleBar->maximumBtn->setIcon(QIcon::fromTheme("window-restore-symbolic"));
@@ -577,6 +575,21 @@ void Widget::resizeEvent(QResizeEvent *event)
         m_titleBar->maximumBtn->setToolTip(tr("maximize"));
     }
     QWidget::resizeEvent(event);
+}
+
+void Widget::movePlayHistoryWid()
+{
+    historyListTable->setFixedSize(320,this->height() - playSongArea->height());
+
+    QPoint historyPos = playSongArea->listBtn->mapToGlobal(playSongArea->listBtn->rect().topRight());
+    QSize size = historyListTable->size();
+    historyPos.setX(historyPos.x() + 8 - size.width());
+    historyPos.setY(historyPos.y() - 30 - size.height());
+    QSize historySize = playSongArea->listBtn->size();
+    int newPosX = historyPos.x() - 8 + size.width();
+    int newPosY = historyPos.y() + 30 + size.height();
+    historyListTable->changePlayHistoryPos(newPosX, newPosY, historySize.width(), historySize.height());
+    historyListTable->move(historyPos);
 }
 
 //键盘F1响应唤出用户手册

@@ -80,6 +80,10 @@ public:
     int getVolume();
     //设置音量
     void setVolume(int volume);
+    //获取歌单名
+    QString getPlayListName();
+    //获取歌曲路径
+    QString getPath();
 signals:
     void curPositionChanged(qint64);
     void curDurationChanged(qint64);
@@ -119,6 +123,9 @@ private:
     //在列表里歌曲（判断本地歌曲是否存在）没有播放的情况下，当前函数掉了多少次，要是歌曲在播放（找到本地路径存在，x重新计数
     int x = 0;
     int m_volume = 50;
+    QGSettings *playSetting = nullptr;
+    QString m_playListName;
+    QString m_path;
 };
 
 #endif // PLAYER_H

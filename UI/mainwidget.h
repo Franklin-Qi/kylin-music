@@ -41,6 +41,8 @@ class Widget : public QWidget
 public:
     Widget(QStringList str, QWidget *parent = nullptr);
     ~Widget();
+    //计算播放历史
+    void movePlayHistoryWid();
 public:
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
@@ -93,6 +95,7 @@ private:
     void getState();
     //初始化音乐
     void initMusic();
+
 private:
     QVBoxLayout *mainVBoxLayout;
     QHBoxLayout *mainHBoxLayout;

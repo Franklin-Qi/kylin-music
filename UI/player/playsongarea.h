@@ -34,6 +34,8 @@ public:
 public:
       SliderWidget *m_volSliderWid;
       PlayBackModeWidget *m_playBackModeWid;
+      //播放列表
+      QPushButton *listBtn;
 signals:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
@@ -96,6 +98,9 @@ public slots:
 
     //没有歌曲在播放
     void slotNotPlaying();
+
+    //播放历史按钮选中状态改变
+    void slotHistoryBtnChecked(bool checked);
 protected:
     void resizeEvent(QResizeEvent *event)override;
 private:
@@ -107,6 +112,7 @@ private:
     void movePlayModeWid();
 
     void listBtnClicked();
+    void playMeta();
 private:
 
     QHBoxLayout *m_mainLayout;
@@ -124,8 +130,7 @@ private:
     QPushButton *playModeBtn;
     //歌词
     QPushButton *lyricBtn;
-    //播放列表
-    QPushButton *listBtn;
+
     //封面
     QLabel *coverPhotoLabel;
     //正在播放

@@ -88,6 +88,7 @@ void PlaySongArea::initWidget()
     m_playBackModeWid->hide();
 
     hSlider = new MusicSlider(this);
+    hSlider->setValue(0);
     hSlider->setDisabled(true);
     favBtn = new QPushButton;
     favBtn->setFixedSize(16,16);
@@ -124,10 +125,22 @@ void PlaySongArea::initWidget()
 
     playingLabel = new MyLabel(this);
     playingLabel->setFixedHeight(20);
-    playingLabel->setText(tr("Music Player"));
+//    playingLabel->setText(tr("Music Player"));
 
     timeLabel = new QLabel(this);
-    timeLabel->setText(tr("00:00/00:00"));
+//    timeLabel->setText(tr("00:00/00:00"));
+
+    QString playPath = playController::getInstance().getPath();
+    if(playPath != "")
+    {
+        slotSongInfo(playPath);
+        slotPositionChanged(0);
+    }
+    else
+    {
+        playingLabel->setText(tr("Music Player"));
+        timeLabel->setText(tr("00:00/00:00"));
+    }
 
     QWidget *letfWid = new QWidget(this);
     QWidget *centreWid = new QWidget(this);
@@ -508,6 +521,8 @@ void PlaySongArea::slotNotPlaying()
     timeLabel->setText("00:00/00:00");
 }
 
+
+
 void PlaySongArea::slotDurationChanged(qint64 duration)
 {
     hSlider->setRange(0,static_cast<int>(duration));
@@ -573,11 +588,53 @@ void PlaySongArea::movePlayModeWid()
 
 void PlaySongArea::slotPlayClicked()
 {
-    if(playingLabel->text() == tr("Music Player"))
+    if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
+    {
+        playController::getInstance().getPlayer()->pause();
+    }
+    else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PausedState)
+    {
+        playController::getInstance().getPlayer()->play();
+    }
+    else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::StoppedState)
+    {
+        playMeta();
+    }
+}
+
+void PlaySongArea::playMeta()
+{
+    QString playListName = playController::getInstance().getPlayListName();
+    QString playPath = playController::getInstance().getPath();
+    QList<musicDataStruct> resList;
+    QStringList filePaths;
+    int index;
+    int ret = g_db->getSongInfoListFromDB(resList, playListName);
+    if(playPath != "")
+    {
+        if(ret == DB_OP_SUCC)
+        {
+            if(resList.size() == 0)
+            {
+                return;
+            }
+            for(int i = 0; i < resList.size(); i++)
+            {
+                filePaths << resList.at(i).filepath;
+                if(resList.at(i).filepath == playPath)
+                {
+                    index = i;
+                }
+            }
+            playController::getInstance().setCurPlaylist(playListName, filePaths);
+            playController::getInstance().play(playListName, index);
+        }
+    }
+    else
     {
         QList<musicDataStruct> resList;
-        int ret = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
-        if(ret == DB_OP_SUCC)
+        int ref = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
+        if(ref == DB_OP_SUCC)
         {
             if(resList.size() == 0)
             {
@@ -593,17 +650,6 @@ void PlaySongArea::slotPlayClicked()
                 playController::getInstance().setCurPlaylist(ALLMUSIC,paths);
                 playController::getInstance().play(ALLMUSIC,0);
             }
-        }
-    }
-    else
-    {
-        if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
-        {
-            playController::getInstance().getPlayer()->pause();
-        }
-        else
-        {
-            playController::getInstance().getPlayer()->play();
         }
     }
 }
@@ -682,7 +728,10 @@ void PlaySongArea::slotFavExixtsDark()
     }
     emit signalFavBtnChange(filePath);
 }
-
+void PlaySongArea::slotHistoryBtnChecked(bool checked)
+{
+    listBtn->setChecked(checked);
+}
 void PlaySongArea::slotFavIsExixts(QString filePath)
 {
     if(WidgetStyle::themeColor == 1)
