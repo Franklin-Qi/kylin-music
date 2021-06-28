@@ -421,11 +421,11 @@ void PlaySongArea::setPlayMode(int playModel)
         playModeBtn->setToolTip(tr("CurrentItemInLoop"));
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
-    case 2:
-        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
-        playModeBtn->setToolTip(tr("Sequential"));
-        playController::getInstance().setPlaymode(playController::Sequential);
-        break;
+//    case 2:
+//        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
+//        playModeBtn->setToolTip(tr("Sequential"));
+//        playController::getInstance().setPlaymode(playController::Sequential);
+//        break;
     case 3:
         playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
         playModeBtn->setToolTip(tr("Loop"));

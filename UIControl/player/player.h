@@ -125,7 +125,6 @@ private:
     int m_volume = 50;
     QGSettings *playSetting = nullptr;
     QString m_playListName;
-    QString m_path;
 };
 
 #endif // PLAYER_H
