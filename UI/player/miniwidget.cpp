@@ -605,15 +605,17 @@ void miniWidget::slotTimeLab(QString time)
 void miniWidget::slotPlayModeClicked()
 {
     int playMode = playController::getInstance().playmode();
+    qDebug() << "playMode" << playMode;
     switch (playMode)
     {
     case 1:
         ++playMode;
-        break;
-    case 2:
         ++playMode;
         break;
-   case 3:
+    case 3:
+        ++playMode;
+        break;
+   case 4:
         playMode = 1;
     default:
         break;
@@ -629,12 +631,12 @@ void miniWidget::setPlayMode(int playModel)
         m_orderBtn->setToolTip(tr("CurrentItemInLoop"));
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
-    case 2:
+    case 3:
         m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
         m_orderBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
-    case 3:
+    case 4:
         m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
         m_orderBtn->setToolTip(tr("Random"));
         playController::getInstance().setPlaymode(playController::Random);

@@ -452,7 +452,6 @@ void playController::slotIndexChange(int index)
         emit signalNotPlaying();
         //当index == -1时，会调用positionChanged导致时长显示错误
         emit singalChangePath("");
-        m_path = "";
         playSetting->set("playlistname", m_curList);
         playSetting->set("path", "");
         return;
@@ -466,7 +465,6 @@ void playController::slotIndexChange(int index)
         x = 0;
         emit currentIndexAndCurrentList(index,m_curList);
         emit singalChangePath(path);
-        m_path = path;
         playSetting->set("playlistname", m_curList);
         playSetting->set("path", path);
     }

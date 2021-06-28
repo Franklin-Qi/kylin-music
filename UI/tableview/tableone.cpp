@@ -319,7 +319,7 @@ void TableOne::initRightMenu()
 void TableOne::showRightMenu(const QPoint &pos)
 {
     QModelIndex index = tableView->indexAt(pos);
-    if(index.isValid())
+    if(index.row() < 0)
     {
         return;
     }
@@ -588,7 +588,7 @@ void TableOne::addMusicSlot()
         fileDialog->setSidebarUrls(list);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
-    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4p *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid)");
+    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4p *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac)");
     //设置视图模式
     fileDialog->setViewMode(QFileDialog::Detail);
     //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
@@ -646,7 +646,7 @@ void TableOne::addDirMusicSlot()
         });
 
     //自己QFileDialog的用法，这里只是列子
-//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac *.mid"));
+//    fileDialog->setNameFilter(QLatin1String("*.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac"));
 
     fileDialog->setSidebarUrls(list + mntUrlList);
 
@@ -659,7 +659,7 @@ void TableOne::addDirMusicSlot()
     foreach (QString dirPath, m_fileNames) {
         QDir dir(dirPath);
         QStringList nameFilters;
-        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac" << "*.mid";
+        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
         QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
         for(int i = 0; i < fileNames.count(); i++)
         {

@@ -45,7 +45,7 @@ private:
     PlaybackMode m_playbackMode = Loop;
 signals:
     void currentIndexChanged(int);
-    void playbackModeChanged(PlaybackMode);
+    void playbackModeChanged(MMediaPlaylist::PlaybackMode mode);
     void autoPlay(MMediaPlaylist::PlaybackMode playbackMode);
     void stop();
 };
