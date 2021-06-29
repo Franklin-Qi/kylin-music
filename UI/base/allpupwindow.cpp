@@ -79,8 +79,9 @@ void AllPupWindow::inpupdialog()
 
     stackWid->setFixedSize(392,32);
 //    confirmBtn->setText("确认");
-    confirmBtn->setText(tr("confirm"));
+    confirmBtn->setText(tr("Confirm"));
     confirmBtn->setFixedSize(64,30);
+    confirmBtn->setProperty("isImportant", true);
 //    cancelBtn->setText("取消");
     cancelBtn->setText(tr("Cancel"));
     cancelBtn->setFixedSize(64,30);
@@ -102,6 +103,8 @@ void AllPupWindow::inpupdialog()
 
     pupDialog->setLayout(testLayout);
     pupDialog->setContentsMargins(10, 0, 10, 0);
+    pupDialog->setAutoFillBackground(true);
+    pupDialog->setBackgroundRole(QPalette::Base);
 
 //    connect(addSongListBtn, SIGNAL(clicked(bool)), this, SLOT(addSongList()));
     connect(closeBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
@@ -123,18 +126,18 @@ void AllPupWindow::dlgcolor()
     {
 //        cancelBtn->setStyleSheet("PushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
 //                                 "QPushButton::hover{background:#4D4D4D;}");
-        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
-                                 "QPushButton::hover{background:#4D4D4D;}");
+//        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
+//                                 "QPushButton::hover{background:#4D4D4D;}");
 
-        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;\
-                                     border: 1px solid #606265;color:#F9F9F9;background:#3D3D41;");
+//        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;\
+//                                     border: 1px solid #606265;color:#F9F9F9;background:#3D3D41;");
 
-        pupDialog->setStyleSheet("background-color:#3D3D41;");
+//        pupDialog->setStyleSheet("background-color:#3D3D41;");
 
-        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
-                                  "QPushButton::hover{background:#40A9FB;}"
-                                  "QPushButton::pressed{background:#296CD9;}"
-                                  );
+//        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
+//                                  "QPushButton::hover{background:#40A9FB;}"
+//                                  "QPushButton::pressed{background:#296CD9;}"
+//                                  );
 
         titleLab->setStyleSheet("width:80px;height:14px;\
                                 font-weight: 600;\
@@ -144,17 +147,17 @@ void AllPupWindow::dlgcolor()
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#8F9399;}"
-                                 "QPushButton::hover{background:#F2F6FD;}");
+//        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#8F9399;}"
+//                                 "QPushButton::hover{background:#F2F6FD;}");
 
-        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;border:1px solid #DDDFE7;");
+//        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;border:1px solid #DDDFE7;");
 
-        pupDialog->setStyleSheet("background-color:#FFFFFF;");
+//        pupDialog->setStyleSheet("background-color:#FFFFFF;");
 
-        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
-                                  "QPushButton::hover{background:#40A9FB;}"
-                                  "QPushButton::pressed{background:#296CD9;}"
-                                  );
+//        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
+//                                  "QPushButton::hover{background:#40A9FB;}"
+//                                  "QPushButton::pressed{background:#296CD9;}"
+//                                  );
 
         titleLab->setStyleSheet("width:80px;height:14px;\
                                 font-weight: 600;\
@@ -212,18 +215,19 @@ void MusicInfoDialog::initStyle()
 
     btnWidget->setLayout(buttonLayout);
     buttonLayout->setAlignment(Qt::AlignRight);
-    buttonLayout->addWidget(confirmBtn);
     buttonLayout->addWidget(cancelBtn);
+    buttonLayout->addWidget(confirmBtn);
     buttonLayout->setMargin(0);
     buttonLayout->setSpacing(16);
 
 
-    confirmBtn->setText(tr("confirm"));
+    confirmBtn->setText(tr("Confirm"));
     confirmBtn->setFixedSize(80,30);
 //    cancelBtn->setText("取消");s
     cancelBtn->setText(tr("Cancel"));
     cancelBtn->setFixedSize(80,30);
-    cancelBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
+//    confirmBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
+    confirmBtn->setProperty("isImportant", true);
 
     mainVLayout->setAlignment(Qt::AlignTop);
     mainVLayout->addWidget(musicInfoLabel);

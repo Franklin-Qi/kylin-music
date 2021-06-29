@@ -112,7 +112,7 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(playAllButton,1,Qt::AlignRight);
     listTitleHBoxLayout->addSpacing(16);
     listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
-    listTitleHBoxLayout->setContentsMargins(25,20,30,30);
+    listTitleHBoxLayout->setContentsMargins(25,20,25,30);
     listTitleHBoxLayout->setSpacing(0);
     titleWid->setFixedHeight(80);
 

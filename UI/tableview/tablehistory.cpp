@@ -108,6 +108,10 @@ void TableHistory::deleteAllClicked()
     {
         int result = g_db->emptyHistoryMusic();
         if(result == DB_OP_SUCC) {
+            for(int i = 0;i < m_model->count();i++)
+            {
+                playController::getInstance().removeSongFromCurList(HISTORY, 0);
+            }
             m_model->clear();
             changeNumber();
         }

@@ -583,10 +583,10 @@ void Widget::movePlayHistoryWid()
 
     QPoint historyPos = playSongArea->listBtn->mapToGlobal(playSongArea->listBtn->rect().topRight());
     QSize size = historyListTable->size();
-    historyPos.setX(historyPos.x() + 8 - size.width());
+    historyPos.setX(historyPos.x() + 28 - size.width());
     historyPos.setY(historyPos.y() - 30 - size.height());
     QSize historySize = playSongArea->listBtn->size();
-    int newPosX = historyPos.x() - 8 + size.width();
+    int newPosX = historyPos.x() - 28 + size.width();
     int newPosY = historyPos.y() + 30 + size.height();
     historyListTable->changePlayHistoryPos(newPosX, newPosY, historySize.width(), historySize.height());
     historyListTable->move(historyPos);
