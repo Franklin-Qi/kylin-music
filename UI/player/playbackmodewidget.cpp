@@ -20,7 +20,7 @@ void PlayBackModeWidget::initWidget()
     loopBtn = new QToolButton(this);
     loopBtn->setFixedSize(118,30);
     loopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    loopBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+    loopBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
     loopBtn->setProperty("useIconHighlightEffect", 0x8);
 //    loopBtn->setProperty("useIconHighlightEffect", 0x2);
 //    loopBtn->setFocusPolicy(Qt::NoFocus);

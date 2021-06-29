@@ -102,7 +102,7 @@ void PlaySongArea::initWidget()
     playModeBtn = new QPushButton;
     playModeBtn->setFixedSize(25,25);
     playModeBtn->setCursor(Qt::PointingHandCursor);
-    playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+    playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
     playModeBtn->setProperty("isWindowButton", 0x1);
     playModeBtn->setProperty("useIconHighlightEffect", 0x2);
     playModeBtn->setFlat(true);
@@ -209,11 +209,12 @@ void PlaySongArea::initWidget()
     m_mainLayout->setStretchFactor(letfWid,1);
     m_mainLayout->setStretchFactor(centreWid,1);
     m_mainLayout->setStretchFactor(rightWid,1);
+    m_mainLayout->setContentsMargins(25,0,25,0);
 
 
     m_vmainLayout->addLayout(m_hmainLayout);
     m_vmainLayout->addLayout(m_mainLayout);
-    m_vmainLayout->setContentsMargins(8,0,8,8);
+    m_vmainLayout->setContentsMargins(0,0,0,8);
     m_vmainLayout->setSpacing(0);
 
     this->setLayout(m_vmainLayout);
@@ -383,7 +384,7 @@ void PlaySongArea::slotPlayBackModeChanged()
 
 void PlaySongArea::slotLoopClicked()
 {
-    playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+    playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
     playModeBtn->setToolTip(tr("Loop"));
     playController::getInstance().setPlaymode(playController::Loop);
     m_playBackModeWid->hide();
@@ -427,7 +428,7 @@ void PlaySongArea::setPlayMode(int playModel)
 //        playController::getInstance().setPlaymode(playController::Sequential);
 //        break;
     case 3:
-        playModeBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
         playModeBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;

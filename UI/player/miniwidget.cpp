@@ -304,7 +304,7 @@ void miniWidget::init_miniWidget()
     m_orderBtn = new QPushButton;
     m_orderBtn->setFixedSize(25,25);
     m_orderBtn->setCursor(Qt::PointingHandCursor);
-    m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+    m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
     m_orderBtn->setProperty("isWindowButton", 0x1);
     m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
     m_orderBtn->setFlat(true);
@@ -632,7 +632,7 @@ void miniWidget::setPlayMode(int playModel)
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        m_orderBtn->setIcon(QIcon::fromTheme("mail-send-receive-symbolic"));
+        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
         m_orderBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;

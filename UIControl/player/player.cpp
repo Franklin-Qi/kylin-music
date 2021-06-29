@@ -465,7 +465,14 @@ void playController::slotIndexChange(int index)
         x = 0;
         emit currentIndexAndCurrentList(index,m_curList);
         emit singalChangePath(path);
-        playSetting->set("playlistname", m_curList);
+        if(m_curList == HISTORY)
+        {
+            playSetting->set("playlistname", ALLMUSIC);
+        }
+        else
+        {
+            playSetting->set("playlistname", m_curList);
+        }
         playSetting->set("path", path);
     }
     else
