@@ -720,7 +720,8 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     }
     else
     {
-        if(allCount == 0)
+        //此处逻辑待优化，双击打开不应该提示错误
+        //if(allCount == 0)
         {
             return;
         }
