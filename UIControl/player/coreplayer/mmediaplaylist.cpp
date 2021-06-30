@@ -95,7 +95,11 @@ void MMediaPlaylist::setCurrentIndex(int index)
 
 void MMediaPlaylist::setPlaybackMode(MMediaPlaylist::PlaybackMode mode)
 {
+    if (mode == m_playbackMode) {
+        return;
+    }
     m_playbackMode = mode;
+    emit playbackModeChanged(mode);
 }
 
 int MMediaPlaylist::mediaCount() const
@@ -130,6 +134,7 @@ void MMediaPlaylist::palyFinish()
 {
     if (m_playbackMode != CurrentItemInLoop) {
         next();
+        emit currentIndexChanged(m_index);
     }
     emit autoPlay(m_playbackMode);
 }
