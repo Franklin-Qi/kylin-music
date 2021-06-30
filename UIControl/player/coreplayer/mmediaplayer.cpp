@@ -84,7 +84,14 @@ void MMediaPlayer::setPosition(qint64 pos)
 {
     qint64 sec = pos/1000;
     m_positionChangeed = true;
+    bool restartPlay = false;
+    if (m_state == PausedState) {
+        restartPlay = true;
+    }
     truePlay(QString::number(sec));
+    if (restartPlay) {
+        pause();
+    }
 }
 
 void MMediaPlayer::setVolume(int vol)
