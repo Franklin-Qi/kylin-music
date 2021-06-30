@@ -53,7 +53,7 @@ void TableOne::initStyle()
 void TableOne::initTableViewStyle()
 {
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,20);
+    tableView->setColumnWidth(3,40);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
@@ -416,19 +416,19 @@ void TableOne::deleteLocalSongs()
         iter = map1.end();
         iter--;
         QFile file(iter.value());
-        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Are you sure you want to delete it locally?"),QMessageBox::Yes | QMessageBox::No);
-        warn->button(QMessageBox::Yes)->setText("确定");
-        warn->button(QMessageBox::No)->setText("取消");
-        int result = warn->exec();
-        if(result == QMessageBox::Yes)
-        {
-            qDebug() << "QMessageBox::Yes";
-        }
-        else
-        {
-            qDebug() << "QMessageBox::No";
-            return;
-        }
+//        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Are you sure you want to delete it locally?"),QMessageBox::Yes | QMessageBox::No);
+//        warn->button(QMessageBox::Yes)->setText("确定");
+//        warn->button(QMessageBox::No)->setText("取消");
+//        int result = warn->exec();
+//        if(result == QMessageBox::Yes)
+//        {
+//            qDebug() << "QMessageBox::Yes";
+//        }
+//        else
+//        {
+//            qDebug() << "QMessageBox::No";
+//            return;
+//        }
         if(file.exists())
         {
             //移入回收站(作为已知)
@@ -588,7 +588,7 @@ void TableOne::addMusicSlot()
         fileDialog->setSidebarUrls(list);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
-    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4p *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac)");
+    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac)");
     //设置视图模式
     fileDialog->setViewMode(QFileDialog::Detail);
     //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
@@ -659,7 +659,7 @@ void TableOne::addDirMusicSlot()
     foreach (QString dirPath, m_fileNames) {
         QDir dir(dirPath);
         QStringList nameFilters;
-        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
+        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
         QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
         for(int i = 0; i < fileNames.count(); i++)
         {
@@ -720,7 +720,8 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     }
     else
     {
-        if(allCount == 0)
+        //此处逻辑待优化，双击打开不应该提示错误
+        //if(allCount == 0)
         {
             return;
         }
@@ -808,16 +809,17 @@ void TableOne::changeNumber()
         playAllButton->show();
     }
 }
-
-QList<musicDataStruct> TableOne::getMusicList()
+void TableOne::getMusicList()
 {
     QList<musicDataStruct> resList;
     int ret;
     ret = g_db->getSongInfoListFromDB(resList,nowListName);
-    m_model->clear();
-    m_model->add(resList);
-    initTableViewStyle();
-    return resList;
+    if(ret == DB_OP_SUCC)
+    {
+        m_model->clear();
+        m_model->add(resList);
+        initTableViewStyle();
+    }
 }
 
 void TableOne::selectListChanged(QString listname)

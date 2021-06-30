@@ -256,13 +256,23 @@ void miniWidget::init_miniWidget()
 
     m_songNameLab = new MyLabel;
     m_songNameLab->setFixedSize(180,20);
-    m_songNameLab->setText(tr("Music Player"));
     m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
     m_timeLab->setFixedSize(180,20);
-    m_timeLab->setText(tr("00:00/00:00"));
     m_timeLab->setAlignment(Qt::AlignLeft);
+
+    QString playPath = playController::getInstance().getPath();
+    if(playPath != "")
+    {
+        songInfo(playPath);
+        slotPositionChanged(0);
+    }
+    else
+    {
+        m_songNameLab->setText(tr("Music Player"));
+        m_timeLab->setText(tr("00:00/00:00"));
+    }
 
 //    m_vInfoLayout->setMargin(3);
 //    m_vInfoLayout->setSpacing(3);
@@ -592,6 +602,38 @@ void miniWidget::slotFavBtnChange(QString filePath)
     }
 }
 
+void miniWidget::songInfo(QString path)
+{
+    QString filepath = path.remove("file://");
+    musicDataStruct musicStruct;
+    g_db->getSongInfoFromDB(filepath, musicStruct);
+    //使用库解析总时间
+    m_time = musicStruct.time;
+    if(musicStruct.title == "")
+    {
+        m_songNameLab->setText(tr("Music Player"));
+    }
+    else
+    {
+        m_songNameLab->setText(musicStruct.title);
+    }
+}
+
+void miniWidget::slotPositionChanged(qint64 position)
+{
+    QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
+    QString str_time = duration.toString("mm:ss");
+    QString length = str_time + "/" + m_time;
+    if(m_time == "")
+    {
+        m_timeLab->setText("00:00/00:00");
+    }
+    else
+    {
+        m_timeLab->setText(length);
+    }
+}
+
 void miniWidget::slotPlayingLab(QString playing)
 {
     m_songNameLab->setText(playing);
@@ -605,7 +647,6 @@ void miniWidget::slotTimeLab(QString time)
 void miniWidget::slotPlayModeClicked()
 {
     int playMode = playController::getInstance().playmode();
-    qDebug() << "playMode" << playMode;
     switch (playMode)
     {
     case 1:

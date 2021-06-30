@@ -28,6 +28,7 @@ void MMediaPlayer::truePlay(QString startTime)
         }
         return;
     }
+    m_position = 0;
     m_positionChangeed = false;
     setProperty("start",startTime);
     const char *args[] = {"loadfile",c_filename, NULL};
@@ -163,10 +164,18 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         //初始化完成事件
     }
         break;
-
+    case MPV_EVENT_END_FILE:{
+        //播放完成
+        if (m_position != 0) {
+            m_duration = 0;
+            m_position = 0;
+            //播放结束
+            emit playFinish();
+        }
+    }
+        break;
         default: ;
     }
-
 }
 
 // 回调函数

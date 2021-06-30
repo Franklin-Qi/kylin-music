@@ -47,7 +47,7 @@ public:
     void initTableViewStyle();
     void setHightLightAndSelect();
 
-    QList<musicDataStruct> getMusicList();
+    void getMusicList();
 
     void playMusicforIndex(QString listName,int index);
     //通过列表名和索引值播放相应歌曲
