@@ -12,7 +12,7 @@ extern "C" {
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "voc" << "aiff" << "au" << "dts" << "flv" << "m4p" << "m4r" << "mka" << "mmf" << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma" << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac" << "mid";
+    musicType << "voc" << "aiff" << "au" << "dts" << "flv" << "m4r" << "mka" << "mmf" << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma" << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac";
 }
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
@@ -29,7 +29,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         if(fileInfo.isDir())
         {
             QStringList nameFilters;
-            nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4p" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
+            nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
             //适合用于大目录
             QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
             while (iter.hasNext())
@@ -206,9 +206,6 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
             }
             else
             {
-//                QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Add failed, no valid music file found"),QMessageBox::Yes);
-//                warn->button(QMessageBox::Yes)->setText("确定");
-//                warn->exec();
                 QStringList str;
                 musicdataStruct.singer = "";
                 musicdataStruct.album = "";

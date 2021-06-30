@@ -48,7 +48,7 @@ void MusicSlider::mousePressEvent(QMouseEvent *event)
     this->blockSignals(true);
     if (event->button() == Qt::LeftButton) //判断左键
     {
-        int value = minimum() + ((maximum() - minimum()) * (event->x())) / (width());
+        int value = this->minimum() + ((this->maximum() - this->minimum()) * ((double)event->x())) / (this->width());
         setValue(value);
     }
 
@@ -68,7 +68,7 @@ void MusicSlider::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    auto value = minimum() + ((maximum() - minimum()) * (event->x())) / (width());
+    auto value = this->minimum() + ((this->maximum() - this->minimum()) * ((double)event->x())) / (this->width());
     setValue(value);
 }
 

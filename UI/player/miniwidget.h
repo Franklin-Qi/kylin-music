@@ -62,7 +62,10 @@ private:
     void initConnect();
     //初始化样式
     void initStyle();
-
+    //通过路径查询歌曲的title和时长
+    void songInfo(QString path);
+    //显示时长
+    void slotPositionChanged(qint64 position);
 public slots:
     void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
@@ -131,6 +134,10 @@ private:
     QString filePath;
     //歌单名
     QString listName;
+    //正在播放歌曲的歌曲名
+    QString m_title;
+    //正在播放歌曲的时长
+    QString m_time;
 };
 
 #pragma pack(pop)
