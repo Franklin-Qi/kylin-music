@@ -2,8 +2,6 @@
 #define MMEDIAPLAYER_H
 
 #include <QObject>
-#include <QUrl>
-#include <QFileInfo>
 #include <QDebug>
 #include <client.h> // MPV库头文件
 
@@ -55,6 +53,7 @@ signals:
     void durationChanged(qint64);
     void positionChanged(qint64);
     void playFinish();
+    void playError();
 };
 
 #endif // MMEDIAPLAYER_H
