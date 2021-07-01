@@ -102,11 +102,35 @@ void PlaySongArea::initWidget()
     playModeBtn = new QPushButton;
     playModeBtn->setFixedSize(25,25);
     playModeBtn->setCursor(Qt::PointingHandCursor);
-    playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
-    playModeBtn->setProperty("isWindowButton", 0x1);
-    playModeBtn->setProperty("useIconHighlightEffect", 0x2);
-    playModeBtn->setFlat(true);
-    playModeBtn->setToolTip(tr("Loop"));   //列表循环
+
+    switch (playController::getInstance().mode()) {
+    case 1:
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+        playModeBtn->setProperty("isWindowButton", 0x1);
+        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        playModeBtn->setFlat(true);
+        playModeBtn->setToolTip(tr("CurrentItemInLoop"));
+        playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
+        break;
+    case 3:
+        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        playModeBtn->setProperty("isWindowButton", 0x1);
+        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        playModeBtn->setFlat(true);
+        playModeBtn->setToolTip(tr("Loop"));
+        playController::getInstance().setPlaymode(playController::Loop);
+        break;
+    case 4:
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
+        playModeBtn->setProperty("isWindowButton", 0x1);
+        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        playModeBtn->setFlat(true);
+        playModeBtn->setToolTip(tr("Random"));
+        playController::getInstance().setPlaymode(playController::Random);
+        break;
+    default:
+        break;
+    }
 
     //历史播放列表
     listBtn = new QPushButton;
@@ -384,6 +408,7 @@ void PlaySongArea::slotPlayBackModeChanged()
 
 void PlaySongArea::slotLoopClicked()
 {
+    playController::getInstance().setMode(playController::Loop);
     playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
     playModeBtn->setToolTip(tr("Loop"));
     playController::getInstance().setPlaymode(playController::Loop);
@@ -392,6 +417,7 @@ void PlaySongArea::slotLoopClicked()
 
 void PlaySongArea::slotRandomClicked()
 {
+    playController::getInstance().setMode(playController::Random);
     playModeBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
     playModeBtn->setToolTip(tr("Random"));
     playController::getInstance().setPlaymode(playController::Random);
@@ -400,14 +426,15 @@ void PlaySongArea::slotRandomClicked()
 
 void PlaySongArea::slotSequentialClicked()
 {
-    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
-    playModeBtn->setToolTip(tr("Sequential"));
-    playController::getInstance().setPlaymode(playController::Sequential);
-    m_playBackModeWid->hide();
+//    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
+//    playModeBtn->setToolTip(tr("Sequential"));
+//    playController::getInstance().setPlaymode(playController::Sequential);
+//    m_playBackModeWid->hide();
 }
 
 void PlaySongArea::slotCurrentItemInLoopClicked()
 {
+    playController::getInstance().setMode(playController::CurrentItemInLoop);
     playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
     playModeBtn->setToolTip(tr("CurrentItemInLoop"));
     playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
@@ -440,6 +467,8 @@ void PlaySongArea::setPlayMode(int playModel)
     default:
         break;
     }
+
+    playController::getInstance().setMode(static_cast<playController::PlayMode>(playModel));
 }
 
 void PlaySongArea::slotSongInfo(QString path)

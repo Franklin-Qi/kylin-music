@@ -338,6 +338,8 @@ void playController::init()
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
     m_curList = m_playListName;
+    playModeSetting = new QGSettings(KYLINMUSIC);
+    m_mode = static_cast<PlayMode>(playModeSetting->get("playbackmode").toInt());
 }
 
 int playController::getVolume()
@@ -502,4 +504,15 @@ QString playController::getPlayListName()
 QString playController::getPath()
 {
     return playSetting->get("path").toString();
+}
+
+void playController::setMode(playController::PlayMode mode)
+{
+    m_mode = mode;
+    playModeSetting->set("playbackmode", m_mode);
+}
+
+playController::PlayMode playController::mode() const
+{
+    return m_mode;
 }

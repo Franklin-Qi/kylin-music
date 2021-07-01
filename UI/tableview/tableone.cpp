@@ -98,7 +98,7 @@ void TableOne::initUI()
     listTotalNumLabel->setAlignment(Qt::AlignBottom);
     addMusicButton = new QToolButton(this);
     listTitleHBoxLayout = new QHBoxLayout();
-    playAllButton = new QToolButton(this);
+    playAllButton = new QPushButton(this);
 
 
     titleWid = new QWidget(this);
@@ -119,14 +119,15 @@ void TableOne::initUI()
     playAllButton->setText(tr("Play All"));
     playAllButton->setIconSize(QSize(16,16));
     playAllButton->setIcon(QIcon(":/img/default/play_w.png"));
-    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     playAllButton->setIconSize(QSize(16,16));
 //    addMusicButton->setText(tr("   Add"));
     playAllButton->setFixedSize(112,36);
-    playAllButton->setPopupMode(QToolButton::InstantPopup);
-    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
-                                 "QToolButton::hover{background-color: #40A9FB;}"
-                                 "QToolButton::pressed{background-color: #296CD9;}");
+    playAllButton->setProperty("isImportant", true);
+//    playAllButton->setPopupMode(QToolButton::InstantPopup);
+//    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
+//                                 "QToolButton::hover{background-color: #40A9FB;}"
+//                                 "QToolButton::pressed{background-color: #296CD9;}");
 //    playAllButton->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
 
     addMusicButton->setText(tr("Add"));
@@ -289,7 +290,7 @@ void TableOne::initConnect()
     connect(&playController::getInstance(),&playController::currentIndexAndCurrentList,this,&TableOne::getHightLightIndex);
     connect(n_addMusicButton,&QPushButton::clicked,this,&TableOne::addMusicSlot);
     connect(n_addDirMusicButton,&QPushButton::clicked,this,&TableOne::addDirMusicSlot);
-    connect(playAllButton,&QToolButton::clicked,this,&TableOne::playAllButtonClicked);
+    connect(playAllButton,&QPushButton::clicked,this,&TableOne::playAllButtonClicked);
 }
 
 void TableOne::initRightMenu()
@@ -302,8 +303,8 @@ void TableOne::initRightMenu()
     showInfoRow = new QAction(tr("View song information"));
     addToOtherListMenu = new QMenu(tr("Add to songlist"));
     connect(playRow,&QAction::triggered,this,&TableOne::playSongs);
-    connect(removeRow,&QAction::triggered,this,&TableOne::deleteSongs);
-    connect(removeLocalRow,&QAction::triggered,this,&TableOne::deleteLocalSongs);
+    connect(removeRow,&QAction::triggered,this,&TableOne::isDeleteSongs);
+    connect(removeLocalRow,&QAction::triggered,this,&TableOne::isDeleteLocalSongs);
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
     connect(addToOtherListMenu,&QMenu::triggered,this,&TableOne::addToOtherList);
 
@@ -361,6 +362,44 @@ void TableOne::showRightMenu(const QPoint &pos)
     m_menu->exec(QCursor::pos());
 }
 
+void TableOne::isDeleteSongs()
+{
+    //确认将选中的歌曲从歌单中删除？
+    QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Confirm that the selected song will be deleted from the song list?"),QMessageBox::Yes | QMessageBox::No);
+//    warn->button(QMessageBox::Yes)->setText("确定");
+//    warn->button(QMessageBox::No)->setText("取消");
+    int result = warn->exec();
+    if(result == QMessageBox::Yes)
+    {
+        deleteSongs();
+        qDebug() << "QMessageBox::Yes";
+    }
+    else
+    {
+        qDebug() << "QMessageBox::No";
+        return;
+    }
+}
+
+void TableOne::isDeleteLocalSongs()
+{
+    //歌曲从本地删除后不可恢复，是否确定删除？
+    QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("After the song is deleted from the local, it cannot be resumed. Is it sure to delete?"),QMessageBox::Yes | QMessageBox::No);
+//    warn->button(QMessageBox::Yes)->setText("确定");
+//    warn->button(QMessageBox::No)->setText("取消");
+    int result = warn->exec();
+    if(result == QMessageBox::Yes)
+    {
+        deleteLocalSongs();
+        qDebug() << "QMessageBox::Yes";
+    }
+    else
+    {
+        qDebug() << "QMessageBox::No";
+        return;
+    }
+}
+
 void TableOne::deleteSongs()
 {
     QMap<int,QString> map1 = getSelectedTaskIdList();
@@ -405,6 +444,7 @@ void TableOne::deleteSongs()
         }
     }
     selectListChanged(nowListName);
+    emit refreshHistoryListSignal();
 }
 
 void TableOne::deleteLocalSongs()
@@ -474,6 +514,7 @@ void TableOne::deleteLocalSongs()
         }
     }
     selectListChanged(nowListName);
+    emit refreshHistoryListSignal();
 }
 
 void TableOne::deleteImage(const QString &savepath)
@@ -564,6 +605,9 @@ void TableOne::addMusicSlot()
     QList<QUrl> mntUrlList;
     for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
         QFileInfo fi = filist.at(i);
+        //华为990、9a0需要屏蔽最小系统挂载的目录
+        if (fi.fileName() == "2691-6AB8")
+             continue;
         mntUrlList << QUrl("file://" + fi.filePath());
     }
 
@@ -577,6 +621,9 @@ void TableOne::addMusicSlot()
         mntUrlList.clear();
         for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
                        QFileInfo fi = wfilist.at(i);
+                       //华为990、9a0需要屏蔽最小系统挂载的目录
+                       if (fi.fileName() == "2691-6AB8")
+                            continue;
                  mntUrlList << QUrl("file://" + fi.filePath());
              }
              fileDialog->setSidebarUrls(list + mntUrlList);
@@ -621,6 +668,9 @@ void TableOne::addDirMusicSlot()
     QList<QUrl> mntUrlList;
     for (int i = 0; i < sidebarNum && i < filist.size(); ++i) {
         QFileInfo fi = filist.at(i);
+        //华为990、9a0需要屏蔽最小系统挂载的目录
+        if (fi.fileName() == "2691-6AB8")
+             continue;
         mntUrlList << QUrl("file://" + fi.filePath());
     }
 
@@ -634,6 +684,9 @@ void TableOne::addDirMusicSlot()
         mntUrlList.clear();
         for (int i = 0; i < sidebarNum && i < wfilist.size(); ++i) {
                        QFileInfo fi = wfilist.at(i);
+                       //华为990、9a0需要屏蔽最小系统挂载的目录
+                       if (fi.fileName() == "2691-6AB8")
+                            continue;
                  mntUrlList << QUrl("file://" + fi.filePath());
              }
              fileDialog->setSidebarUrls(list + mntUrlList);
@@ -721,7 +774,7 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     else
     {
         //此处逻辑待优化，双击打开不应该提示错误
-        //if(allCount == 0)
+        if(allCount == 0)
         {
             return;
         }

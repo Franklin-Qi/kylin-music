@@ -101,6 +101,7 @@ public slots:
     void onNextSong();
     void onPreviousSong();
     void setCurList(QString renameList);
+    void setMode(playController::PlayMode mode);
 private slots:
     void onError();
     void onMediaStatusChanged();
@@ -124,7 +125,9 @@ private:
     int x = 0;
     int m_volume = 50;
     QGSettings *playSetting = nullptr;
+    QGSettings *playModeSetting = nullptr;
     QString m_playListName;
+    PlayMode m_mode = playController::Loop;
 };
 
 #endif // PLAYER_H
