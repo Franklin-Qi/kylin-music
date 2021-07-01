@@ -69,8 +69,12 @@ private:
     void importFinished(int successCount, int failCount, int allCount);
 
     void showRightMenu(const QPoint &pos);
-    void deleteSongs();
-    void deleteLocalSongs();
+
+    void isDeleteSongs(); //是否从歌单中删除歌曲
+    void isDeleteLocalSongs(); //是否从本地删除歌曲
+    void deleteSongs();  //从歌单中删除歌曲
+    void deleteLocalSongs(); //从本地以及歌单中删除歌曲
+
     void playSongs();
     void showInfo();
     MusicInfoDialog *infoDialog;
@@ -99,7 +103,7 @@ private:
 
     QHBoxLayout *listTitleHBoxLayout;
     QToolButton *addMusicButton;  //添加歌曲按钮
-    QToolButton *playAllButton;
+    QPushButton *playAllButton;
 
     QLabel *listTotalNumLabel;
     int heightLightIndex = -1;
@@ -108,7 +112,7 @@ signals:
     void sendPathToPlayer(QString fp);
     void countChanges();
     void hoverIndexChanged(QModelIndex index);
-    void addMusicToHistoryListSignal();
+    void refreshHistoryListSignal();
 //    void heightIndexChanged(int index);
     void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
     void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号

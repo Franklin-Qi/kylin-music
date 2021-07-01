@@ -30,6 +30,11 @@
              <summary>path</summary>
              <description>path</description>
          </key>
+         <key name="playbackmode" type="i" >
+             <default>3</default>
+             <summary>playbackmode</summary>
+             <description>playbackmode</description>
+         </key>
 
      </schema>
 </schemalist>

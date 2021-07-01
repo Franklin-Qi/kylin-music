@@ -34,6 +34,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
             while (iter.hasNext())
             {
+                count++;
                 QString strpath = iter.next();
                 musicdataStruct.filepath = strpath;
                 fileInfo.setFile(musicdataStruct.filepath);
@@ -41,7 +42,6 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 fileSize(fileInfo);      //文件大小
                 if(musicType.indexOf(musicdataStruct.filetype) != -1)
                 {
-                    count++;
                     fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                     if(musicdataStruct.time != "")
                     {
@@ -52,13 +52,13 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         }
         else if(fileInfo.isFile())
         {
+            count++;
             musicdataStruct.filepath = filepath;
             fileInfo.setFile(musicdataStruct.filepath);
             fileType(fileInfo);          //文件类型
             fileSize(fileInfo);      //文件大小
             if(musicType.indexOf(musicdataStruct.filetype) != -1)
             {
-                count++;
                 fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                 if(musicdataStruct.time != "")
                 {

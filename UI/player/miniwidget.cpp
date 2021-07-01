@@ -314,10 +314,35 @@ void miniWidget::init_miniWidget()
     m_orderBtn = new QPushButton;
     m_orderBtn->setFixedSize(25,25);
     m_orderBtn->setCursor(Qt::PointingHandCursor);
-    m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
-    m_orderBtn->setProperty("isWindowButton", 0x1);
-    m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
-    m_orderBtn->setFlat(true);
+
+    switch (playController::getInstance().mode()) {
+    case 1:
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+        m_orderBtn->setProperty("isWindowButton", 0x1);
+        m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
+        m_orderBtn->setFlat(true);
+        m_orderBtn->setToolTip(tr("CurrentItemInLoop"));
+        playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
+        break;
+    case 3:
+        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        m_orderBtn->setProperty("isWindowButton", 0x1);
+        m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
+        m_orderBtn->setFlat(true);
+        m_orderBtn->setToolTip(tr("Loop"));
+        playController::getInstance().setPlaymode(playController::Loop);
+        break;
+    case 4:
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
+        m_orderBtn->setProperty("isWindowButton", 0x1);
+        m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
+        m_orderBtn->setFlat(true);
+        m_orderBtn->setToolTip(tr("Random"));
+        playController::getInstance().setPlaymode(playController::Random);
+        break;
+    default:
+        break;
+    }
 
     /***************************************/
     m_vSysLayout = new QVBoxLayout;
@@ -662,6 +687,7 @@ void miniWidget::slotPlayModeClicked()
         break;
     }
     setPlayMode(playMode);
+    playController::getInstance().setMode(static_cast<playController::PlayMode>(playMode));
 }
 
 void miniWidget::setPlayMode(int playModel)
@@ -685,6 +711,8 @@ void miniWidget::setPlayMode(int playModel)
     default:
         break;
     }
+
+    playController::getInstance().setMode(static_cast<playController::PlayMode>(playModel));
 }
 
 void miniWidget::slotNotPlaying()
