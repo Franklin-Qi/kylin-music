@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QFileInfo>
 #include <QDebug>
 #include <client.h> // MPV库头文件
 

@@ -20,7 +20,13 @@ void MMediaPlayer::truePlay(QString startTime)
         return;
     }
 
-    const QByteArray c_filename = m_playList->getPlayFileName().toUtf8();
+    QString filePath = m_playList->getPlayFileName();
+    if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+        emit playFinish();
+        return;
+    }
+
+    const QByteArray c_filename = filePath.toUtf8();
 
     if (c_filename == filenameBack && m_positionChangeed == false) {
         if (filenameBack != "") {
