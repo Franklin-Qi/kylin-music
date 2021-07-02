@@ -10,6 +10,7 @@ void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 {
     m_playList = playlist;
     connect(this,&MMediaPlayer::playFinish,m_playList,&MMediaPlaylist::palyFinish,Qt::UniqueConnection);
+    connect(this,&MMediaPlayer::playError,m_playList,&MMediaPlaylist::playError,Qt::UniqueConnection);
     connect(m_playList,&MMediaPlaylist::autoPlay,this,&MMediaPlayer::autoPlay,Qt::UniqueConnection);
     connect(m_playList,&MMediaPlaylist::stop,this,&MMediaPlayer::stop,Qt::UniqueConnection);
 }
@@ -20,7 +21,13 @@ void MMediaPlayer::truePlay(QString startTime)
         return;
     }
 
-    const QByteArray c_filename = m_playList->getPlayFileName().toUtf8();
+    QString filePath = m_playList->getPlayFileName();
+    if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+        emit playError();
+        return;
+    }
+
+    const QByteArray c_filename = filePath.toUtf8();
 
     if (c_filename == filenameBack && m_positionChangeed == false) {
         if (filenameBack != "") {
