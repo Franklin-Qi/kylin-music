@@ -35,6 +35,9 @@ void MMediaPlaylist::next()
     if (m_playerList.isEmpty()) {
         return;
     }
+    if (m_index < 0) {
+        return;
+    }
     switch (m_playbackMode) {
     case Random:
         m_index=randomIndex();
@@ -85,9 +88,15 @@ void MMediaPlaylist::previous()
 
 void MMediaPlaylist::setCurrentIndex(int index)
 {
+    if (index == m_index) {
+        return;
+    }
     if (index >= m_playerList.length()) {
         qDebug()<<"指定位置超过列表元素数量";
         return;
+    }
+    if (index < 0) {
+        index = -1;
     }
     m_index = index;
     emit currentIndexChanged(m_index);
@@ -130,8 +139,22 @@ bool MMediaPlaylist::removeMedia(int pos)
     return true;
 }
 
+void MMediaPlaylist::playError()
+{
+    for (auto url : m_playerList) {
+        if (QFileInfo::exists(url.toLocalFile())) {
+            palyFinish();
+            return;
+        }
+    }
+    emit currentIndexChanged(-1);
+}
+
 void MMediaPlaylist::palyFinish()
 {
+    if (m_index < 0) {
+        return;
+    }
     if (m_playbackMode != CurrentItemInLoop) {
         next();
         emit currentIndexChanged(m_index);

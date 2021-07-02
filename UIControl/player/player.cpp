@@ -147,7 +147,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
     m_player->setPlaylist(m_playlist);
 
 
-    m_playlist->setCurrentIndex(-1);
+//    m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     isInitialed = true;
 }
@@ -324,7 +324,7 @@ playController::playController()
     m_player->setPlaylist(m_playlist);
     init();
     m_playlist->setPlaybackMode(MMediaPlaylist::Loop);
-    m_playlist->setCurrentIndex(-1);
+//    m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(m_player,&MMediaPlayer::stateChanged,this,&playController::slotStateChanged);
     connect(m_playlist,&MMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
@@ -460,7 +460,7 @@ void playController::slotIndexChange(int index)
     }
     m_curIndex = index;
     MMediaContent content = m_playlist->media(index);
-    QString path = content.canonicalUrl().toString();
+    QString path = content.canonicalUrl().toLocalFile();
     QFileInfo file(path.remove("file://"));
     if(file.exists())
     {
@@ -483,8 +483,8 @@ void playController::slotIndexChange(int index)
         if(x > m_playlist->mediaCount())
         {
             x = 0;
-            index = -1;
-            m_playlist->setCurrentIndex(index);
+//            index = -1;
+//            m_playlist->setCurrentIndex(index);
             return;
         }
     }

@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <QDBusMessage>
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
 
@@ -34,7 +36,6 @@ Widget::Widget(QStringList str, QWidget *parent)
     isFirstObject = false;
     //命令行删除到回收站
     process = new QProcess;
-
 }
 
 Widget::~Widget()
@@ -60,11 +61,40 @@ void Widget::Single(QStringList path)   //单例
     {
         QDBusInterface interface( "org.ukui.kylin_music", "/org/ukui/kylin_music","org.ukui.kylin_music.play", QDBusConnection::sessionBus());
         if(path.size() == 1)
+        {
             interface.call( "kylin_music_play_request", str);
-        if(path.size() == 2)
+        }
+        else if(path.size() == 2)
+        {
+            if(str == "-sta" || str == "-state")
+            {
+                QDBusMessage play = interface.call("getState");
+
+                if (play.type() == QDBusMessage::ReplyMessage)
+                {
+                    QString playStr = play.arguments().takeFirst().toString();
+                    printf("当前播放状态 ：%s\n", (playStr.toStdString()).data());
+                    fflush(stdout);
+                }
+            }
+            if(str == "-t" || str == "-title")
+            {
+                QDBusMessage replay = interface.call("getTitle");
+
+                if (replay.type() == QDBusMessage::ReplyMessage)
+                {
+                    QString replayStr = replay.arguments().takeFirst().toString();
+                    printf("当前播放的歌曲名 ：%s\n", (replayStr.toStdString()).data());
+                    fflush(stdout);
+                }
+            }
             interface.call( "kylin_music_play_request", str);
+        }
         else if(path.size() == 4)
+        {
             interface.call( "kylin_music_play_request", str, path[2], path[3]);
+        }
+
         exit(0);
     }
     isFirstObject = true;//我是首个对象
@@ -116,10 +146,10 @@ void Widget::onPrepareForSleep(bool isSleep)
     //990
     //空指针检验
     //------此处空指针校验（如果用了指针）------
+    qDebug() << "----睡眠";
     //系统事件
     if(isSleep)
     {
-        qDebug() << "睡眠";
         playController::getInstance().pause();
     }
 }
@@ -217,7 +247,7 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     if(cmd1=="-sta"||cmd1=="-state")
     {
         //------检测当前播放状态
-        getState();
+//        getState();
         return 0;
     }
     if(cmd1=="-init"||cmd1=="-initialization")
@@ -229,7 +259,7 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     if(cmd1=="-t"||cmd1=="-title")
     {
         //------当前播放歌曲名
-        title();
+        getTitle();
         return 0;
     }
 //    if(cmd1=="-S"||cmd1=="-Sequential")
@@ -349,20 +379,22 @@ QStringList Widget::getPath(QString playListName)
     return path;
 }
 
-void Widget::getState()
+QString Widget::getState()
 {
+    QString state;
     if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
     {
-        qDebug() << "当前播放状态 ：播放";
+        state = "播放";
     }
     else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
     {
-        qDebug() << "当前播放状态 ：暂停";
+        state = "暂停";
     }
     else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
     {
-        qDebug() << "当前播放状态 ：停止";
+        state = "停止";
     }
+    return state;
 }
 
 void Widget::initMusic()
@@ -704,9 +736,10 @@ void Widget::slotPlayingTitle(QString title)
     m_playTitle = title;
 }
 
-void Widget::title()
+QString Widget::getTitle()
 {
-    qDebug() << "正在播放的歌曲名 ：" << m_playTitle;
+    qDebug() << "m_playTitle" << m_playTitle;
+    return m_playTitle;
 }
 
 //切换深色主题

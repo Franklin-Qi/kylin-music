@@ -551,8 +551,6 @@ void PlaySongArea::slotNotPlaying()
     timeLabel->setText("00:00/00:00");
 }
 
-
-
 void PlaySongArea::slotDurationChanged(qint64 duration)
 {
     hSlider->setRange(0,static_cast<int>(duration));

@@ -27,7 +27,7 @@ void PlayBackModeWidget::initWidget()
 //    loopBtn->setProperty("isImportant",true);
     loopBtn->setIconSize(QSize(16,16));
     loopBtn->setText(tr("Loop"));
-//    loopLayout->addWidget(loopBtn);
+    loopLayout->addWidget(loopBtn);
     loopLayout->setMargin(0);
     loopLayout->setSpacing(0);
 

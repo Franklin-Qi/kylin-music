@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QFileInfo>
 #include <QUrl>
 #include <QDateTime>
 
@@ -38,6 +39,7 @@ public:
     bool removeMedia(int pos);
 public slots:
     void palyFinish();
+    void playError();
 private:
     int randomIndex();
     QList<QUrl> m_playerList;
