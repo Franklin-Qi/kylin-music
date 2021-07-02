@@ -646,6 +646,10 @@ void TableOne::addMusicSlot()
     {
         songFiles = fileDialog->selectedFiles();
     }
+    else
+    {
+        return;
+    }
 
     for( int i = 0; i < songFiles.length(); i++ )
     {
@@ -705,9 +709,13 @@ void TableOne::addDirMusicSlot()
 
     fileDialog->setFileMode(QFileDialog::Directory);
     QStringList m_fileNames;
-    if (fileDialog->exec())
+    if (QFileDialog::Accepted == fileDialog->exec())
     {
         m_fileNames = fileDialog->selectedFiles();
+    }
+    else
+    {
+        return;
     }
     foreach (QString dirPath, m_fileNames) {
         QDir dir(dirPath);
@@ -774,7 +782,7 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     else
     {
         //此处逻辑待优化，双击打开不应该提示错误
-        if(allCount == 0)
+        //if(allCount == 0)
         {
             return;
         }

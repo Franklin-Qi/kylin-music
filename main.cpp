@@ -64,6 +64,15 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
+    //加在最上面的原因：防止QApplication将(-title)参数吞掉，导致拿不到
+    QStringList strList;
+    QString str1;
+    for(int i = 0; i < argc;i++)
+    {
+        str1 = argv[i];
+        strList << str1;
+    }
+
     initUkuiLog4qt("kylin-music");
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 //    //高清屏幕自适应
@@ -103,13 +112,6 @@ int main(int argc, char *argv[])
         qDebug() << "Failed to load Chinese translation file.";
 #endif
 
-    QStringList strList;
-    QString str1;
-    for(int i = 0; i < argc;i++)
-    {
-        str1 = argv[i];
-        strList << str1;
-    }
     QString str = "";
     QString str2 = "";
     QString str3 = "";
