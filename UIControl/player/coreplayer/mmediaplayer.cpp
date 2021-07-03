@@ -23,7 +23,9 @@ void MMediaPlayer::truePlay(QString startTime)
     if (startTime.isEmpty()) {
         return;
     }
-
+    if (m_playList == nullptr) {
+        return;
+    }
     QString filePath = m_playList->getPlayFileName();
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
         emit playError();
