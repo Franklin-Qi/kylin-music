@@ -458,7 +458,12 @@ void Widget::initAllComponent()
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
-    musicListTable = new TableOne(playController::getInstance().getPlayListName(),this);
+    QString playlistName = playController::getInstance().getPlayListName();
+    if(playlistName == HISTORY)
+    {
+        playlistName = ALLMUSIC;
+    }
+    musicListTable = new TableOne(playlistName,this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
 
@@ -615,10 +620,10 @@ void Widget::movePlayHistoryWid()
 
     QPoint historyPos = playSongArea->listBtn->mapToGlobal(playSongArea->listBtn->rect().topRight());
     QSize size = historyListTable->size();
-    historyPos.setX(historyPos.x() + 28 - size.width());
+    historyPos.setX(historyPos.x() + 26 - size.width());
     historyPos.setY(historyPos.y() - 30 - size.height());
     QSize historySize = playSongArea->listBtn->size();
-    int newPosX = historyPos.x() - 28 + size.width();
+    int newPosX = historyPos.x() - 26 + size.width();
     int newPosY = historyPos.y() + 30 + size.height();
     historyListTable->changePlayHistoryPos(newPosX, newPosY, historySize.width(), historySize.height());
     historyListTable->move(historyPos);

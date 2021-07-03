@@ -106,12 +106,12 @@ void TableHistory::deleteAllClicked()
     int ret = msg.exec();
     if(ret == QMessageBox::Yes)
     {
+        for(int i = 0;i < m_model->count();i++)
+        {
+            playController::getInstance().removeSongFromCurList(HISTORY, 0);
+        }
         int result = g_db->emptyHistoryMusic();
         if(result == DB_OP_SUCC) {
-            for(int i = 0;i < m_model->count();i++)
-            {
-                playController::getInstance().removeSongFromCurList(HISTORY, 0);
-            }
             m_model->clear();
             changeNumber();
         }
