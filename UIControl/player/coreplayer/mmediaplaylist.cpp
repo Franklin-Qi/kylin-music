@@ -143,6 +143,9 @@ void MMediaPlaylist::playError()
 {
     for (auto url : m_playerList) {
         if (QFileInfo::exists(url.toLocalFile())) {
+            if (m_playbackMode == CurrentItemInLoop) {
+                next();
+            }
             palyFinish();
             return;
         }
