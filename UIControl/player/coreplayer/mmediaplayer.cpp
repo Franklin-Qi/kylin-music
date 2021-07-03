@@ -8,6 +8,9 @@ MMediaPlayer::MMediaPlayer(QObject *parent)
 
 void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 {
+    if (playlist == nullptr) {
+        return;
+    }
     m_playList = playlist;
     connect(this,&MMediaPlayer::playFinish,m_playList,&MMediaPlaylist::palyFinish,Qt::UniqueConnection);
     connect(this,&MMediaPlayer::playError,m_playList,&MMediaPlaylist::playError,Qt::UniqueConnection);
@@ -20,7 +23,9 @@ void MMediaPlayer::truePlay(QString startTime)
     if (startTime.isEmpty()) {
         return;
     }
-
+    if (m_playList == nullptr) {
+        return;
+    }
     QString filePath = m_playList->getPlayFileName();
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
         emit playError();
