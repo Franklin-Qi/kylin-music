@@ -8,6 +8,9 @@ MMediaPlayer::MMediaPlayer(QObject *parent)
 
 void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 {
+    if (playlist == nullptr) {
+        return;
+    }
     m_playList = playlist;
     connect(this,&MMediaPlayer::playFinish,m_playList,&MMediaPlaylist::palyFinish,Qt::UniqueConnection);
     connect(this,&MMediaPlayer::playError,m_playList,&MMediaPlaylist::playError,Qt::UniqueConnection);
