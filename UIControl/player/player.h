@@ -102,6 +102,7 @@ public slots:
     void onPreviousSong();
     void setCurList(QString renameList);
     void setMode(playController::PlayMode mode);
+    void setPlayListName(QString playListName);
 private slots:
     void onError();
     void onMediaStatusChanged();
@@ -117,8 +118,8 @@ private:
     QString m_curList;
     //当前播放的索引
     int m_curIndex;
-    MMediaPlayer* m_player;
-    MMediaPlaylist* m_playlist;
+    MMediaPlayer* m_player  = nullptr;
+    MMediaPlaylist* m_playlist  = nullptr;
     QGSettings *volumeSetting = nullptr;
     bool isInitialed = false;
     //在列表里歌曲（判断本地歌曲是否存在）没有播放的情况下，当前函数掉了多少次，要是歌曲在播放（找到本地路径存在，x重新计数

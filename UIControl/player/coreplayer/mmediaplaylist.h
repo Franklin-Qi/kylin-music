@@ -43,7 +43,7 @@ public slots:
 private:
     int randomIndex();
     QList<QUrl> m_playerList;
-    int m_index=0;
+    int m_index = 0;
     PlaybackMode m_playbackMode = Loop;
 signals:
     void currentIndexChanged(int);

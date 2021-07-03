@@ -88,7 +88,7 @@ void MMediaPlaylist::previous()
 
 void MMediaPlaylist::setCurrentIndex(int index)
 {
-    if (index == m_index) {
+    if (index == m_index && index != 0) {
         return;
     }
     if (index >= m_playerList.length()) {
@@ -143,6 +143,9 @@ void MMediaPlaylist::playError()
 {
     for (auto url : m_playerList) {
         if (QFileInfo::exists(url.toLocalFile())) {
+            if (m_playbackMode == CurrentItemInLoop) {
+                next();
+            }
             palyFinish();
             return;
         }

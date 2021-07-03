@@ -84,7 +84,8 @@ private:
     void initDbus();
     //单例
     void Single(QStringList path);
-
+    //处理双击文件打开时间
+    void stateMusicFile(QStringList args);
     void initAllComponent();
     void allConnect();
     void initGSettings();
@@ -116,6 +117,9 @@ private:
     QString listName;
     //正在播放歌曲的title
     QString m_playTitle;
+    //避免初始化流程中触发点击事件
+    bool m_initFinish = false;
+
 signals:
     void signalShowGuide();
     //刷新歌曲列表界面
