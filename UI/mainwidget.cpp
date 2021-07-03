@@ -494,11 +494,22 @@ void Widget::initAllComponent()
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
-    QString playlistName = playController::getInstance().getPlayListName();
-    if(playlistName == HISTORY)
+    QStringList lists;
+    QString playlistName;
+    int res = g_db->getPlayList(lists);
+    if(res == DB_OP_SUCC)
     {
-        playlistName = ALLMUSIC;
+        playlistName = playController::getInstance().getPlayListName();
+        if(playlistName == HISTORY)
+        {
+            playlistName = ALLMUSIC;
+        }
+        if(lists.indexOf(playlistName) == -1)
+        {
+            playlistName = ALLMUSIC;
+        }
     }
+
     musicListTable = new TableOne(playlistName,this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);

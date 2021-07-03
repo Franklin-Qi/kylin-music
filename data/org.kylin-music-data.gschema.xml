@@ -21,7 +21,7 @@
              <description>volume</description>
          </key>
          <key name="playlistname" type="s" >
-             <default>"ALLMUSIC"</default>
+             <default>"LocalMusic"</default>
              <summary>playListName</summary>
              <description>playListName</description>
          </key>
