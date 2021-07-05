@@ -11,6 +11,7 @@ class MMediaPlayer : public QObject
 {
     Q_OBJECT
 public:
+    //          停止播放          播放中       暂停中
     enum State{StoppedState=0,PlayingState,PausedState}; //播放状态枚举
     MMediaPlayer(QObject *parent = nullptr);
 
