@@ -266,6 +266,8 @@ void miniWidget::init_miniWidget()
     if(playPath != "")
     {
         songInfo(playPath);
+        //根据保存的路径设置我喜欢按钮图标样式
+        filePath = playPath;
         slotPositionChanged(0);
     }
     else
@@ -460,8 +462,8 @@ void miniWidget::slotFav()
     if(g_db->checkSongIsInFav(filePath))
     {
         QList<musicDataStruct> resList;
-        int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
-        int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
+        int ref = g_db->getSongInfoListFromDB(resList, FAV);
+        int ret = g_db->delMusicFromPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
             //根据歌单名title值查询对应歌单列表
@@ -472,11 +474,11 @@ void miniWidget::slotFav()
                 {
                     if(resList.at(i).filepath == filePath)
                     {
-                        playController::getInstance().removeSongFromCurList("我喜欢", i);
+                        playController::getInstance().removeSongFromCurList(FAV, i);
                         //当前为我喜欢界面才刷新
-                        if(listName == "我喜欢")
+                        if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav("我喜欢");
+                            emit signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -486,13 +488,13 @@ void miniWidget::slotFav()
     }
     else
     {
-        int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
+        int ref = g_db->addMusicToPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
-            playController::getInstance().addSongToCurList("我喜欢", filePath);
-            if(listName == "我喜欢")
+            playController::getInstance().addSongToCurList(FAV, filePath);
+            if(listName == tr("I Love"))
             {
-                emit signalRefreshFav("我喜欢");
+                emit signalRefreshFav(FAV);
             }
         }
     }

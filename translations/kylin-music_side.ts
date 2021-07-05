@@ -714,6 +714,12 @@
         <translation>单曲循环</translation>
     </message>
     <message>
+        <location filename="../UI/player/miniwidget.cpp" line="477"/>
+        <location filename="../UI/player/miniwidget.cpp" line="493"/>
+        <source>I Love</source>
+        <translation>我喜欢</translation>
+    </message>
+    <message>
         <source>Sequential</source>
         <translation type="vanished">顺序播放</translation>
     </message>
