@@ -551,14 +551,18 @@ void miniWidget::slotFavExixtsDark()
     emit signalFavBtnChange(filePath);
 }
 
-void miniWidget::slotFavIsExixts(QString filePath)
+void miniWidget::slotFavIsExixts(QString filePaths)
 {
     if(WidgetStyle::themeColor == 1)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             //由于mini歌曲title是播放区传送故判断 ""
             if(m_songNameLab->text() == "")
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -567,6 +571,10 @@ void miniWidget::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
@@ -575,10 +583,14 @@ void miniWidget::slotFavIsExixts(QString filePath)
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             //由于mini歌曲title是播放区传送故判断 ""
             if(m_songNameLab->text() == "")
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -587,6 +599,10 @@ void miniWidget::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"

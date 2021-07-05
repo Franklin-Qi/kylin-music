@@ -773,13 +773,18 @@ void PlaySongArea::slotHistoryBtnChecked(bool checked)
 {
     listBtn->setChecked(checked);
 }
-void PlaySongArea::slotFavIsExixts(QString filePath)
+void PlaySongArea::slotFavIsExixts(QString filePaths)
 {
     if(WidgetStyle::themeColor == 1)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             if(playingLabel->text() == tr("Music Player"))
+            {
+                return;
+            }
+            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -787,6 +792,11 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
         }
         else
         {
+            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+            if(filePath != filePaths)
+            {
+                return;
+            }
             favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
@@ -795,9 +805,13 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             if(playingLabel->text() == tr("Music Player"))
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -805,6 +819,10 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
