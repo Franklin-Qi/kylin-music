@@ -8,6 +8,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
     mutual = this;//！！！赋值，非常重要
+    stateMusicFile(str);
     int res;
     res = g_db->initDataBase();
     if(res != DB_OP_SUCC)
@@ -36,6 +37,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     isFirstObject = false;
     //命令行删除到回收站
     process = new QProcess;
+    m_initFinish = true;
 }
 
 Widget::~Widget()
@@ -99,6 +101,32 @@ void Widget::Single(QStringList path)   //单例
     }
     isFirstObject = true;//我是首个对象
     argName << str;
+}
+
+void Widget::stateMusicFile(QStringList args)
+{
+    if(args.length() != 2)
+    {
+        return;
+    }
+
+    QString file = args.at(1);
+
+    if(!QFileInfo::exists(file))
+    {
+        return;
+    }
+    QFileInfo files(file);
+    QString type = files.suffix().toLower();
+    QStringList types;
+    types << "voc" << "aiff" << "au" << "dts" << "flv" << "m4r" << "mka" << "mmf"
+          << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma"
+          << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac";
+
+    if(types.indexOf(type) != -1)
+    {
+        playController::getInstance().setPlayListName(ALLMUSIC);
+    }
 }
 
 void Widget::initDbus()//初始化dbus
@@ -303,6 +331,10 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     }
     QStringList list;
     list << cmd1;
+    if(list.isEmpty())
+    {
+        return 0;
+    }
     importFile(list);
 
     return 0;
@@ -316,7 +348,11 @@ void Widget::slotText(QString btnText)
 void Widget::importFile(QStringList list)
 {
 //    MusicFileInformation::getInstance().addFile(list);
-    sideBarWid->playListBtn->click();
+//    sideBarWid->playListBtn->click();
+//    playController::getInstance().setPlayListName(ALLMUSIC);
+    if (m_initFinish) {
+        sideBarWid->playListBtn->click();
+    }
     musicListTable->addMusicToDatebase(list);
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
@@ -458,11 +494,22 @@ void Widget::initAllComponent()
     mainVBoxLayout = new QVBoxLayout();
 
 //    musicListTable = new TableBaseView();
-    QString playlistName = playController::getInstance().getPlayListName();
-    if(playlistName == HISTORY)
+    QStringList lists;
+    QString playlistName;
+    int res = g_db->getPlayList(lists);
+    if(res == DB_OP_SUCC)
     {
-        playlistName = ALLMUSIC;
+        playlistName = playController::getInstance().getPlayListName();
+        if(playlistName == HISTORY)
+        {
+            playlistName = ALLMUSIC;
+        }
+        if(lists.indexOf(playlistName) == -1)
+        {
+            playlistName = ALLMUSIC;
+        }
     }
+
     musicListTable = new TableOne(playlistName,this);
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);

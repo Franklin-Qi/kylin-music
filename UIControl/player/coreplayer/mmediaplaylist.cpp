@@ -88,7 +88,7 @@ void MMediaPlaylist::previous()
 
 void MMediaPlaylist::setCurrentIndex(int index)
 {
-    if (index == m_index) {
+    if (index == m_index && index != 0) {
         return;
     }
     if (index >= m_playerList.length()) {

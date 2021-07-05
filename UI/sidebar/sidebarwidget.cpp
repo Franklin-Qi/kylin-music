@@ -157,7 +157,6 @@ void SideBarWidget::initWidget()
     myPlayListLabel->setFont(sizeFont);
     logoNameLabel->setFont(sizeFont);
 
-
 }
 
 void SideBarWidget::initConnect()

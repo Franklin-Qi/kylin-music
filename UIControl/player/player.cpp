@@ -496,6 +496,11 @@ void playController::setPosition(int position)
        m_player->setPosition(position);
 }
 
+void playController::setPlayListName(QString playListName)
+{
+    playSetting->set("playlistname", playListName);
+}
+
 QString playController::getPlayListName()
 {
     return playSetting->get("playlistname").toString();

@@ -35,6 +35,7 @@ public:
     void addFile(const QStringList &addFile);
     int findIndexFromPlayList(QString listname, QString filepath);
     int getCount();
+    QStringList musicType;
 public slots:
     void durationChange(qint64 duration);
 signals:
@@ -60,7 +61,7 @@ private:
     QString filterTextCode(QString str);
     int preNum(unsigned char byte);
 
-    QStringList musicType;
+
     qint64 dur;
     bool success = false;
     int musicCount;
