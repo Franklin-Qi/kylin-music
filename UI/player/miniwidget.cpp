@@ -646,8 +646,21 @@ void miniWidget::songInfo(QString path)
 
 void miniWidget::slotPositionChanged(qint64 position)
 {
-    QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
-    QString str_time = duration.toString("mm:ss");
+    QString str_time;
+    int pos = position / 1000;
+    int hour = static_cast<int>(pos / 3600);
+    int minutes = static_cast<int>(pos % 3600 / 60);
+    int seconds = static_cast<int>(pos % 60);
+
+    QTime duration(hour, minutes, seconds);
+    QStringList s = m_time.split(":");
+    if(s.size() == 3) {
+        str_time = duration.toString("hh:mm:ss");
+    }
+    else {
+        str_time = duration.toString("mm:ss");
+    }
+
     QString length = str_time + "/" + m_time;
     if(m_time == "")
     {
