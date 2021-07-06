@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QVariant>
 #include <QShortcut>
+#include <QMenu>
 
 #include "sliderwidget.h"
 #include "playbackmodewidget.h"
@@ -110,7 +111,8 @@ private:
     void moveVolSliderWid();
     //计算新的播放模式
     void movePlayModeWid();
-
+    //计算新的播放模式菜单
+    void movePlayMenu();
     void listBtnClicked();
     void playMeta();
 private:
@@ -127,7 +129,8 @@ private:
     //我喜欢
     QPushButton *favBtn;
     //播放模式
-    QPushButton *playModeBtn;
+    //QPushButton *playModeBtn;
+    QToolButton *playModeBtn;
     //歌词
     QPushButton *lyricBtn;
 
@@ -145,6 +148,11 @@ private:
     QString filePath;
     //歌单名
     QString listName;
+    //播放模式菜单
+    QMenu *m_playMode;
+    QAction *loopAct;
+    QAction *randomAct;
+    QAction *currentItemInLoopAct;
 };
 
 #endif // PLAYSONGAREA_H
