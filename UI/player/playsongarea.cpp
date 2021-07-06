@@ -99,38 +99,53 @@ void PlaySongArea::initWidget()
     favBtn->setToolTip(tr("Favourite"));
 
     //播放模式
-    playModeBtn = new QPushButton;
+    playModeBtn = new QToolButton;
     playModeBtn->setFixedSize(25,25);
     playModeBtn->setCursor(Qt::PointingHandCursor);
+    playModeBtn->setPopupMode(QToolButton::InstantPopup);
+    playModeBtn->setProperty("isWindowButton", 0x1);
+    playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+    playModeBtn->setAutoRaise(true);
 
     switch (playController::getInstance().mode()) {
     case 1:
         playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
-        playModeBtn->setProperty("isWindowButton", 0x1);
-        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
-        playModeBtn->setFlat(true);
+        //playModeBtn->setProperty("isWindowButton", 0x1);
+        //playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        //playModeBtn->setFlat(true);
         playModeBtn->setToolTip(tr("CurrentItemInLoop"));
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
         playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
-        playModeBtn->setProperty("isWindowButton", 0x1);
-        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
-        playModeBtn->setFlat(true);
+        //playModeBtn->setProperty("isWindowButton", 0x1);
+        //playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        //playModeBtn->setFlat(true);
         playModeBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
     case 4:
         playModeBtn->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
-        playModeBtn->setProperty("isWindowButton", 0x1);
-        playModeBtn->setProperty("useIconHighlightEffect", 0x2);
-        playModeBtn->setFlat(true);
+        //playModeBtn->setProperty("isWindowButton", 0x1);
+        //playModeBtn->setProperty("useIconHighlightEffect", 0x2);
+        //playModeBtn->setFlat(true);
         playModeBtn->setToolTip(tr("Random"));
         playController::getInstance().setPlaymode(playController::Random);
         break;
     default:
         break;
     }
+    m_playMode = new QMenu(this);
+    loopAct = new QAction(tr("Loop"));
+    loopAct->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    randomAct = new QAction(tr("Random"));
+    randomAct->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
+    currentItemInLoopAct = new QAction(tr("CurrentItemInLoop"));
+    currentItemInLoopAct->setIcon(QIcon::fromTheme("media-playlist-repeat-one-symbolic"));
+    m_playMode->addAction(loopAct);
+    m_playMode->addAction(randomAct);
+    m_playMode->addAction(currentItemInLoopAct);
+//    playModeBtn->setMenu(m_playMode);
 
     //历史播放列表
     listBtn = new QPushButton;
@@ -261,11 +276,15 @@ void PlaySongArea::initConnect()
     connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
     connect(volumeBtn,&QPushButton::clicked,this,&PlaySongArea::slotVolSliderWidget);
     connect(favBtn,&QPushButton::clicked,this,&PlaySongArea::slotFav);
-    connect(playModeBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
-    connect(m_playBackModeWid->loopBtn,&QToolButton::clicked,this,&PlaySongArea::slotLoopClicked);
-    connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
-    connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
-    connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
+    //connect(playModeBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
+    connect(playModeBtn,&QToolButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
+//    connect(m_playBackModeWid->loopBtn,&QToolButton::clicked,this,&PlaySongArea::slotLoopClicked);
+//    connect(m_playBackModeWid->randomBtn,&QToolButton::clicked,this,&PlaySongArea::slotRandomClicked);
+//    connect(m_playBackModeWid->sequentialBtn,&QToolButton::clicked,this,&PlaySongArea::slotSequentialClicked);
+//    connect(m_playBackModeWid->currentItemInLoopBtn,&QToolButton::clicked,this,&PlaySongArea::slotCurrentItemInLoopClicked);
+    connect(loopAct,&QAction::triggered,this,&PlaySongArea::slotLoopClicked);
+    connect(randomAct,&QAction::triggered,this,&PlaySongArea::slotRandomClicked);
+    connect(currentItemInLoopAct,&QAction::triggered,this,&PlaySongArea::slotCurrentItemInLoopClicked);
     connect(&playController::getInstance(),&playController::singalChangePath,this,&PlaySongArea::slotSongInfo);
     connect(&playController::getInstance(),&playController::playerStateChange,this,&PlaySongArea::playerStateChange);
     connect(playController::getInstance().getPlayer(),SIGNAL(positionChanged(qint64)),this,SLOT(slotPositionChanged(qint64)));
@@ -394,16 +413,17 @@ void PlaySongArea::slotFav()
 
 void PlaySongArea::slotPlayBackModeChanged()
 {
-    if(m_playBackModeWid->isVisible())
-    {
-        m_playBackModeWid->hide();
-    }
-    else
-    {
-        movePlayModeWid();
-        m_playBackModeWid->show();
-        m_playBackModeWid->raise();
-    }
+    movePlayMenu();
+//    if(m_playBackModeWid->isVisible())
+//    {
+//        m_playBackModeWid->hide();
+//    }
+//    else
+//    {
+//        movePlayModeWid();
+//        m_playBackModeWid->show();
+//        m_playBackModeWid->raise();
+//    }
 }
 
 void PlaySongArea::slotLoopClicked()
@@ -625,6 +645,17 @@ void PlaySongArea::movePlayModeWid()
     int newPosY = modePos.y() + 25 + size.height() - modeSize.height() / 2 + 1;
     m_playBackModeWid->changePlayModePos(newPosX, newPosY, modeSize.width(), modeSize.height());
     m_playBackModeWid->move(modePos);
+}
+
+void PlaySongArea::movePlayMenu()
+{
+    QPoint modePos = playModeBtn->mapToGlobal(playModeBtn->rect().center());
+    QSize size = m_playMode->sizeHint();
+    modePos.setX(modePos.x() - size.width() + 70);
+    modePos.setY(modePos.y() - size.height() - 15);
+    m_playMode->move(modePos);
+    m_playMode->show();
+//    m_playMode->exec(modePos);
 }
 
 void PlaySongArea::slotPlayClicked()
