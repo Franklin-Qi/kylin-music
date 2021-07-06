@@ -8,6 +8,7 @@ MMediaPlayer::MMediaPlayer(QObject *parent)
 
 void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 {
+    //异常情况：空指针
     if (playlist == nullptr) {
         return;
     }
@@ -20,42 +21,51 @@ void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 
 void MMediaPlayer::truePlay(QString startTime)
 {
+    //异常情况：入参不合法
     if (startTime.isEmpty()) {
         return;
     }
+    //异常情况：播放列表空指针
     if (m_playList == nullptr) {
         return;
     }
     QString filePath = m_playList->getPlayFileName();
+    //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
         emit playError();
         return;
     }
 
     const QByteArray c_filename = filePath.toUtf8();
-
+    //如果文件名和上次一样，且不是因为拖动进度条播放，说明上次是暂停
     if (c_filename == filenameBack && m_positionChangeed == false) {
         if (filenameBack != "") {
+            //切换播放状态为播放
             pause();
         }
         return;
     }
+    //重置参数
     m_position = 0;
     m_positionChangeed = false;
     setProperty("start",startTime);
     const char *args[] = {"loadfile",c_filename, NULL};
     mpv_command_async(m_mpvPlayer, 0, args);
 
+    //如果不播放任何媒体，则切换状态为停止
     if (c_filename == "") {
         changeState(StoppedState);
         return;
     }
+    //记录到上次播放变量中
     filenameBack = c_filename;
+    //切换播放状态为正在播放
     changeState(PlayingState);
 }
 
 void MMediaPlayer::play()
 {
+    //从开头开始播放
     truePlay("0");
 }
 
@@ -96,12 +106,16 @@ void MMediaPlayer::setPosition(qint64 pos)
 {
     qint64 sec = pos/1000;
     m_positionChangeed = true;
+    //记录拖动进度条之前播放状态是否为暂停
     bool restartPlay = false;
     if (m_state == PausedState) {
         restartPlay = true;
     }
+    //从拖动完成的位置开始播放
     truePlay(QString::number(sec));
+
     if (restartPlay) {
+        //切换播放状态为播放
         pause();
     }
 }
@@ -119,12 +133,15 @@ qint64 MMediaPlayer::duration() const
 void MMediaPlayer::setMedia(const MMediaContent &media)
 {
     QUrl url =media.canonicalUrl();
+    //防止内存泄漏
     if (m_tmpPlayList != nullptr) {
         m_tmpPlayList->deleteLater();
     }
+    //创建新的播放列表并将歌曲录入
     m_tmpPlayList = new MMediaPlaylist(this);
     m_tmpPlayList->addMedia(url);
     setPlaylist(m_tmpPlayList);
+    //以暂停状态从头开始播放
     setProperty("pause", "yes");
     play();
 }
@@ -137,12 +154,13 @@ bool MMediaPlayer::isAvailable() const
 
 void MMediaPlayer::onMpvEvents()
 {
-    // 处理所有事件，直到事件队列为空
+    //处理所有事件，直到事件队列为空
     while (m_mpvPlayer)
     {
         mpv_event *event = mpv_wait_event(m_mpvPlayer, 0);
-        if (event->event_id == MPV_EVENT_NONE)
+        if (event->event_id == MPV_EVENT_NONE) {
             break;
+        }
         handle_mpv_event(event);
     }
 }
@@ -150,17 +168,19 @@ void MMediaPlayer::onMpvEvents()
 void MMediaPlayer::handle_mpv_event(mpv_event *event)
 {
     switch (event->event_id) {
-        // 属性改变事件发生
-        case MPV_EVENT_PROPERTY_CHANGE: {
+        case MPV_EVENT_PROPERTY_CHANGE: { //属性改变事件
             mpv_event_property *prop = (mpv_event_property *)event->data;
+            //播放时，时间改变事件
             if (strcmp(prop->name, "time-pos") == 0) {
                 if (prop->format == MPV_FORMAT_DOUBLE) {
+                    //将播放状态设置为播放中
                     if (m_state == StoppedState) {
                         changeState(PlayingState);
                     }
                     // 获得播放时间
                     double time = *(double *)prop->data;
-                    m_position = time * 1000;//单位换算为毫秒
+                    //将单位换算为毫秒
+                    m_position = time * 1000;
                     emit positionChanged(m_position);
                 } else if (prop->format == MPV_FORMAT_NONE) {
                     //当前时长距离总时长不超过500毫秒判断播放结束
@@ -177,15 +197,15 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
             }
         }
         break;
-    case MPV_EVENT_PLAYBACK_RESTART:{
+    case MPV_EVENT_PLAYBACK_RESTART:{ //初始化完成事件
+        //获取总时长
         m_duration = getProperty("duration").toDouble() *1000;//单位换算为毫秒
         emit durationChanged(m_duration);
-        //初始化完成事件
     }
         break;
-    case MPV_EVENT_END_FILE:{
-        //播放完成
+    case MPV_EVENT_END_FILE:{ //播放结束事件
         if (m_position != 0) {
+            //重置参数
             m_duration = 0;
             m_position = 0;
             //播放结束
@@ -219,8 +239,7 @@ void MMediaPlayer::createMvpplayer()
     //禁用视频流
     setProperty("vid", "no");
     //接收事件
-    connect(this, &MMediaPlayer::mpvEvents, this, &MMediaPlayer::onMpvEvents,
-            Qt::QueuedConnection);
+    connect(this, &MMediaPlayer::mpvEvents, this, &MMediaPlayer::onMpvEvents, Qt::QueuedConnection);
     mpv_set_wakeup_callback(m_mpvPlayer, wakeup, this);
     //绑定事件
     mpv_observe_property(m_mpvPlayer, 0, "time-pos", MPV_FORMAT_DOUBLE);
@@ -243,18 +262,19 @@ QString MMediaPlayer::getProperty(const QString &name) const
 
 void MMediaPlayer::changeState(MMediaPlayer::State stateNow)
 {
+    //待设置的循环模式和设置之前一致则不处理
+    if (m_state == stateNow ) {
+        return;
+    }
     m_state = stateNow;
     emit stateChanged(m_state);
 }
 
 void MMediaPlayer::autoPlay(MMediaPlaylist::PlaybackMode playbackMode)
 {
-    if (playbackMode == MMediaPlaylist::PlaybackMode::Sequential) {
-        truePlay("");
-        return;
-    }
+    //如果是单曲循环模式
     if (playbackMode == MMediaPlaylist::PlaybackMode::CurrentItemInLoop) {
-        //播放完毕自动切歌（单曲循环借用播放点改变时间逻辑循环）
+        //播放完毕自动切歌（借用播放点改变时间逻辑循环）
         m_positionChangeed = true;
     }
     truePlay("0");
