@@ -339,8 +339,8 @@ void PlaySongArea::slotFav()
     if(g_db->checkSongIsInFav(filePath))
     {
         QList<musicDataStruct> resList;
-        int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
-        int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
+        int ref = g_db->getSongInfoListFromDB(resList, FAV);
+        int ret = g_db->delMusicFromPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
 //            emit signalAddFromFavButton("我喜欢");
@@ -352,11 +352,11 @@ void PlaySongArea::slotFav()
                 {
                     if(resList.at(i).filepath == filePath)
                     {
-                        playController::getInstance().removeSongFromCurList("我喜欢", i);
+                        playController::getInstance().removeSongFromCurList(FAV, i);
                         //刷新我喜欢界面
-                        if(listName == "我喜欢")
+                        if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav("我喜欢");
+                            emit signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -366,14 +366,14 @@ void PlaySongArea::slotFav()
     }
     else
     {
-        int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
+        int ref = g_db->addMusicToPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
-            playController::getInstance().addSongToCurList("我喜欢", filePath);
+            playController::getInstance().addSongToCurList(FAV, filePath);
 //            emit signalDelFromFavButton("我喜欢");
-            if(listName == "我喜欢")
+            if(listName == tr("I Love"))
             {
-                emit signalRefreshFav("我喜欢");
+                emit signalRefreshFav(FAV);
             }
         }
 //        emit signalRefreshFav("我喜欢");
@@ -516,8 +516,21 @@ void PlaySongArea::playerStateChange(playController::PlayState newState)
 
 void PlaySongArea::slotPositionChanged(qint64 position)
 {
-    QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
-    QString str_time = duration.toString("mm:ss");
+    QString str_time;
+    int pos = position / 1000;
+    int hour = static_cast<int>(pos / 3600);
+    int minutes = static_cast<int>(pos % 3600 / 60);
+    int seconds = static_cast<int>(pos % 60);
+
+    QTime duration(hour, minutes, seconds);
+    QStringList s = m_time.split(":");
+    if(s.size() == 3) {
+        str_time = duration.toString("hh:mm:ss");
+    }
+    else {
+        str_time = duration.toString("mm:ss");
+    }
+
     QString length = str_time + "/" + m_time;
     if(m_time == "")
     {
@@ -760,13 +773,18 @@ void PlaySongArea::slotHistoryBtnChecked(bool checked)
 {
     listBtn->setChecked(checked);
 }
-void PlaySongArea::slotFavIsExixts(QString filePath)
+void PlaySongArea::slotFavIsExixts(QString filePaths)
 {
     if(WidgetStyle::themeColor == 1)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             if(playingLabel->text() == tr("Music Player"))
+            {
+                return;
+            }
+            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -774,6 +792,11 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
         }
         else
         {
+            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+            if(filePath != filePaths)
+            {
+                return;
+            }
             favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
@@ -782,9 +805,13 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             if(playingLabel->text() == tr("Music Player"))
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -792,6 +819,10 @@ void PlaySongArea::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                   "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"

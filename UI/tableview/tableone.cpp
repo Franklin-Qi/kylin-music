@@ -635,7 +635,9 @@ void TableOne::addMusicSlot()
         fileDialog->setSidebarUrls(list);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
-    fileDialog->setNameFilter("音乐文件(*.voc *.aiff *.au *.dts *.flv *.m4r *.mka *.mmf *.mp2 *.mp4 *.mpa *.wv *.voc *.mp3 *.ogg *.wma *.amr *.flac *.wav *.ape *.m4a *.ac3 *.aac)");
+    QString setFilter = tr("Audio File") + (" (%1) ");
+    setFilter = setFilter.arg(MusicFileInformation::getInstance().getMusicType().join(" "));
+    fileDialog->setNameFilter(setFilter);
     //设置视图模式
     fileDialog->setViewMode(QFileDialog::Detail);
     //设置可以选择多个文件,默认为只能选择一个文件QFileDialog::ExistingFiles
@@ -717,18 +719,17 @@ void TableOne::addDirMusicSlot()
     {
         return;
     }
-    foreach (QString dirPath, m_fileNames) {
-        QDir dir(dirPath);
-        QStringList nameFilters;
-        nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
-        QStringList fileNames = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
-        for(int i = 0; i < fileNames.count(); i++)
-        {
-            fileNames[i] = QString(dirPath + "/" + fileNames[i]);
-        }
-        addMusicToDatebase(fileNames);
-    }
+//    foreach (QString dirPath, m_fileNames) {
+//        QDir dir(dirPath);
+//        QStringList fileNames = dir.entryList(MusicFileInformation::getInstance().getMusicType(), QDir::Files|QDir::Readable, QDir::Name);
+//        for(int i = 0; i < fileNames.count(); i++)
+//        {
+//            fileNames[i] = QString(dirPath + "/" + fileNames[i]);
+//        }
 
+//    }
+
+    addMusicToDatebase(m_fileNames);
 }
 
 void TableOne::addMusicToDatebase(QStringList fileNames)

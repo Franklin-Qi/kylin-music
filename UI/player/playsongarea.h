@@ -62,7 +62,7 @@ public slots:
     //深色模式图标样式
     void slotFavExixtsDark();
     //动态添加判断我喜欢是否存在
-    void slotFavIsExixts(QString filePath);
+    void slotFavIsExixts(QString filePaths);
     //显示音量界面
     void slotVolSliderWidget();
     //音量调高

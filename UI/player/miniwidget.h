@@ -70,7 +70,7 @@ public slots:
     void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
     void slotFavExixtsDark();
-    void slotFavIsExixts(QString filePath);
+    void slotFavIsExixts(QString filePaths);
     void slotSongInfo(QString path);
     void slotFav();
     //接收播放区我喜欢按钮改变

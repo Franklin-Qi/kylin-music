@@ -12,8 +12,17 @@ extern "C" {
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "voc" << "aiff" << "au" << "dts" << "flv" << "m4r" << "mka" << "mmf" << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma" << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac";
+    m_musicType << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r"
+                << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv"
+                << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac"
+                << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
 }
+
+QStringList MusicFileInformation::getMusicType()
+{
+    return m_musicType;
+}
+
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
     int count = 0;
@@ -28,10 +37,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         QFileInfo fileInfo(filepath);
         if(fileInfo.isDir())
         {
-            QStringList nameFilters;
-            nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
             //适合用于大目录
-            QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
+            QDirIterator iter(filepath,m_musicType,QDir::Files,QDirIterator::Subdirectories);
             while (iter.hasNext())
             {
                 count++;
@@ -40,7 +47,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 fileInfo.setFile(musicdataStruct.filepath);
                 fileType(fileInfo);          //文件类型
                 fileSize(fileInfo);      //文件大小
-                if(musicType.indexOf(musicdataStruct.filetype) != -1)
+                if(m_musicType.contains("*." + musicdataStruct.filetype))
                 {
                     fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                     if(musicdataStruct.time != "")
@@ -57,7 +64,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             fileInfo.setFile(musicdataStruct.filepath);
             fileType(fileInfo);          //文件类型
             fileSize(fileInfo);      //文件大小
-            if(musicType.indexOf(musicdataStruct.filetype) != -1)
+            if(m_musicType.contains("*." + musicdataStruct.filetype))
             {
                 fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                 if(musicdataStruct.time != "")
@@ -161,7 +168,6 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
     TagLib::FileRef f(byteArray.data());
     if(f.isNull())
     {
-        int importFailCount = 0;
         musicdataStruct.time = "";
         AVFormatContext *pFormatCtx = NULL;
         avformat_open_input(&pFormatCtx, filepath.toStdString().c_str(), nullptr, nullptr);
@@ -171,62 +177,40 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
             qint64 duration = pFormatCtx->duration / 1000;
             if(duration > 0)
             {
-                QTime me(0,(duration/60000) % 60,(duration / 1000) % 60);
-                QString length = me.toString("mm:ss");
-                musicdataStruct.time = length;
+                duration = duration / 1000;
+//                QTime me(0,(duration/60000) % 60,(duration / 1000) % 60);
+//                QString length = me.toString("mm:ss");
+                int h = duration / 3600;
+                QString hour = QString("%1").arg(duration / 3600, 2, 10, QChar('0'));
+                QString minutes = QString("%1").arg(duration % 3600 / 60, 2, 10, QChar('0'));
+                QString seconds = QString("%1").arg(duration % 60, 2, 10, QChar('0'));
+
+                if(h > 0) {
+                    musicdataStruct.time = QString("%1:%2:%3").arg(hour).arg(minutes).arg(seconds);
+                }
+                else {
+                    musicdataStruct.time = QString("%1:%2").arg(minutes).arg(seconds);
+                }
+
+                musicdataStruct.title = fileInfo.completeBaseName();
+                musicdataStruct.singer = tr("Unknown singer");
+                musicdataStruct.album  = tr("Unknown album");
+                information << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+                return information;
             }
+        }
+        else
+        {
+            QStringList str;
+            musicdataStruct.singer = "";
+            musicdataStruct.album = "";
+            musicdataStruct.title  = "";
+            musicdataStruct.time  = "";
+            str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+            return str;
         }
         avformat_close_input(&pFormatCtx);
         avformat_free_context(pFormatCtx);
-        if(musicdataStruct.time == "")
-        {
-            importFailCount++;
-            QEventLoop loop;
-            MMediaContent media(QUrl::fromLocalFile(filepath));
-            MMediaPlayer *music = new MMediaPlayer(this);    //添加歌曲当前位置闪退(没有定位到问题)（没有this）
-            music->setMedia(media);
-            connect(music,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
-            connect(this,SIGNAL(durations()),&loop,SLOT(quit()));
-            QTimer::singleShot(1000,&loop,&QEventLoop::quit);
-            loop.exec();
-            if(success)
-            {
-                QStringList list;
-                QString name = fileInfo.completeBaseName();
-                QString singer = "未知歌手";
-                QString album = "未知专辑";
-                musicdataStruct.singer = singer;
-                musicdataStruct.album = album;
-                musicdataStruct.title  = name;
-                QTime me(0,(dur/60000) % 60,(dur / 1000) % 60);
-                QString m_str = me.toString("mm:ss");
-                musicdataStruct.time = m_str;
-                list << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
-                return list;
-            }
-            else
-            {
-                QStringList str;
-                musicdataStruct.singer = "";
-                musicdataStruct.album = "";
-                musicdataStruct.title  = "";
-                musicdataStruct.time  = "";
-                str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
-                return str;
-            }
-            music->deleteLater();
-        }
-        if(importFailCount <= 0)
-        {
-            QString name = fileInfo.completeBaseName();
-            QString singer = "未知歌手";
-            QString album = "未知专辑";
-            musicdataStruct.singer = singer;
-            musicdataStruct.album = album;
-            musicdataStruct.title  = name;
-            information << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
-            return information;
-        }
     }
     TagLib::PropertyMap propertyMap = f.file() ->properties();
     QString musicName = propertyMap["TITLE"].toString().toCString(true);
@@ -234,21 +218,32 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         musicName = fileInfo.completeBaseName();
     QString musicSinger = propertyMap["ARTIST"].toString().toCString(true);
     if(filterTextCode(musicSinger).isEmpty())
-        musicSinger = "未知歌手";
+        musicSinger = tr("Unknown singer");
     QString musicAlbum = propertyMap["ALBUM"].toString().toCString(true);
     if(filterTextCode(musicAlbum).isEmpty())
-        musicAlbum = "未知专辑";
+        musicAlbum = tr("Unknown album");
     TagLib::AudioProperties *properties = f.audioProperties();
 
-    int seconds = properties->length() % 60;
-    int minutes = (properties->length() - seconds) / 60;
-    QTime time(0,minutes,seconds);
-//    QString musicTime = QString::number(minutes)+":"+QString("%1").arg(seconds, 2, 10, QChar('0'));
-    QString musicTime = time.toString("mm:ss");
+    int h = properties->length() / 3600;
+    QString hour = QString("%1").arg(properties->length() / 3600, 2, 10, QChar('0'));
+    QString minutes = QString("%1").arg(properties->length() % 3600 / 60, 2, 10, QChar('0'));
+    QString seconds = QString("%1").arg(properties->length() % 60, 2, 10, QChar('0'));
+
+    if(h > 0) {
+        musicdataStruct.time = QString("%1:%2:%3").arg(hour).arg(minutes).arg(seconds);
+    }
+    else {
+        musicdataStruct.time = QString("%1:%2").arg(minutes).arg(seconds);
+    }
+
+//    int seconds = properties->length() % 60;
+//    int minutes = (properties->length() - seconds) / 60;
+//    QTime time(0,minutes,seconds);
+////    QString musicTime = QString::number(minutes)+":"+QString("%1").arg(seconds, 2, 10, QChar('0'));
+//    QString musicTime = time.toString("mm:ss");
     musicdataStruct.title = musicName;
     musicdataStruct.singer = musicSinger;
     musicdataStruct.album = musicAlbum;
-    musicdataStruct.time = musicTime;
     QStringList audioFileInformation;
     audioFileInformation << musicdataStruct.title << musicdataStruct.singer
                          << musicdataStruct.album << musicdataStruct.time;
@@ -354,7 +349,7 @@ QString MusicFileInformation::fileSize(QFileInfo fileInfo)
 
 QString MusicFileInformation::fileType(QFileInfo fileInfo)
 {
-    QString musicType = fileInfo.suffix();        //文件类型
+    QString musicType = fileInfo.suffix().toLower();        //文件类型
     musicdataStruct.filetype = musicType;
     return musicdataStruct.filetype;
 }

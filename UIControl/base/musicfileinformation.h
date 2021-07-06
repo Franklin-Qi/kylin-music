@@ -31,11 +31,13 @@ public:
         static MusicFileInformation instance;
         return instance;
     }
+
+    QStringList getMusicType();
     QList<musicDataStruct> resList;
     void addFile(const QStringList &addFile);
     int findIndexFromPlayList(QString listname, QString filepath);
     int getCount();
-    QStringList musicType;
+    QStringList m_musicType;
 public slots:
     void durationChange(qint64 duration);
 signals:

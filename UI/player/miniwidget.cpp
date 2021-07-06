@@ -266,6 +266,8 @@ void miniWidget::init_miniWidget()
     if(playPath != "")
     {
         songInfo(playPath);
+        //根据保存的路径设置我喜欢按钮图标样式
+        filePath = playPath;
         slotPositionChanged(0);
     }
     else
@@ -460,8 +462,8 @@ void miniWidget::slotFav()
     if(g_db->checkSongIsInFav(filePath))
     {
         QList<musicDataStruct> resList;
-        int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
-        int ret = g_db->delMusicFromPlayList(filePath,"我喜欢");
+        int ref = g_db->getSongInfoListFromDB(resList, FAV);
+        int ret = g_db->delMusicFromPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
             //根据歌单名title值查询对应歌单列表
@@ -472,11 +474,11 @@ void miniWidget::slotFav()
                 {
                     if(resList.at(i).filepath == filePath)
                     {
-                        playController::getInstance().removeSongFromCurList("我喜欢", i);
+                        playController::getInstance().removeSongFromCurList(FAV, i);
                         //当前为我喜欢界面才刷新
-                        if(listName == "我喜欢")
+                        if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav("我喜欢");
+                            emit signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -486,13 +488,13 @@ void miniWidget::slotFav()
     }
     else
     {
-        int ref = g_db->addMusicToPlayList(filePath,"我喜欢");
+        int ref = g_db->addMusicToPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
-            playController::getInstance().addSongToCurList("我喜欢", filePath);
-            if(listName == "我喜欢")
+            playController::getInstance().addSongToCurList(FAV, filePath);
+            if(listName == tr("I Love"))
             {
-                emit signalRefreshFav("我喜欢");
+                emit signalRefreshFav(FAV);
             }
         }
     }
@@ -549,14 +551,18 @@ void miniWidget::slotFavExixtsDark()
     emit signalFavBtnChange(filePath);
 }
 
-void miniWidget::slotFavIsExixts(QString filePath)
+void miniWidget::slotFavIsExixts(QString filePaths)
 {
     if(WidgetStyle::themeColor == 1)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             //由于mini歌曲title是播放区传送故判断 ""
             if(m_songNameLab->text() == "")
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -565,6 +571,10 @@ void miniWidget::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
@@ -573,10 +583,14 @@ void miniWidget::slotFavIsExixts(QString filePath)
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(g_db->checkSongIsInFav(filePaths))
         {
             //由于mini歌曲title是播放区传送故判断 ""
             if(m_songNameLab->text() == "")
+            {
+                return;
+            }
+            if(filePath != filePaths)
             {
                 return;
             }
@@ -585,6 +599,10 @@ void miniWidget::slotFavIsExixts(QString filePath)
         }
         else
         {
+            if(filePath != filePaths)
+            {
+                return;
+            }
             m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
                                      "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
@@ -646,8 +664,21 @@ void miniWidget::songInfo(QString path)
 
 void miniWidget::slotPositionChanged(qint64 position)
 {
-    QTime duration(0, static_cast<int>(position) / 60000, static_cast<int>((position % 60000) / 1000.0));
-    QString str_time = duration.toString("mm:ss");
+    QString str_time;
+    int pos = position / 1000;
+    int hour = static_cast<int>(pos / 3600);
+    int minutes = static_cast<int>(pos % 3600 / 60);
+    int seconds = static_cast<int>(pos % 60);
+
+    QTime duration(hour, minutes, seconds);
+    QStringList s = m_time.split(":");
+    if(s.size() == 3) {
+        str_time = duration.toString("hh:mm:ss");
+    }
+    else {
+        str_time = duration.toString("mm:ss");
+    }
+
     QString length = str_time + "/" + m_time;
     if(m_time == "")
     {
