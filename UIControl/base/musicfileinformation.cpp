@@ -12,8 +12,17 @@ extern "C" {
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
-    musicType << "voc" << "aiff" << "au" << "dts" << "flv" << "m4r" << "mka" << "mmf" << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma" << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac";
+    m_musicType << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r"
+                << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv"
+                << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac"
+                << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
 }
+
+QStringList MusicFileInformation::getMusicType()
+{
+    return m_musicType;
+}
+
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
     int count = 0;
@@ -28,10 +37,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         QFileInfo fileInfo(filepath);
         if(fileInfo.isDir())
         {
-            QStringList nameFilters;
-            nameFilters << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r" << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv" << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac" << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
             //适合用于大目录
-            QDirIterator iter(filepath,nameFilters,QDir::Files,QDirIterator::Subdirectories);
+            QDirIterator iter(filepath,m_musicType,QDir::Files,QDirIterator::Subdirectories);
             while (iter.hasNext())
             {
                 count++;
@@ -40,7 +47,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 fileInfo.setFile(musicdataStruct.filepath);
                 fileType(fileInfo);          //文件类型
                 fileSize(fileInfo);      //文件大小
-                if(musicType.indexOf(musicdataStruct.filetype) != -1)
+                if(m_musicType.contains("*." + musicdataStruct.filetype))
                 {
                     fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                     if(musicdataStruct.time != "")
@@ -57,7 +64,7 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             fileInfo.setFile(musicdataStruct.filepath);
             fileType(fileInfo);          //文件类型
             fileSize(fileInfo);      //文件大小
-            if(musicType.indexOf(musicdataStruct.filetype) != -1)
+            if(m_musicType.contains("*." + musicdataStruct.filetype))
             {
                 fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                 if(musicdataStruct.time != "")
@@ -342,7 +349,7 @@ QString MusicFileInformation::fileSize(QFileInfo fileInfo)
 
 QString MusicFileInformation::fileType(QFileInfo fileInfo)
 {
-    QString musicType = fileInfo.suffix();        //文件类型
+    QString musicType = fileInfo.suffix().toLower();        //文件类型
     musicdataStruct.filetype = musicType;
     return musicdataStruct.filetype;
 }

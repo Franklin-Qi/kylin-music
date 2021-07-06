@@ -118,12 +118,8 @@ void Widget::stateMusicFile(QStringList args)
     }
     QFileInfo files(file);
     QString type = files.suffix().toLower();
-    QStringList types;
-    types << "voc" << "aiff" << "au" << "dts" << "flv" << "m4r" << "mka" << "mmf"
-          << "mp2" << "mp4" << "mpa" << "wv" << "voc" << "mp3" << "ogg" << "wma"
-          << "amr" << "flac" << "wav" << "ape" << "m4a" << "ac3" << "aac";
 
-    if(types.indexOf(type) != -1)
+    if(MusicFileInformation::getInstance().getMusicType().contains("*." + type))
     {
         playController::getInstance().setPlayListName(ALLMUSIC);
     }
