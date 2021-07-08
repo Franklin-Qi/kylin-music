@@ -1,6 +1,6 @@
-# Kylin Music
+# Music Player
 ## Overview
-Kylin Music is a simple to use, user-friendly, support.mp3,.ogg,.wma,.spx,.flac and other music formats music player. While playing local music, you can also group music by custom playlists according to your preferences. In addition to the regular mode, Kirin Music also has a small window mode to meet the different needs of users.
+ Music Player is a simple to use, user-friendly, support.mp3,.ogg,.wma,.spx,.flac and other music formats music player. While playing local music, you can also group music by custom playlists according to your preferences. In addition to the regular mode, Music Player also has a small window mode to meet the different needs of users.
 
 <br>
 
