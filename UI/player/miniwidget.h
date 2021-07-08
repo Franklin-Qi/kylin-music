@@ -31,6 +31,7 @@
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/mylabel.h"
+#include "UIControl/base/musicfileinformation.h"
 
 const QString miniMainColor = "QFrame{background:#FFFFFF;}";
 

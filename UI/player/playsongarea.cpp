@@ -494,6 +494,9 @@ void PlaySongArea::setPlayMode(int playModel)
 void PlaySongArea::slotSongInfo(QString path)
 {
     filePath = path.remove("file://");
+    QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
+    setCoverPhotoPixmap(pix);
+
     musicDataStruct musicStruct;
     g_db->getSongInfoFromDB(filePath, musicStruct);
     //使用库解析总时间
@@ -510,6 +513,19 @@ void PlaySongArea::slotSongInfo(QString path)
         emit signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
+}
+
+void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
+{
+    if(pixmap.isNull())
+    {
+        pixmap = QIcon(":/img/fengmian.png").pixmap(QSize(40,40));
+    }
+    else
+    {
+        pixmap = pixmap.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    }
+    coverPhotoLabel->setPixmap(pixmap);
 }
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)

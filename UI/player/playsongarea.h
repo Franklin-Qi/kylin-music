@@ -87,6 +87,7 @@ public slots:
     void setPlayMode(int playModel);
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
+    void setCoverPhotoPixmap(QPixmap pixmap);
     void playerStateChange(playController::PlayState newState);
     //播放滑动条相关
     void slotPositionChanged(qint64 position);

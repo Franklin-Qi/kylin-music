@@ -224,7 +224,62 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         musicAlbum = tr("Unknown album");
     TagLib::AudioProperties *properties = f.audioProperties();
 
+    if(properties == nullptr)
+    {
+        QStringList str;
+        musicdataStruct.singer = "";
+        musicdataStruct.album = "";
+        musicdataStruct.title  = "";
+        musicdataStruct.time  = "";
+        str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+        return str;
+    }
+
     int h = properties->length() / 3600;
+    if( h <= 0)
+    {
+        musicdataStruct.time = "";
+        AVFormatContext *pFormatCtx = NULL;
+        avformat_open_input(&pFormatCtx, filepath.toStdString().c_str(), nullptr, nullptr);
+        if(pFormatCtx)
+        {
+            avformat_find_stream_info(pFormatCtx, nullptr);
+            qint64 duration = pFormatCtx->duration / 1000;
+            if(duration > 0)
+            {
+                duration = duration / 1000;
+                int h = duration / 3600;
+                QString hour = QString("%1").arg(duration / 3600, 2, 10, QChar('0'));
+                QString minutes = QString("%1").arg(duration % 3600 / 60, 2, 10, QChar('0'));
+                QString seconds = QString("%1").arg(duration % 60, 2, 10, QChar('0'));
+
+                if(h > 0) {
+                    musicdataStruct.time = QString("%1:%2:%3").arg(hour).arg(minutes).arg(seconds);
+                }
+                else {
+                    musicdataStruct.time = QString("%1:%2").arg(minutes).arg(seconds);
+                }
+
+                musicdataStruct.title = musicName;
+                musicdataStruct.singer = musicSinger;
+                musicdataStruct.album  = musicAlbum;
+                information << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+                return information;
+            }
+        }
+        else
+        {
+            QStringList str;
+            musicdataStruct.singer = "";
+            musicdataStruct.album = "";
+            musicdataStruct.title  = "";
+            musicdataStruct.time  = "";
+            str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+            return str;
+        }
+        avformat_close_input(&pFormatCtx);
+        avformat_free_context(pFormatCtx);
+    }
     QString hour = QString("%1").arg(properties->length() / 3600, 2, 10, QChar('0'));
     QString minutes = QString("%1").arg(properties->length() % 3600 / 60, 2, 10, QChar('0'));
     QString seconds = QString("%1").arg(properties->length() % 60, 2, 10, QChar('0'));
@@ -248,6 +303,35 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
     audioFileInformation << musicdataStruct.title << musicdataStruct.singer
                          << musicdataStruct.album << musicdataStruct.time;
     return audioFileInformation;
+}
+
+QPixmap MusicFileInformation::getCoverPhotoPixmap(QString filepath)
+{
+    AVFormatContext *pFormatCtx = NULL;
+    avformat_open_input(&pFormatCtx, filepath.toUtf8().data(), nullptr, nullptr);
+
+    QPixmap pixmap;
+    QImage image;
+    if(pFormatCtx)
+    {
+        if(pFormatCtx->iformat != nullptr && pFormatCtx->iformat->read_header(pFormatCtx) >= 0)
+        {
+            for(unsigned int i = 0; i < pFormatCtx->nb_streams; i++)
+            {
+                if(pFormatCtx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC)
+                {
+                    AVPacket pkt = pFormatCtx->streams[i]->attached_pic;
+                    image = QImage::fromData(static_cast<uchar *>(pkt.data), pkt.size);
+                    break;
+                }
+            }
+        }
+    }
+
+    avformat_close_input(&pFormatCtx);
+    avformat_free_context(pFormatCtx);
+    pixmap = QPixmap::fromImage(image);
+    return pixmap;
 }
 
 QStringList MusicFileInformation::updateSongInfoFromLocal(QString filepath)
