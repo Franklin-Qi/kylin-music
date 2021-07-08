@@ -38,6 +38,8 @@ public:
     int findIndexFromPlayList(QString listname, QString filepath);
     int getCount();
     QStringList m_musicType;
+    //获取封面图片
+    QPixmap getCoverPhotoPixmap(QString filepath);
 public slots:
     void durationChange(qint64 duration);
 signals:
