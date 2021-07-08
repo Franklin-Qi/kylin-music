@@ -1,0 +1,8 @@
+path="/.config/"
+filename=".kylin_music_ver*_mymusic.db"
+for user in /home/*
+do
+	if [ -f $user$path$filename ];then
+		rm $user$path$filename
+	fi
+done
