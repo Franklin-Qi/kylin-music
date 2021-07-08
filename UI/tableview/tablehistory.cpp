@@ -150,6 +150,15 @@ void TableHistory::slotPlayPathChanged(QString songPath)
             return;
         }
     }
+    else if(songPath == "")
+    {
+        nowPlayIndex = -1;
+        refreshHistoryTable();
+    }
+    else
+    {
+        return;
+    }
 }
 
 bool TableHistory::nativeEvent(const QByteArray &eventType, void *message, long *result)
