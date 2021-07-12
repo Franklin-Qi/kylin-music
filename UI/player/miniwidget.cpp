@@ -152,7 +152,6 @@ void miniWidget::minicolor()
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
         }
 
-//        m_loveBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
         slotFavExixtsDark();
 
         m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
@@ -208,9 +207,6 @@ void miniWidget::minicolor()
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
         }
 
-//        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
-//                                 "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-//                                 "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
         slotFavExixts();
 
         m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
@@ -310,8 +306,12 @@ void miniWidget::init_miniWidget()
     /****************************************************/
 
     m_loveBtn = new QPushButton;
-    m_loveBtn->setFixedSize(16,16);
+    m_loveBtn->setFixedSize(25,25);
     m_loveBtn->setCursor(Qt::PointingHandCursor);
+//    m_loveBtn->setFocusPolicy(Qt::NoFocus);
+    m_loveBtn->setProperty("isWindowButton", 0x1);
+    m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
+    m_loveBtn->setFlat(true);
 
     m_orderBtn = new QPushButton;
     m_orderBtn->setFixedSize(25,25);
@@ -514,36 +514,14 @@ void miniWidget::slotFav()
 
 void miniWidget::slotFavExixts()
 {
-    if(WidgetStyle::themeColor == 1)
-    {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
-        }
-        else
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
+    if (g_db->checkSongIsInFav(filePath)) {
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
+    } else {
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    else if(WidgetStyle::themeColor == 0)
-    {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
 
-        }
-        else
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
-    }
     emit signalFavBtnChange(filePath);
 }
 
@@ -551,107 +529,55 @@ void miniWidget::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-        m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}");
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     emit signalFavBtnChange(filePath);
 }
 
 void miniWidget::slotFavIsExixts(QString filePaths)
 {
-    if(WidgetStyle::themeColor == 1)
+    if(g_db->checkSongIsInFav(filePaths))
     {
-        if(g_db->checkSongIsInFav(filePaths))
+        //由于mini歌曲title是播放区传送故判断 ""
+        if(m_songNameLab->text() == "")
         {
-            //由于mini歌曲title是播放区传送故判断 ""
-            if(m_songNameLab->text() == "")
-            {
-                return;
-            }
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
+            return;
         }
-        else
+        if(filePath != filePaths)
         {
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
+            return;
         }
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
-    else if(WidgetStyle::themeColor == 0)
+    else
     {
-        if(g_db->checkSongIsInFav(filePaths))
+        if(filePath != filePaths)
         {
-            //由于mini歌曲title是播放区传送故判断 ""
-            if(m_songNameLab->text() == "")
-            {
-                return;
-            }
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
+            return;
         }
-        else
-        {
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
 
 void miniWidget::slotFavBtnChange(QString filePath)
 {
-    if(WidgetStyle::themeColor == 1)
+    if(g_db->checkSongIsInFav(filePath))
     {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
-        }
-        else
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
-    else if(WidgetStyle::themeColor == 0)
+    else
     {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-
-        }
-        else
-        {
-            m_loveBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                     "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
 

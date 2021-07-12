@@ -91,12 +91,15 @@ void PlaySongArea::initWidget()
     hSlider->setValue(0);
     hSlider->setDisabled(true);
     favBtn = new QPushButton;
-    favBtn->setFixedSize(16,16);
+    favBtn->setFixedSize(25,25);
 //    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    favBtn->setChecked(false);
     favBtn->setCursor(Qt::PointingHandCursor);
     favBtn->setFocusPolicy(Qt::NoFocus);
     favBtn->setToolTip(tr("Favourite"));
+    favBtn->setProperty("isWindowButton", 0x1);
+    favBtn->setProperty("useIconHighlightEffect", 0x2);
+    favBtn->setFlat(true);
 
     //播放模式
     playModeBtn = new QToolButton;
@@ -759,44 +762,14 @@ void PlaySongArea::listBtnClicked()
 
 void PlaySongArea::slotFavExixts()
 {
-    if(WidgetStyle::themeColor == 1)
-    {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            //        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
-        else
-        {
-            //        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
-            //                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-            //                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
-            //                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
+    if (g_db->checkSongIsInFav(filePath)) {
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setProperty("useIconHighlightEffect", 0x4);
+    } else {
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    else if(WidgetStyle::themeColor == 0)
-    {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            //        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
-        else
-        {
-            //        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
-            //                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-            //                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
-            //                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
-    }
+
     emit signalFavBtnChange(filePath);
 }
 
@@ -804,15 +777,13 @@ void PlaySongArea::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-//        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
-        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-//        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/icon_love2_b@2x.png);}");
-//        favBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
-        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}");
-//        favBtn->setIcon(QIcon(":/img/dark/ukui-play-love-symbolic-w.svg"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     emit signalFavBtnChange(filePath);
 }
@@ -822,99 +793,47 @@ void PlaySongArea::slotHistoryBtnChecked(bool checked)
 }
 void PlaySongArea::slotFavIsExixts(QString filePaths)
 {
-    if(WidgetStyle::themeColor == 1)
+    if(g_db->checkSongIsInFav(filePaths))
     {
-        if(g_db->checkSongIsInFav(filePaths))
+        if(playingLabel->text() == tr("Music Player"))
         {
-            if(playingLabel->text() == tr("Music Player"))
-            {
-                return;
-            }
-            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
+            return;
         }
-        else
+        //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+        if(filePath != filePaths)
         {
-            //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.png);}");
+            return;
         }
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
-    else if(WidgetStyle::themeColor == 0)
+    else
     {
-        if(g_db->checkSongIsInFav(filePaths))
+        //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
+        if(filePath != filePaths)
         {
-            if(playingLabel->text() == tr("Music Player"))
-            {
-                return;
-            }
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
+            return;
         }
-        else
-        {
-            if(filePath != filePaths)
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.png);}");
-        }
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
 
 void PlaySongArea::slotFavBtnChange(QString filePath)
 {
-    if(WidgetStyle::themeColor == 1)
+    if(g_db->checkSongIsInFav(filePath))
     {
-        if(g_db->checkSongIsInFav(filePath))
+        if(playingLabel->text() == tr("Music Player"))
         {
-            if(playingLabel->text() == tr("Music Player"))
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
+            return;
         }
-        else
-        {
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/dark/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.png);}");
-        }
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
-    else if(WidgetStyle::themeColor == 0)
+    else
     {
-        if(g_db->checkSongIsInFav(filePath))
-        {
-            if(playingLabel->text() == tr("Music Player"))
-            {
-                return;
-            }
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.svg);}");
-        }
-        else
-        {
-            favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::hover{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::pressed{border-image:url(:/img/hover/ukui-play-love-symbolic-w.svg);}"
-                                  "QPushButton::checked{border-image:url(:/img/clicked/ukui-play-love-symbolic-w.png);}");
-        }
+        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
 
@@ -927,9 +846,6 @@ void PlaySongArea::playcolor()
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-//        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-//                               "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-//                               "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
         if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
         {
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
@@ -953,10 +869,6 @@ void PlaySongArea::playcolor()
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/nextsong.png);}");
 
-//        favBtn->setIcon(QIcon(":/img/dark/icon_love2_b@2x.png"));
-//        favBtn->setStyleSheet("QPushButton{border-image:url(::/img/dark/icon_love2_b@2x.png);}"
-//                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-//                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}");
         slotFavExixtsDark();
 
 //        listBtn->setIcon(QIcon(":/img/dark/icon_songlist_h@2x.png"));
@@ -1003,10 +915,6 @@ void PlaySongArea::playcolor()
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/nextsong.png);}");
 
-//        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/default/loveblack2.png);}"
-//                              "QPushButton::hover{border-image:url(:/img/clicked/love2.png);}"
-//                              "QPushButton::pressed{border-image:url(:/img/clicked/love1h.png);}"
-//                              "QPushButton::checked{border-image:url(:/img/clicked/love1.png);}");
         slotFavExixts();
 
 //        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/default/songlist.png)}"
