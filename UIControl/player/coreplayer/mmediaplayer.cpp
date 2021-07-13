@@ -203,16 +203,17 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         emit durationChanged(m_duration);
     }
         break;
-    case MPV_EVENT_END_FILE:{ //播放结束事件
-        if (m_position != 0) {
-            //重置参数
-            m_duration = 0;
-            m_position = 0;
-            //播放结束
-            emit playFinish();
-        }
-    }
-        break;
+        //MPV会概率错误的发送此信号，导致没播放完也跳转到下一首
+//    case MPV_EVENT_END_FILE:{ //播放结束事件
+//        if (m_position != 0) {
+//            //重置参数
+//            m_duration = 0;
+//            m_position = 0;
+//            //播放结束
+//            emit playFinish();
+//        }
+//    }
+//        break;
         default: ;
     }
 }
