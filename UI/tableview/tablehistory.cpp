@@ -15,6 +15,7 @@ void TableHistory::initSetModel()
 {
     mainVLayout = new QVBoxLayout();
     m_tableHistory = new TableBaseView;
+    m_tableHistory->setObjectName("m_tableHistory");
 
     m_tableHistory->setContextMenuPolicy(Qt::CustomContextMenu);
     m_tableHistory->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -32,13 +33,15 @@ void TableHistory::initSetModel()
     deleteAllBtn = new QToolButton(this);
     deleteAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     deleteAllBtn->setIconSize(QSize(16,16));
+//    deleteAllBtn->setFixedHeight(40);
     deleteAllBtn->setIcon(QIcon(":/img/default/delete.png"));
     deleteAllBtn->setText(tr("Empty"));
     titleHBoxLayout = new QHBoxLayout();
     historyTitileWidget->setLayout(titleHBoxLayout);
-    titleHBoxLayout->addWidget(historyTitileLabel,Qt::AlignLeft);
-    titleHBoxLayout->addWidget(listCountLabel,Qt::AlignLeft);
+    titleHBoxLayout->addWidget(historyTitileLabel,0,Qt::AlignLeft);
+    titleHBoxLayout->addWidget(listCountLabel,1,Qt::AlignBottom);
     titleHBoxLayout->addWidget(deleteAllBtn,Qt::AlignRight);
+    titleHBoxLayout->setContentsMargins(16,22,16,12);
 
     nullPageWidget = new QWidget(this);
     nullIconLabel = new QLabel(this);
@@ -65,6 +68,8 @@ void TableHistory::initSetModel()
     mainVLayout->setSpacing(0);
     this->setLayout(mainVLayout);
     this->setFixedWidth(320);
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
 //    this->setAutoFillBackground(true);
 //    this->setBackgroundRole(QPalette::Base);
     changeNumber();
@@ -73,31 +78,17 @@ void TableHistory::initSetModel()
 }
 void TableHistory::initStyle()
 {
-    if(WidgetStyle::themeColor == 0)
-    {
-        this->setStyleSheet("background:#FAFAFA");
-        historyTitileWidget->setStyleSheet("background:#FAFAFA");
-        nullPageWidget->setStyleSheet("background:#FAFAFA");
-        m_tableHistory->setStyleSheet("border:none;background-color:#FAFAFA;");
 
-    }
-    else if(WidgetStyle::themeColor == 1)
-    {
-        this->setStyleSheet("background-color:#1F2022");
-        historyTitileWidget->setStyleSheet("background:#1F2022");
-        nullPageWidget->setStyleSheet("background:#1F2022");
-        m_tableHistory->setStyleSheet("border:none;background-color:#1F2022;");
-    }
 
-    historyTitileLabel->setStyleSheet("width:96px;height:24px;"
-                                 "font-size:24px;\
+    m_tableHistory->setStyleSheet("#m_tableHistory{border:none;}");
+    historyTitileLabel->setStyleSheet("height:20px;"
+                                 "font-size:20px;\
                                  font-weight: 600;\
-                                 line-height: 24px;");
+                                 line-height: 20px;");
 
-    listCountLabel->setStyleSheet("font-weight: 400;\
-                                        border:none;\
-                                        line-height: 14px;");
-
+    listCountLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
+                                  line-height: 14px;font-size:14px;");
+    deleteAllBtn->setStyleSheet("color:#8F9399;background:transparent;");
 }
 
 void TableHistory::deleteAllClicked()
