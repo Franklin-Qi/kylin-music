@@ -584,16 +584,7 @@ void miniWidget::slotFavBtnChange(QString filePath)
 void miniWidget::songInfo(QString path)
 {
     QString filepath = path.remove("file://");
-    QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filepath);
-    if(pix.isNull())
-    {
-        pix = QIcon(":/img/fengmian.png").pixmap(QSize(40,40));
-    }
-    else
-    {
-        pix = pix.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    }
-    m_coverLabel->setPixmap(pix);
+
     musicDataStruct musicStruct;
     g_db->getSongInfoFromDB(filepath, musicStruct);
     //使用库解析总时间
@@ -601,10 +592,21 @@ void miniWidget::songInfo(QString path)
     if(musicStruct.title == "")
     {
         m_songNameLab->setText(tr("Music Player"));
+        m_coverLabel->setPixmap(QIcon(":/img/fengmian.png").pixmap(QSize(40,40)));
     }
     else
     {
         m_songNameLab->setText(musicStruct.title);
+        QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filepath);
+        if(pix.isNull())
+        {
+            pix = QIcon(":/img/fengmian.png").pixmap(QSize(40,40));
+        }
+        else
+        {
+            pix = pix.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+        }
+        m_coverLabel->setPixmap(pix);
     }
 }
 

@@ -497,8 +497,6 @@ void PlaySongArea::setPlayMode(int playModel)
 void PlaySongArea::slotSongInfo(QString path)
 {
     filePath = path.remove("file://");
-    QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
-    setCoverPhotoPixmap(pix);
 
     musicDataStruct musicStruct;
     g_db->getSongInfoFromDB(filePath, musicStruct);
@@ -507,12 +505,15 @@ void PlaySongArea::slotSongInfo(QString path)
     if(musicStruct.title == "")
     {
         playingLabel->setText(tr("Music Player"));
+        coverPhotoLabel->setPixmap(QIcon(":/img/fengmian.png").pixmap(QSize(40,40)));
         emit signalPlayingLab(tr("Music Player"));
     }
     else
     {
         hSlider->isPlaying(true);
         playingLabel->setText(musicStruct.title);
+        QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
+        setCoverPhotoPixmap(pix);
         emit signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();

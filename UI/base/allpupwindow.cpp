@@ -172,6 +172,7 @@ MusicInfoDialog::MusicInfoDialog(musicDataStruct date)
 {
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
+    this->setWindowTitle(tr("Music Player"));
     musicDate = date;
     initStyle();
 }

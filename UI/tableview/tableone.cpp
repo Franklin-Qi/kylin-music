@@ -811,7 +811,7 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
 void TableOne::setHightLightAndSelect()
 {
     //列表中歌曲为空时，跳过高亮判断
-    if(m_model->count() == 0 ||  heightLightIndex >= m_model->count()) {
+    if(m_model->count() == 0 || ( heightLightIndex >= m_model->count() && nowListName == nowPlayListName)) {
         return;
     }
     if(WidgetStyle::themeColor == 0)
