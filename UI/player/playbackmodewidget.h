@@ -27,7 +27,7 @@ public:
     QToolButton *sequentialBtn;
     QToolButton *currentItemInLoopBtn;
 protected:
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result)override;
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
 signals:
 
 private:

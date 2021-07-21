@@ -23,6 +23,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     Single(str);
     //初始化dbus
     initDbus();
+    initStyle();
     if(!argName.isEmpty())
     {
         int num = argName.size();
@@ -157,6 +158,17 @@ void Widget::initDbus()//初始化dbus
                                           QString("org.gnome.SessionManager"),
                                           QString("PrepareForSwitchuser"), this,
                                           SLOT(slotPrepareForSwitchuser()));
+}
+
+void Widget::initStyle()
+{
+    //不接受焦点。解决程序初始化时，空格键控制 播放/暂停 获取不到（Qt::Key_Space）事件
+    QList<QPushButton*> list = this->findChildren<QPushButton*>();
+    for(QPushButton *btn :list)
+        btn->setFocusPolicy(Qt::NoFocus);
+    QList<QToolButton*> lists = this->findChildren<QToolButton*>();
+    for(QToolButton *btn :lists)
+        btn->setFocusPolicy(Qt::NoFocus);
 }
 
 void Widget::onPrepareForShutdown(bool Shutdown)
@@ -606,6 +618,8 @@ void Widget::allConnect()
     connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(sideBarWid,&SideBarWidget::playListBtnCliced,m_miniWidget,&miniWidget::slotText);
     connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
+    connect(m_miniWidget,&miniWidget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(this,&Widget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -678,9 +692,14 @@ void Widget::movePlayHistoryWid()
 //键盘F1响应唤出用户手册
 void Widget::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_F1) {
-            emit signalShowGuide();
-        }
+    if(event->key() == Qt::Key_F1)
+    {
+        emit signalShowGuide();
+    }
+    else if(event->key() == Qt::Key_Space)
+    {
+        emit signalSpaceKey();
+    }
     QWidget::keyPressEvent(event);
 }
 

@@ -50,7 +50,7 @@ public slots:
     void slotPlayIndexChanged(int index, QString listname);
     void slotPlayPathChanged(QString songPath);
 protected:
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result)override;
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
 signals:
     void signalHistoryPlaying();
     void signalHistoryBtnChecked(bool checked);
