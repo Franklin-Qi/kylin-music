@@ -211,10 +211,13 @@ void Widget::slotPrepareForSwitchuser()
 int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
 {
     //无参数，单例触发
-    if(cmd1 == "")
+    if(!this->isActiveWindow())
     {
         KWindowSystem::forceActiveWindow(this->winId());
-        return 0;
+    }
+    if(!m_miniWidget->isActiveWindow())
+    {
+        KWindowSystem::forceActiveWindow(m_miniWidget->winId());
     }
     if(isFirstObject&&!QFileInfo::exists(cmd1))
     {
