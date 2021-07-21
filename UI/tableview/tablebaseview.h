@@ -18,8 +18,8 @@ public:
     ~TableBaseView();
     MusicListModel *m_model;
 protected:
-    void mouseMoveEvent(QMouseEvent *event)override;
-    void leaveEvent(QEvent *event)override;
+    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
 signals:
     void hoverIndexChanged(QModelIndex index);
     void leaveFromItem();

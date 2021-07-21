@@ -130,6 +130,7 @@ protected:
     void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event)Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 private:
     QWidget *m_musicWidget;
     QVBoxLayout *m_historyLayout;

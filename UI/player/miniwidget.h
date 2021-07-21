@@ -52,12 +52,14 @@ public:
 
     void songText(QString songName); //mini 正在播放
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 signals:
     //发送信号mini窗口我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
     //刷新我喜欢列表
     void signalRefreshFav(QString listName);
+    //空格键控制播放暂停
+    void signalSpaceKey();
 private:
     void initAction();
     void initConnect();

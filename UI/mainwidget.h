@@ -76,12 +76,16 @@ private slots:
     void inputDevice_get(QString str);
     void slotPrepareForSwitchuser();
 protected:
-    void resizeEvent(QResizeEvent *event)override;
-    void keyPressEvent(QKeyEvent *event)override;
-//    void mousePressEvent(QResizeEvent *event)override;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+//    void mousePressEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+signals:
+    //空格键控制播放暂停
+    void signalSpaceKey();
 private:
     //初始化dbus
     void initDbus();
+    void initStyle();
     //单例
     void Single(QStringList path);
     //处理双击文件打开时间

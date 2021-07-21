@@ -181,18 +181,21 @@ void TableOne::initUI()
 
     tableView = new TableBaseView();
     tableView->setObjectName("tableView");
+    tableView->setFocusPolicy(Qt::NoFocus);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
     tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
     QList<musicDataStruct> resList;
     int ret;
     ret = g_db->getSongInfoListFromDB(resList,nowListName);
-    m_model = new MusicListModel;
-    m_model->add(resList);
-    m_model->setView(*tableView);
+    if(ret == DB_OP_SUCC)
+    {
+        m_model = new MusicListModel;
+        m_model->add(resList);
+        m_model->setView(*tableView);
+    }
 
     tableTitleWidget->hide();
-
 //    m_musicWidget = new QWidget(this);
 //    m_historyLayout = new QVBoxLayout();
 //    m_musicWidget->setLayout(m_historyLayout);
@@ -985,3 +988,11 @@ void TableOne::resizeEvent(QResizeEvent *event)
     initTableViewStyle();
 }
 
+void TableOne::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Space)
+    {
+        return;
+    }
+    QWidget::keyPressEvent(event);
+}

@@ -23,8 +23,8 @@ public:
     void changeVolumePos(int posX, int posY, int width, int height);
     void initColor();
 protected:
-    bool eventFilter(QObject *obj, QEvent *event)override;   //鼠标滑块点击  事件过滤器
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result)override;
+    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE;   //鼠标滑块点击  事件过滤器
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
 private:
     void initUi();
 

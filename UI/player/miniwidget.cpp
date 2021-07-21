@@ -101,7 +101,7 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space)
     {
-        return;
+        emit signalSpaceKey();
     }
     else if(event->key() == Qt::Key_Right)
     {

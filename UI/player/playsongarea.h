@@ -104,7 +104,7 @@ public slots:
     //播放历史按钮选中状态改变
     void slotHistoryBtnChecked(bool checked);
 protected:
-    void resizeEvent(QResizeEvent *event)override;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 private:
     void initWidget();
     void initConnect();
