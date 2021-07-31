@@ -337,7 +337,24 @@ void playController::init()
     m_player->setVolume(m_volume);
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
-    m_curList = m_playListName;
+    int ret = g_db->checkPlayListExist(m_playListName);
+    if(ret == DB_OP_SUCC)
+    {
+        m_curList = m_playListName;
+        QString pat = playSetting->get("path").toString();
+        int ref = g_db->checkIfSongExistsInPlayList(pat, m_curList);
+        if(ref != DB_OP_SUCC)
+        {
+            playSetting->set("path", "");
+        }
+    }
+    else
+    {
+        playSetting->set("playlistname", ALLMUSIC);
+        m_curList = ALLMUSIC;
+        playSetting->set("path", "");
+    }
+
     playModeSetting = new QGSettings(KYLINMUSIC);
     m_mode = static_cast<PlayMode>(playModeSetting->get("playbackmode").toInt());
 }

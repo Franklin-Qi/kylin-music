@@ -1,8 +1,26 @@
+tmpfilename="/tmp/kylin-music.update"
+timesize=60000
+current=`date "+%Y-%m-%d %H:%M:%S"`  
+timeStamp=`date -d "$current" +%s`   
+#如果存在更新标签
+if [ -f $tmpfilename ];then
+#将current转换为时间戳，精确到毫秒  
+	currentTimeStamp=$((timeStamp*1000+`date "+%N"`/1000000)) 
+	tmptime=$(expr $currentTimeStamp - $(cat $tmpfilename))
+#删除临时文件
+	rm $tmpfilename
+#如果时间间隔小于限定值，说明是更新，而非卸载
+	if [ $tmptime -lt $timesize ];then
+		exit 0
+	fi
+fi   
+#删除数据库
 path="/.config/"
 filename=".kylin_music_ver*_mymusic.db"
 for user in /home/*
 do
 	if [ -f $user$path$filename ];then
+		echo "删除："$user$path$filename
 		rm $user$path$filename
 	fi
 done

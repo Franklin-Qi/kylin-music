@@ -704,15 +704,7 @@ int MusicDataBase::getSongInfoListFromPlayList(QList<musicDataStruct>& resList,c
                         resList.append(temp);
                     }
 
-                    if(0 == resList.size())
-                    {
-                        qDebug() << "歌单表中查询歌曲数量为0" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
-                        return DB_DISORDERD;
-                    }
-                    else
-                    {
-                        return DB_OP_SUCC;
-                    }
+                    return DB_OP_SUCC;
                 }
                 else
                 {
