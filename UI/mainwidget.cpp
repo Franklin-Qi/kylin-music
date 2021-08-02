@@ -151,8 +151,11 @@ void Widget::initDbus()//初始化dbus
                                          QString("PrepareForSleep"), this,
                                          SLOT(onPrepareForSleep(bool)));
 
+    //蓝牙控
     QDBusConnection::systemBus().connect(QString(), QString("/"), "com.monitorkey.interface", "monitorkey", this, SLOT(client_get(QString)));
+    //插拔
     QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "DbusSingleTest",this, SLOT(inputDevice_get(QString)));
+    //切换用户
     QDBusConnection::sessionBus().connect(QString("org.gnome.SessionManager"),
                                           QString("/org/gnome/SessionManager"),
                                           QString("org.gnome.SessionManager"),
@@ -182,11 +185,11 @@ void Widget::onPrepareForSleep(bool isSleep)
     //990
     //空指针检验
     //------此处空指针校验（如果用了指针）------
-    qDebug() << "----睡眠";
-    //系统事件
-    if(isSleep)
-    {
-        playController::getInstance().pause();
+    //睡眠
+    if(isSleep) {
+        if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            playController::getInstance().pause();
+        }
     }
 }
 
@@ -210,14 +213,17 @@ void Widget::client_get(QString str)
 
 void Widget::inputDevice_get(QString str)
 {
-    qDebug() << "str" << str;
-    playController::getInstance().pause();
+    if(playController::getInstance().getState() == playController::PLAY_STATE) {
+        playController::getInstance().pause();
+    }
+
 }
 
 void Widget::slotPrepareForSwitchuser()
 {
-    qDebug() << "切换用户";
-    playController::getInstance().pause();
+    if(playController::getInstance().getState() == playController::PLAY_STATE) {
+        playController::getInstance().pause();
+    }
 }
 
 int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)

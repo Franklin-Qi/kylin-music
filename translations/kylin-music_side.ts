@@ -599,7 +599,7 @@
 <context>
     <name>Widget</name>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="484"/>
+        <location filename="../UI/mainwidget.cpp" line="487"/>
         <source>Music Player</source>
         <translation>音乐</translation>
     </message>
@@ -608,14 +608,14 @@
         <translation type="vanished">歌曲列表</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="649"/>
-        <location filename="../UI/mainwidget.cpp" line="757"/>
+        <location filename="../UI/mainwidget.cpp" line="652"/>
+        <location filename="../UI/mainwidget.cpp" line="760"/>
         <source>reduction</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="655"/>
-        <location filename="../UI/mainwidget.cpp" line="746"/>
+        <location filename="../UI/mainwidget.cpp" line="658"/>
+        <location filename="../UI/mainwidget.cpp" line="749"/>
         <source>maximize</source>
         <translation>最大化</translation>
     </message>
