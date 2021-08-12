@@ -264,74 +264,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         painter->setClipRect(textRect.translated(-textRect.topLeft()));
         document.documentLayout()->draw(painter, paintContext);
         painter->restore();
-
     }
-
-//    else {
-//        // 绘制歌手专辑
-//        QString mtext;
-//        painter->save();
-//        if (listview->getSearchType() == SearchType::SingerType) {
-//            QPainterPath clipPath;
-//            painter->setClipPath(clipPath);
-//            musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::SingerType).value<musicDataStruct>();
-
-//            mtext = metaPtr.title + "-" + metaPtr.singer;
-//            painter->drawText(option.rect, Qt::AlignLeft | Qt::AlignTop, mtext);
-
-//        } else {
-//            QPainterPath clipPath;
-//            painter->setClipPath(clipPath);
-//            musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
-
-//            mtext = metaPtr.singer + "-" + metaPtr.album;
-//            painter->drawText(option.rect, Qt::AlignLeft | Qt::AlignTop, mtext);
-//        }
-//        painter->restore();
-
-//        QFontMetricsF fontWidth(fontT6);
-//        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
-//        QStyleOptionViewItem viewOption(option);
-//        initStyleOption(&viewOption, index);
-//        if (option.state.testFlag(QStyle::State_HasFocus))
-//            viewOption.state = viewOption.state ^ QStyle::State_HasFocus;
-//        QStyle *pStyle = viewOption.widget ? viewOption.widget->style() : QApplication::style();
-//        viewOption.text = "";
-//        pStyle->drawControl(QStyle::CE_ItemViewItem, &viewOption, painter, viewOption.widget);
-
-//        QTextDocument document;
-//        // 设置文字边距，保证绘制文字居中
-//        document.setDocumentMargin(0);
-//        document.setPlainText(mtext);
-//        bool found = false;
-//        QTextCursor highlight_cursor(&document);
-//        QTextCursor cursor(&document);
-
-//        cursor.beginEditBlock();
-//        QTextCharFormat color_format(highlight_cursor.charFormat());
-
-//        color_format.setForeground(lightColor);
-
-//        // 搜索字体高亮
-//        QTextCursor testcursor(&document);
-//        testcursor.select(QTextCursor::LineUnderCursor);
-//        QTextCharFormat fmt;
-//        fmt.setForeground(textColor);
-//        fmt.setFont(fontT6);
-//        testcursor.mergeCharFormat(fmt);
-//        testcursor.clearSelection();
-//        testcursor.movePosition(QTextCursor::EndOfLine);
-
-//        while (!highlight_cursor.isNull() && !highlight_cursor.atEnd()) {
-//            highlight_cursor = document.find(searchText, highlight_cursor);
-//            if (!highlight_cursor.isNull()) {
-//                if (!found)
-//                    found = true;
-//                highlight_cursor.mergeCharFormat(color_format);
-//            }
-//        }
-//        cursor.endEditBlock();
-//    }
 }
 
 QSize MusicSearchListDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
