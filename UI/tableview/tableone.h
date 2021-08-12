@@ -55,6 +55,8 @@ public:
 
     void initStyle();
     void addMusicToDatebase(QStringList fileNames);
+public slots:
+    void slotSearchTexts(QString text);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
@@ -116,7 +118,7 @@ signals:
 //    void heightIndexChanged(int index);
     void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
     void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
-
+    void signalListSearch();
 public slots:
     void selectListChanged(QString listname);  //切换歌单
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
@@ -124,7 +126,7 @@ public slots:
 
     void playAll(QString listName);  //播放全部歌曲
     void playAllButtonClicked();
-
+    void slotReturnText(QString text);
 protected:
     void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
@@ -146,6 +148,7 @@ private:
     QWidget *titleWid;
 
     int showScrollbarNumber = 10;
+    QString m_text;
 };
 
 #endif // TableOne_H

@@ -69,6 +69,8 @@ public slots:
     int kylin_music_play_request(QString cmd1, QString cmd2 = "", QString cmd3 = "");
     //判断当前点击的按钮是否为歌曲列表（歌单名）
     void slotText(QString btnText);
+    //
+    void slotReturnPressed();
 private slots:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);

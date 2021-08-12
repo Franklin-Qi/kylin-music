@@ -53,6 +53,9 @@ LIBS +=-lX11
 # 解析音频文件
 LIBS += -lavformat
 
+LIBS += -lsimple
+LIBS += -lsqlite3
+
 SOURCES += \
     UI/base/allpupwindow.cpp \
     UI/base/mylabel.cpp \
@@ -62,8 +65,13 @@ SOURCES += \
     UI/player/musicslider.cpp \
     UI/player/playbackmodewidget.cpp \
     UI/player/playsongarea.cpp \
+    UI/player/searchedit.cpp \
+    UI/player/searchresult.cpp \
     UI/player/sliderwidget.cpp \
     UI/base/xatom-helper.cpp \
+    UI/search/musicsearchlistdelegate.cpp \
+    UI/search/musicsearchlistmodel.cpp \
+    UI/search/musicsearchlistview.cpp \
     UI/sidebar/mytoolbutton.cpp \
     UI/sidebar/sidebarwidget.cpp \
     UI/tableview/tablebaseview.cpp \
@@ -92,8 +100,13 @@ HEADERS += \
     UI/player/musicslider.h \
     UI/player/playbackmodewidget.h \
     UI/player/playsongarea.h \
+    UI/player/searchedit.h \
+    UI/player/searchresult.h \
     UI/player/sliderwidget.h \
     UI/base/xatom-helper.h \
+    UI/search/musicsearchlistdelegate.h \
+    UI/search/musicsearchlistmodel.h \
+    UI/search/musicsearchlistview.h \
     UI/sidebar/mytoolbutton.h \
     UI/sidebar/sidebarwidget.h \
     UI/tableview/tablebaseview.h \

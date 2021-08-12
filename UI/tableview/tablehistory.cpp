@@ -13,6 +13,7 @@ TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 
 void TableHistory::initSetModel()
 {
+    this->setProperty("useStyleWindowManager", false);
     mainVLayout = new QVBoxLayout();
     m_tableHistory = new TableBaseView;
     m_tableHistory->setObjectName("m_tableHistory");
@@ -164,17 +165,19 @@ bool TableHistory::nativeEvent(const QByteArray &eventType, void *message, long 
     switch (event->response_type & ~0x80)
     {
         case XCB_FOCUS_OUT:
+            // -playHistoryPosWidth (负数原因：因为计算按钮的右下角点)
             QRect rect(playHistoryPosX, playHistoryPosY, -playHistoryPosWidth, playHistoryPosHeight);
-            if(rect.contains(QCursor::pos(), false))
-            {
-                return 0;
+            if(rect.contains(QCursor::pos(), false)) {
+                return false;
             }
-            else
-            {
-                this->hide();
-                emit signalHistoryBtnChecked(false);
-                break;
+
+            if (this->geometry().contains(QCursor::pos(), false)) {
+                return false;
             }
+
+            this->hide();
+            emit signalHistoryBtnChecked(false);
+            break;
     }
     return false;
 }
@@ -191,8 +194,6 @@ void TableHistory::initTableStyle()
     m_tableHistory->setAlternatingRowColors(false);
 
 }
-
-
 
 void TableHistory::initConnect()
 {

@@ -39,6 +39,11 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         {
             continue;
         }
+        //过滤U盘路径
+//        if(filepath.startsWith("/media/"))
+//        {
+//            continue;
+//        }
         QFileInfo fileInfo(filepath);
         if(fileInfo.isDir())
         {

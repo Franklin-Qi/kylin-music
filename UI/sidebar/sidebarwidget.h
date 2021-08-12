@@ -37,6 +37,8 @@ public slots:
     void renamePlayList();
     //删除歌单
     void removePlayList(QString text);
+
+    void slotListSearch();
 signals:
     void playListBtnCliced(QString listname);
     void playListRemoved(QString listname);
