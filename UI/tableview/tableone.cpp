@@ -273,6 +273,8 @@ void TableOne::showTitleText(QString listName)
         listTitleLabel->setText(tr("Song List"));
     } else if(listName == FAV){
         listTitleLabel->setText(tr("I Love"));
+    } else if(listName == SEARCH) {
+        listTitleLabel->setText(tr("Search Result"));
     } else {
         listTitleLabel->setText(elideNote);
     }
@@ -341,6 +343,10 @@ void TableOne::showRightMenu(const QPoint &pos)
     {
         for(int i = 0 ;i < allList.size() ;i++)
         {
+            if(allList[i] == SEARCH)
+            {
+                continue;
+            }
             QAction *listNameAct = new QAction;
             addToOtherListMenu->addAction(listNameAct);
             if(allList[i] != FAV)
@@ -749,13 +755,13 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     int ret;
     foreach (const musicDataStruct date, resList)
     {
-        if(nowListName != ALLMUSIC)
+        if(nowListName == ALLMUSIC)
         {
-            ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
-        }
-        else{
             ret = g_db->addMusicToLocalMusic(date);
-
+        } else if (nowListName == SEARCH) {
+            return;
+        } else {
+            ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
         }
         if(ret == DB_OP_SUCC)
         {
@@ -876,14 +882,33 @@ void TableOne::changeNumber()
 }
 void TableOne::getMusicList()
 {
-    QList<musicDataStruct> resList;
-    int ret;
-    ret = g_db->getSongInfoListFromDB(resList,nowListName);
-    if(ret == DB_OP_SUCC)
+    if(nowListName == SEARCH)
     {
-        m_model->clear();
-        m_model->add(resList);
-        initTableViewStyle();
+        QList<musicDataStruct> resList;
+        int ret;
+        ret = g_db->getSongInfoListFromLocalMusicByKeyword(resList, m_text);
+        if (ret == DB_OP_SUCC)
+        {
+            m_model->clear();
+            m_model->add(resList);
+            for(int i = 0; i < resList.size(); i++)
+            {
+                g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
+            }
+            initTableViewStyle();
+        }
+    }
+    else
+    {
+        QList<musicDataStruct> resList;
+        int ret;
+        ret = g_db->getSongInfoListFromDB(resList,nowListName);
+        if(ret == DB_OP_SUCC)
+        {
+            m_model->clear();
+            m_model->add(resList);
+            initTableViewStyle();
+        }
     }
 }
 
@@ -894,6 +919,10 @@ void TableOne::selectListChanged(QString listname)
         nowListName = ALLMUSIC;
     } else if(listname == tr("I Love")) {
         nowListName = FAV;
+    } else if(listname == tr("Search Result")) {
+        emit signalListSearch();
+        nowListName = SEARCH;
+//        return;
     } else {
         nowListName = listname;
     }
@@ -931,6 +960,8 @@ void TableOne::playAll(QString listName)
         listName = ALLMUSIC;
     } else if(listName == tr("I Love")) {
         listName = FAV;
+    } else if(listName == tr("Search Result")) {
+        listName = SEARCH;
     }
     QStringList list = m_model->getPathList(listName);
     if(list.size() == 0) {
@@ -942,6 +973,46 @@ void TableOne::playAll(QString listName)
 void TableOne::playAllButtonClicked()
 {
     playAll(nowListName);
+}
+
+void TableOne::slotReturnText(QString text)
+{
+    int ret = g_db->checkPlayListExist(SEARCH);
+    if(ret == DB_OP_SUCC)
+    {
+         m_model->clear();
+        int ret;
+        QList<musicDataStruct> musicDateList;
+        ret = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
+        if(ret == DB_OP_SUCC)
+        {
+            for(int i = 0; i < musicDateList.size(); i++)
+            {
+                playController::getInstance().removeSongFromCurList(SEARCH, 0);
+            }
+        }
+
+        g_db->delPlayList(SEARCH);
+    }
+
+    int ref = g_db->createNewPlayList(SEARCH);
+    if(ref != DB_OP_SUCC)
+    {
+        qDebug() << "创建搜索歌单失败";
+        return;
+    }
+
+    m_text = text;
+    getMusicList();
+    changeNumber();
+    showTitleText(tr("Search Result"));
+    setHightLightAndSelect();
+
+    addMusicButton->hide();
+    listTitleHBoxLayout->setMargin(0);
+    listTitleHBoxLayout->setSpacing(0);
+    listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
+
 }
 
 void TableOne::dragEnterEvent(QDragEnterEvent *event)
@@ -995,4 +1066,10 @@ void TableOne::keyPressEvent(QKeyEvent *event)
         return;
     }
     QWidget::keyPressEvent(event);
+}
+
+//搜索结果关键字通过LineEdit传参得到
+void TableOne::slotSearchTexts(QString text)
+{
+    tableView->setSearchText(text);
 }

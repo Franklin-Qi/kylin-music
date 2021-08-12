@@ -228,12 +228,17 @@ void SideBarWidget::getPlayListName()
     QString listName;
     for(int i = 0; i < playListName.size();i++)
     {
+        listName = playListName.at(i);
+        if(listName == SEARCH)
+        {
+            return;
+        }
         MyToolButton *newBtn = new MyToolButton;
         newPlayListLayout->setAlignment(Qt::AlignTop);
         newPlayListLayout->addWidget(newBtn);
     //    newPlayListLayout->setContentsMargins(24,0,24,0);
         newPlayListLayout->setSpacing(6);
-        listName = playListName.at(i);
+
         if(listName == FAV)
         {
             newBtn->setText(tr("I Love"));
@@ -440,4 +445,15 @@ void SideBarWidget::removePlayList(QString text)
      }
     emit playListRemoved(text);
 //    promptSongListPup->pupDialog->hide();
+}
+
+void SideBarWidget::slotListSearch()
+{
+    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
+    for(MyToolButton *tmp : list)
+    {
+        tmp->setStatusTip("");
+        tmp->buttonListName = "";
+        tmp->defaultStyle();
+    }
 }

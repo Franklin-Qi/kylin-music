@@ -37,6 +37,16 @@ TableBaseView::~TableBaseView()
         m_delegate->deleteLater();
     }
 }
+
+QString TableBaseView::getSearchText()const
+{
+    return m_searchText;
+}
+
+void TableBaseView::setSearchText(QString text)
+{
+    m_searchText = text;
+}
 void TableBaseView::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = this->indexAt(event->pos());

@@ -521,6 +521,10 @@ void Widget::initAllComponent()
         {
             playlistName = ALLMUSIC;
         }
+        if(playlistName == SEARCH)
+        {
+            playlistName = ALLMUSIC;
+        }
         if(lists.indexOf(playlistName) == -1)
         {
             playlistName = ALLMUSIC;
@@ -626,6 +630,14 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
     connect(m_miniWidget,&miniWidget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
     connect(this,&Widget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
+
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::selectListChanged);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,playSongArea,&PlaySongArea::slotText);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,this,&Widget::slotText);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,m_miniWidget,&miniWidget::slotText);
+    connect(musicListTable,&TableOne::signalListSearch,sideBarWid,&SideBarWidget::slotListSearch);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnText,musicListTable,&TableOne::slotReturnText);
+    connect(m_titleBar->searchEdit->m_result->m_MusicView,&MusicSearchListview::signalSearchTexts,musicListTable,&TableOne::slotSearchTexts);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -816,6 +828,11 @@ QString Widget::getTitle()
 {
     qDebug() << "m_playTitle" << m_playTitle;
     return m_playTitle;
+}
+
+void Widget::slotReturnPressed()
+{
+
 }
 
 //切换深色主题

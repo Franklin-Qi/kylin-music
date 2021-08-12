@@ -20,6 +20,12 @@
 ////#include <taglib/toolkit/tpropertymap.h>
 #include "musicDataBase.h"
 
+enum SearchType {
+    None = 0,
+    TitleType,
+    SingerType,
+    AlbumType
+};
 
 class MusicFileInformation : public QObject
 {

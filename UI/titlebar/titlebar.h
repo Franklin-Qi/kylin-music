@@ -33,6 +33,7 @@
 //#include "allpupwindow.h"
 //#include "widgetstyle.h"
 #include "menumodule.h"
+#include "UI/player/searchedit.h"
 
 const QString main_style = "QFrame{background:#FFFFFF;border-top-right-radius:12px;}";
 
@@ -54,7 +55,7 @@ public:
     QPushButton *rightBtn;
     QPushButton *searchBtn;
 
-    QLineEdit *searchEdit;
+    SearchEdit *searchEdit;
 
     QPushButton *userIconBtn;
     QPushButton *loginBtn;
@@ -85,6 +86,7 @@ public:
 
 public slots:
     void searchMusic();
+    void slotFoucusIn();
 
 //    void showAboutWidget();
 
@@ -95,8 +97,6 @@ private slots:
     //进行最小化、最大化、还原、关闭
 //    void slot_showMaximized();
 //    void slot_quit();
-private:
-
 
 private:
     void initTitle();
@@ -105,6 +105,8 @@ private:
     QHBoxLayout *searchLayout;
     QHBoxLayout *LayoutLeft;
     QHBoxLayout *LayoutRight;
+
+    QWidget *m_parent = nullptr;
 };
 
 
