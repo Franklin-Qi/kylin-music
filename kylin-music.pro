@@ -30,11 +30,19 @@ schemes.files += \
     data/org.ukui.log4qt.kylin-music.gschema.xml
 schemes.path = /usr/share/glib-2.0/schemas/
 
+simple.files = $$PWD/kylin-music-plugins-simple/build/src/libsimple.so
+simple.path = /usr/share/kylin-music
+
+dict.files +=$$PWD/kylin-music-plugins-simple/build/cppjieba/dict
+dict.path = /usr/bin/
+
 INSTALLS += \
     target  \
     icon    \
     desktop \
-    schemes
+    schemes \
+    simple \
+    dict
 
 TRANSLATIONS += ./translations/kylin-music_side.ts
 
@@ -53,7 +61,7 @@ LIBS +=-lX11
 # 解析音频文件
 LIBS += -lavformat
 
-LIBS += -lsimple
+#LIBS += -lsimple
 LIBS += -lsqlite3
 
 SOURCES += \

@@ -23,3 +23,12 @@
 #override_dh_auto_configure:
 #	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
+override_dh_auto_configure:
+	# upstream tarball is without configure. autogen.sh will create it
+	cd kylin-music-plugins-simple && \
+	mkdir build && \
+	cd build && \
+	cmake .. && \
+	make
+	
+	dh_auto_configure $(DHFLAGS) -- \
