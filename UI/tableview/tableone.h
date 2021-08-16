@@ -55,6 +55,7 @@ public:
 
     void initStyle();
     void addMusicToDatebase(QStringList fileNames);
+    void musicNotExist();
 public slots:
     void slotSearchTexts(QString text);
 private:

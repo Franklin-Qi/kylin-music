@@ -24,3 +24,8 @@ do
 		rm $user$path$filename
 	fi
 done
+#libsimple="/usr/lib/libkylinmusicsimple.so"
+#if [ -f $libsimple ];then
+#	echo "删除："$libsimple
+#	rm $libsimple
+#fi

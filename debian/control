@@ -3,6 +3,9 @@ Section: utils
 Priority: optional
 Maintainer: liujialin <liujialin@kylinos.cn>
 Build-Depends: debhelper,
+            gcc,
+            cmake,
+            make,
             qtbase5-dev,
             qt5-qmake,
             qtchooser,
@@ -18,12 +21,11 @@ Build-Depends: debhelper,
             libukui-log4qt-dev,
 			pkgconf,
 			libmpv-dev,
-			kylin-music-plugins-simple,
 			libsqlite3-dev,
 Standards-Version: 4.4.1
 Homepage: https://github.com/ubuntukylin/kylin-music
-#Vcs-Browser: https://github.com/ubuntukylin/kylin-music
-#Vcs-Git: https://github.com/ubuntukylin/kylin-music.git
+Vcs-Browser: https://github.com/ubuntukylin/kylin-music
+Vcs-Git: https://github.com/ubuntukylin/kylin-music.git
 
 Package: kylin-music
 Architecture: any
