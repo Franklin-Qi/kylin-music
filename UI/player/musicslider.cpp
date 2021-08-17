@@ -14,19 +14,18 @@ MusicSlider::MusicSlider(QWidget *parent):QSlider(parent),m_isPlaying(false)
 
 void MusicSlider::initStyle()
 {
-
     this->setFixedHeight(22);
     this->setOrientation(Qt::Horizontal);
 //    this->setMinimum(0);
 //    this->setMaximum(1000);
     if(WidgetStyle::themeColor == 1) {
-        this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+        this->setStyleSheet("QSlider::groove:horizontal{left:0px;right:0px;height: 2px;background: transparent;}"
                             "QSlider::sub-page:horizontal{background:#3790FA;}"
                             "QSlider::add-page:horizontal{background:#4D4D4D;}"
                             );
     }
     else if(WidgetStyle::themeColor == 0) {
-        this->setStyleSheet("QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+        this->setStyleSheet("QSlider::groove:horizontal{left:0px;right:0px;height: 2px;background: transparent;}"
                             "QSlider::sub-page:horizontal{background:#3790FA;}"
                             "QSlider::add-page:horizontal{background:#ECEEF5;}"
                             );
@@ -96,7 +95,7 @@ void MusicSlider::enterEvent(QEvent *event)
     if(WidgetStyle::themeColor == 1)
     {
         this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                    "QSlider::groove:horizontal{left:0px;right:0px;position: absolute;height: 2px;background: transparent;}"
                     "QSlider::sub-page:horizontal{background:#3790FA;}"
                     "QSlider::add-page:horizontal{background:#4D4D4D;}"
                     "QSlider::handle:horizontal {\
@@ -110,7 +109,7 @@ void MusicSlider::enterEvent(QEvent *event)
                     }");
     } else if (WidgetStyle::themeColor == 0){
         this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:-1px;right:-1px;height: 2px;background: transparent;}"
+                    "QSlider::groove:horizontal{left:0px;right:0px;position: absolute;height: 2px;background: transparent;}"
                     "QSlider::sub-page:horizontal{background:#3790FA;}"
                     "QSlider::add-page:horizontal{background:#ECEEF5;}"
                     "QSlider::handle:horizontal {\

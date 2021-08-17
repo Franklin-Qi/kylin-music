@@ -79,9 +79,9 @@ void TableOne::initTableViewStyle()
     horizonHeader->setDefaultAlignment(Qt::AlignLeft);
 
     tableView->verticalScrollBar()->setStyleSheet("width:25px;");
-    if(m_model->count() <= showScrollbarNumber) {
+    tableView->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+    if (m_model->count() <= showScrollbarNumber) {
         tableView->verticalScrollBar()->setVisible(false);
-
     } else {
         tableView->verticalScrollBar()->setVisible(true);
     }
@@ -214,9 +214,9 @@ void TableOne::initUI()
     nullPageIconLabel = new QLabel(this);
     nullPageTextLabel = new QLabel(this);
     n_addDirMusicButton = new QPushButton(this);
-    n_addDirMusicButton->setFixedSize(134,36);
+    n_addDirMusicButton->setFixedSize(148,36);
     n_addMusicButton = new QPushButton(this);
-    n_addMusicButton->setFixedSize(134,36);
+    n_addMusicButton->setFixedSize(148,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
     n_addMusicButton->setText(tr("Add Local Songs"));
@@ -861,6 +861,7 @@ void TableOne::setHightLightAndSelect()
             }
         }
     }
+    musicNotExist();
 }
 
 void TableOne::changeNumber()
@@ -1057,6 +1058,27 @@ void TableOne::resizeEvent(QResizeEvent *event)
     // 使用变量保存tableView一页最多可以完全显示多少条目，实时刷新，实现滑动条的显示和隐藏
     showScrollbarNumber = tableView->height()/42;
     initTableViewStyle();
+}
+
+void TableOne::musicNotExist()
+{
+    QStringList pathList;
+    pathList = m_model->getPathList(nowListName);
+    for(int i = 0; i < pathList.size(); i++ )
+    {
+        QFileInfo info(pathList[i]);
+        if(info.exists() == false)
+        {
+            for (int j=0; j<4; j++)
+            {
+
+                    m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::gray)));
+                    m_model->m_model.item(i,j)->setData(tr("path does not exist"),Qt::ToolTipRole);
+            }
+        }
+
+    }
+
 }
 
 void TableOne::keyPressEvent(QKeyEvent *event)

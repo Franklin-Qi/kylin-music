@@ -600,6 +600,7 @@ void PlaySongArea::slotNotPlaying()
     hSlider->isPlaying(false);
     //禁用
     hSlider->setDisabled(true);
+    hSlider->setValue(0);
     playingLabel->setText(tr("Music Player"));
     timeLabel->setText("00:00/00:00");
 }

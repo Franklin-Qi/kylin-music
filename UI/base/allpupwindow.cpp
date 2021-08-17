@@ -67,6 +67,7 @@ void AllPupWindow::inpupdialog()
     titleLayout->setSpacing(0);
 
     enterLineEdit = new QLineEdit(pupDialog);
+    enterLineEdit->setMaxLength(20);
 
     confirmBtn = new QPushButton(pupDialog);
 
@@ -80,11 +81,11 @@ void AllPupWindow::inpupdialog()
     stackWid->setFixedSize(392,32);
 //    confirmBtn->setText("确认");
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(64,30);
+    confirmBtn->setFixedSize(86,30);
     confirmBtn->setProperty("isImportant", true);
 //    cancelBtn->setText("取消");
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(64,30);
+    cancelBtn->setFixedSize(86,30);
 
     btnLayout->addWidget(cancelBtn, 0, Qt::AlignRight);
     btnLayout->addWidget(confirmBtn, Qt::AlignRight);
@@ -223,10 +224,10 @@ void MusicInfoDialog::initStyle()
 
 
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(80,30);
+    confirmBtn->setFixedSize(86,30);
 //    cancelBtn->setText("取消");s
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(80,30);
+    cancelBtn->setFixedSize(86,30);
 //    confirmBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
     confirmBtn->setProperty("isImportant", true);
 
