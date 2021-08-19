@@ -25,9 +25,9 @@ void TableBaseView::initStyle()
 //    this->verticalScrollBarPolicy();
 //    this->setAutoFillBackground(false);
     //限制应用内字体固定大小
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    this->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    this->setFont(sizeFont);
 
 }
 

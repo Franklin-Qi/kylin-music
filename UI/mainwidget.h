@@ -1,4 +1,4 @@
-#ifndef WIDGET_H
+﻿#ifndef WIDGET_H
 #define WIDGET_H
 
 #include <QWidget>
@@ -130,5 +130,7 @@ signals:
     void signalShowGuide();
     //刷新歌曲列表界面
     void signalRefreshList(QString listName);
+    //字体
+    void signalSetFontSize(int);
 };
 #endif // WIDGET_H

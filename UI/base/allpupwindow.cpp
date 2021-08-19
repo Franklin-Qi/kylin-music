@@ -19,7 +19,7 @@
 #include "widgetstyle.h"
 #include "xatom-helper.h"
 
-
+#define PT_12 12
 
 AllPupWindow::AllPupWindow(QWidget *parent) : QWidget(parent)
 {
@@ -81,11 +81,11 @@ void AllPupWindow::inpupdialog()
     stackWid->setFixedSize(392,32);
 //    confirmBtn->setText("确认");
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(86,30);
+    confirmBtn->setFixedSize(95,30);
     confirmBtn->setProperty("isImportant", true);
 //    cancelBtn->setText("取消");
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(86,30);
+    cancelBtn->setFixedSize(95,30);
 
     btnLayout->addWidget(cancelBtn, 0, Qt::AlignRight);
     btnLayout->addWidget(confirmBtn, Qt::AlignRight);
@@ -112,12 +112,12 @@ void AllPupWindow::inpupdialog()
     connect(cancelBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
 
     //限制应用内字体固定大小
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    confirmBtn->setFont(sizeFont);
-    cancelBtn->setFont(sizeFont);
-    titleLab->setFont(sizeFont);
-    enterLineEdit->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    confirmBtn->setFont(sizeFont);
+//    cancelBtn->setFont(sizeFont);
+//    titleLab->setFont(sizeFont);
+//    enterLineEdit->setFont(sizeFont);
 
 }
 
@@ -224,10 +224,10 @@ void MusicInfoDialog::initStyle()
 
 
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(86,30);
+    confirmBtn->setFixedSize(95,30);
 //    cancelBtn->setText("取消");s
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(86,30);
+    cancelBtn->setFixedSize(95,30);
 //    confirmBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
     confirmBtn->setProperty("isImportant", true);
 
@@ -261,18 +261,28 @@ void MusicInfoDialog::initStyle()
     this->setFixedSize(376,370);
 
     //限制应用内字体固定大小
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    QFont titleFont;
-    titleFont.setPixelSize(16);
-    titleFont.setBold(true);
-    songNameLabel->setFont(sizeFont);
-    singerLabel->setFont(sizeFont);
-    albumLabel->setFont(sizeFont);
-    fileTypeLabel->setFont(sizeFont);
-    fileSizeLable->setFont(sizeFont);
-    fileTimeLabel->setFont(sizeFont);
-    filePathLabel->setFont(sizeFont);
-    musicInfoLabel->setFont(titleFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    QFont titleFont;
+//    titleFont.setPixelSize(16);
+//    titleFont.setBold(true);
+//    songNameLabel->setFont(sizeFont);
+//    singerLabel->setFont(sizeFont);
+//    albumLabel->setFont(sizeFont);
+//    fileTypeLabel->setFont(sizeFont);
+//    fileSizeLable->setFont(sizeFont);
+//    fileTimeLabel->setFont(sizeFont);
+//    filePathLabel->setFont(sizeFont);
+//    musicInfoLabel->setFont(titleFont);
 
+}
+
+void MusicInfoDialog::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_12;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    musicInfoLabel->setFont(font);
 }

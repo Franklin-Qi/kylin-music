@@ -60,6 +60,7 @@ private:
     QGSettings *m_pGsettingThemeStatus = nullptr;
 public slots:
     void dealSystemGsettingChange(const QString);
+    void slotLableSetFontSize(int size);
 private:
     void init();
     QHBoxLayout* initTitleBar(); //关于窗口标题栏初始化

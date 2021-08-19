@@ -148,14 +148,14 @@ void SideBarWidget::initWidget()
     this->setAutoFillBackground(true);
 
     //限制应用内字体固定大小
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    myPlayListBtn->setFont(sizeFont);
-    playListBtn->setFont(sizeFont);
-    logoPushButton->setFont(sizeFont);
-    libraryLabel->setFont(sizeFont);
-    myPlayListLabel->setFont(sizeFont);
-    logoNameLabel->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    myPlayListBtn->setFont(sizeFont);
+//    playListBtn->setFont(sizeFont);
+//    logoPushButton->setFont(sizeFont);
+//    libraryLabel->setFont(sizeFont);
+//    myPlayListLabel->setFont(sizeFont);
+//    logoNameLabel->setFont(sizeFont);
 
 }
 

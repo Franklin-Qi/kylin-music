@@ -90,6 +90,8 @@ public slots:
     void slotNotPlaying();
     //判断当前点击的按钮是否为我喜欢（歌单名）
     void slotText(QString btnText);
+    //字体
+    void slotLableSetFontSize(int size);
 public:
     QFrame *m_mainFrame;
 

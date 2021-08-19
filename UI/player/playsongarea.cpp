@@ -3,6 +3,7 @@
 #include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
 #define VOLUME 5
+#define PT_9 9
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
 {
@@ -166,7 +167,7 @@ void PlaySongArea::initWidget()
     coverPhotoLabel->setFixedSize(40,40);
 
     playingLabel = new MyLabel(this);
-    playingLabel->setFixedHeight(20);
+    playingLabel->setFixedHeight(23);
 //    playingLabel->setText(tr("Music Player"));
 
     timeLabel = new QLabel(this);
@@ -263,10 +264,20 @@ void PlaySongArea::initWidget()
 
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    playingLabel->setFont(sizeFont);
-    timeLabel->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    playingLabel->setFont(sizeFont);
+//    timeLabel->setFont(sizeFont);
+}
+
+void PlaySongArea::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_9;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    timeLabel->setFont(font);
 }
 
 void PlaySongArea::initConnect()
@@ -880,7 +891,7 @@ void PlaySongArea::playcolor()
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
-        playingLabel->setStyleSheet("font-size:14px;color:#F9F9F9;line-height:14px;");
+        playingLabel->setStyleSheet("color:#F9F9F9;line-height:14px;");
 
         hSlider->initStyle();
     }
@@ -925,9 +936,9 @@ void PlaySongArea::playcolor()
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
-        playingLabel->setStyleSheet("line-height:14px;color:#303133;font-size:14px;");
+        playingLabel->setStyleSheet("line-height:14px;color:#303133;");
 
-        timeLabel->setStyleSheet("line-height:12px;color:#8F9399;font-size:12px;");
+        timeLabel->setStyleSheet("line-height:12px;color:#8F9399;");
 
         hSlider->initStyle();
 
