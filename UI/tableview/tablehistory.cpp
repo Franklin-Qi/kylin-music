@@ -1,6 +1,8 @@
 #include "tablehistory.h"
 #include "UI/mainwidget.h"
 
+#define PT_15 15
+
 TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 {
     initSetModel();
@@ -13,6 +15,7 @@ TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 
 void TableHistory::initSetModel()
 {
+    //禁用界面拖拽
     this->setProperty("useStyleWindowManager", false);
     mainVLayout = new QVBoxLayout();
     m_tableHistory = new TableBaseView;
@@ -82,14 +85,23 @@ void TableHistory::initStyle()
 
 
     m_tableHistory->setStyleSheet("#m_tableHistory{border:none;}");
-    historyTitileLabel->setStyleSheet("height:20px;"
-                                 "font-size:20px;\
+    historyTitileLabel->setStyleSheet("height:20px;\
                                  font-weight: 600;\
                                  line-height: 20px;");
 
     listCountLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
-                                  line-height: 14px;font-size:14px;");
+                                  line-height: 14px;");
     deleteAllBtn->setStyleSheet("color:#8F9399;background:transparent;");
+}
+
+void TableHistory::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_15;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    historyTitileLabel->setFont(font);
 }
 
 void TableHistory::deleteAllClicked()
@@ -123,7 +135,7 @@ void TableHistory::slotPlayIndexChanged(int index, QString listname)
     if(listname == HISTORY) {
         nowPlayListName = HISTORY;
         nowPlayIndex = index;
-        refreshHistoryTable();
+        noRefreshHistory();
     }
     else {
         nowPlayListName = listname;
@@ -145,7 +157,7 @@ void TableHistory::slotPlayPathChanged(QString songPath)
     else if(songPath == "")
     {
         nowPlayIndex = -1;
-        refreshHistoryTable();
+        noRefreshHistory();
     }
     else
     {
@@ -240,6 +252,12 @@ void TableHistory::refreshHistoryTable()
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
+    changeNumber();
+    initTableStyle();
+    setHighlight(nowPlayIndex);
+}
+void TableHistory::noRefreshHistory()
+{
     changeNumber();
     initTableStyle();
     setHighlight(nowPlayIndex);

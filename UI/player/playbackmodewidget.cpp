@@ -86,12 +86,12 @@ void PlayBackModeWidget::initWidget()
     this->setLayout(vLayout);
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    loopBtn->setFont(sizeFont);
-    randomBtn->setFont(sizeFont);
-    sequentialBtn->setFont(sizeFont);
-    currentItemInLoopBtn->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    loopBtn->setFont(sizeFont);
+//    randomBtn->setFont(sizeFont);
+//    sequentialBtn->setFont(sizeFont);
+//    currentItemInLoopBtn->setFont(sizeFont);
 
 }
 

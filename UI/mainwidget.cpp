@@ -3,6 +3,8 @@
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
 
+#define UKUI_FONT_SIZE "systemFontSize"
+
 Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
 Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
@@ -19,6 +21,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     initAllComponent();
     initGSettings();
     allConnect();
+
     //单例
     Single(str);
     //初始化dbus
@@ -638,10 +641,19 @@ void Widget::allConnect()
     connect(musicListTable,&TableOne::signalListSearch,sideBarWid,&SideBarWidget::slotListSearch);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnText,musicListTable,&TableOne::slotReturnText);
     connect(m_titleBar->searchEdit->m_result->m_MusicView,&MusicSearchListview::signalSearchTexts,musicListTable,&TableOne::slotSearchTexts);
+
+
 }
 
 void Widget::initGSettings()//初始化GSettings
 {
+    //只有非标准字号的控件才需要绑定
+    connect(this,&Widget::signalSetFontSize,musicListTable,&TableOne::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,playSongArea,&PlaySongArea::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_miniWidget,&miniWidget::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,historyListTable,&TableHistory::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_titleBar->menumodule,&menuModule::slotLableSetFontSize);
+
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {
         themeData = new QGSettings(FITTHEMEWINDOW);
@@ -667,7 +679,28 @@ void Widget::initGSettings()//初始化GSettings
                 changeLightTheme();
             }
         });
+
+        connect(themeData,&QGSettings::changed,this,[=] (const QString &key) {
+            if(key == UKUI_FONT_SIZE) {
+                //获取字号的值
+                int fontSizeKey = themeData->get(UKUI_FONT_SIZE).toString().toInt();
+                //发送改变信号
+                if (fontSizeKey > 0) {
+                    emit signalSetFontSize(fontSizeKey);
+                }
+            }
+        });
     }
+
+    //启动时设置字号
+    int fontSizeKey = 11;//系统默认字号,魔鬼数字，自行处理
+    if (themeData != nullptr) {
+        int fontSizeKeyTmp = themeData->get(UKUI_FONT_SIZE).toString().toInt();
+        if (fontSizeKeyTmp > 0) {
+            fontSizeKey = fontSizeKeyTmp;
+        }
+    }
+    emit signalSetFontSize(fontSizeKey);
     qDebug()<<"初始化GSettings成功";
 }
 
@@ -848,7 +881,7 @@ void Widget::changeDarkTheme()
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+//    historyListTable->noRefreshHistory();
 //    musicListTable->setStyleSheet("{background:red;border:none;}");
 //    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
     musicListTable->tableView->setAlternatingRowColors(false);
@@ -856,7 +889,7 @@ void Widget::changeDarkTheme()
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+    historyListTable->noRefreshHistory();
 //    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
@@ -880,6 +913,6 @@ void Widget::changeLightTheme()
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+    historyListTable->noRefreshHistory();
 
 }

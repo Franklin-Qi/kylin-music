@@ -60,12 +60,12 @@ bool MusicListModel::add(musicDataStruct info)
         item2->setData(info.size, Qt::DecorationRole);
 
 
-        QFont sizeFont;
-        sizeFont.setPixelSize(14);
-        item0->setFont(sizeFont);
-        item1->setFont(sizeFont);
-        item2->setFont(sizeFont);
-        item3->setFont(sizeFont);
+//        QFont sizeFont;
+//        sizeFont.setPixelSize(14);
+//        item0->setFont(sizeFont);
+//        item1->setFont(sizeFont);
+//        item2->setFont(sizeFont);
+//        item3->setFont(sizeFont);
 
         item0->setEditable(false);
         item1->setEditable(false);

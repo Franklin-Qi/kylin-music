@@ -1,6 +1,9 @@
 #include "menumodule.h"
 #include "UI/mainwidget.h"
 #include "UI/base/xatom-helper.h"
+
+#define PT_14 14
+
 menuModule::menuModule(QWidget *parent = nullptr) : QWidget(parent)
 {
     init();
@@ -72,14 +75,14 @@ void menuModule::initAction(){
     //键盘F1响应唤出用户手册绑定
     connect(Widget::mutual,&Widget::signalShowGuide,this,&menuModule::helpAction);
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    m_menu->setFont(sizeFont);
-    bodyAppName->setFont(sizeFont);
-    titleText->setFont(sizeFont);
-    bodyAppVersion->setFont(sizeFont);
-    bodyAppDescribe->setFont(sizeFont);
-    bodySupport->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    m_menu->setFont(sizeFont);
+//    bodyAppName->setFont(sizeFont);
+//    titleText->setFont(sizeFont);
+//    bodyAppVersion->setFont(sizeFont);
+//    bodyAppDescribe->setFont(sizeFont);
+//    bodySupport->setFont(sizeFont);
 
 }
 
@@ -246,6 +249,16 @@ QHBoxLayout* menuModule::initTitleBar(){
     return hlyt;
 }
 
+void menuModule::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_14;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    bodyAppName->setFont(font);
+}
+
 QVBoxLayout* menuModule::initBody(){
     QPushButton* bodyIcon = new QPushButton();
 //    bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
@@ -325,9 +338,6 @@ void menuModule::refreshThemeBySystemConf(){
 }
 
 void menuModule::setThemeDark(){
-    aboutWindow->setStyleSheet(".QWidget{background-color:rgba(61,61,65,1);}");
-    this->setStyleSheet("QLabel{color:rgba(255,255,255,1);}");
-    titleText->setStyleSheet("color:rgba(255,255,255,1);");
     emit menuModuleSetThemeStyle("dark-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
@@ -336,7 +346,6 @@ void menuModule::setThemeDark(){
 }
 
 void menuModule::setThemeLight(){
-    aboutWindow->setStyleSheet(".QWidget{background-color:rgba(255,255,255,1);}");
     emit menuModuleSetThemeStyle("light-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""

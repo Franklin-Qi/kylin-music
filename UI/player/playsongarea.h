@@ -103,6 +103,8 @@ public slots:
 
     //播放历史按钮选中状态改变
     void slotHistoryBtnChecked(bool checked);
+    //字体
+    void slotLableSetFontSize(int size);
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 private:

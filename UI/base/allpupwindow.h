@@ -73,6 +73,9 @@ public:
     explicit MusicInfoDialog(musicDataStruct date);
     ~MusicInfoDialog();
     musicDataStruct musicDate;
+public slots:
+    //字体
+    void slotLableSetFontSize(int size);
 private:
     MyLabel *songNameLabel;
     MyLabel *singerLabel;

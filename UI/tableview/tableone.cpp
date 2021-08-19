@@ -4,6 +4,8 @@
 #include "tableone.h"
 #include "UI/mainwidget.h"
 
+#define PT_18 18
+
 TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
 {
     nowListName = listName;
@@ -24,7 +26,7 @@ TableOne::~TableOne()
 
 void TableOne::initStyle()
 {
-    listTitleLabel->setStyleSheet("font-size:24px;\
+    listTitleLabel->setStyleSheet("\
                                  font-weight: 600;\
                                  line-height: 24px;");
 
@@ -53,7 +55,7 @@ void TableOne::initStyle()
 void TableOne::initTableViewStyle()
 {
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,40);
+    tableView->setColumnWidth(3,75);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
@@ -68,12 +70,12 @@ void TableOne::initTableViewStyle()
         horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
                                                                 border: none;border-bottom: 1px solid white;\
                                                                 border-right: 1px solid white;border-bottom: 1px transparent;\
-                                                                background-color:white;font-size:16px;color:#8F9399;}");
+                                                                background-color:white;color:#8F9399;}");
     } else {
         horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
                                                         border: none;border-bottom: 1px solid #252526;\
                                                         border-right: 1px solid #252526;border-bottom: 1px transparent;\
-                                                        background-color:#252526;font-size:16px;color:#8F9399;}");
+                                                        background-color:#252526;color:#8F9399;}");
     }
 
     horizonHeader->setDefaultAlignment(Qt::AlignLeft);
@@ -94,6 +96,7 @@ void TableOne::initUI()
 
     listTitleLabel = new QLabel(this);
     listTitleLabel->setMaximumWidth(192);
+//    listTitleLabel->setFixedHeight(30);
     listTotalNumLabel = new QLabel(this);
     listTotalNumLabel->setAlignment(Qt::AlignBottom);
     addMusicButton = new QToolButton(this);
@@ -114,7 +117,7 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
     listTitleHBoxLayout->setContentsMargins(25,20,25,30);
     listTitleHBoxLayout->setSpacing(0);
-    titleWid->setFixedHeight(80);
+    titleWid->setFixedHeight(90);
 
     playAllButton->setText(tr("Play All"));
     playAllButton->setIconSize(QSize(16,16));
@@ -214,9 +217,9 @@ void TableOne::initUI()
     nullPageIconLabel = new QLabel(this);
     nullPageTextLabel = new QLabel(this);
     n_addDirMusicButton = new QPushButton(this);
-    n_addDirMusicButton->setFixedSize(148,36);
+    n_addDirMusicButton->setFixedSize(165,36);
     n_addMusicButton = new QPushButton(this);
-    n_addMusicButton->setFixedSize(148,36);
+    n_addMusicButton->setFixedSize(165,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
     n_addMusicButton->setText(tr("Add Local Songs"));
@@ -255,16 +258,31 @@ void TableOne::initUI()
     changeNumber();
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    add_menu->setFont(sizeFont);
-    listTotalNumLabel->setFont(sizeFont);
-    addMusicButton->setFont(sizeFont);
-    playAllButton->setFont(sizeFont);
-    n_addDirMusicButton->setFont(sizeFont);
-    n_addMusicButton->setFont(sizeFont);
-    nullPageTextLabel->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    add_menu->setFont(sizeFont);
+//    listTotalNumLabel->setFont(sizeFont);
+//    addMusicButton->setFont(sizeFont);
+//    playAllButton->setFont(sizeFont);
+//    n_addDirMusicButton->setFont(sizeFont);
+//    n_addMusicButton->setFont(sizeFont);
+//    nullPageTextLabel->setFont(sizeFont);
 }
+
+void TableOne::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_18;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    listTitleLabel->setFont(font);
+
+    if (infoDialog != nullptr) {
+        infoDialog->slotLableSetFontSize(size);
+    }
+}
+
 void TableOne::showTitleText(QString listName)
 {
     QFontMetrics fontWidth(listTitleLabel->font());//得到每个字符的宽度
@@ -564,6 +582,8 @@ void TableOne::showInfo()
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     infoDialog = new MusicInfoDialog(date);
+    connect(infoDialog,&MusicInfoDialog::accepted,infoDialog,&MusicInfoDialog::deleteLater);
+    connect(infoDialog,&MusicInfoDialog::rejected,infoDialog,&MusicInfoDialog::deleteLater);
     //将弹窗应用居中显示
     QRect availableGeometry = this->parentWidget()->parentWidget()->geometry();
     infoDialog->move(availableGeometry.center() - infoDialog->rect().center());

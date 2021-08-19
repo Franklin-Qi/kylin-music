@@ -42,6 +42,7 @@ public:
     void initTableStyle();
     bool isHightLight = false;
     void refreshHistoryTable();
+    void noRefreshHistory();
     void deleteAllClicked();
     void changePlayHistoryPos(int posX, int posY, int width, int height);
 public slots:
@@ -49,6 +50,8 @@ public slots:
 //    void addMusicToHistoryListSlot();
     void slotPlayIndexChanged(int index, QString listname);
     void slotPlayPathChanged(QString songPath);
+    //字体
+    void slotLableSetFontSize(int size);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
 signals:
