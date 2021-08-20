@@ -62,7 +62,7 @@ public:
 public slots:
     void closeDialog();
     void slotTextChanged(QString text);
-
+    void slotLableSetFontSize(int size);
 private:
     void inpupdialog();
 

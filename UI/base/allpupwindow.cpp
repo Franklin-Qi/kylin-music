@@ -20,6 +20,7 @@
 #include "xatom-helper.h"
 
 #define PT_12 12
+#define PT_11 11
 
 AllPupWindow::AllPupWindow(QWidget *parent) : QDialog(parent)
 {
@@ -141,6 +142,16 @@ void AllPupWindow::inpupdialog()
 //    titleLab->setFont(sizeFont);
 //    enterLineEdit->setFont(sizeFont);
 
+}
+
+void AllPupWindow::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_11;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    tips->setFont(font);
 }
 
 void AllPupWindow::dlgcolor()

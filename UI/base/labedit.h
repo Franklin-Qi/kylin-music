@@ -6,12 +6,16 @@
 #include <QHBoxLayout>
 #include <QDebug>
 
+#define PT_11 11
+
 class LabEdit : public QLineEdit
 {
     Q_OBJECT
 public:
     LabEdit();
     void setLabelNumber(int num);
+public slots:
+    void slotLableSetFontSize(int size);
 private:
     void init();
 private:
