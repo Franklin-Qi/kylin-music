@@ -653,6 +653,10 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,m_miniWidget,&miniWidget::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,historyListTable,&TableHistory::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->menumodule,&menuModule::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup,&AllPupWindow::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&AllPupWindow::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
 
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {
