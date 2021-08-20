@@ -36,19 +36,20 @@
 #include <QMessageBox>
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/mylabel.h"
+#include "UI/base/labedit.h"
 
-class AllPupWindow :public QWidget
+class AllPupWindow :public QDialog
 {
     Q_OBJECT
 public:
     explicit AllPupWindow(QWidget *parent = nullptr);
 
-    QDialog     *pupDialog;
     QPushButton *confirmBtn;
     QPushButton *cancelBtn;
     QToolButton *closeBtn;
     QLabel      *titleLab;
-    QLineEdit   *enterLineEdit;
+    QLabel      *tips;
+    LabEdit   *enterLineEdit;
     QVBoxLayout *testLayout;
     QHBoxLayout *titleLayout;
     QHBoxLayout *btnLayout;
@@ -60,6 +61,7 @@ public:
 
 public slots:
     void closeDialog();
+    void slotTextChanged(QString text);
 
 private:
     void inpupdialog();

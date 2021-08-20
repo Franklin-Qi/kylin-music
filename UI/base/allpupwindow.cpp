@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 #define PT_12 12
 
-AllPupWindow::AllPupWindow(QWidget *parent) : QWidget(parent)
+AllPupWindow::AllPupWindow(QWidget *parent) : QDialog(parent)
 {
     inpupdialog();
     dlgcolor();
@@ -29,25 +29,37 @@ AllPupWindow::AllPupWindow(QWidget *parent) : QWidget(parent)
 
 void AllPupWindow::closeDialog()
 {
-    pupDialog->close();
+    this->close();
     enterLineEdit->clear();
+}
+
+void AllPupWindow::slotTextChanged(QString text)
+{
+    enterLineEdit->setLabelNumber(15 - text.length());
+    if (text.length() == 15) {
+        tips->setText(tr("Font limit exceeded"));
+        tips->setStyleSheet("QLabel{color:#F44E50;}");
+    } else {
+        tips->setText("");
+    }
 }
 
 void AllPupWindow::inpupdialog()
 {
-    pupDialog = new QDialog(this);
-    pupDialog->resize(424,172);
-//    pupDialog->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setWindowTitle(tr("Music Player"));
+    this->setFixedSize(376, 222);
+//    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
-    MotifWmHints hints;
-    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-    hints.functions = MWM_FUNC_ALL;
-    hints.decorations = MWM_DECOR_BORDER;
-    XAtomHelper::getInstance()->setWindowMotifHint(pupDialog->winId(), hints);
+//    MotifWmHints hints;
+//    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+//    hints.functions = MWM_FUNC_ALL;
+//    hints.decorations = MWM_DECOR_BORDER;
+//    XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
 
-    pupDialog->setWindowModality(Qt::ApplicationModal); //弹出自定义对话框时主界面不可操作
+    this->setWindowModality(Qt::ApplicationModal); //弹出自定义对话框时主界面不可操作
 //    pupDialog->setModal(true);
     testLayout = new QVBoxLayout();
+    this->setLayout(testLayout);
     titleLayout = new QHBoxLayout();
     titleLab = new QLabel(this);
     closeBtn = new QToolButton(this);
@@ -56,9 +68,11 @@ void AllPupWindow::inpupdialog()
     closeBtn->setProperty("isWindowButton", 0x2);
     closeBtn->setProperty("useIconHighlightEffect", 0x8);
     closeBtn->setAutoRaise(true);
+    closeBtn->hide();
 
 //    titleLab->setText("提示信息");
     titleLab->setText(tr("Prompt information"));
+    titleLab->setFixedHeight(24);
 
     titleLayout->addWidget(titleLab,Qt::AlignLeft);
     titleLayout->addWidget(closeBtn,0,Qt::AlignRight);
@@ -66,19 +80,24 @@ void AllPupWindow::inpupdialog()
     titleLayout->setMargin(0);
     titleLayout->setSpacing(0);
 
-    enterLineEdit = new QLineEdit(pupDialog);
-    enterLineEdit->setMaxLength(20);
+    enterLineEdit = new LabEdit;
+    enterLineEdit->setFixedSize(312, 32);
+    enterLineEdit->setMaxLength(15);
 
-    confirmBtn = new QPushButton(pupDialog);
+    tips = new QLabel(this);
+    tips->setFixedHeight(24);
 
-    cancelBtn = new QPushButton(pupDialog);
+
+    confirmBtn = new QPushButton(this);
+
+    cancelBtn = new QPushButton(this);
 
     btnLayout = new QHBoxLayout();
 
-    stackWid =new QStackedWidget();
+    stackWid = new QStackedWidget();
     stackWid->addWidget(enterLineEdit);
 
-    stackWid->setFixedSize(392,32);
+    stackWid->setFixedSize(312,32);
 //    confirmBtn->setText("确认");
     confirmBtn->setText(tr("Confirm"));
     confirmBtn->setFixedSize(95,30);
@@ -95,19 +114,22 @@ void AllPupWindow::inpupdialog()
 //    enterLineEdit->setPlaceholderText("请输入歌单标题：");
     enterLineEdit->setPlaceholderText(tr("Please enter the title of the playlist:"));
 
-    testLayout->addLayout(titleLayout);
-    testLayout->addWidget(stackWid);
-    testLayout->addLayout(btnLayout);
-
     testLayout->setMargin(0);
-    testLayout->setSpacing(20);
+    testLayout->setSpacing(0);
+    testLayout->addLayout(titleLayout);
+    testLayout->addSpacing(16);
+    testLayout->addWidget(stackWid);
+    testLayout->addSpacing(2);
+    testLayout->addWidget(tips);
+    testLayout->addSpacing(14);
+    testLayout->addLayout(btnLayout);
+    testLayout->setContentsMargins(32, 16, 32, 24);
 
-    pupDialog->setLayout(testLayout);
-    pupDialog->setContentsMargins(10, 0, 10, 0);
-    pupDialog->setAutoFillBackground(true);
-    pupDialog->setBackgroundRole(QPalette::Base);
+    this->setAutoFillBackground(true);
+    this->setBackgroundRole(QPalette::Base);
 
 //    connect(addSongListBtn, SIGNAL(clicked(bool)), this, SLOT(addSongList()));
+    connect(enterLineEdit,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
     connect(closeBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
     connect(cancelBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
 
@@ -140,11 +162,11 @@ void AllPupWindow::dlgcolor()
 //                                  "QPushButton::pressed{background:#296CD9;}"
 //                                  );
 
-        titleLab->setStyleSheet("width:80px;height:14px;\
-                                font-weight: 600;\
-                                border:none;\
-                                color: #F9F9F9;\
-                                line-height:14px;");
+//        titleLab->setStyleSheet("width:80px;height:14px;\
+//                                font-weight: 600;\
+//                                border:none;\
+//                                color: #F9F9F9;\
+//                                line-height:14px;");
     }
     else if(WidgetStyle::themeColor == 0)
     {
@@ -160,11 +182,11 @@ void AllPupWindow::dlgcolor()
 //                                  "QPushButton::pressed{background:#296CD9;}"
 //                                  );
 
-        titleLab->setStyleSheet("width:80px;height:14px;\
-                                font-weight: 600;\
-                                border:none;\
-                                color: #1B1B1B;\
-                                line-height:14px;");
+//        titleLab->setStyleSheet("width:80px;height:14px;\
+//                                font-weight: 600;\
+//                                border:none;\
+//                                color: #1B1B1B;\
+//                                line-height:14px;");
     }
 }
 

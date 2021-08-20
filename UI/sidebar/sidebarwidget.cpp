@@ -109,11 +109,11 @@ void SideBarWidget::initWidget()
     //新建歌单弹窗
     newSonglistPup = new AllPupWindow(this);
     newSonglistPup->titleLab->setText(tr("New Playlist"));
-    newSonglistPup->pupDialog->hide();
+    newSonglistPup->hide();
 
     renameSongListPup = new AllPupWindow(this);
     renameSongListPup->titleLab->setText(tr("Rename"));
-    renameSongListPup->pupDialog->hide();
+    renameSongListPup->hide();
 
     //侧边栏界面 嵌套 widget
     mainWid = new QWidget(this);
@@ -146,7 +146,6 @@ void SideBarWidget::initWidget()
 
 
     this->setAutoFillBackground(true);
-
     //限制应用内字体固定大小
 //    QFont sizeFont;
 //    sizeFont.setPixelSize(14);
@@ -271,7 +270,7 @@ void SideBarWidget::getPlayListName()
 void SideBarWidget::addPlayList()
 {
     newSonglistPup->enterLineEdit->clear();
-    newSonglistPup->pupDialog->show();
+    newSonglistPup->show();
     newSonglistPup->enterLineEdit->setFocus();
 }
 
@@ -284,14 +283,18 @@ void SideBarWidget::addItemToSongList()
     newPlayListLayout->setAlignment(Qt::AlignTop);
 //    newPlayListLayout->setContentsMargins(24,0,24,0);
     newPlayListLayout->setSpacing(6);
+
     QString text = newSonglistPup->enterLineEdit->text();
+
+//    QString showText = fm.elidedText(text, Qt::ElideRight, 200);
+
     if(text != "")
     {
         for(int i = 0;i< playListName.size();i++)
         {
             if(playListName.at(i) == text)
             {
-                newSonglistPup->pupDialog->hide();
+                newSonglistPup->hide();
                 QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                 return ;
             }
@@ -302,7 +305,7 @@ void SideBarWidget::addItemToSongList()
         newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
         playListName.append(text);
-        newSonglistPup->pupDialog->hide();
+        newSonglistPup->hide();
         g_db->createNewPlayList(text);
         emit playListAdded(text);
     }
@@ -314,7 +317,7 @@ void SideBarWidget::addItemToSongList()
         newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
         playListName.append(listName);
-        newSonglistPup->pupDialog->hide();
+        newSonglistPup->hide();
         g_db->createNewPlayList(listName);
         emit playListAdded(listName);
     }
@@ -360,7 +363,7 @@ void SideBarWidget::rename(QString text)
 {
     btnText = text;
     renameSongListPup->enterLineEdit->clear();
-    renameSongListPup->pupDialog->show();
+    renameSongListPup->show();
     renameSongListPup->enterLineEdit->setFocus();
 }
 
@@ -378,7 +381,7 @@ void SideBarWidget::renamePlayList()
                 {
                     if(playListName.at(i) == text)
                     {
-                        renameSongListPup->pupDialog->hide();
+                        renameSongListPup->hide();
                         QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                         return ;
                     }
@@ -395,14 +398,14 @@ void SideBarWidget::renamePlayList()
                 }
                 g_db->renamePlayList(btnText,text); // 从数据库中重命名
                 emit playListRenamed(btnText,text);   //fff
-                renameSongListPup->pupDialog->hide();
+                renameSongListPup->hide();
             }
             else
             {
                 QString listName = btnText;
                 tmp->setText(listName);
                 playController::getInstance().setCurList(listName);
-                renameSongListPup->pupDialog->hide();
+                renameSongListPup->hide();
             }
         }
     }
