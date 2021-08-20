@@ -66,6 +66,7 @@ LIBS += -lsqlite3
 
 SOURCES += \
     UI/base/allpupwindow.cpp \
+    UI/base/labedit.cpp \
     UI/base/mylabel.cpp \
     UI/base/widgetstyle.cpp \
     UI/mainwidget.cpp \
@@ -101,6 +102,7 @@ SOURCES += \
 
 HEADERS += \
     UI/base/allpupwindow.h \
+    UI/base/labedit.h \
     UI/base/mylabel.h \
     UI/base/widgetstyle.h \
     UI/mainwidget.h \

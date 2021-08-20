@@ -1,3 +1,13 @@
+kylin-music (1.1.0-13) v101; urgency=medium
+
+  * BUG号：
+   - 73215【需求-音乐-6746】【歌单模块】新建歌单时，可以无禁止的输入字符，没有提示文字长度上限.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Fri, 20 Aug 2021 13:28:25 +0800
+
 kylin-music (1.1.0-12) v101; urgency=medium
 
   * BUG号：
