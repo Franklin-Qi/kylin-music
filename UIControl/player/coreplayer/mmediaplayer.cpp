@@ -32,6 +32,7 @@ void MMediaPlayer::truePlay(QString startTime)
     QString filePath = m_playList->getPlayFileName();
     //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+        emit playErrorMsg(NotFound);
         emit playError();
         return;
     }
@@ -207,7 +208,8 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         QString playlist = getProperty("playlist");
         if (!playlist.contains(',')) { //排除播放完成
             if (playlist.length() > 2) { //排除刚启动
-                qDebug()<<"\n歌曲播放异常";
+                //歌曲播放异常
+                emit playErrorMsg(Damage);
             }
         }
     }

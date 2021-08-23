@@ -95,6 +95,7 @@ signals:
     void signalPlayMode(int playModel);
 
     void signalNotPlaying();
+    void playErrorMsg(int errorCode);//媒体播放错误信息信号
 public slots:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);
@@ -112,6 +113,8 @@ private slots:
     void slotPlayModeChange(MMediaPlaylist::PlaybackMode mode);
     //获得当前播放的index
     void slotIndexChange(int index);
+    //媒体播放错误信息槽函数
+     void slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg);
 
 private:
     //当前播放列表名

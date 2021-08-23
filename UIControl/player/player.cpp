@@ -328,6 +328,7 @@ playController::playController()
     connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
     connect(m_player,&MMediaPlayer::stateChanged,this,&playController::slotStateChanged);
     connect(m_playlist,&MMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
+    connect(m_player,&MMediaPlayer::playErrorMsg,this,&playController::slotPlayErrorMsg);
 }
 
 void playController::init()
@@ -518,6 +519,11 @@ void playController::slotIndexChange(int index)
             return;
         }
     }
+}
+
+void playController::slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg)
+{
+    emit playErrorMsg(msg);
 }
 
 void playController::setPosition(int position)
