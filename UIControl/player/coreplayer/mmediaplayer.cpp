@@ -104,7 +104,7 @@ qint64 MMediaPlayer::position() const
 
 void MMediaPlayer::setPosition(qint64 pos)
 {
-    qint64 sec = pos/1000;
+    double sec = double(pos)/1000;
     m_positionChangeed = true;
     //记录拖动进度条之前播放状态是否为暂停
     bool restartPlay = false;
