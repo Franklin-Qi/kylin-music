@@ -129,7 +129,7 @@ void playController::setCurPlaylist(QString name, QStringList songPaths)
 {
     if (m_curList.compare(name)==0)
     {
-        qDebug() << "setCurPlaylist m_curList.compare(name)==0" << m_curList << name;
+//        qDebug() << "setCurPlaylist m_curList.compare(name)==0" << m_curList << name;
 //        return ;
     }
     if (m_playlist == nullptr || m_player == nullptr) {

@@ -203,6 +203,15 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         emit durationChanged(m_duration);
     }
         break;
+    case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、歌曲异常时会进入此分支
+        QString playlist = getProperty("playlist");
+        if (!playlist.contains(',')) { //排除播放完成
+            if (playlist.length() > 2) { //排除刚启动
+                qDebug()<<"\n歌曲播放异常";
+            }
+        }
+    }
+        break;
         //MPV会概率错误的发送此信号，导致没播放完也跳转到下一首
 //    case MPV_EVENT_END_FILE:{ //播放结束事件
 //        if (m_position != 0) {
