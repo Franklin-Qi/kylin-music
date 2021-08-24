@@ -28,6 +28,7 @@ MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
 //    list.append("Type");
 //    list.append("Size");
     m_model.setHorizontalHeaderLabels(titleList); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
+    m_model.horizontalHeaderItem(titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 }
 
 bool MusicListModel::add(musicDataStruct info)
