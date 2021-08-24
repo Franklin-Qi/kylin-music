@@ -47,6 +47,7 @@ bool MusicListModel::add(musicDataStruct info)
         item0->setData(info.title, Qt::ToolTipRole);
         item1->setData(info.singer, Qt::ToolTipRole);
         item2->setData(info.album, Qt::ToolTipRole);
+        item3->setData(info.time, Qt::ToolTipRole);
 
         item0->setData(info.title, Qt::DisplayRole);
         item0->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);

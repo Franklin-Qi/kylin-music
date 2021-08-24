@@ -32,6 +32,7 @@ void MMediaPlayer::truePlay(QString startTime)
     QString filePath = m_playList->getPlayFileName();
     //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+        emit playErrorMsg(NotFound);
         emit playError();
         return;
     }
@@ -104,7 +105,7 @@ qint64 MMediaPlayer::position() const
 
 void MMediaPlayer::setPosition(qint64 pos)
 {
-    qint64 sec = pos/1000;
+    double sec = double(pos)/1000;
     m_positionChangeed = true;
     //记录拖动进度条之前播放状态是否为暂停
     bool restartPlay = false;
@@ -201,6 +202,16 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         //获取总时长
         m_duration = getProperty("duration").toDouble() *1000;//单位换算为毫秒
         emit durationChanged(m_duration);
+    }
+        break;
+    case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、歌曲异常时会进入此分支
+        QString playlist = getProperty("playlist");
+        if (!playlist.contains(',')) { //排除播放完成
+            if (playlist.length() > 2) { //排除刚启动
+                //歌曲播放异常
+                emit playErrorMsg(Damage);
+            }
+        }
     }
         break;
         //MPV会概率错误的发送此信号，导致没播放完也跳转到下一首

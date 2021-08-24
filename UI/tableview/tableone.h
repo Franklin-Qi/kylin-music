@@ -56,7 +56,6 @@ public:
 
     void initStyle();
     void addMusicToDatebase(QStringList fileNames);
-    void musicNotExist();
 public slots:
     void slotSearchTexts(QString text);
     void slotLableSetFontSize(int size);
@@ -72,6 +71,8 @@ private:
 
     //成功添加多少首歌曲
     void importFinished(int successCount, int failCount, int allCount);
+    //导入失败
+    void importFailed(int successCount, int failCount, int allCount);
 
     void showRightMenu(const QPoint &pos);
 

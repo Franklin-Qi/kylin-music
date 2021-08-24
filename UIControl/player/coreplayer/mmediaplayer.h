@@ -13,6 +13,7 @@ class MMediaPlayer : public QObject
 public:
     //          停止播放          播放中       暂停中
     enum State{StoppedState=0,PlayingState,PausedState}; //播放状态枚举
+    enum ErrorMsg{NotFound=-1,Damage=-2}; //播放状态枚举
     MMediaPlayer(QObject *parent = nullptr);
 
     void setPlaylist(MMediaPlaylist *playlist); //设置播放列表
@@ -55,6 +56,7 @@ signals:
     void positionChanged(qint64); //播放进度改变信号
     void playFinish(); //媒体播放完成信号
     void playError(); //媒体播放错误信号
+    void playErrorMsg(ErrorMsg errorCode);//媒体播放错误信息信号
 };
 
 #endif // MMEDIAPLAYER_H

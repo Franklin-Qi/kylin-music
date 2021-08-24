@@ -657,6 +657,7 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&AllPupWindow::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
 
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {
@@ -914,6 +915,7 @@ void Widget::changeLightTheme()
     musicListTable->initStyle();
 //    musicListTable->setStyleSheet("{background:#FFFFFF;border:none;}");
     musicListTable->tableView->setAlternatingRowColors(false);
+    musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();

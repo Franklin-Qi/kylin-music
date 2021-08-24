@@ -1,4 +1,5 @@
 ﻿#include "searchresult.h"
+#define PT_11 11
 
 SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 {
@@ -73,11 +74,21 @@ SearchResult::~SearchResult()
 
 }
 
+void SearchResult::keyPressEvent(QKeyEvent *event)
+{
+    m_searchEdit->raise();
+    m_searchEdit->activateWindow();
+    QApplication::sendEvent(m_searchEdit,event);
+    emit m_searchEdit->textChanged(m_searchEdit->text());
+}
+
 void SearchResult::autoResize()
 {
     if (m_searchEdit != nullptr) {
         if (m_searchEdit->text() != "") {
             this->show();
+            this->raise();
+            this->activateWindow();
         }
     }
 
@@ -242,31 +253,31 @@ void SearchResult::setSearchEdit(SearchEdit *edit)
     m_searchEdit = edit;
 }
 
-//bool SearchResult::nativeEvent(const QByteArray &eventType, void *message, long *result)
-//{
-//    Q_UNUSED(result);
-//    if(eventType != "xcb_generic_event_t")
-//    {
-//        return false;
-//    }
+bool SearchResult::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    Q_UNUSED(result);
+    if(eventType != "xcb_generic_event_t")
+    {
+        return false;
+    }
 
-//    xcb_generic_event_t *event = (xcb_generic_event_t*)message;
-//    switch (event->response_type & ~0x80)
-//    {
-//        case XCB_FOCUS_OUT:
-//            QRect rect(m_resultPosX, m_resultPosY, m_resultPosWidth, m_resultPosHeight);
-//            if(rect.contains(QCursor::pos(), false))
-//            {
-//                return 0;
-//            }
-//            else
-//            {
-//                this->hide();
-//                break;
-//            }
-//    }
-//    return false;
-//}
+    xcb_generic_event_t *event = (xcb_generic_event_t*)message;
+    switch (event->response_type & ~0x80)
+    {
+        case XCB_FOCUS_OUT:
+            QRect rect(m_resultPosX, m_resultPosY, m_resultPosWidth, m_resultPosHeight);
+            if(rect.contains(QCursor::pos(), false))
+            {
+                return 0;
+            }
+            else
+            {
+                this->hide();
+                break;
+            }
+    }
+    return false;
+}
 
 void SearchResult::changeSrearchResultPos(int posX, int posY, int width, int height)
 {
@@ -285,4 +296,16 @@ void SearchResult::onReturnPressed()
     } else if (m_AlbumView->getIndexInt() >= 0) {
         m_AlbumView->onReturnPressed();
     }
+}
+
+void SearchResult::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_11;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    m_MusicLabel->setFont(font);
+    m_SingerLabel->setFont(font);
+    m_AlbumLabel->setFont(font);
 }

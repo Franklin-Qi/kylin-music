@@ -1,3 +1,13 @@
+kylin-music (1.1.0-14) v101; urgency=medium
+
+  * BUG号：
+   - 62331【音乐】mp2、m4a、m4r、wv打开后默认为视频播放器非音乐播放器.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Fri, 20 Aug 2021 17:02:25 +0800
+
 kylin-music (1.1.0-13) v101; urgency=medium
 
   * BUG号：
