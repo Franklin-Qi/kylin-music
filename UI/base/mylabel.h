@@ -14,7 +14,7 @@ public:
     void setTextLimitShrink(const QString &text, int width);
     void setTextLimitExpand(const QString &text);
     QString fullText() const;
-    QString dealMessage(QString msg);
+//    QString dealMessage(QString msg);
     int fontSize = 24;
     int minSize = 120;
 protected:

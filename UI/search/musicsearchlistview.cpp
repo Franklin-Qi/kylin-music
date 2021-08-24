@@ -93,6 +93,8 @@ void MusicSearchListview::setSearchText(QString text)
         m_model->clear();
         for (musicDataStruct musicData : m_MusicDataStruct) {
             QStandardItem *item = new QStandardItem;
+            QString Str = musicData.title + "-" + musicData.singer;
+            item->setData(Str,Qt::ToolTipRole);
             m_model->appendRow(item);
 
             auto row = m_model->rowCount() - 1;
@@ -121,6 +123,8 @@ void MusicSearchListview::setSearchText(QString text)
         m_model->clear();
         for (musicDataStruct singerData : m_SingerInfos) {
             QStandardItem *item = new QStandardItem;
+            QString Str = singerData.title + "-" + singerData.singer;
+            item->setData(Str,Qt::ToolTipRole);
             m_model->appendRow(item);
 
             auto row = m_model->rowCount() - 1;
@@ -148,6 +152,8 @@ void MusicSearchListview::setSearchText(QString text)
         m_model->clear();
         for (musicDataStruct albumData : m_AlbumInfos) {
             QStandardItem *item = new QStandardItem;
+            QString Str = albumData.album + "-" + albumData.singer;
+            item->setData(Str,Qt::ToolTipRole);
             m_model->appendRow(item);
 
             auto row = m_model->rowCount() - 1;

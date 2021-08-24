@@ -1,4 +1,4 @@
-#include "tableviewdelegate.h"
+﻿#include "tableviewdelegate.h"
 #include "UI/base/widgetstyle.h"
 //#include "UIControl/player/player.h"
 //#include "UIControl/base/musicDataBase.h"

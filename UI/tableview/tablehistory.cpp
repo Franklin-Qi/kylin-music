@@ -23,6 +23,8 @@ void TableHistory::initSetModel()
 
     m_tableHistory->setContextMenuPolicy(Qt::CustomContextMenu);
     m_tableHistory->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_tableHistory->setShowGrid(false);
+    m_tableHistory->verticalHeader()->setDefaultSectionSize(40);
     m_model = new MusicListModel;
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);

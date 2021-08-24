@@ -37,6 +37,7 @@ public:
 
 public slots:
     void onReturnPressed();
+    void slotLableSetFontSize(int size);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event);

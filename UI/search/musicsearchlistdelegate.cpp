@@ -86,8 +86,8 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
 
-    QFont fontT6;
-    fontT6.setPixelSize(14);
+//    QFont fontT6;
+//    fontT6.setPixelSize(14);
 
     if (listview->getSearchType() == SearchType::TitleType) {
         // 绘制歌曲
@@ -95,7 +95,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
         QString mtext;
         mtext = metaPtr.title + "-" + metaPtr.singer;
-        QFontMetricsF fontWidth(fontT6);
+        QFontMetricsF fontWidth(listview->font());
         mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
 
         QStyleOptionViewItem viewOption(option);
@@ -123,7 +123,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         testcursor.select(QTextCursor::LineUnderCursor);
         QTextCharFormat fmt;
         fmt.setForeground(textColor);
-        fmt.setFont(fontT6);
+        fmt.setFont(listview->font());
         testcursor.mergeCharFormat(fmt);
         testcursor.clearSelection();
         testcursor.movePosition(QTextCursor::EndOfLine);
@@ -155,7 +155,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
         QString mtext;
         mtext = metaPtr.title + "-" + metaPtr.singer;
-        QFontMetricsF fontWidth(fontT6);
+        QFontMetricsF fontWidth(listview->font());
         mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
         QStyleOptionViewItem viewOption(option);
         initStyleOption(&viewOption, index);
@@ -182,7 +182,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         testcursor.select(QTextCursor::LineUnderCursor);
         QTextCharFormat fmt;
         fmt.setForeground(textColor);
-        fmt.setFont(fontT6);
+        fmt.setFont(listview->font());
         testcursor.mergeCharFormat(fmt);
         testcursor.clearSelection();
         testcursor.movePosition(QTextCursor::EndOfLine);
@@ -212,8 +212,8 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
 
         QString mtext;
-        mtext = metaPtr.singer + "-" + metaPtr.album;
-        QFontMetricsF fontWidth(fontT6);
+        mtext = metaPtr.album + "-" + metaPtr.singer;
+        QFontMetricsF fontWidth(listview->font());
         mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
         QStyleOptionViewItem viewOption(option);
         initStyleOption(&viewOption, index);
@@ -240,7 +240,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         testcursor.select(QTextCursor::LineUnderCursor);
         QTextCharFormat fmt;
         fmt.setForeground(textColor);
-        fmt.setFont(fontT6);
+        fmt.setFont(listview->font());
         testcursor.mergeCharFormat(fmt);
         testcursor.clearSelection();
         testcursor.movePosition(QTextCursor::EndOfLine);
@@ -271,5 +271,5 @@ QSize MusicSearchListDelegate::sizeHint(const QStyleOptionViewItem &option, cons
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(126, 34);
+    return QSize(126, 36);
 }

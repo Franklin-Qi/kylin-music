@@ -1,4 +1,5 @@
 ﻿#include "searchresult.h"
+#define PT_11 11
 
 SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 {
@@ -295,4 +296,16 @@ void SearchResult::onReturnPressed()
     } else if (m_AlbumView->getIndexInt() >= 0) {
         m_AlbumView->onReturnPressed();
     }
+}
+
+void SearchResult::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_11;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    m_MusicLabel->setFont(font);
+    m_SingerLabel->setFont(font);
+    m_AlbumLabel->setFont(font);
 }

@@ -58,6 +58,7 @@ void TableOne::initTableViewStyle()
     tableView->setColumnWidth(3,75);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
+    tableView->verticalHeader()->setDefaultSectionSize(40);
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
@@ -79,6 +80,8 @@ void TableOne::initTableViewStyle()
     }
 
     horizonHeader->setDefaultAlignment(Qt::AlignLeft);
+    //列表刷新，时长右对齐需加到默认表头左对齐之后
+    m_model->m_model.horizontalHeaderItem(m_model->titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 
     tableView->verticalScrollBar()->setStyleSheet("width:25px;");
     tableView->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
@@ -618,7 +621,7 @@ void TableOne::addToOtherList(QAction *listNameAction)
         }
         it++;
     }
-    importFinished(successCount, failCount, allCount);
+    importFailed(successCount, failCount, allCount);
 }
 void TableOne::addMusicSlot()
 {
@@ -822,6 +825,24 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     }
 }
 
+void TableOne::importFailed(int successCount, int m_failCount, int allCount)
+{
+    if (successCount > 0)
+    {
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes,Widget::mutual);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
+    }
+    else
+    {
+        if (m_failCount > 0) {
+            QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Repeat add"),QMessageBox::Yes,Widget::mutual);
+            warn->button(QMessageBox::Yes)->setText("确定");
+            warn->exec();
+        }
+    }
+}
+
 QMap<int,QString> TableOne::getSelectedTaskIdList()
 {
     QTableView *m_pTableView = tableView;
@@ -843,45 +864,36 @@ void TableOne::setHightLightAndSelect()
     if(m_model->count() == 0 || ( heightLightIndex >= m_model->count() && nowListName == nowPlayListName)) {
         return;
     }
-    if(WidgetStyle::themeColor == 0)
-    {
-        for (int i=0 ;i < 4 ;i++ )
-        {
-            for(int j = 0; j < m_model->count() ; j++)
-            {
-
-                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::black)));
+    QStringList pathList;
+    pathList = m_model->getPathList(nowListName);
+    for(int i = 0; i < pathList.size(); i++ ) {
+        QFileInfo info(pathList[i]);
+        if(info.exists() == false) {
+            for (int j=0; j<4; j++){
+                m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::gray)));
+                m_model->m_model.item(i,j)->setData(tr("path does not exist"),Qt::ToolTipRole);
+                m_model->m_model.item(i,j)->setData(QString("nofile"),Qt::StatusTipRole);
             }
-        }
-        if(heightLightIndex != -1 && nowListName == nowPlayListName)
-        {
-            for (int i = 0 ; i<4 ;i++ )
-            {
-//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
-                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+        } else {
+            if (m_model->m_model.item(i,0)->data(Qt::StatusTipRole).toString() != ""  ) {
+                for(int j=0; j<4; j++) {
+                    if(WidgetStyle::themeColor == 0) {
+                        m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::black)));
+                    } else if (WidgetStyle::themeColor == 1) {
+                        m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::white)));
+                    }
+                    m_model->m_model.item(i,j)->setData(m_model->m_model.item(i,j)->text(),Qt::ToolTipRole);
+                }
+                m_model->m_model.item(i,0)->setData(QString(),Qt::StatusTipRole);
             }
-        }
-
-    }
-    if(WidgetStyle::themeColor == 1)
-    {
-        for (int i=0 ;i<4 ;i++ )
-        {
-            for(int j = 0; j < m_model->count() ; j++)
-            {
-
-                m_model->m_model.item(j,i)->setForeground(QBrush(QColor(Qt::white)));
-            }
-        }
-        if(heightLightIndex != -1 && nowListName == nowPlayListName)
-        {
-            for (int i = 0 ; i<4 ;i++ )
-            {
-                m_model->m_model.item(heightLightIndex,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+            if(heightLightIndex != -1 && nowListName == nowPlayListName) {
+                for (int j=0; j<4; j++) {
+                    m_model->m_model.item(heightLightIndex,j)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+                    m_model->m_model.item(heightLightIndex,j)->setData(QString("heightLight"),Qt::StatusTipRole);
+                }
             }
         }
     }
-    musicNotExist();
 }
 
 void TableOne::changeNumber()
@@ -1030,6 +1042,8 @@ void TableOne::slotReturnText(QString text)
     setHightLightAndSelect();
 
     addMusicButton->hide();
+    n_addMusicButton->hide();
+    n_addDirMusicButton->hide();
     listTitleHBoxLayout->setMargin(0);
     listTitleHBoxLayout->setSpacing(0);
     listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
@@ -1078,27 +1092,6 @@ void TableOne::resizeEvent(QResizeEvent *event)
     // 使用变量保存tableView一页最多可以完全显示多少条目，实时刷新，实现滑动条的显示和隐藏
     showScrollbarNumber = tableView->height()/42;
     initTableViewStyle();
-}
-
-void TableOne::musicNotExist()
-{
-    QStringList pathList;
-    pathList = m_model->getPathList(nowListName);
-    for(int i = 0; i < pathList.size(); i++ )
-    {
-        QFileInfo info(pathList[i]);
-        if(info.exists() == false)
-        {
-            for (int j=0; j<4; j++)
-            {
-
-                    m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::gray)));
-                    m_model->m_model.item(i,j)->setData(tr("path does not exist"),Qt::ToolTipRole);
-            }
-        }
-
-    }
-
 }
 
 void TableOne::keyPressEvent(QKeyEvent *event)
