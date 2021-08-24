@@ -24,6 +24,7 @@ signals:
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
+
 public slots:
     void slotTextChanged();
     void slotReturnPressed();

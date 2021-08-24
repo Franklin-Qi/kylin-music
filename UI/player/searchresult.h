@@ -9,6 +9,7 @@
 #include <QTreeView>
 #include <QFrame>
 #include <QX11Info>
+#include <QApplication>
 #include "UI/search/musicsearchlistview.h"
 #include "UI/player/searchedit.h"
 
@@ -37,7 +38,8 @@ public:
 public slots:
     void onReturnPressed();
 protected:
-//    bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event);
 signals:
 
 public:
