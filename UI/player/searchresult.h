@@ -38,11 +38,15 @@ public:
 public slots:
     void onReturnPressed();
     void slotLableSetFontSize(int size);
+//    void slotMusicItemClicked(QModelIndex index);
+//    void slotSingerItemClicked(QModelIndex index);
+//    void slotAlbumItemClicked(QModelIndex index);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event);
 signals:
-
+    void signalSongListBySinger(QString singer);
+    void signalSongListByAlbum(QString album);
 public:
     MusicSearchListview *m_MusicView  = nullptr;
     MusicSearchListview *m_SingerView = nullptr;

@@ -67,6 +67,10 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     vlayout->addWidget(m_AlbumLabel, 1);
     vlayout->addWidget(m_AlbumView, 0);
     autoResize();
+
+//    connect(m_MusicView,&MusicSearchListview::clicked,this,&SearchResult::slotMusicItemClicked);
+//    connect(m_SingerView,&MusicSearchListview::clicked,this,&SearchResult::slotSingerItemClicked);
+//    connect(m_AlbumView,&MusicSearchListview::clicked,this,&SearchResult::slotAlbumItemClicked);
 }
 
 SearchResult::~SearchResult()
@@ -79,6 +83,10 @@ void SearchResult::keyPressEvent(QKeyEvent *event)
     m_searchEdit->raise();
     m_searchEdit->activateWindow();
     QApplication::sendEvent(m_searchEdit,event);
+    if (event->key() == Qt::Key_Return) {
+        this->hide();
+        return;
+    }
     emit m_searchEdit->textChanged(m_searchEdit->text());
 }
 
@@ -309,3 +317,28 @@ void SearchResult::slotLableSetFontSize(int size)
     m_SingerLabel->setFont(font);
     m_AlbumLabel->setFont(font);
 }
+
+//void SearchResult::slotMusicItemClicked(QModelIndex index)
+//{
+//    this->hide();
+//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::TitleType).value<musicDataStruct>();
+//    qDebug() << "\n++++++++++++++++\n" << metaPtr.filepath;
+//}
+
+//void SearchResult::slotSingerItemClicked(QModelIndex index)
+//{
+//    this->hide();
+//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::SingerType).value<musicDataStruct>();
+//    qDebug() << "\n++++++++++++++++\n" << metaPtr.singer;
+
+//    emit signalSongListBySinger(metaPtr.album);
+//}
+
+//void SearchResult::slotAlbumItemClicked(QModelIndex index)
+//{
+//    this->hide();
+//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
+//    qDebug() << "\n++++++++++++++++\n" << metaPtr.album;
+
+//    emit signalSongListByAlbum(metaPtr.album);
+//}

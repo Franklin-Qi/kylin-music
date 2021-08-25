@@ -507,10 +507,11 @@ void PlaySongArea::setPlayMode(int playModel)
 
 void PlaySongArea::slotSongInfo(QString path)
 {
-    filePath = path.remove("file://");
-
     musicDataStruct musicStruct;
-    g_db->getSongInfoFromDB(filePath, musicStruct);
+    if(!path.isEmpty()) {
+        filePath = path.remove("file://");
+        g_db->getSongInfoFromDB(filePath, musicStruct);
+    }
     //使用库解析总时间
     m_time = musicStruct.time;
     if(musicStruct.title == "")

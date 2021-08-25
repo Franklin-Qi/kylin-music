@@ -171,7 +171,6 @@ void playController::removeSongFromCurList(QString name, int index)
     if (m_playlist != nullptr) {
 //        m_playlist->removeMedia(index);
         //判断删除后 播放歌曲的index    当前只判断了删除正在播放的歌曲    还没做删除正在播放之前的歌曲和之后的歌曲
-            qDebug() << "m_playlist->currentIndex();" << m_playlist->currentIndex();
             int count = m_playlist->mediaCount();
 
             if(m_curIndex == index)

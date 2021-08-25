@@ -59,6 +59,8 @@ public:
 public slots:
     void slotSearchTexts(QString text);
     void slotLableSetFontSize(int size);
+//    void slotSongListBySinger(QString singer);
+//    void slotSongListByAlbum(QString album);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定

@@ -1050,6 +1050,45 @@ void TableOne::slotReturnText(QString text)
 
 }
 
+//void TableOne::slotSongListBySinger(QString singer)
+//{
+//    m_model->clear();
+//    emit signalListSearch();
+//    nowListName = SEARCH;
+////        return;
+
+//    setHightLightAndSelect();
+//    QList<musicDataStruct> resList;
+//    int ret = g_db->getSongInfoListBySinger(resList, singer);
+//    if (ret == DB_OP_SUCC) {
+//        m_model->clear();
+//        m_model->add(resList);
+//        for(int i = 0; i < resList.size(); i++)
+//        {
+//            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
+//        }
+//        initTableViewStyle();
+//    }
+
+//    changeNumber();
+//    showTitleText(tr("Search Result"));
+//}
+
+//void TableOne::slotSongListByAlbum(QString album)
+//{
+//    QList<musicDataStruct> resList;
+//    int ret = g_db->getSongInfoListBySinger(resList, album);
+//    if (ret == DB_OP_SUCC) {
+//        m_model->clear();
+//        m_model->add(resList);
+//        for(int i = 0; i < resList.size(); i++)
+//        {
+//            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
+//        }
+//        initTableViewStyle();
+//    }
+//}
+
 void TableOne::dragEnterEvent(QDragEnterEvent *event)
 {
     if(event->mimeData()->hasFormat("text/uri-list"))
