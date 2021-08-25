@@ -202,7 +202,8 @@ void Widget::client_get(QString str)
     QString s = str.split(":").last();
     if(s == "1")
     {
-        playController::getInstance().play();
+        playSongArea->slotPlayClicked();
+//        playController::getInstance().play();
     }
     else if(s == "2" || key == "163")
     {
@@ -387,7 +388,7 @@ void Widget::importFile(QStringList list)
 //            musicListTable->selectListChanged(tr("Song List"));
             if(listName == ALLMUSIC)
             {
-                emit signalRefreshList(ALLMUSIC);
+                Q_EMIT signalRefreshList(ALLMUSIC);
             }
             QStringList pathList = getPath(ALLMUSIC);
             playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
@@ -409,7 +410,7 @@ void Widget::importFile(QStringList list)
                     playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
                     if(listName == ALLMUSIC)
                     {
-                        emit signalRefreshList(ALLMUSIC);
+                        Q_EMIT signalRefreshList(ALLMUSIC);
                     }
                     int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,resList.at(i).filepath);
                     if(index == -1)
@@ -692,7 +693,7 @@ void Widget::initGSettings()//初始化GSettings
                 int fontSizeKey = themeData->get(UKUI_FONT_SIZE).toString().toInt();
                 //发送改变信号
                 if (fontSizeKey > 0) {
-                    emit signalSetFontSize(fontSizeKey);
+                    Q_EMIT signalSetFontSize(fontSizeKey);
                 }
             }
         });
@@ -706,7 +707,7 @@ void Widget::initGSettings()//初始化GSettings
             fontSizeKey = fontSizeKeyTmp;
         }
     }
-    emit signalSetFontSize(fontSizeKey);
+    Q_EMIT signalSetFontSize(fontSizeKey);
     qDebug()<<"初始化GSettings成功";
 }
 
@@ -751,11 +752,11 @@ void Widget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_F1)
     {
-        emit signalShowGuide();
+        Q_EMIT signalShowGuide();
     }
     else if(event->key() == Qt::Key_Space)
     {
-        emit signalSpaceKey();
+        Q_EMIT signalSpaceKey();
     }
     QWidget::keyPressEvent(event);
 }

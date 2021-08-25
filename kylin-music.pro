@@ -1,5 +1,5 @@
 QT       += core gui sql widgets
-QT       += dbus x11extras KWindowSystem
+QT       += dbus x11extras KWindowSystem network
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -7,6 +7,8 @@ CONFIG += c++11
 
 INCLUDEPATH += /usr/include/mpv/
 LIBS += -lmpv \
+
+LIBS += -lpeony \
 
 LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 
@@ -47,7 +49,7 @@ INSTALLS += \
 TRANSLATIONS += ./translations/kylin-music_side.ts
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gsettings-qt taglib
+PKGCONFIG += gsettings-qt taglib gio-unix-2.0
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.

@@ -104,7 +104,7 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space)
     {
-        emit signalSpaceKey();
+        Q_EMIT signalSpaceKey();
     }
     else if(event->key() == Qt::Key_Right)
     {
@@ -505,7 +505,7 @@ void miniWidget::slotFav()
                         //当前为我喜欢界面才刷新
                         if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav(FAV);
+                            Q_EMIT signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -521,7 +521,7 @@ void miniWidget::slotFav()
             playController::getInstance().addSongToCurList(FAV, filePath);
             if(listName == tr("I Love"))
             {
-                emit signalRefreshFav(FAV);
+                Q_EMIT signalRefreshFav(FAV);
             }
         }
     }
@@ -539,7 +539,7 @@ void miniWidget::slotFavExixts()
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void miniWidget::slotFavExixtsDark()
@@ -554,7 +554,7 @@ void miniWidget::slotFavExixtsDark()
         m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void miniWidget::slotFavIsExixts(QString filePaths)

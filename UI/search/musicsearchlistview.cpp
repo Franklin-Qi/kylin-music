@@ -77,7 +77,7 @@ void MusicSearchListview::setSearchText(QString text)
 {
     m_CurrentIndex = -1;
     m_searchText = text;
-    emit signalSearchTexts(m_searchText);
+    Q_EMIT signalSearchTexts(m_searchText);
 
     QList<musicDataStruct> musicDataInfos;
     QList<musicDataStruct> singerInfos;
@@ -198,19 +198,19 @@ void MusicSearchListview::switchToSearchResultTab(const QModelIndex &index)
 {
 //    if (m_SearchType == SearchType::SearchMusic) {
 //        MediaMeta mediaMeta = index.data(Qt::UserRole + SearchType::SearchMusic).value<MediaMeta>();
-//        emit CommonService::getInstance()->signalSwitchToView(SearchMusicResultType, mediaMeta.title);
+//        Q_EMIT CommonService::getInstance()->signalSwitchToView(SearchMusicResultType, mediaMeta.title);
 //        if (m_SearchResultWidget) {
 //            m_SearchResultWidget->setLineEditSearchString(mediaMeta.title);
 //        }
 //    } else if (m_SearchType == SearchType::SearchSinger) {
 //        SingerInfo singerInfo = index.data(Qt::UserRole + SearchType::SearchSinger).value<SingerInfo>();
-//        emit CommonService::getInstance()->signalSwitchToView(SearchSingerResultType, singerInfo.singerName);
+//        Q_EMIT CommonService::getInstance()->signalSwitchToView(SearchSingerResultType, singerInfo.singerName);
 //        if (m_SearchResultWidget) {
 //            m_SearchResultWidget->setLineEditSearchString(singerInfo.singerName);
 //        }
 //    } else if (m_SearchType == SearchType::SearchAlbum) {
 //        AlbumInfo albumInfo = index.data(Qt::UserRole + SearchType::SearchAlbum).value<AlbumInfo>();
-//        emit CommonService::getInstance()->signalSwitchToView(SearchAlbumResultType, albumInfo.albumName);
+//        Q_EMIT CommonService::getInstance()->signalSwitchToView(SearchAlbumResultType, albumInfo.albumName);
 //        if (m_SearchResultWidget) {
 //            m_SearchResultWidget->setLineEditSearchString(albumInfo.albumName);
 //        }

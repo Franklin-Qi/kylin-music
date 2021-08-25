@@ -46,9 +46,9 @@ public:
     QStringList m_musicType;
     //获取封面图片
     QPixmap getCoverPhotoPixmap(QString filepath);
-public slots:
+public Q_SLOTS:
     void durationChange(qint64 duration);
-signals:
+Q_SIGNALS:
     void durations();
 private:
     QStringList updateSongInfoFromLocal(QString filepath);

@@ -102,6 +102,9 @@ int main(int argc, char *argv[])
         a.installTranslator(&trans_menu);
     }
 //    qApp->setProperty("noChangeSystemFontSize", true);
+    QTranslator app_trans;
+    app_trans.load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
+    a.installTranslator(&app_trans);
 #ifndef QT_NO_TRANSLATION
     QString translatorFileName = QLatin1String("qt_");
     translatorFileName += QLocale::system().name();

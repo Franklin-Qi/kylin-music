@@ -1,6 +1,6 @@
 #include <QMimeData>
 #include <QDirIterator>
-
+#include <peony-qt/file-operation-utils.h>
 #include "tableone.h"
 #include "UI/mainwidget.h"
 
@@ -462,9 +462,9 @@ void TableOne::deleteSongs()
 
             if(nowListName == FAV)
             {
-                emit removeILoveFilepathSignal(iter.value());
+                Q_EMIT removeILoveFilepathSignal(iter.value());
             }
-//            emit countChanges();
+//            Q_EMIT countChanges();
 
             map1.remove(iter.key());
         }
@@ -474,98 +474,65 @@ void TableOne::deleteSongs()
         }
     }
     selectListChanged(nowListName);
-    emit refreshHistoryListSignal();
+    Q_EMIT refreshHistoryListSignal();
 }
 
 void TableOne::deleteLocalSongs()
 {
-    QMap<int,QString> map1 = getSelectedTaskIdList();
-    while (!map1.empty())
-    {
-        QMap<int,QString>::iterator iter;
-        iter = map1.end();
-        iter--;
-        QFile file(iter.value());
-//        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Are you sure you want to delete it locally?"),QMessageBox::Yes | QMessageBox::No);
-//        warn->button(QMessageBox::Yes)->setText("确定");
-//        warn->button(QMessageBox::No)->setText("取消");
-//        int result = warn->exec();
-//        if(result == QMessageBox::Yes)
-//        {
-//            qDebug() << "QMessageBox::Yes";
-//        }
-//        else
-//        {
-//            qDebug() << "QMessageBox::No";
-//            return;
-//        }
+    m_map = getSelectedTaskIdList();
+    for (int key : m_map.keys()) {
+        QString value = m_map.value(key);
+        QFile file(value);
         if(file.exists())
         {
-            //移入回收站(作为已知)
-            deleteImage(iter.value());
-            //删除到回收站不成功从磁盘删除
-            file.remove();
-        }
-        int ret;
-        int index = -1;
-        if(nowListName != nowPlayListName && nowListName == ALLMUSIC)
-        {
-            index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,iter.value());
-        }
-        if(nowListName != ALLMUSIC)
-        {
-           ret = g_db->delMusicFromPlayList(iter.value(),nowListName);
-        }
-        else
-        {
-           ret = g_db->delSongFromEveryWhere(iter.value());
-        }
-        if(ret == 0)
-        {
-            if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1)
-            {
-                playController::getInstance().removeSongFromCurList(nowPlayListName,index);
-            }
-            else
-            {
-                playController::getInstance().removeSongFromCurList(nowListName,iter.key());
-            }
+            QString uri = "file://" + value;
+            Peony::FileOperation *trash = Peony::FileOperationUtils::trash(QStringList(uri),true);
+            connect(trash,&Peony::FileOperation::operationFinished,this,[=]{
+                if (!trash->hasError()) {
+                    int ret;
+                    int index = -1;
+                    if(nowListName != nowPlayListName && nowListName == ALLMUSIC)
+                    {
+                        index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,value);
+                    }
+                    if(nowListName != ALLMUSIC)
+                    {
+                       ret = g_db->delMusicFromPlayList(value,nowListName);
+                    }
+                    else
+                    {
+                       ret = g_db->delSongFromEveryWhere(value);
+                    }
+                    if(ret == 0)
+                    {
+                        if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1)
+                        {
+                            playController::getInstance().removeSongFromCurList(nowPlayListName,index);
+                        }
+                        else
+                        {
+                            playController::getInstance().removeSongFromCurList(nowListName,key);
+                        }
 
-            if(nowListName == FAV)
-            {
-                emit removeILoveFilepathSignal(iter.value());
-            }
+                        if(nowListName == FAV)
+                        {
+                            Q_EMIT removeILoveFilepathSignal(value);
+                        }
 
-            map1.remove(iter.key());
-        }
-        else
-        {
-            qDebug() << "delete failed" << iter.value();
+                        m_map.remove(key);
+                    }
+                    else
+                    {
+                        qDebug() << "delete failed" << value;
+                    }
+                    selectListChanged(nowListName);
+                    Q_EMIT refreshHistoryListSignal();
+                }
+            },Qt::BlockingQueuedConnection);
         }
     }
-    selectListChanged(nowListName);
-    emit refreshHistoryListSignal();
-}
 
-void TableOne::deleteImage(const QString &savepath)
-{
-    _processStart("gio",QStringList() << "trash" << savepath);
 }
-
-void TableOne::_processStart(const QString &cmd, QStringList arguments)
-{
-    Widget::mutual->process->start(cmd,arguments);
-    Widget::mutual->process->waitForStarted();
-    Widget::mutual->process->waitForFinished();
-}
-
-void TableOne::processLog()
-{
-    qDebug()<<"*******process error*******\n"
-           << QString::fromLocal8Bit(Widget::mutual->process->readAllStandardError())
-           <<"\n*******process error*******";
-}
-
 
 void TableOne::playSongs()
 {
@@ -614,7 +581,7 @@ void TableOne::addToOtherList(QAction *listNameAction)
 //            if(listName == tr("I Love"))
             if(listName == FAV)
             {
-                emit addILoveFilepathSignal(it.value());
+                Q_EMIT addILoveFilepathSignal(it.value());
             }
         }else{
             failCount++;
@@ -953,7 +920,7 @@ void TableOne::selectListChanged(QString listname)
     } else if(listname == tr("I Love")) {
         nowListName = FAV;
     } else if(listname == tr("Search Result")) {
-        emit signalListSearch();
+        Q_EMIT signalListSearch();
         nowListName = SEARCH;
 //        return;
     } else {
@@ -1052,8 +1019,11 @@ void TableOne::slotReturnText(QString text)
 
 //void TableOne::slotSongListBySinger(QString singer)
 //{
+//    clearSearchList();
+
 //    m_model->clear();
-//    emit signalListSearch();
+//    //取消侧边栏所有按钮的选中状态
+//    Q_EMIT signalListSearch();
 //    nowListName = SEARCH;
 ////        return;
 
@@ -1072,12 +1042,20 @@ void TableOne::slotReturnText(QString text)
 
 //    changeNumber();
 //    showTitleText(tr("Search Result"));
+//    setHightLightAndSelect();
 //}
 
 //void TableOne::slotSongListByAlbum(QString album)
 //{
+//    clearSearchList();
+
+//    m_model->clear();
+//    //取消侧边栏所有按钮的选中状态
+//    Q_EMIT signalListSearch();
+//    nowListName = SEARCH;
+
 //    QList<musicDataStruct> resList;
-//    int ret = g_db->getSongInfoListBySinger(resList, album);
+//    int ret = g_db->getSongInfoListByAlbum(resList, album);
 //    if (ret == DB_OP_SUCC) {
 //        m_model->clear();
 //        m_model->add(resList);
@@ -1087,7 +1065,39 @@ void TableOne::slotReturnText(QString text)
 //        }
 //        initTableViewStyle();
 //    }
+
+//    changeNumber();
+//    showTitleText(tr("Search Result"));
+//    setHightLightAndSelect();
 //}
+
+void TableOne::clearSearchList()
+{
+    int ret = g_db->checkPlayListExist(SEARCH);
+    if(ret == DB_OP_SUCC)
+    {
+        m_model->clear();
+        int ret;
+        QList<musicDataStruct> musicDateList;
+        ret = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
+        if(ret == DB_OP_SUCC)
+        {
+            for(int i = 0; i < musicDateList.size(); i++)
+            {
+                playController::getInstance().removeSongFromCurList(SEARCH, 0);
+            }
+        }
+
+        g_db->delPlayList(SEARCH);
+    }
+
+    int ref = g_db->createNewPlayList(SEARCH);
+    if(ref != DB_OP_SUCC)
+    {
+        qDebug() << "创建搜索歌单失败";
+        return;
+    }
+}
 
 void TableOne::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -1123,7 +1133,7 @@ void TableOne::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = tableView->indexAt(event->pos());
     int row = index.row();
-    emit hoverIndexChanged(index);
+    Q_EMIT hoverIndexChanged(index);
 }
 
 void TableOne::resizeEvent(QResizeEvent *event)

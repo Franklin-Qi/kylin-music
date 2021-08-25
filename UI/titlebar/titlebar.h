@@ -84,7 +84,7 @@ public:
 
     void titlecolor();
 
-public slots:
+public Q_SLOTS:
     void searchMusic();
     void slotFoucusIn();
 
@@ -93,7 +93,7 @@ public slots:
 protected:
 //    virtual void mouseDoubleClickEvent(QMouseEvent *event);
     bool eventFilter(QObject *watched, QEvent *event);
-private slots:
+private Q_SLOTS:
     //进行最小化、最大化、还原、关闭
 //    void slot_showMaximized();
 //    void slot_quit();

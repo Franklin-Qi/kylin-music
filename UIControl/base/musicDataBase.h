@@ -147,9 +147,7 @@ public:
 protected:
     explicit MusicDataBase(QObject *parent = nullptr);
 
-signals:
-
-public slots:
+Q_SIGNALS:
 
 private:
     //日志处理函数

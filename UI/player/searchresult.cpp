@@ -87,7 +87,7 @@ void SearchResult::keyPressEvent(QKeyEvent *event)
         this->hide();
         return;
     }
-    emit m_searchEdit->textChanged(m_searchEdit->text());
+    Q_EMIT m_searchEdit->textChanged(m_searchEdit->text());
 }
 
 void SearchResult::autoResize()
@@ -322,23 +322,22 @@ void SearchResult::slotLableSetFontSize(int size)
 //{
 //    this->hide();
 //    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::TitleType).value<musicDataStruct>();
-//    qDebug() << "\n++++++++++++++++\n" << metaPtr.filepath;
+
+//    Q_EMIT signalFilePath(metaPtr.filepath);
 //}
 
 //void SearchResult::slotSingerItemClicked(QModelIndex index)
 //{
 //    this->hide();
 //    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::SingerType).value<musicDataStruct>();
-//    qDebug() << "\n++++++++++++++++\n" << metaPtr.singer;
 
-//    emit signalSongListBySinger(metaPtr.album);
+//    Q_EMIT signalSongListBySinger(metaPtr.singer);
 //}
 
 //void SearchResult::slotAlbumItemClicked(QModelIndex index)
 //{
 //    this->hide();
 //    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
-//    qDebug() << "\n++++++++++++++++\n" << metaPtr.album;
 
-//    emit signalSongListByAlbum(metaPtr.album);
+//    Q_EMIT signalSongListByAlbum(metaPtr.album);
 //}

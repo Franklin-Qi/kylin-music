@@ -38,7 +38,7 @@ bool playController::play()
         m_player->pause();
     } else {
         m_player->play();
-        emit curIndexChanged(m_playlist->currentIndex());
+        Q_EMIT curIndexChanged(m_playlist->currentIndex());
     }
 
     return true;
@@ -75,7 +75,7 @@ void playController::setSongIndex(int index)
         return;
     }
     m_playlist->setCurrentIndex(index);
-    emit curIndexChanged(index);
+    Q_EMIT curIndexChanged(index);
 }
 int playController::songIndex()
 {
@@ -165,7 +165,7 @@ void playController::removeSongFromCurList(QString name, int index)
 {
     if (name.compare(m_curList) != 0)
     {
-        qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
+//        qDebug() << __FUNCTION__ << " the playlist to add is not Current playlist.";
         return;
     }
     if (m_playlist != nullptr) {
@@ -221,12 +221,12 @@ void playController::removeSongFromCurList(QString name, int index)
                 m_playlist->removeMedia(index);
             }
 
-            emit curIndexChanged(m_curIndex);
-            emit currentIndexAndCurrentList(m_curIndex,m_curList);
+            Q_EMIT curIndexChanged(m_curIndex);
+            Q_EMIT currentIndexAndCurrentList(m_curIndex,m_curList);
             slotIndexChange(m_curIndex);
 //        auto cr_index = m_playlist->currentIndex();
-//        emit curIndexChanged(cr_index);
-//        emit currentIndexAndCurrentList(cr_index,m_curList);
+//        Q_EMIT curIndexChanged(cr_index);
+//        Q_EMIT currentIndexAndCurrentList(cr_index,m_curList);
         //删除正在播放的歌曲时，正在播放的歌曲名和时长实时更新
 //        slotIndexChange(cr_index);
 //        if(name == ALLMUSIC)
@@ -291,8 +291,8 @@ void playController::removeSongFromLocalList(QString name, int index)
                 m_playlist->removeMedia(index);
             }
 
-            emit curIndexChanged(m_curIndex);
-            emit currentIndexAndCurrentList(m_curIndex,m_curList);
+            Q_EMIT curIndexChanged(m_curIndex);
+            Q_EMIT currentIndexAndCurrentList(m_curIndex,m_curList);
             slotIndexChange(m_curIndex);
     }
 }
@@ -412,7 +412,7 @@ void playController::onNextSong()
     m_player->play();
     curPlaylist();
     auto index = m_playlist->currentIndex();
-    emit curIndexChanged(index);
+    Q_EMIT curIndexChanged(index);
 }
 void playController::onPreviousSong()
 {
@@ -423,7 +423,7 @@ void playController::onPreviousSong()
     m_playlist->previous();
     m_player->play();
     auto index = m_playlist->currentIndex();
-    emit curIndexChanged(index);
+    Q_EMIT curIndexChanged(index);
 }
 
 void playController::setCurList(QString renameList)
@@ -456,34 +456,34 @@ bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 void playController::slotStateChanged(MMediaPlayer::State newState)
 {
     if(newState == MMediaPlayer::State::PlayingState)
-        emit playerStateChange(playController::PlayState::PLAY_STATE);
+        Q_EMIT playerStateChange(playController::PlayState::PLAY_STATE);
     else if(newState == MMediaPlayer::State::PausedState)
-        emit playerStateChange(playController::PlayState::PAUSED_STATE);
+        Q_EMIT playerStateChange(playController::PlayState::PAUSED_STATE);
     else if(newState == MMediaPlayer::State::StoppedState)
-        emit playerStateChange(playController::PlayState::STOP_STATE);
+        Q_EMIT playerStateChange(playController::PlayState::STOP_STATE);
 
 }
 
 void playController::slotPlayModeChange(MMediaPlaylist::PlaybackMode mode)
 {
     if(mode == MMediaPlaylist::PlaybackMode::CurrentItemInLoop)
-        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::CurrentItemInLoop));
+        Q_EMIT signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::CurrentItemInLoop));
     else if(mode == MMediaPlaylist::PlaybackMode::Sequential)
-        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Sequential));
+        Q_EMIT signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Sequential));
     else if(mode == MMediaPlaylist::PlaybackMode::Loop)
-        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Loop));
+        Q_EMIT signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Loop));
     else if(mode == MMediaPlaylist::PlaybackMode::Random)
-        emit signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Random));
+        Q_EMIT signalPlayMode(static_cast<MMediaPlaylist::PlaybackMode>(playController::PlayMode::Random));
 }
 
 void playController::slotIndexChange(int index)
 {
     if(index == -1)
     {
-        emit signalNotPlaying();
+        Q_EMIT signalNotPlaying();
         //当index == -1时，会调用positionChanged导致时长显示错误
-        emit singalChangePath("");
-        emit currentIndexAndCurrentList(-1,m_curList);
+        Q_EMIT singalChangePath("");
+        Q_EMIT currentIndexAndCurrentList(-1,m_curList);
         playSetting->set("playlistname", m_curList);
         playSetting->set("path", "");
         return;
@@ -495,8 +495,8 @@ void playController::slotIndexChange(int index)
     if(file.exists())
     {
         x = 0;
-        emit currentIndexAndCurrentList(index,m_curList);
-        emit singalChangePath(path);
+        Q_EMIT currentIndexAndCurrentList(index,m_curList);
+        Q_EMIT singalChangePath(path);
         if(m_curList == HISTORY)
         {
             playSetting->set("playlistname", ALLMUSIC);
@@ -522,7 +522,7 @@ void playController::slotIndexChange(int index)
 
 void playController::slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg)
 {
-    emit playErrorMsg(msg);
+    Q_EMIT playErrorMsg(msg);
 }
 
 void playController::setPosition(int position)

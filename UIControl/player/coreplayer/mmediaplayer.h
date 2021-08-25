@@ -28,7 +28,7 @@ public:
     qint64 duration() const; //获取总时长
     void setMedia(const MMediaContent &media); //设置待播放媒体
     void play(); //播放
-public slots:
+public Q_SLOTS:
     void stop(); //停止
     void onMpvEvents(); //接收mpv事件
 
@@ -47,9 +47,9 @@ private:
     bool m_positionChangeed = false; //播放进度被设置
     qint64 m_position = 0; //播放进度
     qint64 m_duration = 0; //总时长
-private slots:
+private Q_SLOTS:
     void autoPlay(MMediaPlaylist::PlaybackMode playbackMode); //自动播放
-signals:
+Q_SIGNALS:
     void mpvEvents(); // 触发onMpvEvents()槽函数的信号
     void stateChanged(MMediaPlayer::State); //状态改变信号
     void durationChanged(qint64); //切换媒体时，总时长改变信号

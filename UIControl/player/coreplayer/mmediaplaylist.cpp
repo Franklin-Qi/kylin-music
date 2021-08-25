@@ -59,8 +59,8 @@ void MMediaPlaylist::next()
         }
         break;
     }
-    emit currentIndexChanged(m_index);
-    emit stop();
+    Q_EMIT currentIndexChanged(m_index);
+    Q_EMIT stop();
 }
 
 void MMediaPlaylist::previous()
@@ -87,8 +87,8 @@ void MMediaPlaylist::previous()
         }
         break;
     }
-    emit currentIndexChanged(m_index);
-    emit stop();
+    Q_EMIT currentIndexChanged(m_index);
+    Q_EMIT stop();
 }
 
 void MMediaPlaylist::setCurrentIndex(int index)
@@ -107,7 +107,7 @@ void MMediaPlaylist::setCurrentIndex(int index)
         index = -1;
     }
     m_index = index;
-    emit currentIndexChanged(m_index);
+    Q_EMIT currentIndexChanged(m_index);
 }
 
 void MMediaPlaylist::setPlaybackMode(MMediaPlaylist::PlaybackMode mode)
@@ -117,7 +117,7 @@ void MMediaPlaylist::setPlaybackMode(MMediaPlaylist::PlaybackMode mode)
         return;
     }
     m_playbackMode = mode;
-    emit playbackModeChanged(mode);
+    Q_EMIT playbackModeChanged(mode);
 }
 
 int MMediaPlaylist::mediaCount() const
@@ -167,7 +167,7 @@ void MMediaPlaylist::playError()
         }
     }
     //列表中所有媒体的本地文件全部被删除了
-    emit currentIndexChanged(-1);
+    Q_EMIT currentIndexChanged(-1);
 }
 
 void MMediaPlaylist::palyFinish()
@@ -179,9 +179,9 @@ void MMediaPlaylist::palyFinish()
     //如果循环模式不是单曲循环则切换下一首
     if (m_playbackMode != CurrentItemInLoop) {
         next();
-        emit currentIndexChanged(m_index);
+        Q_EMIT currentIndexChanged(m_index);
     }
-    emit autoPlay(m_playbackMode);
+    Q_EMIT autoPlay(m_playbackMode);
 }
 
 MMediaPlaylist::PlaybackMode MMediaPlaylist::playbackMode() const

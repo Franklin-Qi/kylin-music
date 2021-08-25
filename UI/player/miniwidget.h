@@ -53,7 +53,7 @@ public:
     void songText(QString songName); //mini 正在播放
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     //发送信号mini窗口我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
     //刷新我喜欢列表
@@ -69,7 +69,7 @@ private:
     void songInfo(QString path);
     //显示时长
     void slotPositionChanged(qint64 position);
-public slots:
+public Q_SLOTS:
     void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
     void slotFavExixtsDark();

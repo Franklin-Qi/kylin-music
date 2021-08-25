@@ -30,10 +30,10 @@ public:
 private:
     // 单击或者触屏单击时调用，跳转到搜索结果tab页
     void switchToSearchResultTab(const QModelIndex &index);
-signals:
+Q_SIGNALS:
     void sigSearchClear();
     void signalSearchTexts(QString text);
-public slots:
+public Q_SLOTS:
     void SearchClear();
     void slotOnClicked(const QModelIndex &index);
     void onReturnPressed();

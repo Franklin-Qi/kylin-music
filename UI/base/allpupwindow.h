@@ -59,7 +59,7 @@ public:
 
 
 
-public slots:
+public Q_SLOTS:
     void closeDialog();
     void slotTextChanged(QString text);
     void slotLableSetFontSize(int size);
@@ -75,7 +75,7 @@ public:
     explicit MusicInfoDialog(musicDataStruct date);
     ~MusicInfoDialog();
     musicDataStruct musicDate;
-public slots:
+public Q_SLOTS:
     //字体
     void slotLableSetFontSize(int size);
 private:

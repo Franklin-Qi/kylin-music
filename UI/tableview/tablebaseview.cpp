@@ -50,10 +50,10 @@ void TableBaseView::setSearchText(QString text)
 void TableBaseView::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = this->indexAt(event->pos());
-    emit hoverIndexChanged(index);
+    Q_EMIT hoverIndexChanged(index);
 }
 void TableBaseView::leaveEvent(QEvent *event)
 {
-    emit leaveFromItem();
+    Q_EMIT leaveFromItem();
     viewport()->update();
 }

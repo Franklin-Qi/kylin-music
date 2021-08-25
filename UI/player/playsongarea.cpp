@@ -376,7 +376,7 @@ void PlaySongArea::slotFav()
         int ret = g_db->delMusicFromPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
-//            emit signalAddFromFavButton("我喜欢");
+//            Q_EMIT signalAddFromFavButton("我喜欢");
             //根据歌单名title值查询对应歌单列表
 //            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
             if(ret == DB_OP_SUCC)
@@ -389,7 +389,7 @@ void PlaySongArea::slotFav()
                         //刷新我喜欢界面
                         if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav(FAV);
+                            Q_EMIT signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -403,13 +403,13 @@ void PlaySongArea::slotFav()
         if(ref == DB_OP_SUCC)
         {
             playController::getInstance().addSongToCurList(FAV, filePath);
-//            emit signalDelFromFavButton("我喜欢");
+//            Q_EMIT signalDelFromFavButton("我喜欢");
             if(listName == tr("I Love"))
             {
-                emit signalRefreshFav(FAV);
+                Q_EMIT signalRefreshFav(FAV);
             }
         }
-//        emit signalRefreshFav("我喜欢");
+//        Q_EMIT signalRefreshFav("我喜欢");
     }
     slotFavExixts();
 //    if(favBtn->isVisible())
@@ -518,7 +518,7 @@ void PlaySongArea::slotSongInfo(QString path)
     {
         playingLabel->setText(tr("Music Player"));
         coverPhotoLabel->setPixmap(QIcon(":/img/fengmian.png").pixmap(QSize(40,40)));
-        emit signalPlayingLab(tr("Music Player"));
+        Q_EMIT signalPlayingLab(tr("Music Player"));
     }
     else
     {
@@ -526,7 +526,7 @@ void PlaySongArea::slotSongInfo(QString path)
         playingLabel->setText(musicStruct.title);
         QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
         setCoverPhotoPixmap(pix);
-        emit signalPlayingLab(musicStruct.title);
+        Q_EMIT signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
 }
@@ -587,12 +587,12 @@ void PlaySongArea::slotPositionChanged(qint64 position)
     if(m_time == "")
     {
         timeLabel->setText("00:00/00:00");
-        emit signalTimeLab("00:00/00:00");
+        Q_EMIT signalTimeLab("00:00/00:00");
     }
     else
     {
         timeLabel->setText(length);
-        emit signalTimeLab(length);
+        Q_EMIT signalTimeLab(length);
     }
 
     if(hSlider->signalsBlocked())
@@ -771,7 +771,7 @@ void PlaySongArea::slotNext()
 
 void PlaySongArea::listBtnClicked()
 {
-    emit showHistoryListBtnClicked();
+    Q_EMIT showHistoryListBtnClicked();
 }
 
 void PlaySongArea::slotFavExixts()
@@ -784,7 +784,7 @@ void PlaySongArea::slotFavExixts()
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void PlaySongArea::slotFavExixtsDark()
@@ -799,7 +799,7 @@ void PlaySongArea::slotFavExixtsDark()
         favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 void PlaySongArea::slotHistoryBtnChecked(bool checked)
 {

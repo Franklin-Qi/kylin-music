@@ -32,8 +32,8 @@ void MMediaPlayer::truePlay(QString startTime)
     QString filePath = m_playList->getPlayFileName();
     //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
-        emit playErrorMsg(NotFound);
-        emit playError();
+        Q_EMIT playErrorMsg(NotFound);
+        Q_EMIT playError();
         return;
     }
 
@@ -182,14 +182,14 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
                     double time = *(double *)prop->data;
                     //将单位换算为毫秒
                     m_position = time * 1000;
-                    emit positionChanged(m_position);
+                    Q_EMIT positionChanged(m_position);
                 } else if (prop->format == MPV_FORMAT_NONE) {
                     //当前时长距离总时长不超过500毫秒判断播放结束
                     if ( m_duration!=0 && (m_duration - m_position < 500)) {
                         m_duration = 0;
                         m_position = 0;
                         //播放结束
-                        emit playFinish();
+                        Q_EMIT playFinish();
                     } else {
                         //切歌
                         changeState(StoppedState);
@@ -201,7 +201,7 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
     case MPV_EVENT_PLAYBACK_RESTART:{ //初始化完成事件
         //获取总时长
         m_duration = getProperty("duration").toDouble() *1000;//单位换算为毫秒
-        emit durationChanged(m_duration);
+        Q_EMIT durationChanged(m_duration);
     }
         break;
     case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、歌曲异常时会进入此分支
@@ -209,7 +209,7 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         if (!playlist.contains(',')) { //排除播放完成
             if (playlist.length() > 2) { //排除刚启动
                 //歌曲播放异常
-                emit playErrorMsg(Damage);
+                Q_EMIT playErrorMsg(Damage);
             }
         }
     }
@@ -221,7 +221,7 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
 //            m_duration = 0;
 //            m_position = 0;
 //            //播放结束
-//            emit playFinish();
+//            Q_EMIT playFinish();
 //        }
 //    }
 //        break;
@@ -235,7 +235,7 @@ static void wakeup(void *ctx)
     // 此回调可从任何mpv线程调用（但也可以从调用mpv API的线程递归地返回）
     // 只是需要通知要唤醒的Qt GUI线程（以便它可以使用mpv_wait_event（）），并尽快返回
     MMediaPlayer *mvpPlayer = (MMediaPlayer *)ctx;
-    emit mvpPlayer->mpvEvents();
+    Q_EMIT mvpPlayer->mpvEvents();
 }
 
 void MMediaPlayer::createMvpplayer()
@@ -279,7 +279,7 @@ void MMediaPlayer::changeState(MMediaPlayer::State stateNow)
         return;
     }
     m_state = stateNow;
-    emit stateChanged(m_state);
+    Q_EMIT stateChanged(m_state);
 }
 
 void MMediaPlayer::autoPlay(MMediaPlaylist::PlaybackMode playbackMode)

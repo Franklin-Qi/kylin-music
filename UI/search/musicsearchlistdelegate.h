@@ -9,7 +9,7 @@ public:
     explicit MusicSearchListDelegate(QWidget *parent = Q_NULLPTR);
     ~MusicSearchListDelegate() override;
 
-signals:
+Q_SIGNALS:
     void SearchClear() const;
 
 protected:
