@@ -460,3 +460,17 @@ void SideBarWidget::slotListSearch()
         tmp->defaultStyle();
     }
 }
+
+void SideBarWidget::slotSongListHigh()
+{
+    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
+    for(MyToolButton *tmp : list)
+    {
+        tmp->setStatusTip("");
+        tmp->buttonListName = "";
+        tmp->defaultStyle();
+    }
+    playListBtn->setStatusTip(IS_SELECT);
+    playListBtn->buttonListName = ALLMUSIC;
+    playListBtn->defaultStyle();
+}

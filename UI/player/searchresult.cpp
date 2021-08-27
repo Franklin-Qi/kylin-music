@@ -68,9 +68,9 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     vlayout->addWidget(m_AlbumView, 0);
     autoResize();
 
-//    connect(m_MusicView,&MusicSearchListview::clicked,this,&SearchResult::slotMusicItemClicked);
-//    connect(m_SingerView,&MusicSearchListview::clicked,this,&SearchResult::slotSingerItemClicked);
-//    connect(m_AlbumView,&MusicSearchListview::clicked,this,&SearchResult::slotAlbumItemClicked);
+    connect(m_MusicView,&MusicSearchListview::clicked,this,&SearchResult::slotMusicItemClicked);
+    connect(m_SingerView,&MusicSearchListview::clicked,this,&SearchResult::slotSingerItemClicked);
+    connect(m_AlbumView,&MusicSearchListview::clicked,this,&SearchResult::slotAlbumItemClicked);
 }
 
 SearchResult::~SearchResult()
@@ -318,26 +318,26 @@ void SearchResult::slotLableSetFontSize(int size)
     m_AlbumLabel->setFont(font);
 }
 
-//void SearchResult::slotMusicItemClicked(QModelIndex index)
-//{
-//    this->hide();
-//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::TitleType).value<musicDataStruct>();
+void SearchResult::slotMusicItemClicked(QModelIndex index)
+{
+    this->hide();
+    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::TitleType).value<musicDataStruct>();
 
-//    Q_EMIT signalFilePath(metaPtr.filepath);
-//}
+    Q_EMIT signalFilePath(metaPtr.filepath);
+}
 
-//void SearchResult::slotSingerItemClicked(QModelIndex index)
-//{
-//    this->hide();
-//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::SingerType).value<musicDataStruct>();
+void SearchResult::slotSingerItemClicked(QModelIndex index)
+{
+    this->hide();
+    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::SingerType).value<musicDataStruct>();
 
-//    Q_EMIT signalSongListBySinger(metaPtr.singer);
-//}
+    Q_EMIT signalSongListBySinger(metaPtr.singer);
+}
 
-//void SearchResult::slotAlbumItemClicked(QModelIndex index)
-//{
-//    this->hide();
-//    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
+void SearchResult::slotAlbumItemClicked(QModelIndex index)
+{
+    this->hide();
+    musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::AlbumType).value<musicDataStruct>();
 
-//    Q_EMIT signalSongListByAlbum(metaPtr.album);
-//}
+    Q_EMIT signalSongListByAlbum(metaPtr.album);
+}

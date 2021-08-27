@@ -414,20 +414,20 @@ void TableOne::isDeleteSongs()
 void TableOne::isDeleteLocalSongs()
 {
     //歌曲从本地删除后不可恢复，是否确定删除？
-    QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("After the song is deleted from the local, it cannot be resumed. Is it sure to delete?"),QMessageBox::Yes | QMessageBox::No);
-//    warn->button(QMessageBox::Yes)->setText("确定");
-//    warn->button(QMessageBox::No)->setText("取消");
-    int result = warn->exec();
-    if(result == QMessageBox::Yes)
-    {
+//    QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("After the song is deleted from the local, it cannot be resumed. Is it sure to delete?"),QMessageBox::Yes | QMessageBox::No);
+////    warn->button(QMessageBox::Yes)->setText("确定");
+////    warn->button(QMessageBox::No)->setText("取消");
+//    int result = warn->exec();
+//    if(result == QMessageBox::Yes)
+//    {
         deleteLocalSongs();
-        qDebug() << "QMessageBox::Yes";
-    }
-    else
-    {
-        qDebug() << "QMessageBox::No";
-        return;
-    }
+//        qDebug() << "QMessageBox::Yes";
+//    }
+//    else
+//    {
+//        qDebug() << "QMessageBox::No";
+//        return;
+//    }
 }
 
 void TableOne::deleteSongs()
@@ -529,6 +529,52 @@ void TableOne::deleteLocalSongs()
                     Q_EMIT refreshHistoryListSignal();
                 }
             },Qt::BlockingQueuedConnection);
+        } else {
+                QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("After the song is deleted from the local, it cannot be resumed. Is it sure to delete?"),QMessageBox::Yes | QMessageBox::No);
+                int result = warn->exec();
+                if(result == QMessageBox::Yes)
+                {
+                    int ret;
+                    int index = -1;
+                    if(nowListName != nowPlayListName && nowListName == ALLMUSIC)
+                    {
+                        index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,value);
+                    }
+                    if(nowListName != ALLMUSIC)
+                    {
+                       ret = g_db->delMusicFromPlayList(value,nowListName);
+                    }
+                    else
+                    {
+                       ret = g_db->delSongFromEveryWhere(value);
+                    }
+                    if(ret == 0)
+                    {
+                        if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1)
+                        {
+                            playController::getInstance().removeSongFromCurList(nowPlayListName,index);
+                        }
+                        else
+                        {
+                            playController::getInstance().removeSongFromCurList(nowListName,key);
+                        }
+
+                        if(nowListName == FAV)
+                        {
+                            Q_EMIT removeILoveFilepathSignal(value);
+                        }
+
+                        m_map.remove(key);
+                    }
+                    else
+                    {
+                        qDebug() << "delete failed" << value;
+                    }
+                    selectListChanged(nowListName);
+                    Q_EMIT refreshHistoryListSignal();
+                } else {
+                    return;
+                }
         }
     }
 
@@ -1011,65 +1057,87 @@ void TableOne::slotReturnText(QString text)
     addMusicButton->hide();
     n_addMusicButton->hide();
     n_addDirMusicButton->hide();
-    listTitleHBoxLayout->setMargin(0);
-    listTitleHBoxLayout->setSpacing(0);
     listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
 
 }
 
-//void TableOne::slotSongListBySinger(QString singer)
-//{
-//    clearSearchList();
+void TableOne::slotFilePath(QString path)
+{
+    Q_EMIT signalSongListHigh();
 
-//    m_model->clear();
-//    //取消侧边栏所有按钮的选中状态
-//    Q_EMIT signalListSearch();
-//    nowListName = SEARCH;
-////        return;
+    QList<musicDataStruct> resList;
+    int ret = g_db->getSongInfoListFromLocalMusic(resList);
+    if (ret == DB_OP_SUCC) {
+        for (int i = 0; i < resList.size(); i++) {
+            if(resList[i].filepath == path) {
+                qDebug() << "\n resList[i].filepath++++++++++++++++++++++++ \n" << resList[i].filepath << i;
+                playMusicforIndex(ALLMUSIC, i);
+            }
+        }
+    }
 
-//    setHightLightAndSelect();
-//    QList<musicDataStruct> resList;
-//    int ret = g_db->getSongInfoListBySinger(resList, singer);
-//    if (ret == DB_OP_SUCC) {
-//        m_model->clear();
-//        m_model->add(resList);
-//        for(int i = 0; i < resList.size(); i++)
-//        {
-//            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
-//        }
-//        initTableViewStyle();
-//    }
+    selectListChanged(tr("Song List"));
+}
 
-//    changeNumber();
-//    showTitleText(tr("Search Result"));
-//    setHightLightAndSelect();
-//}
+void TableOne::slotSongListBySinger(QString singer)
+{
+    clearSearchList();
 
-//void TableOne::slotSongListByAlbum(QString album)
-//{
-//    clearSearchList();
+    m_model->clear();
+    //取消侧边栏所有按钮的选中状态
+    Q_EMIT signalListSearch();
+    nowListName = SEARCH;
+//        return;
 
-//    m_model->clear();
-//    //取消侧边栏所有按钮的选中状态
-//    Q_EMIT signalListSearch();
-//    nowListName = SEARCH;
+    setHightLightAndSelect();
+    QList<musicDataStruct> resList;
+    int ret = g_db->getSongInfoListBySinger(resList, singer);
+    if (ret == DB_OP_SUCC) {
+        m_model->clear();
+        m_model->add(resList);
+        for(int i = 0; i < resList.size(); i++)
+        {
+            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
+        }
+        initTableViewStyle();
+    }
 
-//    QList<musicDataStruct> resList;
-//    int ret = g_db->getSongInfoListByAlbum(resList, album);
-//    if (ret == DB_OP_SUCC) {
-//        m_model->clear();
-//        m_model->add(resList);
-//        for(int i = 0; i < resList.size(); i++)
-//        {
-//            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
-//        }
-//        initTableViewStyle();
-//    }
+    changeNumber();
+    showTitleText(tr("Search Result"));
+    setHightLightAndSelect();
 
-//    changeNumber();
-//    showTitleText(tr("Search Result"));
-//    setHightLightAndSelect();
-//}
+    addMusicButton->hide();
+    listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
+}
+
+void TableOne::slotSongListByAlbum(QString album)
+{
+    clearSearchList();
+
+    m_model->clear();
+    //取消侧边栏所有按钮的选中状态
+    Q_EMIT signalListSearch();
+    nowListName = SEARCH;
+
+    QList<musicDataStruct> resList;
+    int ret = g_db->getSongInfoListByAlbum(resList, album);
+    if (ret == DB_OP_SUCC) {
+        m_model->clear();
+        m_model->add(resList);
+        for(int i = 0; i < resList.size(); i++)
+        {
+            g_db->addMusicToPlayList(resList.at(i).filepath, SEARCH);
+        }
+        initTableViewStyle();
+    }
+
+    changeNumber();
+    showTitleText(tr("Search Result"));
+    setHightLightAndSelect();
+
+    addMusicButton->hide();
+    listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
+}
 
 void TableOne::clearSearchList()
 {

@@ -37,8 +37,10 @@ public Q_SLOTS:
     void renamePlayList();
     //删除歌单
     void removePlayList(QString text);
-
+    //取消侧边栏所有按钮的选中状态
     void slotListSearch();
+    //高亮歌曲列表按钮
+    void slotSongListHigh();
 Q_SIGNALS:
     void playListBtnCliced(QString listname);
     void playListRemoved(QString listname);

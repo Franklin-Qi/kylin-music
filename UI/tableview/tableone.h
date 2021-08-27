@@ -59,8 +59,9 @@ public:
 public Q_SLOTS:
     void slotSearchTexts(QString text);
     void slotLableSetFontSize(int size);
-//    void slotSongListBySinger(QString singer);
-//    void slotSongListByAlbum(QString album);
+    void slotFilePath(QString path);
+    void slotSongListBySinger(QString singer);
+    void slotSongListByAlbum(QString album);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
@@ -126,6 +127,7 @@ Q_SIGNALS:
     void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
     void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
     void signalListSearch();    //取消侧边栏所有按钮的选中状态
+    void signalSongListHigh();  //高亮左侧歌曲列表按钮
 public Q_SLOTS:
     void selectListChanged(QString listname);  //切换歌单
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
