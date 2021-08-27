@@ -38,15 +38,19 @@ simple.path = /usr/share/kylin-music
 dict.files +=$$PWD/kylin-music-plugins-simple/build/cppjieba/dict
 dict.path = /usr/bin/
 
+qm_files.files = translations/*.qm
+qm_files.path = /usr/share/kylin-music/translations/
+
 INSTALLS += \
     target  \
     icon    \
     desktop \
     schemes \
     simple \
-    dict
+    dict \
+    qm_files
 
-TRANSLATIONS += ./translations/kylin-music_side.ts
+TRANSLATIONS += ./translations/kylin-music_zh_CN.ts
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gsettings-qt taglib gio-unix-2.0
@@ -147,4 +151,6 @@ RESOURCES += \
 DISTFILES += \
     data/org.kylin-music-data.gschema.xml \
     data/org.ukui.log4qt.kylin-music.gschema.xml \
-    kylin-music.desktop
+    kylin-music.desktop \
+    translations/kylin-music_zh_CN.qm \
+    translations/kylin-music_zh_CN.ts

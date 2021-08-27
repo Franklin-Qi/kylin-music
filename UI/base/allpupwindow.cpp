@@ -38,7 +38,7 @@ void AllPupWindow::slotTextChanged(QString text)
 {
     enterLineEdit->setLabelNumber(15 - text.length());
     if (text.length() == 15) {
-        tips->setText(tr("Font limit exceeded"));
+        tips->setText(tr("Reached upper character limit"));
         tips->setStyleSheet("QLabel{color:#F44E50;}");
     } else {
         tips->setText("");

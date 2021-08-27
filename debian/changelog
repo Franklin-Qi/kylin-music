@@ -1,3 +1,32 @@
+kylin-music (1.1.0-17) v101; urgency=medium
+
+  * BUG号：无.
+  * 任务号：49668.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Fri, 27 Aug 2021 14:48:50 +0800
+
+kylin-music (1.1.0-16) v101; urgency=medium
+
+  * BUG号：
+   - 62331【音乐】mp2、m4a、m4r、wv打开后默认为视频播放器非音乐播放器.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Tue, 24 Aug 2021 13:50:41 +0800
+
+kylin-music (1.1.0-15) v101; urgency=medium
+
+  * BUG号：
+   - 62331【音乐】mp2、m4a、m4r、wv打开后默认为视频播放器非音乐播放器.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Tue, 24 Aug 2021 11:50:41 +0800
+
 kylin-music (1.1.0-14) v101; urgency=medium
 
   * BUG号：

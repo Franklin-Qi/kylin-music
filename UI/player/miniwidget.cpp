@@ -28,6 +28,7 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
     this->setObjectName("miniWidget");
 
     m_mouseState = false;
+    setWindowFlags(Qt::WindowStaysOnTopHint);
 //    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool|Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);     //窗体透明
 //    this->setWindowTitle(tr("音乐"));

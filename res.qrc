@@ -115,8 +115,8 @@
         <file>img/fengmian.png</file>
         <file>img/promptwhile.png</file>
         <file>translations/generate_translations_pm.sh</file>
-        <file>translations/kylin-music_side.qm</file>
-        <file>translations/kylin-music_side.ts</file>
+        <file>translations/kylin-music_zh_CN.qm</file>
+        <file>translations/kylin-music_zh_CN.ts</file>
         <file>translations/qt_zh_CN.qm</file>
         <file>img/default/null.png</file>
         <file>img/default/point.png</file>
