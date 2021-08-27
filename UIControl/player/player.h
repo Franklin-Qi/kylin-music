@@ -84,7 +84,7 @@ public:
     QString getPlayListName();
     //获取歌曲路径
     QString getPath();
-signals:
+Q_SIGNALS:
     void curPositionChanged(qint64);
     void curDurationChanged(qint64);
     void curIndexChanged(int index);
@@ -96,7 +96,7 @@ signals:
 
     void signalNotPlaying();
     void playErrorMsg(int errorCode);//媒体播放错误信息信号
-public slots:
+public Q_SLOTS:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);
     void onNextSong();
@@ -104,7 +104,7 @@ public slots:
     void setCurList(QString renameList);
     void setMode(playController::PlayMode mode);
     void setPlayListName(QString playListName);
-private slots:
+private Q_SLOTS:
     void onError();
     void onMediaStatusChanged();
     //状态改变

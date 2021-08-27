@@ -25,7 +25,7 @@ public:
     //重命名歌单弹窗界面
     AllPupWindow *renameSongListPup;
     MyToolButton *playListBtn;
-public slots:
+public Q_SLOTS:
     //添加歌单弹窗输入框
     void addPlayList();
     //添加歌单
@@ -37,9 +37,11 @@ public slots:
     void renamePlayList();
     //删除歌单
     void removePlayList(QString text);
-
+    //取消侧边栏所有按钮的选中状态
     void slotListSearch();
-signals:
+    //高亮歌曲列表按钮
+    void slotSongListHigh();
+Q_SIGNALS:
     void playListBtnCliced(QString listname);
     void playListRemoved(QString listname);
     void playListRenamed(QString oldName,QString newName);

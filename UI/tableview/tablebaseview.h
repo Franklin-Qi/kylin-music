@@ -23,7 +23,7 @@ public:
 protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     void hoverIndexChanged(QModelIndex index);
     void leaveFromItem();
 private:

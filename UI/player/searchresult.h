@@ -35,14 +35,19 @@ public:
 
     void changeSrearchResultPos(int posX, int posY, int width, int height);
 
-public slots:
+public Q_SLOTS:
     void onReturnPressed();
     void slotLableSetFontSize(int size);
+    void slotMusicItemClicked(QModelIndex index);
+    void slotSingerItemClicked(QModelIndex index);
+    void slotAlbumItemClicked(QModelIndex index);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event);
-signals:
-
+Q_SIGNALS:
+    void signalFilePath(QString path);
+    void signalSongListBySinger(QString singer);
+    void signalSongListByAlbum(QString album);
 public:
     MusicSearchListview *m_MusicView  = nullptr;
     MusicSearchListview *m_SingerView = nullptr;

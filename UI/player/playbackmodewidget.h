@@ -28,7 +28,7 @@ public:
     QToolButton *currentItemInLoopBtn;
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
 
 private:
     void initWidget();

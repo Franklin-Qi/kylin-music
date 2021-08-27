@@ -22,7 +22,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     void onHoverIndexChanged(const QModelIndex &index);
     void onLeaveFromItemEvent();
-signals:
+Q_SIGNALS:
     void open(const QModelIndex &index);
     void deleteData(const QModelIndex &index);
     void hoverIndexChanged(QModelIndex index);

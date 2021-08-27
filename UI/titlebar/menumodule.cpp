@@ -136,7 +136,7 @@ void menuModule::triggerMenu(QAction *act){
 
     QString str = act->text();
     if(tr("Quit") == str){
-        emit menuModuleClose();
+        Q_EMIT menuModuleClose();
     }else if(tr("About") == str){
         aboutAction();
     }else if(tr("Help") == str){
@@ -338,7 +338,7 @@ void menuModule::refreshThemeBySystemConf(){
 }
 
 void menuModule::setThemeDark(){
-    emit menuModuleSetThemeStyle("dark-theme");
+    Q_EMIT menuModuleSetThemeStyle("dark-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
                          "style=\"color:rgba(225,225,225,1)\">"
@@ -346,7 +346,7 @@ void menuModule::setThemeDark(){
 }
 
 void menuModule::setThemeLight(){
-    emit menuModuleSetThemeStyle("light-theme");
+    Q_EMIT menuModuleSetThemeStyle("light-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
                          "style=\"color:rgba(0,0,0,1)\">"

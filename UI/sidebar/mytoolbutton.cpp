@@ -33,10 +33,10 @@ void MyToolButton::selectChanged()
 {
     if(this->statusTip() == IS_SELECT)
     {
-        emit selectButtonChanged(this->text());
+        Q_EMIT selectButtonChanged(this->text());
         return;
     }
-    emit selectButtonChanged(this->text());
+    Q_EMIT selectButtonChanged(this->text());
     QList<MyToolButton *> list = this->parent()->parent()->parent()->findChildren<MyToolButton *>();
     for(MyToolButton *tmp : list)
     {
@@ -136,19 +136,19 @@ void MyToolButton::requestCustomContextMenu(const QPoint &pos)
 
         if(action->text() == tr("Play"))
         {
-            emit playall(text);
+            Q_EMIT playall(text);
         }
         else if(action->text() == tr("Pause"))
         {
-//            emit
+//            Q_EMIT
         }
         else if(action->text() == tr("Rename"))
         {
-            emit renamePlayList(text);
+            Q_EMIT renamePlayList(text);
         }
         else if(action->text() == tr("Delete"))
         {
-            emit removePlayList(text);
+            Q_EMIT removePlayList(text);
         }
     });
 

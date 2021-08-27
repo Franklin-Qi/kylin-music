@@ -307,7 +307,7 @@ void SideBarWidget::addItemToSongList()
         playListName.append(text);
         newSonglistPup->hide();
         g_db->createNewPlayList(text);
-        emit playListAdded(text);
+        Q_EMIT playListAdded(text);
     }
     else
     {
@@ -319,7 +319,7 @@ void SideBarWidget::addItemToSongList()
         playListName.append(listName);
         newSonglistPup->hide();
         g_db->createNewPlayList(listName);
-        emit playListAdded(listName);
+        Q_EMIT playListAdded(listName);
     }
     connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
@@ -356,7 +356,7 @@ QString SideBarWidget::newPlayListName()
 
 void SideBarWidget::playAll(QString btnText)
 {
-    emit signalPlayAll(btnText);
+    Q_EMIT signalPlayAll(btnText);
 }
 
 void SideBarWidget::rename(QString text)
@@ -397,7 +397,7 @@ void SideBarWidget::renamePlayList()
                     }
                 }
                 g_db->renamePlayList(btnText,text); // 从数据库中重命名
-                emit playListRenamed(btnText,text);   //fff
+                Q_EMIT playListRenamed(btnText,text);   //fff
                 renameSongListPup->hide();
             }
             else
@@ -446,7 +446,7 @@ void SideBarWidget::removePlayList(QString text)
              playListName.removeOne(text);
          }
      }
-    emit playListRemoved(text);
+    Q_EMIT playListRemoved(text);
 //    promptSongListPup->pupDialog->hide();
 }
 
@@ -459,4 +459,18 @@ void SideBarWidget::slotListSearch()
         tmp->buttonListName = "";
         tmp->defaultStyle();
     }
+}
+
+void SideBarWidget::slotSongListHigh()
+{
+    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
+    for(MyToolButton *tmp : list)
+    {
+        tmp->setStatusTip("");
+        tmp->buttonListName = "";
+        tmp->defaultStyle();
+    }
+    playListBtn->setStatusTip(IS_SELECT);
+    playListBtn->buttonListName = ALLMUSIC;
+    playListBtn->defaultStyle();
 }

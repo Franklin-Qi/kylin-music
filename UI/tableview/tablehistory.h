@@ -45,7 +45,7 @@ public:
     void noRefreshHistory();
     void deleteAllClicked();
     void changePlayHistoryPos(int posX, int posY, int width, int height);
-public slots:
+public Q_SLOTS:
     void showHistroryPlayList();
 //    void addMusicToHistoryListSlot();
     void slotPlayIndexChanged(int index, QString listname);
@@ -54,10 +54,10 @@ public slots:
     void slotLableSetFontSize(int size);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     void signalHistoryPlaying();
     void signalHistoryBtnChecked(bool checked);
-private slots:
+private Q_SLOTS:
     void playSongs();
     void deleteSongs();
     void playNextRowClicked();

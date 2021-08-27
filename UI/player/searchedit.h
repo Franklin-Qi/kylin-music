@@ -15,7 +15,7 @@ public:
 public:
     void setWidget(QWidget *mainWidget);
     void moveSearchResult();
-signals:
+Q_SIGNALS:
     void sigFoucusIn();
     //发送展示搜索结果界面
     void signalReturnPressed(QString searchEdit);
@@ -24,8 +24,7 @@ signals:
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
-
-public slots:
+public Q_SLOTS:
     void slotTextChanged();
     void slotReturnPressed();
 

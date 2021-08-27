@@ -456,7 +456,7 @@ void MusicFileInformation::durationChange(qint64 duration)
     }
     dur = duration;
     success = true;
-    emit durations();
+    Q_EMIT durations();
 }
 
 int MusicFileInformation::findIndexFromPlayList(QString listname,QString filepath)

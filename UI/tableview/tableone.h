@@ -56,18 +56,19 @@ public:
 
     void initStyle();
     void addMusicToDatebase(QStringList fileNames);
-public slots:
+public Q_SLOTS:
     void slotSearchTexts(QString text);
     void slotLableSetFontSize(int size);
+    void slotFilePath(QString path);
+    void slotSongListBySinger(QString singer);
+    void slotSongListByAlbum(QString album);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
     void initRightMenu();  //初始化右键菜单
     void tableViewDoubleClicked();  //双击播放
 
-    static void deleteImage(const QString &savepath);
-    static void _processStart(const QString &cmd , QStringList arguments = QStringList());
-    void processLog();
+//    static void deleteImage(const QString &savepath);
 
     //成功添加多少首歌曲
     void importFinished(int successCount, int failCount, int allCount);
@@ -91,6 +92,9 @@ private:
 //    void addMusicToDatebase(QStringList fileNames);
 
 //    void importSongs(QString path);
+
+    void clearSearchList();
+
     QMenu *m_menu = nullptr;  //新建一个Menu属性
     QSqlQueryModel *tableModel = nullptr;
 
@@ -114,7 +118,7 @@ private:
     QLabel *listTotalNumLabel = nullptr;
     int heightLightIndex = -1;
     QString nowPlayListName;  //后端播放器中正在播放的列表名
-signals:
+Q_SIGNALS:
     void sendPathToPlayer(QString fp);
     void countChanges();
     void hoverIndexChanged(QModelIndex index);
@@ -122,8 +126,9 @@ signals:
 //    void heightIndexChanged(int index);
     void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
     void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
-    void signalListSearch();
-public slots:
+    void signalListSearch();    //取消侧边栏所有按钮的选中状态
+    void signalSongListHigh();  //高亮左侧歌曲列表按钮
+public Q_SLOTS:
     void selectListChanged(QString listname);  //切换歌单
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
@@ -153,6 +158,7 @@ private:
 
     int showScrollbarNumber = 10;
     QString m_text;
+    QMap<int,QString> m_map;
 };
 
 #endif // TableOne_H

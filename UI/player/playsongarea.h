@@ -37,7 +37,7 @@ public:
       PlayBackModeWidget *m_playBackModeWid;
       //播放列表
       QPushButton *listBtn;
-signals:
+Q_SIGNALS:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
@@ -51,7 +51,7 @@ signals:
 //    void signalAddFromFavButton(QString listName);
 //    //按钮从我喜欢删除刷新界面
 //    void signalDelFromFavButton(QString listName);
-public slots:
+public Q_SLOTS:
     //上一首
     void slotPrevious();
     //播放/暂停

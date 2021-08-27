@@ -46,7 +46,7 @@ public:
 public:
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
-public slots:
+public Q_SLOTS:
     //mini窗口
     void slotShowMiniWidget();
     //关闭主窗体
@@ -71,7 +71,7 @@ public slots:
     void slotText(QString btnText);
     //
     void slotReturnPressed();
-private slots:
+private Q_SLOTS:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
     void client_get(QString str);
@@ -81,7 +81,7 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 //    void mousePressEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     //空格键控制播放暂停
     void signalSpaceKey();
 private:
@@ -126,7 +126,7 @@ private:
     //避免初始化流程中触发点击事件
     bool m_initFinish = false;
 
-signals:
+Q_SIGNALS:
     void signalShowGuide();
     //刷新歌曲列表界面
     void signalRefreshList(QString listName);

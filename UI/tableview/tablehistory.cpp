@@ -190,7 +190,7 @@ bool TableHistory::nativeEvent(const QByteArray &eventType, void *message, long 
             }
 
             this->hide();
-            emit signalHistoryBtnChecked(false);
+            Q_EMIT signalHistoryBtnChecked(false);
             break;
     }
     return false;
@@ -297,7 +297,7 @@ void TableHistory::playSongs()
     pathList = m_model->getPathList(nowListName);
     playController::getInstance().setCurPlaylist(nowListName,pathList);
     playController::getInstance().play(nowListName,index);
-    emit signalHistoryPlaying();
+    Q_EMIT signalHistoryPlaying();
 }
 void TableHistory::deleteSongs()
 {

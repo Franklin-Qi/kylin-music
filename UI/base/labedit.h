@@ -14,7 +14,7 @@ class LabEdit : public QLineEdit
 public:
     LabEdit();
     void setLabelNumber(int num);
-public slots:
+public Q_SLOTS:
     void slotLableSetFontSize(int size);
 private:
     void init();

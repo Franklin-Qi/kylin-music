@@ -91,8 +91,8 @@ void SearchEdit::slotReturnPressed()
     if(text.length() == 0)
         return;
     m_result->hide();
-    emit signalReturnPressed(tr("Search Result"));
-    emit signalReturnText(text);
+    Q_EMIT signalReturnPressed(tr("Search Result"));
+    Q_EMIT signalReturnText(text);
 }
 
 void SearchEdit::setWidget(QWidget *mainWidget)
