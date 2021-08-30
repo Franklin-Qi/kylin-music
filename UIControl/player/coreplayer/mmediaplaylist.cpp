@@ -94,9 +94,9 @@ void MMediaPlaylist::previous()
 void MMediaPlaylist::setCurrentIndex(int index)
 {
     //待设置的数量和设置之前一致则不处理，默认播放第一首除外
-    if (index == m_index && index != 0) {
-        return;
-    }
+//    if (index == m_index && index != 0) {
+//        return;
+//    }
     //异常情况：要设置的媒体位置超过列表总长度
     if (index >= m_playerList.length()) {
         qDebug()<<"指定位置超过列表元素数量";

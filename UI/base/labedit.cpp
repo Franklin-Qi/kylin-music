@@ -1,4 +1,5 @@
 ﻿#include "labedit.h"
+#include <QRegExpValidator>
 
 LabEdit::LabEdit()
 {
@@ -13,6 +14,10 @@ void LabEdit::init()
     mainLayout->addWidget(lab);
     mainLayout->setAlignment(Qt::AlignRight);
     this->setLayout(mainLayout);
+
+    QRegExp rx = QRegExp("[^\\\\/:*?\"&<>|]*"); //限制以下特殊符号在lineEdit中的输入
+    QRegExpValidator* validator = new QRegExpValidator(rx);
+    this->setValidator(validator);
 }
 
 void LabEdit::setLabelNumber(int num)
