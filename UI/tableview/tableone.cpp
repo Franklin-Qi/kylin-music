@@ -55,7 +55,7 @@ void TableOne::initStyle()
 void TableOne::initTableViewStyle()
 {
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,75);
+    tableView->setColumnWidth(3,80);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->verticalHeader()->setDefaultSectionSize(40);
@@ -120,7 +120,7 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
     listTitleHBoxLayout->setContentsMargins(25,20,25,30);
     listTitleHBoxLayout->setSpacing(0);
-    titleWid->setFixedHeight(90);
+    titleWid->setFixedHeight(95);
 
     playAllButton->setText(tr("Play All"));
     playAllButton->setIconSize(QSize(16,16));
@@ -128,7 +128,7 @@ void TableOne::initUI()
 //    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     playAllButton->setIconSize(QSize(16,16));
 //    addMusicButton->setText(tr("   Add"));
-    playAllButton->setFixedSize(112,36);
+    playAllButton->setFixedSize(120,36);
     playAllButton->setProperty("isImportant", true);
 //    playAllButton->setPopupMode(QToolButton::InstantPopup);
 //    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
@@ -147,7 +147,7 @@ void TableOne::initUI()
 //    addMusicButton->setProperty("isImportant",true);
 
 //    addMusicButton->setText(tr("   Add"));
-    addMusicButton->setFixedSize(112,36);
+    addMusicButton->setFixedSize(120,36);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
@@ -335,10 +335,10 @@ void TableOne::initRightMenu()
     connect(addToOtherListMenu,&QMenu::triggered,this,&TableOne::addToOtherList);
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    m_menu->setFont(sizeFont);
-    addToOtherListMenu->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    m_menu->setFont(sizeFont);
+//    addToOtherListMenu->setFont(sizeFont);
 
     tableView->installEventFilter(this);
 }
@@ -598,8 +598,8 @@ void TableOne::showInfo()
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     infoDialog = new MusicInfoDialog(date);
-    connect(infoDialog,&MusicInfoDialog::accepted,infoDialog,&MusicInfoDialog::deleteLater);
-    connect(infoDialog,&MusicInfoDialog::rejected,infoDialog,&MusicInfoDialog::deleteLater);
+//    connect(infoDialog,&MusicInfoDialog::accepted,infoDialog,&MusicInfoDialog::deleteLater);
+//    connect(infoDialog,&MusicInfoDialog::rejected,infoDialog,&MusicInfoDialog::deleteLater);
     //将弹窗应用居中显示
     QRect availableGeometry = this->parentWidget()->parentWidget()->geometry();
     infoDialog->move(availableGeometry.center() - infoDialog->rect().center());
@@ -913,7 +913,7 @@ void TableOne::changeNumber()
 {
     int num = m_model->count();
 //    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
-    listTotalNumLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
+    listTotalNumLabel->setText(QString::number(num) + tr(" songs"));
     if(num == 0) {
         tableView->hide();
         nullPageWidget->show();

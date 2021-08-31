@@ -73,7 +73,7 @@ void AllPupWindow::inpupdialog()
 
 //    titleLab->setText("提示信息");
     titleLab->setText(tr("Prompt information"));
-    titleLab->setFixedHeight(24);
+    titleLab->setFixedHeight(28);
 
     titleLayout->addWidget(titleLab,Qt::AlignLeft);
     titleLayout->addWidget(closeBtn,0,Qt::AlignRight);
@@ -82,11 +82,11 @@ void AllPupWindow::inpupdialog()
     titleLayout->setSpacing(0);
 
     enterLineEdit = new LabEdit;
-    enterLineEdit->setFixedSize(312, 32);
+    enterLineEdit->setFixedSize(312, 40);
     enterLineEdit->setMaxLength(15);
 
     tips = new QLabel(this);
-    tips->setFixedHeight(24);
+    tips->setFixedHeight(28);
 
 
     confirmBtn = new QPushButton(this);
@@ -98,14 +98,14 @@ void AllPupWindow::inpupdialog()
     stackWid = new QStackedWidget();
     stackWid->addWidget(enterLineEdit);
 
-    stackWid->setFixedSize(312,32);
+    stackWid->setFixedSize(312,40);
 //    confirmBtn->setText("确认");
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(95,30);
+    confirmBtn->setFixedSize(105,36);
     confirmBtn->setProperty("isImportant", true);
 //    cancelBtn->setText("取消");
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(95,30);
+    cancelBtn->setFixedSize(105,36);
 
     btnLayout->addWidget(cancelBtn, 0, Qt::AlignRight);
     btnLayout->addWidget(confirmBtn, Qt::AlignRight);
@@ -113,7 +113,7 @@ void AllPupWindow::inpupdialog()
     btnLayout->setMargin(0);
 
 //    enterLineEdit->setPlaceholderText("请输入歌单标题：");
-    enterLineEdit->setPlaceholderText(tr("Please enter the title of the playlist:"));
+    enterLineEdit->setPlaceholderText(tr("Please input playlist name:"));
 
     testLayout->setMargin(0);
     testLayout->setSpacing(0);
@@ -232,13 +232,13 @@ void MusicInfoDialog::initStyle()
     musicInfoLabel->setText(tr("Music Information"));
     musicInfoLabel->setFixedHeight(24);
 
-    songNameLabel->setFixedHeight(24);
-    singerLabel->setFixedHeight(24);
-    albumLabel->setFixedHeight(24);
-    fileTypeLabel->setFixedHeight(24);
-    fileSizeLable->setFixedHeight(24);
-    fileTimeLabel->setFixedHeight(24);
-    filePathLabel->setFixedHeight(24);
+    songNameLabel->setFixedHeight(28);
+    singerLabel->setFixedHeight(28);
+    albumLabel->setFixedHeight(28);
+    fileTypeLabel->setFixedHeight(28);
+    fileSizeLable->setFixedHeight(28);
+    fileTimeLabel->setFixedHeight(28);
+    filePathLabel->setFixedHeight(28);
 
     buttonLayout = new QHBoxLayout();
     cancelBtn = new QPushButton(this);
@@ -257,10 +257,10 @@ void MusicInfoDialog::initStyle()
 
 
     confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(95,30);
+    confirmBtn->setFixedSize(105,36);
 //    cancelBtn->setText("取消");s
     cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(95,30);
+    cancelBtn->setFixedSize(105,36);
 //    confirmBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
     confirmBtn->setProperty("isImportant", true);
 
@@ -277,7 +277,7 @@ void MusicInfoDialog::initStyle()
     mainVLayout->addSpacing(20);
     mainVLayout->addWidget(btnWidget);
 
-    mainVLayout->setSpacing(8);
+    mainVLayout->setSpacing(6);
     mainVLayout->setContentsMargins(32,20,32,0);
 
     if(musicDate.title != "")

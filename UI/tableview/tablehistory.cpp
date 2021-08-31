@@ -32,7 +32,7 @@ void TableHistory::initSetModel()
     m_model->setView(*m_tableHistory);
 
     historyTitileLabel = new QLabel(this);
-    historyTitileLabel->setText(tr("PlayList"));
+    historyTitileLabel->setText(tr("History"));
     listCountLabel = new QLabel(this);
     historyTitileWidget = new QWidget(this);
     historyTitileWidget->setFixedHeight(64);
@@ -47,7 +47,7 @@ void TableHistory::initSetModel()
     titleHBoxLayout->addWidget(historyTitileLabel,0,Qt::AlignLeft);
     titleHBoxLayout->addWidget(listCountLabel,1,Qt::AlignBottom);
     titleHBoxLayout->addWidget(deleteAllBtn,Qt::AlignRight);
-    titleHBoxLayout->setContentsMargins(16,22,16,12);
+    titleHBoxLayout->setContentsMargins(16,16,16,12);
 
     nullPageWidget = new QWidget(this);
     nullIconLabel = new QLabel(this);
@@ -238,7 +238,7 @@ void TableHistory::showHistroryPlayList()
 void TableHistory::changeNumber()
 {
     int num = m_model->count();
-    listCountLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
+    listCountLabel->setText(QString::number(num) + tr(" songs"));
     if(num == 0) {
         nullPageWidget->show();
         m_tableHistory->hide();
