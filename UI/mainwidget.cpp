@@ -663,6 +663,7 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&AllPupWindow::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,musicListTable->infoDialog,&MusicInfoDialog::slotLableSetFontSize);
 
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {

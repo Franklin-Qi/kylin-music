@@ -275,7 +275,8 @@ QVBoxLayout* menuModule::initBody(){
                                 "player software for playing various music files."
                                 "It covers a variety of music formats play tool,"
                                 "easy to operate."));
-    bodyAppDescribe->setFixedWidth(356);
+    bodyAppDescribe->setFixedSize(356, 120);
+//    bodyAppDescribe->setFixedHeight();
 //    bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
 //    bodyAppName->setFixedHeight(28);

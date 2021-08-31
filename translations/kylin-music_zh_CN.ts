@@ -38,8 +38,12 @@
     </message>
     <message>
         <location filename="../UI/base/allpupwindow.cpp" line="116"/>
+        <source>Please input playlist name:</source>
+        <translation>请输入歌单名称：</translation>
+    </message>
+    <message>
         <source>Please enter the title of the playlist:</source>
-        <translation>请输入歌单标题：</translation>
+        <translation type="vanished">请输入歌单标题：</translation>
     </message>
 </context>
 <context>
@@ -381,8 +385,12 @@
         <translation type="vanished">播放列表</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="35"/>
         <source>PlayList</source>
+        <translation type="vanished">播放历史</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tablehistory.cpp" line="35"/>
+        <source>History</source>
         <translation>播放历史</translation>
     </message>
     <message>
@@ -406,14 +414,13 @@
         <translation>清空播放列表？</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tablehistory.cpp" line="241"/>
         <source>Total </source>
-        <translation>共 </translation>
+        <translation type="vanished">共 </translation>
     </message>
     <message>
         <location filename="../UI/tableview/tablehistory.cpp" line="241"/>
         <source> songs</source>
-        <translation> 首</translation>
+        <translation> 首歌曲</translation>
     </message>
     <message>
         <location filename="../UI/tableview/tablehistory.cpp" line="270"/>
@@ -607,14 +614,13 @@
         <translation type="vanished">添加歌曲文件失败！</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="916"/>
         <source>Total </source>
-        <translation>共 </translation>
+        <translation type="vanished">共 </translation>
     </message>
     <message>
         <location filename="../UI/tableview/tableone.cpp" line="916"/>
         <source> songs</source>
-        <translation> 首</translation>
+        <translation> 首歌曲</translation>
     </message>
 </context>
 <context>
@@ -672,14 +678,14 @@
         <translation type="vanished">歌曲列表</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="727"/>
-        <location filename="../UI/mainwidget.cpp" line="840"/>
+        <location filename="../UI/mainwidget.cpp" line="728"/>
+        <location filename="../UI/mainwidget.cpp" line="841"/>
         <source>reduction</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../UI/mainwidget.cpp" line="733"/>
-        <location filename="../UI/mainwidget.cpp" line="829"/>
+        <location filename="../UI/mainwidget.cpp" line="734"/>
+        <location filename="../UI/mainwidget.cpp" line="830"/>
         <source>maximize</source>
         <translation>最大化</translation>
     </message>
@@ -725,7 +731,7 @@
     </message>
     <message>
         <location filename="../UI/titlebar/menumodule.cpp" line="239"/>
-        <location filename="../UI/titlebar/menumodule.cpp" line="282"/>
+        <location filename="../UI/titlebar/menumodule.cpp" line="283"/>
         <source>Music Player</source>
         <translation>音乐</translation>
     </message>
@@ -735,13 +741,13 @@
         <translation>音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它是涵盖了各种音乐格式的播放工具，操作快捷简单</translation>
     </message>
     <message>
-        <location filename="../UI/titlebar/menumodule.cpp" line="286"/>
+        <location filename="../UI/titlebar/menumodule.cpp" line="287"/>
         <source>Version: </source>
         <translation>版本：</translation>
     </message>
     <message>
-        <location filename="../UI/titlebar/menumodule.cpp" line="342"/>
-        <location filename="../UI/titlebar/menumodule.cpp" line="350"/>
+        <location filename="../UI/titlebar/menumodule.cpp" line="343"/>
+        <location filename="../UI/titlebar/menumodule.cpp" line="351"/>
         <source>Service &amp; Support: </source>
         <translation>服务与支持团队：</translation>
     </message>

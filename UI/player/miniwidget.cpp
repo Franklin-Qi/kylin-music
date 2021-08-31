@@ -255,11 +255,11 @@ void miniWidget::init_miniWidget()
     m_vInfoLayout = new QVBoxLayout;
 
     m_songNameLab = new MyLabel;
-    m_songNameLab->setFixedHeight(25);
-    m_songNameLab->setAlignment(Qt::AlignLeft);
+    m_songNameLab->setFixedHeight(23);
+//    m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
-    m_timeLab->setAlignment(Qt::AlignLeft);
+//    m_timeLab->setAlignment(Qt::AlignLeft);
 
     QString playPath = playController::getInstance().getPath();
     if(playPath != "")
@@ -277,13 +277,13 @@ void miniWidget::init_miniWidget()
 
 //    m_vInfoLayout->setMargin(3);
 //    m_vInfoLayout->setSpacing(3);
-    m_vInfoLayout->setMargin(0);
-    m_vInfoLayout->setSpacing(0);
-//    m_vInfoLayout->addStretch();
+    m_vInfoLayout->addStretch();
     m_vInfoLayout->addWidget(m_songNameLab);
-    m_vInfoLayout->addSpacing(6);
+//    m_vInfoLayout->addSpacing(6);
     m_vInfoLayout->addWidget(m_timeLab);
-//    m_vInfoLayout->addStretch();
+    m_vInfoLayout->addStretch();
+    m_vInfoLayout->setContentsMargins(8,3,0,3);
+    m_vInfoLayout->setMargin(0);
 
 //    m_vInfoLayout->setAlignment(Qt::AlignVCenter);
 

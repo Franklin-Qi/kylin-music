@@ -196,7 +196,7 @@ void PlaySongArea::initWidget()
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addStretch();
     vLayout->addWidget(playingLabel,0,Qt::AlignVCenter);
-    vLayout->addSpacing(8);
+//    vLayout->addSpacing(8);
     vLayout->addWidget(timeLabel,0,Qt::AlignVCenter);
     vLayout->addStretch();
     vLayout->setContentsMargins(8,3,0,3);
