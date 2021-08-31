@@ -220,9 +220,9 @@ void TableOne::initUI()
     nullPageIconLabel = new QLabel(this);
     nullPageTextLabel = new QLabel(this);
     n_addDirMusicButton = new QPushButton(this);
-    n_addDirMusicButton->setFixedSize(165,36);
+    n_addDirMusicButton->setFixedSize(190,36);
     n_addMusicButton = new QPushButton(this);
-    n_addMusicButton->setFixedSize(165,36);
+    n_addMusicButton->setFixedSize(190,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
     n_addMusicButton->setText(tr("Add Local Songs"));
