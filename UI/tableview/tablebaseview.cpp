@@ -47,6 +47,17 @@ void TableBaseView::setSearchText(QString text)
 {
     m_searchText = text;
 }
+
+QString TableBaseView::getSearchListName()const
+{
+    return m_searchListName;
+}
+
+void TableBaseView::setSearchListName(QString listName)
+{
+    m_searchListName = listName;
+}
+
 void TableBaseView::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = this->indexAt(event->pos());

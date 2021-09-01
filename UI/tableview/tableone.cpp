@@ -128,7 +128,7 @@ void TableOne::initUI()
 //    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     playAllButton->setIconSize(QSize(16,16));
 //    addMusicButton->setText(tr("   Add"));
-    playAllButton->setFixedSize(120,36);
+    playAllButton->setFixedSize(125,36);
     playAllButton->setProperty("isImportant", true);
 //    playAllButton->setPopupMode(QToolButton::InstantPopup);
 //    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
@@ -147,7 +147,7 @@ void TableOne::initUI()
 //    addMusicButton->setProperty("isImportant",true);
 
 //    addMusicButton->setText(tr("   Add"));
-    addMusicButton->setFixedSize(120,36);
+    addMusicButton->setFixedSize(125,36);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
@@ -1224,4 +1224,10 @@ void TableOne::keyPressEvent(QKeyEvent *event)
 void TableOne::slotSearchTexts(QString text)
 {
     tableView->setSearchText(text);
+}
+
+//搜索歌单通过LineEdit传参得到
+void TableOne::slotSearchReturnPressed(QString listName)
+{
+    tableView->setSearchListName(listName);
 }
