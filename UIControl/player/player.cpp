@@ -337,6 +337,7 @@ void playController::init()
     m_player->setVolume(m_volume);
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
+
     //如果保存的歌单是 歌曲列表 或者 我喜欢（我喜欢与歌曲列表必存在不做判断），那么保存的歌曲路径不做处理
     if(m_playListName == ALLMUSIC)
     {
@@ -351,12 +352,18 @@ void playController::init()
         int ret = g_db->checkPlayListExist(m_playListName);
         if(ret == DB_OP_SUCC)
         {
-            m_curList = m_playListName;
-            QString pat = playSetting->get("path").toString();
-            int ref = g_db->checkIfSongExistsInPlayList(pat, m_curList);
-            if(ref != DB_OP_SUCC)
-            {
+            if (m_playListName == SEARCH) {
+                playSetting->set("playlistname", ALLMUSIC);
+                m_curList = ALLMUSIC;
                 playSetting->set("path", "");
+            } else {
+                m_curList = m_playListName;
+                QString pat = playSetting->get("path").toString();
+                int ref = g_db->checkIfSongExistsInPlayList(pat, m_curList);
+                if(ref != DB_OP_SUCC)
+                {
+                    playSetting->set("path", "");
+                }
             }
         }
         else

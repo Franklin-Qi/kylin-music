@@ -1,3 +1,14 @@
+kylin-music (1.1.0-22) v101; urgency=medium
+
+  * BUG号：
+   - 75126【需求-音乐-8067】【搜索】搜索框不能展示所有匹配到的结果
+   - 75002【需求-音乐-8067】【搜索】搜索结果列表中，搜索关键字未高亮.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Wed, 31 Aug 2021 20:14:07 +0800
+
 kylin-music (1.1.0-21) v101; urgency=medium
 
   * BUG号：

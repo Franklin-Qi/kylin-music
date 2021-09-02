@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QFileInfo>
 
+#define NUM 10000
 //DWIDGET_USE_NAMESPACE
 
 MusicSearchListview::MusicSearchListview(QWidget *parent)
@@ -82,7 +83,7 @@ void MusicSearchListview::setSearchText(QString text)
     QList<musicDataStruct> musicDataInfos;
     QList<musicDataStruct> singerInfos;
     QList<musicDataStruct> albumInfos;
-    g_db->getCurtEstimatedListByKeyword(text,3,musicDataInfos,singerInfos,albumInfos);
+    g_db->getCurtEstimatedListByKeyword(text,NUM,musicDataInfos,singerInfos,albumInfos);
     if (m_searchType == SearchType::TitleType) {
         m_MusicDataStruct.clear();
         for (int i = 0; i < musicDataInfos.count(); i++) {

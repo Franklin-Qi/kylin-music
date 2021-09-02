@@ -18,8 +18,10 @@ public:
     ~TableBaseView();
     MusicListModel *m_model;
     QString getSearchText()const;
+    QString getSearchListName()const;
 public:
     void setSearchText(QString text);
+    void setSearchListName(QString listName);
 protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
@@ -29,6 +31,7 @@ Q_SIGNALS:
 private:
     TableViewDelegate *m_delegate;
     QString m_searchText;
+    QString m_searchListName;
 private:
     void initStyle();
 };

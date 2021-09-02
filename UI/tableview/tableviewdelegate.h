@@ -20,6 +20,8 @@ public:
     explicit TableViewDelegate(QWidget *parent = 0);
     ~TableViewDelegate();
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
     void onHoverIndexChanged(const QModelIndex &index);
     void onLeaveFromItemEvent();
 Q_SIGNALS:

@@ -1,5 +1,7 @@
 ﻿#include "searchresult.h"
 #define PT_11 11
+#include <QScrollArea>
+#include <QScrollBar>
 
 SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 {
@@ -13,7 +15,7 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     vlayout = new QVBoxLayout(this);
     vlayout->setContentsMargins(32, 0, 32, 0);
     vlayout->setSpacing(0);
-    this->setLayout(vlayout);
+//    this->setLayout(vlayout);
     //歌曲名
     m_MusicLabel = new QLabel(tr("Music"),this);
     m_MusicLabel->setFixedHeight(36);
@@ -66,6 +68,24 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     vlayout->addWidget(m_AlbumFrame);
     vlayout->addWidget(m_AlbumLabel, 1);
     vlayout->addWidget(m_AlbumView, 0);
+
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setFrameStyle(0);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QWidget *vWid = new QWidget(this);
+    vWid->setLayout(vlayout);
+    scrollArea->setWidget(vWid);
+    scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+
+    QVBoxLayout *sideLayout = new QVBoxLayout(this);
+    sideLayout->addWidget(scrollArea);
+    sideLayout->setMargin(0);
+    sideLayout->setSpacing(0);
+    this->setLayout(sideLayout);
+
     autoResize();
 
     connect(m_MusicView,&MusicSearchListview::clicked,this,&SearchResult::slotMusicItemClicked);
@@ -148,9 +168,17 @@ void SearchResult::autoResize()
     total += lineHeight;
 
     if (m_MusicView->isHidden() && m_SingerView->isHidden() && m_AlbumLabel->isHidden()) {
-        setFixedHeight(total);
+        if (total > 500) {
+            setFixedHeight(500);
+        } else {
+            setFixedHeight(total);
+        }
     } else {
-        setFixedHeight(total + 28);
+        if (total > 500) {
+            setFixedHeight(500);
+        } else {
+            setFixedHeight(total + 28);
+        }
     }
 }
 

@@ -58,6 +58,7 @@ public:
     void addMusicToDatebase(QStringList fileNames);
 public Q_SLOTS:
     void slotSearchTexts(QString text);
+    void slotSearchReturnPressed(QString listName);
     void slotLableSetFontSize(int size);
     void slotFilePath(QString path);
     void slotSongListBySinger(QString singer);
