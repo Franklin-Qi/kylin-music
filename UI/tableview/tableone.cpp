@@ -28,7 +28,7 @@ void TableOne::initStyle()
 {
     listTitleLabel->setStyleSheet("\
                                  font-weight: 600;\
-                                 line-height: 20px;");
+                                 line-height: 24px;");
 
     listTotalNumLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
                                         border:none;\
