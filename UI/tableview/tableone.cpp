@@ -28,7 +28,7 @@ void TableOne::initStyle()
 {
     listTitleLabel->setStyleSheet("\
                                  font-weight: 600;\
-                                 line-height: 24px;");
+                                 line-height: 20px;");
 
     listTotalNumLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
                                         border:none;\
@@ -98,6 +98,7 @@ void TableOne::initUI()
     this->setLayout(tableLayout);
 
     listTitleLabel = new QLabel(this);
+    listTitleLabel->setAlignment(Qt::AlignBottom);
     listTitleLabel->setMaximumWidth(192);
 //    listTitleLabel->setFixedHeight(30);
     listTotalNumLabel = new QLabel(this);
@@ -110,16 +111,17 @@ void TableOne::initUI()
     titleWid = new QWidget(this);
     titleWid->setObjectName("titleWid");
     titleWid->setLayout(listTitleHBoxLayout);
+    listTitleHBoxLayout->setMargin(0);
+    listTitleHBoxLayout->setSpacing(0);
     listTitleHBoxLayout->setAlignment(Qt::AlignLeft);
     listTitleHBoxLayout->addWidget(listTitleLabel);
     listTitleHBoxLayout->addSpacing(16);
     listTitleHBoxLayout->addWidget(listTotalNumLabel);
-    listTitleHBoxLayout->addStretch(0);
+    listTitleHBoxLayout->addStretch();
     listTitleHBoxLayout->addWidget(playAllButton,1,Qt::AlignRight);
     listTitleHBoxLayout->addSpacing(16);
     listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
     listTitleHBoxLayout->setContentsMargins(25,20,25,30);
-    listTitleHBoxLayout->setSpacing(0);
     titleWid->setFixedHeight(95);
 
     playAllButton->setText(tr("Play All"));
@@ -233,7 +235,9 @@ void TableOne::initUI()
     nullPageVLayout->addStretch();
     nullPageVLayout->addWidget(nullPageIconLabel);
     nullPageIconLabel->setAlignment(Qt::AlignHCenter);
+    nullPageVLayout->addSpacing(10);
     nullPageVLayout->addWidget(nullPageTextLabel);
+    nullPageVLayout->addSpacing(20);
     nullPageTextLabel->setAlignment(Qt::AlignHCenter);
     nullPageVLayout->addLayout(nullPageHLayout);
     nullPageVLayout->addStretch();
@@ -244,7 +248,8 @@ void TableOne::initUI()
 
     nullPageVLayout->addStretch();
     nullPageVLayout->setAlignment(Qt::AlignCenter);
-    nullPageVLayout->setSpacing(10);
+    nullPageVLayout->setSpacing(0);
+    nullPageVLayout->setMargin(0);
 
     tableLayout->addWidget(titleWid,Qt::AlignTop);
 //    tableLayout->addSpacing(10);
@@ -896,8 +901,8 @@ void TableOne::setHightLightAndSelect()
                         m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::white)));
                     }
                     m_model->m_model.item(i,j)->setData(m_model->m_model.item(i,j)->text(),Qt::ToolTipRole);
+                    m_model->m_model.item(i,j)->setData(QString(),Qt::StatusTipRole);
                 }
-                m_model->m_model.item(i,0)->setData(QString(),Qt::StatusTipRole);
             }
             if(heightLightIndex != -1 && nowListName == nowPlayListName) {
                 for (int j=0; j<4; j++) {
@@ -960,6 +965,7 @@ void TableOne::getMusicList()
 
 void TableOne::selectListChanged(QString listname)
 {
+    tableView->setNowPlayListName(listname);
     m_model->clear();
     if(listname == tr("Song List")) {
         nowListName = ALLMUSIC;
@@ -1058,7 +1064,6 @@ void TableOne::slotReturnText(QString text)
     n_addMusicButton->hide();
     n_addDirMusicButton->hide();
     listTitleHBoxLayout->setContentsMargins(25, 20, 9, 30);
-
 }
 
 void TableOne::slotFilePath(QString path)
@@ -1070,7 +1075,6 @@ void TableOne::slotFilePath(QString path)
     if (ret == DB_OP_SUCC) {
         for (int i = 0; i < resList.size(); i++) {
             if(resList[i].filepath == path) {
-                qDebug() << "\n resList[i].filepath++++++++++++++++++++++++ \n" << resList[i].filepath << i;
                 playMusicforIndex(ALLMUSIC, i);
             }
         }
@@ -1089,7 +1093,6 @@ void TableOne::slotSongListBySinger(QString singer)
     nowListName = SEARCH;
 //        return;
 
-    setHightLightAndSelect();
     QList<musicDataStruct> resList;
     int ret = g_db->getSongInfoListBySinger(resList, singer);
     if (ret == DB_OP_SUCC) {

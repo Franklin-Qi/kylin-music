@@ -5,9 +5,9 @@
 TableBaseView::TableBaseView(QTableView *parent)
 {
     m_delegate = new TableViewDelegate();
+    setItemDelegate(m_delegate);
     connect(this,&TableBaseView::hoverIndexChanged,m_delegate,&TableViewDelegate::onHoverIndexChanged);
     connect(this,&TableBaseView::leaveFromItem,m_delegate,&TableViewDelegate::onLeaveFromItemEvent);
-    setItemDelegate(m_delegate);
     this->setMouseTracking(true);
     initStyle();
 }
@@ -67,4 +67,14 @@ void TableBaseView::leaveEvent(QEvent *event)
 {
     Q_EMIT leaveFromItem();
     viewport()->update();
+}
+
+QString TableBaseView::getNowPlayListName()const
+{
+    return m_nowListName;
+}
+
+void TableBaseView::setNowPlayListName(QString listName)
+{
+    m_nowListName = listName;
 }
