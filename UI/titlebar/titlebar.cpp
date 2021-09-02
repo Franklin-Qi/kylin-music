@@ -73,7 +73,7 @@ void TitleBar::initTitle()
     searchEdit = new SearchEdit(this);
     searchEdit->setWidget(m_parent);
 //    searchEdit->setPlaceholderText("搜索音乐，歌手");
-    searchEdit->setPlaceholderText(tr("Search for music, singers"));
+    searchEdit->setPlaceholderText(tr("Search"));
 
 //    searchEdit->setContentsMargins(108,4,0,0);
 //    searchEdit->hide();
