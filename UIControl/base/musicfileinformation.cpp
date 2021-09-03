@@ -26,6 +26,7 @@ QStringList MusicFileInformation::getMusicType()
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
     int count = 0;
+    int failCount = 0;
     resList.clear();
 
     for(auto &filepath : addFile)
@@ -65,6 +66,10 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                         resList.append(musicdataStruct);
                     }
                 }
+                else
+                {
+                    failCount++;
+                }
             }
         }
         else if(fileInfo.isFile())
@@ -82,9 +87,14 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                     resList.append(musicdataStruct);
                 }
             }
+            else
+            {
+                failCount++;
+            }
         }
     }
     musicCount = count;
+    m_failCount = failCount;
 //    resList.clear();
 //    if(!addFile.isEmpty())
 //    {
@@ -119,6 +129,11 @@ void MusicFileInformation::addFile(const QStringList &addFile)
 int MusicFileInformation::getCount()
 {
     return musicCount;
+}
+
+int MusicFileInformation::getFailCount()
+{
+    return m_failCount;
 }
 
 QString MusicFileInformation::filterTextCode(QString str)

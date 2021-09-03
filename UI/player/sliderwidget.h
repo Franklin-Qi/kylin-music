@@ -17,8 +17,8 @@ class SliderWidget : public QDialog
 public:
     explicit SliderWidget(QWidget *parent = nullptr);
 //    QDialog *vSliderDialog;
-    QHBoxLayout *HLayout;
-    QSlider *vSlider;
+    QHBoxLayout *HLayout = nullptr;
+    QSlider *vSlider = nullptr;
 public:
     void changeVolumePos(int posX, int posY, int width, int height);
     void initColor();
