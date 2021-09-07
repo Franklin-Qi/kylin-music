@@ -49,24 +49,24 @@
 <context>
     <name>MusicFileInformation</name>
     <message>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="206"/>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="231"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="221"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="246"/>
         <source>Unknown singer</source>
         <translation>未知歌手</translation>
     </message>
     <message>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="207"/>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="234"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="222"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="249"/>
         <source>Unknown album</source>
         <translation>未知专辑</translation>
     </message>
     <message>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="396"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="411"/>
         <source>Prompt information</source>
         <translation>提示信息</translation>
     </message>
     <message>
-        <location filename="../UIControl/base/musicfileinformation.cpp" line="396"/>
+        <location filename="../UIControl/base/musicfileinformation.cpp" line="411"/>
         <source>Add failed, no valid music file found</source>
         <translation></translation>
     </message>
@@ -445,124 +445,129 @@
 <context>
     <name>TableOne</name>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="141"/>
+        <location filename="../UI/tableview/tableone.cpp" line="143"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="166"/>
+        <location filename="../UI/tableview/tableone.cpp" line="168"/>
         <source>Song</source>
         <translation>歌曲</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="167"/>
+        <location filename="../UI/tableview/tableone.cpp" line="169"/>
         <source>Singer</source>
         <translation>歌手</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="168"/>
+        <location filename="../UI/tableview/tableone.cpp" line="170"/>
         <source>Album</source>
         <translation>专辑</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="169"/>
+        <location filename="../UI/tableview/tableone.cpp" line="171"/>
         <source>Time</source>
         <translation>时长</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="299"/>
-        <location filename="../UI/tableview/tableone.cpp" line="970"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1011"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1089"/>
+        <location filename="../UI/tableview/tableone.cpp" line="301"/>
+        <location filename="../UI/tableview/tableone.cpp" line="986"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1027"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1099"/>
         <source>Song List</source>
         <translation>歌曲列表</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="228"/>
+        <location filename="../UI/tableview/tableone.cpp" line="230"/>
         <source>There are no songs!</source>
         <translation>还没有歌曲！</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="127"/>
+        <location filename="../UI/tableview/tableone.cpp" line="129"/>
         <source>Play All</source>
         <translation>播放全部</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="157"/>
+        <location filename="../UI/tableview/tableone.cpp" line="159"/>
         <source>Add local songs</source>
         <translation>添加本地音乐</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="158"/>
+        <location filename="../UI/tableview/tableone.cpp" line="160"/>
         <source>Add local folders</source>
         <translation>添加本地文件夹</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="230"/>
+        <location filename="../UI/tableview/tableone.cpp" line="232"/>
         <source>Add Local Songs</source>
         <translation>添加本地音乐</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="231"/>
+        <location filename="../UI/tableview/tableone.cpp" line="233"/>
         <source>Add Local Folder</source>
         <translation>添加本地文件夹</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="301"/>
-        <location filename="../UI/tableview/tableone.cpp" line="384"/>
-        <location filename="../UI/tableview/tableone.cpp" line="619"/>
-        <location filename="../UI/tableview/tableone.cpp" line="972"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1013"/>
+        <location filename="../UI/tableview/tableone.cpp" line="303"/>
+        <location filename="../UI/tableview/tableone.cpp" line="386"/>
+        <location filename="../UI/tableview/tableone.cpp" line="621"/>
+        <location filename="../UI/tableview/tableone.cpp" line="988"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1029"/>
         <source>I Love</source>
         <translation>我喜欢</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="303"/>
-        <location filename="../UI/tableview/tableone.cpp" line="974"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1015"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1060"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1115"/>
-        <location filename="../UI/tableview/tableone.cpp" line="1144"/>
+        <location filename="../UI/tableview/tableone.cpp" line="305"/>
+        <location filename="../UI/tableview/tableone.cpp" line="990"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1031"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1076"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1125"/>
+        <location filename="../UI/tableview/tableone.cpp" line="1154"/>
         <source>Search Result</source>
         <translation>搜索结果</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="331"/>
+        <location filename="../UI/tableview/tableone.cpp" line="333"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="332"/>
+        <location filename="../UI/tableview/tableone.cpp" line="334"/>
         <source>Delete from list</source>
         <translation>从歌单中删除</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="333"/>
+        <location filename="../UI/tableview/tableone.cpp" line="335"/>
         <source>Remove from local</source>
         <translation>从本地删除</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="403"/>
+        <location filename="../UI/tableview/tableone.cpp" line="405"/>
         <source>Confirm that the selected song will be deleted from the song list?</source>
         <translation>确认将选中的歌曲从歌单中删除？</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="538"/>
+        <location filename="../UI/tableview/tableone.cpp" line="540"/>
         <source>After the song is deleted from the local, it cannot be resumed. Is it sure to delete?</source>
         <translation>歌曲从本地删除后不可恢复，是否确定删除？</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="688"/>
+        <location filename="../UI/tableview/tableone.cpp" line="690"/>
         <source>Audio File</source>
         <translation>音频文件</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="857"/>
+        <location filename="../UI/tableview/tableone.cpp" line="828"/>
+        <source>This format file is not supported</source>
+        <translation>不支持此格式文件</translation>
+    </message>
+    <message>
+        <location filename="../UI/tableview/tableone.cpp" line="865"/>
         <source>Repeat add</source>
         <translation>重复添加</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="892"/>
+        <location filename="../UI/tableview/tableone.cpp" line="900"/>
         <source>path does not exist</source>
         <translation>路径不存在</translation>
     </message>
@@ -571,13 +576,13 @@
         <translation type="vanished">您确定从本地删除吗？</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="829"/>
-        <location filename="../UI/tableview/tableone.cpp" line="850"/>
+        <location filename="../UI/tableview/tableone.cpp" line="837"/>
+        <location filename="../UI/tableview/tableone.cpp" line="858"/>
         <source>Success add %1 songs</source>
         <translation>成功添加%1首歌曲</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="840"/>
+        <location filename="../UI/tableview/tableone.cpp" line="848"/>
         <source>Add failed</source>
         <translation>添加失败</translation>
     </message>
@@ -586,22 +591,22 @@
         <translation type="vanished">删除</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="334"/>
+        <location filename="../UI/tableview/tableone.cpp" line="336"/>
         <source>View song information</source>
         <translation>查看歌曲信息</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="335"/>
+        <location filename="../UI/tableview/tableone.cpp" line="337"/>
         <source>Add to songlist</source>
         <translation>添加到歌单</translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="403"/>
-        <location filename="../UI/tableview/tableone.cpp" line="538"/>
-        <location filename="../UI/tableview/tableone.cpp" line="829"/>
-        <location filename="../UI/tableview/tableone.cpp" line="840"/>
-        <location filename="../UI/tableview/tableone.cpp" line="850"/>
-        <location filename="../UI/tableview/tableone.cpp" line="857"/>
+        <location filename="../UI/tableview/tableone.cpp" line="405"/>
+        <location filename="../UI/tableview/tableone.cpp" line="540"/>
+        <location filename="../UI/tableview/tableone.cpp" line="837"/>
+        <location filename="../UI/tableview/tableone.cpp" line="848"/>
+        <location filename="../UI/tableview/tableone.cpp" line="858"/>
+        <location filename="../UI/tableview/tableone.cpp" line="865"/>
         <source>Prompt information</source>
         <translation>提示信息</translation>
     </message>
@@ -618,7 +623,7 @@
         <translation type="vanished">共 </translation>
     </message>
     <message>
-        <location filename="../UI/tableview/tableone.cpp" line="921"/>
+        <location filename="../UI/tableview/tableone.cpp" line="929"/>
         <source> songs</source>
         <translation> 首歌曲</translation>
     </message>
@@ -692,6 +697,11 @@
         <location filename="../UI/mainwidget.cpp" line="832"/>
         <source>maximize</source>
         <translation>最大化</translation>
+    </message>
+    <message>
+        <location filename="../UI/mainwidget.cpp" line="887"/>
+        <source>Prompt information</source>
+        <translation>提示信息</translation>
     </message>
 </context>
 <context>

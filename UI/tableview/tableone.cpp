@@ -790,6 +790,7 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     int failCount = 0;
     MusicFileInformation::getInstance().addFile(fileNames);
     int allCount = MusicFileInformation::getInstance().getCount();
+    int fail_count = MusicFileInformation::getInstance().getFailCount();
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
 
@@ -809,17 +810,22 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
             successCount++;
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
         }
-        else
-        {
-            failCount++;
-        }
+//        else
+//        {
+//            failCount++;
+//        }
     }
     selectListChanged(nowListName);
-    importFinished(successCount, failCount, allCount);
+    importFinished(successCount, fail_count, allCount);
 }
 
 void TableOne::importFinished(int successCount, int m_failCount, int allCount)
 {
+
+    if(m_failCount > 0) {
+        Widget::mutual->setCreatFinishMsg(tr("This format file is not supported"));
+        return;
+    }
     if(successCount > 0)
     {
         if(allCount == 1)
@@ -922,6 +928,14 @@ void TableOne::changeNumber()
     if(num == 0) {
         tableView->hide();
         nullPageWidget->show();
+
+        //搜索结果为空界面时，添加按钮设置为hide，在这里需要重新处理
+        if (n_addMusicButton->isHidden()) {
+            n_addMusicButton->show();
+        }
+        if (n_addDirMusicButton->isHidden()) {
+            n_addDirMusicButton->show();
+        }
         addMusicButton->hide();
         playAllButton->hide();
     } else {

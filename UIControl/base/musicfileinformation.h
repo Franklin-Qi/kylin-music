@@ -43,6 +43,7 @@ public:
     void addFile(const QStringList &addFile);
     int findIndexFromPlayList(QString listname, QString filepath);
     int getCount();
+    int getFailCount();
     QStringList m_musicType;
     //获取封面图片
     QPixmap getCoverPhotoPixmap(QString filepath);
@@ -75,6 +76,7 @@ private:
     qint64 dur;
     bool success = false;
     int musicCount;
+    int m_failCount;
 };
 
 #endif // MUSICFILEINFORMATION_H

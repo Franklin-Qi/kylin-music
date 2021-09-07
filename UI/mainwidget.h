@@ -71,6 +71,10 @@ public Q_SLOTS:
     void slotText(QString btnText);
     //
     void slotReturnPressed();
+    //构造完成之后的流程事件函数
+    void creartFinish();
+    //构造完成后需要弹窗
+    void setCreatFinishMsg(QString msg);
 private Q_SLOTS:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
@@ -103,16 +107,16 @@ private:
     //初始化音乐
     void initMusic();
 private:
-    QVBoxLayout *mainVBoxLayout;
-    QHBoxLayout *mainHBoxLayout;
-    TableOne *musicListTable;
-    TableHistory *historyListTable;
+    QVBoxLayout *mainVBoxLayout = nullptr;
+    QHBoxLayout *mainHBoxLayout = nullptr;
+    TableOne *musicListTable = nullptr;
+    TableHistory *historyListTable = nullptr;
     QGSettings *themeData = nullptr;
-    SideBarWidget *sideBarWid;
-    PlaySongArea *playSongArea;
-    TitleBar *m_titleBar;
-    miniWidget *m_miniWidget;
-    QWidget *rightVWidget;
+    SideBarWidget *sideBarWid = nullptr;
+    PlaySongArea *playSongArea = nullptr;
+    TitleBar *m_titleBar = nullptr;
+    miniWidget *m_miniWidget = nullptr;
+    QWidget *rightVWidget = nullptr;
 
     bool Minimize = false;       //最大化和还原俩个状态
 
@@ -125,6 +129,9 @@ private:
     QString m_playTitle;
     //避免初始化流程中触发点击事件
     bool m_initFinish = false;
+    //主界面初始化完成后执行的操作
+    enum CreatFinishEnum{NONE=0,MESSAGE,OTHER}m_creatFinishEnum;
+    QString m_creatFinishMsg;
 
 Q_SIGNALS:
     void signalShowGuide();

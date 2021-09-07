@@ -56,9 +56,9 @@ public:
 private:
     QVBoxLayout *vlayout = nullptr;
 
-    QLabel *m_MusicLabel;
-    QLabel *m_SingerLabel;
-    QLabel *m_AlbumLabel;
+    QLabel *m_MusicLabel = nullptr;
+    QLabel *m_SingerLabel = nullptr;
+    QLabel *m_AlbumLabel = nullptr;
 
     int               m_CurrentIndex  = -1;
     int               m_Count         = 0;

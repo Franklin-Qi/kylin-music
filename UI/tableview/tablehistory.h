@@ -34,8 +34,8 @@ class TableHistory : public QDialog
     Q_OBJECT
 public:
     explicit TableHistory(QWidget *parent = nullptr);
-    TableBaseView *m_tableHistory;
-    MusicListModel *m_model;
+    TableBaseView *m_tableHistory = nullptr;
+    MusicListModel *m_model = nullptr;
     void changeNumber();
     void setHighlight(int index);
     void initStyle();
@@ -64,28 +64,28 @@ private Q_SLOTS:
     void showRightMenu(const QPoint &pos);
 private:
     void initRightMenu();
-    QVBoxLayout *mainVLayout;
-    QHBoxLayout *titleHBoxLayout;
+    QVBoxLayout *mainVLayout = nullptr;
+    QHBoxLayout *titleHBoxLayout = nullptr;
     void initSetModel();
     void initConnect();
-    QLabel *listCountLabel;
-    QLabel *historyTitileLabel;
-    QToolButton *deleteAllBtn;
-    QWidget *historyTitileWidget;
+    QLabel *listCountLabel = nullptr;
+    QLabel *historyTitileLabel = nullptr;
+    QToolButton *deleteAllBtn = nullptr;
+    QWidget *historyTitileWidget = nullptr;
 
-    QAction *playRow;
-    QAction *removeRow;
-    QAction *playNextRow;
-    QMenu *m_menu;
+    QAction *playRow = nullptr;
+    QAction *removeRow = nullptr;
+    QAction *playNextRow = nullptr;
+    QMenu *m_menu = nullptr;
     QString nowListName = HISTORY;
     QString nowPlayListName = "";
     int nowPlayIndex = -1;
 
-    QWidget *nullPageWidget;
-    QVBoxLayout *nullPageLayout;
-    QLabel *nullIconLabel;
-    QLabel *nullTextLabel;
-    QHeaderView *horizonHeader;
+    QWidget *nullPageWidget = nullptr;
+    QVBoxLayout *nullPageLayout = nullptr;
+    QLabel *nullIconLabel = nullptr;
+    QLabel *nullTextLabel = nullptr;
+    QHeaderView *horizonHeader = nullptr;
 private:
     int playHistoryPosX;
     int playHistoryPosY;

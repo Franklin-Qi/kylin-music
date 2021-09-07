@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
         }
     }
     Widget w(strList);
-
     w.show();
+    w.creartFinish();
     return a.exec();
 }
