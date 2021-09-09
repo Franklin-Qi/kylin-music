@@ -14,7 +14,7 @@ MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
     m_musicType << "*.voc" << "*.aiff" << "*.au"
                 << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv"
-                << "*.voc" << "*.mp3" << "*.ogg" << "*.flac"
+                << "*.mp3" << "*.ogg" << "*.flac"
                 << "*.ape" << "*.ac3";
 }
 

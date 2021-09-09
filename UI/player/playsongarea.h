@@ -25,11 +25,11 @@ class PlaySongArea : public QWidget
 public:
     explicit PlaySongArea(QWidget *parent = nullptr);
 public:
-    static PlaySongArea& getInstance()
-    {
-        static PlaySongArea instance;
-        return instance;
-    }
+//    static PlaySongArea& getInstance()
+//    {
+//        static PlaySongArea instance;
+//        return instance;
+//    }
 public:
      void playcolor();
 public:

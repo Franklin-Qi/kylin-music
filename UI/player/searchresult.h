@@ -2,6 +2,7 @@
 #define SEARCHRESULT_H
 
 #include <QWidget>
+#include <QKeyEvent>
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QLabel>

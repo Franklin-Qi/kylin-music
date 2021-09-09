@@ -44,7 +44,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     // .arg(context.file).arg(context.line).arg(context.function).arg(strDateTime);
 
     // 输出信息至文件中（读写、追加形式）
-    QString dirPath = "/tmp/kylin-calculator/log";
+    QString dirPath = "/tmp/kylin-music/log";
     QDir dir;
     QFile file;
     if (dir.mkpath(dirPath)) {

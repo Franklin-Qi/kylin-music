@@ -884,6 +884,9 @@ void Widget::slotReturnPressed()
 void Widget::creartFinish()
 {
     if (m_creatFinishEnum == MESSAGE) {
+        if (m_creatFinishMsg.isEmpty()) {
+            return;
+        }
         QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),m_creatFinishMsg.toLocal8Bit().data(),QMessageBox::Yes,Widget::mutual);
         warn->button(QMessageBox::Yes)->setText("确定");
         warn->exec();
@@ -894,6 +897,11 @@ void Widget::setCreatFinishMsg(QString msg)
 {
     m_creatFinishEnum = MESSAGE;
     m_creatFinishMsg = msg;
+
+    //如果界面已经显示，调用弹窗
+    if (!this->isHidden()) {
+        creartFinish();
+    }
 }
 
 //切换深色主题
