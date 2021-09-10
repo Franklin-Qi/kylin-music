@@ -1,3 +1,21 @@
+kylin-music (1.1.0-26) v101; urgency=medium
+
+  * BUG号：
+   - 77102【音乐】双击音乐不支持播放的m4a、m4r格式，会打开音乐软件，但无任何提示	
+   - 78172【音乐】字体大小设置为13以上会出现按钮中文字显示不全
+   - 78270【音乐】点击搜索到的歌单，无法跳转到搜索列表
+   - 78296【音乐】【概率性】20次出现1次，中文模式下创建歌单，切换英文模式注销系统重新登录，打开音乐，歌单消失，重新创建歌单提示已存在
+   - 78347【音乐】【搜索】存在空歌单时，歌曲列表不为空时搜索关键字进入搜索结果页面后，点击空歌单进入的页面没有“添加本地音乐”“添加本地文件夹”按钮，新建歌单后进入新歌单出现同样情况
+   - 78363【音乐】英文环境下，系统字号设置为12及以上时，历史播放列表中“总歌曲数目”和“清空”不能完整显示
+   - 78371【音乐】【搜索】在搜索框输入关键字后按小键盘的enter后，进入搜索结果页面，但是搜索结果预览框仍旧存在
+   - 78687【桌面应用】【音乐】搜索出的音乐无法删除，选择删除时应弹出“搜索的歌曲无法删除”之类的提示
+   - 78709【桌面应用】【音乐】关于界面下方没有间距.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Thu, 09 Sep 2021 15:54:14 +0800
+
 kylin-music (1.1.0-25) v101; urgency=medium
 
   * BUG号：
@@ -7,7 +25,7 @@ kylin-music (1.1.0-25) v101; urgency=medium
   * 其他改动说明：无.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Fri, 3 Sep 2021 15:54:14 +0800
+ -- liujialin <liujialin@kylinos.cn>  Fri, 03 Sep 2021 15:54:14 +0800
 
 kylin-music (1.1.0-24) v101; urgency=medium
 
@@ -20,7 +38,7 @@ kylin-music (1.1.0-24) v101; urgency=medium
   * 其他改动说明：无.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Thu, 2 Sep 2021 20:34:12 +0800
+ -- liujialin <liujialin@kylinos.cn>  Thu, 02 Sep 2021 20:34:12 +0800
 
 kylin-music (1.1.0-23) v101; urgency=medium
 
@@ -30,7 +48,7 @@ kylin-music (1.1.0-23) v101; urgency=medium
   * 其他改动说明：无.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Thu, 2 Sep 2021 10:03:23 +0800
+ -- liujialin <liujialin@kylinos.cn>  Thu, 02 Sep 2021 10:03:23 +0800
 
 kylin-music (1.1.0-22) v101; urgency=medium
 
@@ -40,7 +58,7 @@ kylin-music (1.1.0-22) v101; urgency=medium
   * 其他改动说明：无.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Wed, 1 Sep 2021 20:14:07 +0800
+ -- liujialin <liujialin@kylinos.cn>  Wed, 01 Sep 2021 20:14:07 +0800
 
 kylin-music (1.1.0-21) v101; urgency=medium
 

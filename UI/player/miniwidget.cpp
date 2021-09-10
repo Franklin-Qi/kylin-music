@@ -255,7 +255,7 @@ void miniWidget::init_miniWidget()
     m_vInfoLayout = new QVBoxLayout;
 
     m_songNameLab = new MyLabel;
-    m_songNameLab->setFixedHeight(23);
+    m_songNameLab->setFixedSize(170,28);
 //    m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
@@ -277,14 +277,16 @@ void miniWidget::init_miniWidget()
 
 //    m_vInfoLayout->setMargin(3);
 //    m_vInfoLayout->setSpacing(3);
+    QWidget *vWidget = new QWidget(this);
+    vWidget->setFixedHeight(44);
     m_vInfoLayout->addStretch();
-    m_vInfoLayout->addWidget(m_songNameLab);
+    m_vInfoLayout->addWidget(m_songNameLab,0,Qt::AlignVCenter);
 //    m_vInfoLayout->addSpacing(6);
-    m_vInfoLayout->addWidget(m_timeLab);
+    m_vInfoLayout->addWidget(m_timeLab,0,Qt::AlignVCenter);
     m_vInfoLayout->addStretch();
     m_vInfoLayout->setContentsMargins(8,3,0,3);
     m_vInfoLayout->setMargin(0);
-
+    vWidget->setLayout(m_vInfoLayout);
 //    m_vInfoLayout->setAlignment(Qt::AlignVCenter);
 
     /******************************************/
@@ -380,9 +382,9 @@ void miniWidget::init_miniWidget()
     coverWid->setLayout(m_vSysLayout);
     /********************************************/
 
-    m_hMainLayout->setMargin(10);
+//    m_hMainLayout->setMargin(10);
     m_hMainLayout->addWidget(m_coverLabel);
-    m_hMainLayout->addLayout(m_vInfoLayout);
+    m_hMainLayout->addWidget(vWidget);
     m_hMainLayout->addStretch();
     m_hMainLayout->addWidget(m_palyFrame);
     m_hMainLayout->addStretch();

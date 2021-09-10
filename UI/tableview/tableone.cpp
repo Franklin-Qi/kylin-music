@@ -67,6 +67,7 @@ void TableOne::initTableViewStyle()
     horizonHeader->setEnabled(false);
     m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
     horizonHeader->setHighlightSections(false);
+    horizonHeader->setFixedHeight(36);
     if(WidgetStyle::themeColor == 0) {
         horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
                                                                 border: none;border-bottom: 1px solid white;\
@@ -100,9 +101,10 @@ void TableOne::initUI()
     listTitleLabel = new QLabel(this);
     listTitleLabel->setAlignment(Qt::AlignBottom);
     listTitleLabel->setMaximumWidth(192);
-//    listTitleLabel->setFixedHeight(30);
+    listTitleLabel->setFixedHeight(45);
     listTotalNumLabel = new QLabel(this);
     listTotalNumLabel->setAlignment(Qt::AlignBottom);
+    listTotalNumLabel->setFixedHeight(42);
     addMusicButton = new QToolButton(this);
     listTitleHBoxLayout = new QHBoxLayout();
     playAllButton = new QPushButton(this);
@@ -393,6 +395,11 @@ void TableOne::showRightMenu(const QPoint &pos)
     {
         m_menu->removeAction(playRow);
         m_menu->removeAction(showInfoRow);
+    }
+    if(nowListName == SEARCH)
+    {
+        m_menu->removeAction(removeRow);
+        m_menu->removeAction(removeLocalRow);
     }
     m_menu->exec(QCursor::pos());
 }

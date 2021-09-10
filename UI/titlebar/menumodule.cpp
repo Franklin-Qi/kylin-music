@@ -16,6 +16,8 @@ void menuModule::init(){
 
 void menuModule::initAction(){
     aboutWindow = new QWidget();
+    aboutWindow->setAutoFillBackground(true);
+    aboutWindow->setBackgroundRole(QPalette::Base);
     titleText = new QLabel();
     bodyAppName = new QLabel();
     bodyAppVersion = new QLabel();
@@ -198,7 +200,7 @@ void menuModule::initAbout(){
     hints.functions = MWM_FUNC_ALL;
     hints.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(aboutWindow->winId(), hints);
-    aboutWindow->setFixedSize(420,380);
+    aboutWindow->setFixedSize(420,390);
     QVBoxLayout *mainlyt = new QVBoxLayout();
     QHBoxLayout *titleLyt = initTitleBar();
     QVBoxLayout *bodylyt = initBody();
@@ -264,18 +266,15 @@ QVBoxLayout* menuModule::initBody(){
 //    bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
 //    bodyIcon->setStyleSheet("font-size:14px;");
 //    bodyIcon->setScaledContents(true);
-    bodyIcon->setFixedSize(96,96);
-    bodyIcon->setIconSize(QSize(96,96));
+    bodyIcon->setFixedSize(96,94);
+    bodyIcon->setIconSize(QSize(96,94));
     bodyIcon->setIcon(QIcon::fromTheme("kylin-music"));
     bodyIcon->setStyleSheet("QPushButton{border:0px;background:transparent;}"
                             "QPushButton::hover{border:0px;background:transparent;}"
                             "QPushButton::pressed{border:0px;background:transparent;}");
 
-    bodyAppDescribe->setText(tr("Music Player is a kind of multimedia "
-                                "player software for playing various music files."
-                                "It covers a variety of music formats play tool,"
-                                "easy to operate."));
-    bodyAppDescribe->setFixedSize(356, 120);
+    bodyAppDescribe->setText(tr("Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple."));
+    bodyAppDescribe->setFixedSize(380, 86);
 //    bodyAppDescribe->setFixedHeight();
 //    bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
@@ -295,19 +294,20 @@ QVBoxLayout* menuModule::initBody(){
     bodySupport->setFixedHeight(30);
 //    bodySupport->setStyleSheet("font-size:14px;");
     QVBoxLayout *vlyt = new QVBoxLayout;
-    vlyt->setMargin(0);
-    vlyt->setSpacing(0);
+//    vlyt->setMargin(0);
+//    vlyt->setSpacing(0);
 //    vlyt->addSpacing(20);
     vlyt->addWidget(bodyIcon,0,Qt::AlignHCenter);
-    vlyt->addSpacing(16);
+    vlyt->addSpacing(5);
     vlyt->addWidget(bodyAppName,0,Qt::AlignHCenter);
-    vlyt->addSpacing(12);
+    vlyt->addSpacing(5);
     vlyt->addWidget(bodyAppVersion,0,Qt::AlignHCenter);
-    vlyt->addSpacing(12);
-    vlyt->addWidget(bodyAppDescribe,0,Qt::AlignHCenter);
-    vlyt->addSpacing(24);
-    vlyt->addWidget(bodySupport,0,Qt::AlignHCenter);
-    vlyt->addStretch();
+    vlyt->addSpacing(5);
+    vlyt->addWidget(bodyAppDescribe,0,Qt::AlignLeft);
+    vlyt->addSpacing(5);
+    vlyt->addWidget(bodySupport,0,Qt::AlignLeft);
+//    vlyt->addStretch();
+    vlyt->setContentsMargins(20,10,20,10);
     return vlyt;
 }
 

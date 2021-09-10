@@ -130,7 +130,7 @@ private:
     //避免初始化流程中触发点击事件
     bool m_initFinish = false;
     //主界面初始化完成后执行的操作
-    enum CreatFinishEnum{NONE=0,MESSAGE,OTHER}m_creatFinishEnum;
+    enum CreatFinishEnum{NONE=0,MESSAGE,OTHER} m_creatFinishEnum = NONE;
     QString m_creatFinishMsg;
 
 Q_SIGNALS:

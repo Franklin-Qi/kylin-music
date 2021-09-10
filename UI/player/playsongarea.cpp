@@ -167,7 +167,7 @@ void PlaySongArea::initWidget()
     coverPhotoLabel->setFixedSize(40,40);
 
     playingLabel = new MyLabel(this);
-    playingLabel->setFixedHeight(23);
+    playingLabel->setFixedHeight(28);
 //    playingLabel->setText(tr("Music Player"));
 
     timeLabel = new QLabel(this);
@@ -192,7 +192,7 @@ void PlaySongArea::initWidget()
     QHBoxLayout *leftLayout = new QHBoxLayout(letfWid);
 
     QWidget *vWidget = new QWidget(letfWid);
-    vWidget->setFixedHeight(40);
+    vWidget->setFixedHeight(44);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addStretch();
     vLayout->addWidget(playingLabel,0,Qt::AlignVCenter);

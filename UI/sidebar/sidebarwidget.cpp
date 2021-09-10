@@ -25,6 +25,7 @@ void SideBarWidget::initWidget()
     QHBoxLayout *logoLayout = new QHBoxLayout();
     QLabel *logoNameLabel = new QLabel(this);
     logoNameLabel->setText(tr("Music Player"));
+    logoNameLabel->setFixedHeight(28);
     logoPushButton = new QPushButton(this);
     logoPushButton->setFixedSize(24,24);
     logoPushButton->setIconSize(QSize(25,25));
@@ -43,6 +44,7 @@ void SideBarWidget::initWidget()
     QHBoxLayout *libraryLayout = new QHBoxLayout();
     libraryLabel = new QLabel(this);
     libraryLabel->setText(tr("Library"));
+    libraryLabel->setFixedHeight(28);
 //    libraryLabel->setFixedSize(80,30);
     libraryLayout->addWidget(libraryLabel);
     libraryLayout->setContentsMargins(38,0,38,0);
@@ -64,6 +66,7 @@ void SideBarWidget::initWidget()
     myPlayListLabel = new QLabel(this);
     myPlayListBtn = new QPushButton(this);
     myPlayListLabel->setText(tr("My PlayList"));
+    myPlayListLabel->setFixedHeight(28);
     myPlayListBtn->setFixedSize(20,20);
     myPlayListBtn->setIcon(QIcon::fromTheme("list-add-symbolic"));
     myPlayListBtn->setProperty("isWindowButton", 0x1);
@@ -123,6 +126,7 @@ void SideBarWidget::initWidget()
     scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
 
     logoWid = new QWidget(this);
+    logoWid->setFixedHeight(40);
     logoWid->setLayout(logoLayout);
     logoWid->setObjectName("logoWid");
 
@@ -230,7 +234,7 @@ void SideBarWidget::getPlayListName()
         listName = playListName.at(i);
         if(listName == SEARCH)
         {
-            return;
+            continue;
         }
         MyToolButton *newBtn = new MyToolButton;
         newPlayListLayout->setAlignment(Qt::AlignTop);
