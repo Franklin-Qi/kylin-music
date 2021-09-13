@@ -100,7 +100,8 @@ public Q_SLOTS:
 
     //没有歌曲在播放
     void slotNotPlaying();
-
+    //设置进度条归 0
+    void slotSetValue();
     //播放历史按钮选中状态改变
     void slotHistoryBtnChecked(bool checked);
     //字体

@@ -96,6 +96,9 @@ Q_SIGNALS:
 
     void signalNotPlaying();
     void playErrorMsg(int errorCode);//媒体播放错误信息信号
+
+    //进度条归 0
+    void signalSetValue();
 public Q_SLOTS:
     void onCurrentIndexChanged();
     void onPositionChanged(double value);

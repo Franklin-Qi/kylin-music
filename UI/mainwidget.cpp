@@ -131,6 +131,11 @@ void Widget::stateMusicFile(QStringList args)
 
 void Widget::initDbus()//初始化dbus
 {
+    interface = new QDBusInterface("org.gnome.SessionManager",
+                                   "/org/gnome/SessionManager",
+                                   "org.gnome.SessionManager",
+                                   QDBusConnection::sessionBus());
+
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if(sessionBus.registerService("org.ukui.kylin_music"))
     {
@@ -454,6 +459,24 @@ QString Widget::getState()
     return state;
 }
 
+void Widget::slotStateChanged(playController::PlayState state)
+{
+    // 如果正在播放，阻止锁屏
+    if(!interface->isValid())
+    {
+        return;
+    }
+    if(state == playController::PlayState::PLAY_STATE)
+    {
+        QDBusMessage reply = interface->call(QDBus::Block, "Inhibit", "kylin-music", (quint32)0, "music is playing", (quint32)8);
+        m_inhibitValue = reply.arguments().takeFirst().toUInt();
+    }
+    else
+    {
+        interface->call("Uninhibit", m_inhibitValue);
+    }
+}
+
 void Widget::initMusic()
 {
     QStringList playListName;
@@ -650,6 +673,7 @@ void Widget::allConnect()
     connect(musicListTable,&TableOne::signalSongListHigh,sideBarWid,&SideBarWidget::slotSongListHigh);
 
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::slotSearchReturnPressed);
+    connect(&playController::getInstance(),&playController::playerStateChange,this,&Widget::slotStateChanged);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -806,6 +830,7 @@ void Widget::moveWidget(QString newWidth, QString newHeight)
 
 void Widget::slotClose()
 {
+    interface->call("Uninhibit", m_inhibitValue);
     this->close();
 }
 
