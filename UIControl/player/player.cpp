@@ -173,6 +173,8 @@ void playController::removeSongFromCurList(QString name, int index)
         //判断删除后 播放歌曲的index    当前只判断了删除正在播放的歌曲    还没做删除正在播放之前的歌曲和之后的歌曲
             int count = m_playlist->mediaCount();
 
+            int state = m_player->state();
+
             if(m_curIndex == index)
             {
                 stop();
@@ -196,7 +198,13 @@ void playController::removeSongFromCurList(QString name, int index)
 //                    setSongIndex(m_curIndex);
                     setSongIndex(m_curIndex);
                 }
-                m_player->play();
+                //删除当前播放歌曲不更改播放状态  2021.09.10
+                if (state == MMediaPlayer::State::PlayingState) {
+                    m_player->play();
+                } else {                            //设置进度条归 0
+                    Q_EMIT signalSetValue();
+                    m_player->pause();
+                }
             }
             else if(m_curIndex > index)
             {
@@ -248,6 +256,8 @@ void playController::removeSongFromLocalList(QString name, int index)
     {
             int count = m_playlist->mediaCount();
 
+            int state = m_player->state();
+
             if(m_curIndex == index)
             {
                 stop();
@@ -270,21 +280,27 @@ void playController::removeSongFromLocalList(QString name, int index)
                     }
                     setSongIndex(m_curIndex);
                 }
-                m_player->play();
+                //删除当前播放歌曲不更改播放状态  2021.09.10
+                if (state == MMediaPlayer::State::PlayingState) {
+                    m_player->play();
+                } else {                            //设置进度条归 0
+                    Q_EMIT signalSetValue();
+                    m_player->pause();
+                }
             }
             else if(m_curIndex > index)
             {
-                int position = 0;
-                if(m_player->state()==MMediaPlayer::PlayingState)
-                {
-                    position = m_player->position();
-                }
-                m_player->stop();
+//                int position = 0;
+//                if(m_player->state()==MMediaPlayer::PlayingState)
+//                {
+//                    position = m_player->position();
+//                }
+//                m_player->stop();
                 m_playlist->removeMedia(index);
                 m_curIndex = m_curIndex - 1;
                 setSongIndex(m_curIndex);
-                m_player->setPosition(position);
-                m_player->play();
+//                m_player->setPosition(position);
+//                m_player->play();
             }
             else if(m_curIndex < index)
             {

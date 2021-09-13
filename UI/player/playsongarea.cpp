@@ -308,6 +308,7 @@ void PlaySongArea::initConnect()
     connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
     connect(&playController::getInstance(),&playController::signalNotPlaying,this,&PlaySongArea::slotNotPlaying);
+    connect(&playController::getInstance(),&playController::signalSetValue,this,&PlaySongArea::slotSetValue);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -615,6 +616,11 @@ void PlaySongArea::slotNotPlaying()
     hSlider->setValue(0);
     playingLabel->setText(tr("Music Player"));
     timeLabel->setText("00:00/00:00");
+}
+
+void PlaySongArea::slotSetValue()
+{
+    hSlider->setValue(0);
 }
 
 void PlaySongArea::slotDurationChanged(qint64 duration)

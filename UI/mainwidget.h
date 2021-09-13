@@ -75,6 +75,8 @@ public Q_SLOTS:
     void creartFinish();
     //构造完成后需要弹窗
     void setCreatFinishMsg(QString msg);
+    //如果正在播放，阻止锁屏
+    void slotStateChanged(playController::PlayState state);
 private Q_SLOTS:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
@@ -107,6 +109,9 @@ private:
     //初始化音乐
     void initMusic();
 private:
+    QDBusInterface *interface;
+    quint32 m_inhibitValue = 0;             // 阻止锁屏cookie
+
     QVBoxLayout *mainVBoxLayout = nullptr;
     QHBoxLayout *mainHBoxLayout = nullptr;
     TableOne *musicListTable = nullptr;
