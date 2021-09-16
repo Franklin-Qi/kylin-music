@@ -689,7 +689,11 @@ void TableOne::addMusicSlot()
         });
 
     connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
-        fileDialog->setSidebarUrls(list);
+        QList<QUrl> lists;
+        QString homePath = "file://" + QDir::homePath();
+        lists << QUrl("file://");
+        lists << QUrl(homePath);
+        fileDialog->setSidebarUrls(lists);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
     QString setFilter = tr("Audio File") + (" (%1) ");
@@ -758,7 +762,11 @@ void TableOne::addDirMusicSlot()
         });
 
         connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
-            fileDialog->setSidebarUrls(list);
+            QList<QUrl> lists;
+            QString homePath = "file://" + QDir::homePath();
+            lists << QUrl("file://");
+            lists << QUrl(homePath);
+            fileDialog->setSidebarUrls(lists);
         });
 
     //自己QFileDialog的用法，这里只是列子
@@ -1053,7 +1061,7 @@ void TableOne::slotReturnText(QString text)
     int ret = g_db->checkPlayListExist(SEARCH);
     if(ret == DB_OP_SUCC)
     {
-         m_model->clear();
+        m_model->clear();
         int ret;
         QList<musicDataStruct> musicDateList;
         ret = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
