@@ -744,7 +744,9 @@ void Widget::initGSettings()//初始化GSettings
 void Widget::resizeEvent(QResizeEvent *event)
 {
     int max_w = qApp->primaryScreen()->size().width();
-    int max_h = qApp->primaryScreen()->size().height()-46;
+
+    //qApp->primaryScreen()->size().height() - this->height() [计算底边栏的高度]
+    int max_h = qApp->primaryScreen()->size().height() - (qApp->primaryScreen()->size().height() - this->height());
 
     movePlayHistoryWid();
     if(this->width() >= max_w && this->height()>= max_h)
