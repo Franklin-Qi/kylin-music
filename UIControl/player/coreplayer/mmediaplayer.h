@@ -57,6 +57,7 @@ Q_SIGNALS:
     void playFinish(); //媒体播放完成信号
     void playError(); //媒体播放错误信号
     void playErrorMsg(ErrorMsg errorCode);//媒体播放错误信息信号
+//    void signalVolume(int);
 };
 
 #endif // MMEDIAPLAYER_H

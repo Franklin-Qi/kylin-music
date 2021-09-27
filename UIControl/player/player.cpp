@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QDBusConnection>
 #include "player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/base/musicfileinformation.h"
@@ -338,6 +339,7 @@ playController::playController()
     }
     m_player->setPlaylist(m_playlist);
     init();
+    initDbus();
     m_playlist->setPlaybackMode(MMediaPlaylist::Loop);
 //    m_playlist->setCurrentIndex(-1);
     connect(m_playlist,&MMediaPlaylist::currentIndexChanged,this,&playController::slotIndexChange);
@@ -394,6 +396,11 @@ void playController::init()
     m_mode = static_cast<PlayMode>(playModeSetting->get("playbackmode").toInt());
 }
 
+void playController::initDbus()
+{
+    QDBusConnection::sessionBus().connect(QString(), "/", "org.ukui.media", "sinkVolumeChanged", this, SLOT(slotVolumeChange(QString,int,bool)));
+}
+
 int playController::getVolume()
 {
     return m_volume;
@@ -410,7 +417,11 @@ void playController::setVolume(int volume)
 
     m_volume = volume;
     volumeSetting->set("volume", volume);
-    m_player->setVolume(volume);
+    if (!m_receive) {
+        m_player->setVolume(volume);
+    } else {
+        m_receive = false;
+    }
 }
 
 void playController::onCurrentIndexChanged()
@@ -545,6 +556,7 @@ void playController::slotIndexChange(int index)
 
 void playController::slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg)
 {
+//    m_msg = msg;
     Q_EMIT playErrorMsg(msg);
 }
 
@@ -578,4 +590,21 @@ void playController::setMode(playController::PlayMode mode)
 playController::PlayMode playController::mode() const
 {
     return m_mode;
+}
+
+void playController::slotVolumeChange(QString app, int value, bool mute)
+{
+    if (app == "kylin-music") {
+        if (value < 0) {
+            return;
+        }
+
+        if (value != m_volume) {
+            m_receive = true;
+            Q_EMIT signalVolume(value);
+        }
+
+        //mute = true静音  mute = false取消静音
+        Q_EMIT signalMute(mute);
+    }
 }

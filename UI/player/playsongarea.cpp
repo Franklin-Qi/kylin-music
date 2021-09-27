@@ -309,6 +309,8 @@ void PlaySongArea::initConnect()
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
     connect(&playController::getInstance(),&playController::signalNotPlaying,this,&PlaySongArea::slotNotPlaying);
     connect(&playController::getInstance(),&playController::signalSetValue,this,&PlaySongArea::slotSetValue);
+    connect(&playController::getInstance(),&playController::signalVolume,this,&PlaySongArea::slotVolume);
+    connect(&playController::getInstance(),&playController::signalMute,this,&PlaySongArea::slotMute);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -360,6 +362,18 @@ void PlaySongArea::slotVolSliderWidget()
         moveVolSliderWid();
         m_volSliderWid->show();
         m_volSliderWid->raise();
+    }
+}
+
+void PlaySongArea::slotVolume(int volume)
+{
+    m_volSliderWid->vSlider->setValue(volume);
+}
+
+void PlaySongArea::slotMute(bool mute)
+{
+    if (mute) {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
     }
 }
 

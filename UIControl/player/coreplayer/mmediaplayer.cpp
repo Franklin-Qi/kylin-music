@@ -1,5 +1,8 @@
 #include "mmediaplayer.h"
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+
 MMediaPlayer::MMediaPlayer(QObject *parent)
     : QObject(parent)
 {
@@ -123,7 +126,12 @@ void MMediaPlayer::setPosition(qint64 pos)
 
 void MMediaPlayer::setVolume(int vol)
 {
-    setProperty("volume",QString::number(vol));
+//    setProperty("volume",QString::number(vol));
+//    Q_EMIT signalVolume(vol);
+    // 设置音量，此音量和系统同步，不单独设置mpv音量
+    QDBusMessage message = QDBusMessage::createSignal("/", "org.kylin.music", "sinkInputVolumeChanged");
+    message << "kylin-music" << vol << false;
+    QDBusConnection::sessionBus().send(message);
 }
 
 qint64 MMediaPlayer::duration() const

@@ -72,6 +72,10 @@ public Q_SLOTS:
     void volumeReduce();
     //改变音量
     void slotVolumeChanged(int values);
+    //系统音乐音量改变
+    void slotVolume(int volume);
+    //系统音乐音量是否静音（ mute = true 静音 ）
+    void slotMute(bool mute);
     //我喜欢按钮
     void slotFav();
     //改变播放模式弹窗
