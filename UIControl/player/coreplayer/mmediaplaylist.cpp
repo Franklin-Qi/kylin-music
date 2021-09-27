@@ -20,7 +20,6 @@ QString MMediaPlaylist::getPlayFileName()
     return m_playerList.at(m_index).toString();
 }
 
-
 int MMediaPlaylist::currentIndex() const
 {
     return m_index;
@@ -168,6 +167,22 @@ void MMediaPlaylist::playError()
     }
     //列表中所有媒体的本地文件全部被删除了
     Q_EMIT currentIndexChanged(-1);
+}
+
+void MMediaPlaylist::playErrorMsg(int Damage)
+{
+    if (Damage == -2) {
+        //如果是列表循环则切换下一首
+        if (m_playbackMode == Loop) {
+            next();
+        } else if(m_playbackMode == Random) {
+            m_index = randomIndex();
+            Q_EMIT currentIndexChanged(m_index);
+            Q_EMIT stop();
+        }
+
+        Q_EMIT autoPlay(m_playbackMode);
+    }
 }
 
 void MMediaPlaylist::palyFinish()

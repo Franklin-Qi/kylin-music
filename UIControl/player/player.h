@@ -95,7 +95,7 @@ Q_SIGNALS:
     void signalPlayMode(int playModel);
 
     void signalNotPlaying();
-    void playErrorMsg(int errorCode);//媒体播放错误信息信号
+//    void playErrorMsg(int errorCode);//媒体播放错误信息信号
 
     //进度条归 0
     void signalSetValue();
@@ -121,7 +121,8 @@ private Q_SLOTS:
     //获得当前播放的index
     void slotIndexChange(int index);
     //媒体播放错误信息槽函数
-    void slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg);
+//    void slotPlayErrorMsg(MMediaPlayer::ErrorMsg msg);
+    //接收系统应用音量变化
     void slotVolumeChange(QString app, int value, bool mute);
 private:
     //当前播放列表名
