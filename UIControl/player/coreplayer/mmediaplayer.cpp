@@ -20,6 +20,7 @@ void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
     connect(this,&MMediaPlayer::playError,m_playList,&MMediaPlaylist::playError,Qt::UniqueConnection);
     connect(m_playList,&MMediaPlaylist::autoPlay,this,&MMediaPlayer::autoPlay,Qt::UniqueConnection);
     connect(m_playList,&MMediaPlaylist::stop,this,&MMediaPlayer::stop,Qt::UniqueConnection);
+    connect(this,&MMediaPlayer::playErrorMsg,m_playList,&MMediaPlaylist::playErrorMsg,Qt::UniqueConnection);
 }
 
 void MMediaPlayer::truePlay(QString startTime)

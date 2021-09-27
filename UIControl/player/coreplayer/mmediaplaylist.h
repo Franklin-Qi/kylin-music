@@ -41,6 +41,7 @@ public:
 public Q_SLOTS:
     void palyFinish(); //播放完成槽函数
     void playError(); //播放异常槽函数
+    void playErrorMsg(int Damage); //播放错误异常
 private:
     int randomIndex(); //生成随机数
     QList<QUrl> m_playerList; //实际的播放队列
