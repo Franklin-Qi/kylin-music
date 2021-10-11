@@ -3,6 +3,12 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
+#include <X11/keysym.h>
+#include <X11/extensions/xtestconst.h>
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/XTest.h>
+
+#include "UI/base/xatom-helper.h"
 SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 {
     this->setAutoFillBackground(true);
@@ -102,12 +108,63 @@ void SearchResult::keyPressEvent(QKeyEvent *event)
 {
     m_searchEdit->raise();
     m_searchEdit->activateWindow();
-    QApplication::sendEvent(m_searchEdit,event);
+//    QApplication::sendEvent(m_searchEdit,event);
+    setCursorWithXEvent();
+
     if (event->key() == Qt::Key_Return) {
         this->hide();
         return;
     }
-    Q_EMIT m_searchEdit->textChanged(m_searchEdit->text());
+
+    m_key = event->key();
+    QTimer *timer = new QTimer;
+    timer->setSingleShot(true);
+    connect(timer,&QTimer::timeout,this,[=]{
+        Display  *display = XOpenDisplay(NULL);
+        //qint16(event->key())
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display,qint16(m_key)), 1, 10);
+        XFlush(display);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display,qint16(m_key)), 0, 10);
+        XFlush(display);
+        XCloseDisplay(display);
+    });
+    connect(timer,&QTimer::timeout,timer,&QTimer::deleteLater);
+    timer->start(150);
+
+//    Q_EMIT m_searchEdit->textChanged(m_searchEdit->text());
+}
+
+void SearchResult::setCursorWithXEvent()
+{
+    double device = QGuiApplication::primaryScreen()->devicePixelRatio();
+    if (device <= 0) {
+        device = 1;
+    }
+
+    QPoint point = m_searchEdit->mapToGlobal(QPoint(m_searchEdit->rect().topRight().x() - 10,m_searchEdit->rect().topRight().y() - 5));
+
+    XEvent xEvent;
+    //该值返回一个指向存储区 &xEvent 的指针。
+    memset(&xEvent, 0, sizeof(XEvent));
+    //默认显示
+    Display *display = QX11Info::display();
+    xEvent.type = ButtonPress;
+    xEvent.xbutton.button = Button1;
+    //this->effectiveWinId()本机父窗口系统标识符
+    xEvent.xbutton.window = this->effectiveWinId();
+    if (point.y() < 5) {
+        xEvent.xbutton.x = point.x() * device;
+        xEvent.xbutton.y = point.y() * device;
+    } else {
+        xEvent.xbutton.x = this->mapFromGlobal(point).x() * device;
+        xEvent.xbutton.y = this->mapFromGlobal(point).y() * device;
+    }
+    xEvent.xbutton.x_root = point.x()* device;
+    xEvent.xbutton.y_root = point.y()* device;
+    xEvent.xbutton.display = display;
+
+    XSendEvent(display,this->effectiveWinId(),False,ButtonReleaseMask,&xEvent);
+    XFlush(display);
 }
 
 void SearchResult::autoResize()

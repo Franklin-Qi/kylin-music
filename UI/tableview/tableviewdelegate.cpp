@@ -36,12 +36,11 @@ void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     } else {
         opt.state &= ~QStyle::State_MouseOver;
     }
-
+    //字体高亮颜色
     opt.palette.setColor(QPalette::HighlightedText,index.data(Qt::ForegroundRole).value<QColor>());
-    if(WidgetStyle::themeColor == 0)
-    {
+    if (WidgetStyle::themeColor == 0) {
         opt.palette.setColor(QPalette::Highlight,QColor(240,240,240));
-    }else{
+    } else {
         opt.palette.setColor(QPalette::Highlight,QColor(54,54,55));
     }
 

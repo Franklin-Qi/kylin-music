@@ -1,3 +1,13 @@
+kylin-music (1.1.0-29) v101; urgency=medium
+
+  * BUG号：
+   - 80989【卓怡】【声音】音乐播放器播放音频声音小.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Mon, 27 Sep 2021 19:12:56 +0800
+
 kylin-music (1.1.0-28) v101; urgency=medium
 
   * BUG号：
