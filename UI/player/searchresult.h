@@ -76,7 +76,7 @@ private:
     int m_resultPosY;
     int m_resultPosWidth;
     int m_resultPosHeight;
-    qint16 m_key;
+    quint32 m_key;
 };
 
 #endif // SEARCHRESULT_H

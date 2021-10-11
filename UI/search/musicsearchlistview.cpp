@@ -41,6 +41,7 @@ MusicSearchListview::MusicSearchListview(QWidget *parent)
     setItemDelegate(m_delegate);
     setUniformItemSizes(true);
 
+    this->setFocusPolicy(Qt::NoFocus);
     setViewMode(QListView::ListMode);
     setResizeMode(QListView::Adjust);
     setMovement(QListView::Static);

@@ -106,7 +106,7 @@ SearchResult::~SearchResult()
 
 void SearchResult::keyPressEvent(QKeyEvent *event)
 {
-    m_searchEdit->raise();
+//    m_searchEdit->raise();
     m_searchEdit->activateWindow();
 //    QApplication::sendEvent(m_searchEdit,event);
     setCursorWithXEvent();
@@ -116,20 +116,25 @@ void SearchResult::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    m_key = event->key();
+    if (event->key() == Qt::Key_Backspace) {
+        QApplication::sendEvent(m_searchEdit,event);
+        Q_EMIT m_searchEdit->textChanged(m_searchEdit->text());
+        return;
+    }
+
+    m_key = event->nativeVirtualKey();
     QTimer *timer = new QTimer;
     timer->setSingleShot(true);
     connect(timer,&QTimer::timeout,this,[=]{
         Display  *display = XOpenDisplay(NULL);
-        //qint16(event->key())
-        XTestFakeKeyEvent(display, XKeysymToKeycode(display,qint16(m_key)), 1, 10);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display,m_key), 1, 10);
         XFlush(display);
-        XTestFakeKeyEvent(display, XKeysymToKeycode(display,qint16(m_key)), 0, 10);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display,m_key), 0, 10);
         XFlush(display);
         XCloseDisplay(display);
     });
     connect(timer,&QTimer::timeout,timer,&QTimer::deleteLater);
-    timer->start(150);
+    timer->start(200);
 
 //    Q_EMIT m_searchEdit->textChanged(m_searchEdit->text());
 }
@@ -163,6 +168,8 @@ void SearchResult::setCursorWithXEvent()
     xEvent.xbutton.y_root = point.y()* device;
     xEvent.xbutton.display = display;
 
+    XSendEvent(display,this->effectiveWinId(),False,ButtonPressMask,&xEvent);
+    XFlush(display);
     XSendEvent(display,this->effectiveWinId(),False,ButtonReleaseMask,&xEvent);
     XFlush(display);
 }
@@ -245,7 +252,6 @@ void SearchResult::setListviewSearchString(const QString &str)
     m_MusicView->setSearchText(str);
     m_SingerView->setSearchText(str);
     m_AlbumView->setSearchText(str);
-    autoResize();
     m_Count = m_MusicView->rowCount()
               + m_AlbumView->rowCount()
               + m_SingerView->rowCount();
