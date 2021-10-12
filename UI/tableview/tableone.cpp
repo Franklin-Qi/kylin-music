@@ -924,6 +924,14 @@ void TableOne::setHightLightAndSelect()
                     m_model->m_model.item(i,j)->setData(m_model->m_model.item(i,j)->text(),Qt::ToolTipRole);
                     m_model->m_model.item(i,j)->setData(QString(),Qt::StatusTipRole);
                 }
+            } else {
+                for(int j=0; j<4; j++) {
+                    if(WidgetStyle::themeColor == 0) {
+                        m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::black)));
+                    } else if (WidgetStyle::themeColor == 1) {
+                        m_model->m_model.item(i,j)->setForeground(QBrush(QColor(Qt::white)));
+                    }
+                }
             }
             if(heightLightIndex != -1 && nowListName == nowPlayListName) {
                 for (int j=0; j<4; j++) {
