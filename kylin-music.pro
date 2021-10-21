@@ -1,5 +1,5 @@
 QT       += core gui sql widgets
-QT       += dbus x11extras KWindowSystem
+QT       += dbus x11extras KWindowSystem network
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -7,6 +7,8 @@ CONFIG += c++11
 
 INCLUDEPATH += /usr/include/mpv/
 LIBS += -lmpv \
+
+LIBS += -lpeony \
 
 LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 
@@ -30,16 +32,28 @@ schemes.files += \
     data/org.ukui.log4qt.kylin-music.gschema.xml
 schemes.path = /usr/share/glib-2.0/schemas/
 
+simple.files = $$PWD/kylin-music-plugins-simple/build/src/libsimple.so
+simple.path = /usr/share/kylin-music
+
+dict.files +=$$PWD/kylin-music-plugins-simple/build/cppjieba/dict
+dict.path = /usr/bin/
+
+qm_files.files = translations/*.qm
+qm_files.path = /usr/share/kylin-music/translations/
+
 INSTALLS += \
     target  \
     icon    \
     desktop \
-    schemes
+    schemes \
+    simple \
+    dict \
+    qm_files
 
-TRANSLATIONS += ./translations/kylin-music_side.ts
+TRANSLATIONS += ./translations/kylin-music_zh_CN.ts
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gsettings-qt taglib
+PKGCONFIG += gsettings-qt taglib gio-unix-2.0
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -49,12 +63,18 @@ DEPENDPATH += qtsingleapplication
 # 适配窗口管理器圆角阴影
 LIBS +=-lpthread
 LIBS +=-lX11
+# 虚拟键盘按键
+LIBS +=-lXtst
 
 # 解析音频文件
 LIBS += -lavformat
 
+#LIBS += -lsimple
+LIBS += -lsqlite3
+
 SOURCES += \
     UI/base/allpupwindow.cpp \
+    UI/base/labedit.cpp \
     UI/base/mylabel.cpp \
     UI/base/widgetstyle.cpp \
     UI/mainwidget.cpp \
@@ -62,8 +82,13 @@ SOURCES += \
     UI/player/musicslider.cpp \
     UI/player/playbackmodewidget.cpp \
     UI/player/playsongarea.cpp \
+    UI/player/searchedit.cpp \
+    UI/player/searchresult.cpp \
     UI/player/sliderwidget.cpp \
     UI/base/xatom-helper.cpp \
+    UI/search/musicsearchlistdelegate.cpp \
+    UI/search/musicsearchlistmodel.cpp \
+    UI/search/musicsearchlistview.cpp \
     UI/sidebar/mytoolbutton.cpp \
     UI/sidebar/sidebarwidget.cpp \
     UI/tableview/tablebaseview.cpp \
@@ -85,6 +110,7 @@ SOURCES += \
 
 HEADERS += \
     UI/base/allpupwindow.h \
+    UI/base/labedit.h \
     UI/base/mylabel.h \
     UI/base/widgetstyle.h \
     UI/mainwidget.h \
@@ -92,8 +118,13 @@ HEADERS += \
     UI/player/musicslider.h \
     UI/player/playbackmodewidget.h \
     UI/player/playsongarea.h \
+    UI/player/searchedit.h \
+    UI/player/searchresult.h \
     UI/player/sliderwidget.h \
     UI/base/xatom-helper.h \
+    UI/search/musicsearchlistdelegate.h \
+    UI/search/musicsearchlistmodel.h \
+    UI/search/musicsearchlistview.h \
     UI/sidebar/mytoolbutton.h \
     UI/sidebar/sidebarwidget.h \
     UI/tableview/tablebaseview.h \
@@ -122,4 +153,6 @@ RESOURCES += \
 DISTFILES += \
     data/org.kylin-music-data.gschema.xml \
     data/org.ukui.log4qt.kylin-music.gschema.xml \
-    kylin-music.desktop
+    kylin-music.desktop \
+    translations/kylin-music_zh_CN.qm \
+    translations/kylin-music_zh_CN.ts

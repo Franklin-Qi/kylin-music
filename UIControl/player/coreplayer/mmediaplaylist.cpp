@@ -20,7 +20,6 @@ QString MMediaPlaylist::getPlayFileName()
     return m_playerList.at(m_index).toString();
 }
 
-
 int MMediaPlaylist::currentIndex() const
 {
     return m_index;
@@ -59,8 +58,8 @@ void MMediaPlaylist::next()
         }
         break;
     }
-    emit currentIndexChanged(m_index);
-    emit stop();
+    Q_EMIT currentIndexChanged(m_index);
+    Q_EMIT stop();
 }
 
 void MMediaPlaylist::previous()
@@ -87,16 +86,16 @@ void MMediaPlaylist::previous()
         }
         break;
     }
-    emit currentIndexChanged(m_index);
-    emit stop();
+    Q_EMIT currentIndexChanged(m_index);
+    Q_EMIT stop();
 }
 
 void MMediaPlaylist::setCurrentIndex(int index)
 {
     //待设置的数量和设置之前一致则不处理，默认播放第一首除外
-    if (index == m_index && index != 0) {
-        return;
-    }
+//    if (index == m_index && index != 0) {
+//        return;
+//    }
     //异常情况：要设置的媒体位置超过列表总长度
     if (index >= m_playerList.length()) {
         qDebug()<<"指定位置超过列表元素数量";
@@ -107,7 +106,7 @@ void MMediaPlaylist::setCurrentIndex(int index)
         index = -1;
     }
     m_index = index;
-    emit currentIndexChanged(m_index);
+    Q_EMIT currentIndexChanged(m_index);
 }
 
 void MMediaPlaylist::setPlaybackMode(MMediaPlaylist::PlaybackMode mode)
@@ -117,7 +116,7 @@ void MMediaPlaylist::setPlaybackMode(MMediaPlaylist::PlaybackMode mode)
         return;
     }
     m_playbackMode = mode;
-    emit playbackModeChanged(mode);
+    Q_EMIT playbackModeChanged(mode);
 }
 
 int MMediaPlaylist::mediaCount() const
@@ -167,7 +166,23 @@ void MMediaPlaylist::playError()
         }
     }
     //列表中所有媒体的本地文件全部被删除了
-    emit currentIndexChanged(-1);
+    Q_EMIT currentIndexChanged(-1);
+}
+
+void MMediaPlaylist::playErrorMsg(int Damage)
+{
+    if (Damage == -2) {
+        //如果是列表循环则切换下一首
+        if (m_playbackMode == Loop) {
+            next();
+        } else if(m_playbackMode == Random) {
+            m_index = randomIndex();
+            Q_EMIT currentIndexChanged(m_index);
+            Q_EMIT stop();
+        }
+
+        Q_EMIT autoPlay(m_playbackMode);
+    }
 }
 
 void MMediaPlaylist::palyFinish()
@@ -179,9 +194,9 @@ void MMediaPlaylist::palyFinish()
     //如果循环模式不是单曲循环则切换下一首
     if (m_playbackMode != CurrentItemInLoop) {
         next();
-        emit currentIndexChanged(m_index);
+        Q_EMIT currentIndexChanged(m_index);
     }
-    emit autoPlay(m_playbackMode);
+    Q_EMIT autoPlay(m_playbackMode);
 }
 
 MMediaPlaylist::PlaybackMode MMediaPlaylist::playbackMode() const

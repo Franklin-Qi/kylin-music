@@ -44,7 +44,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     // .arg(context.file).arg(context.line).arg(context.function).arg(strDateTime);
 
     // 输出信息至文件中（读写、追加形式）
-    QString dirPath = "/tmp/kylin-calculator/log";
+    QString dirPath = "/tmp/kylin-music/log";
     QDir dir;
     QFile file;
     if (dir.mkpath(dirPath)) {
@@ -93,15 +93,58 @@ int main(int argc, char *argv[])
 //    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon::fromTheme("kylin-music"));
+
+    QTranslator app_trans;
+    QTranslator qt_trans;
     QString locale = QLocale::system().name();
-    QTranslator trans_global, trans_menu;
-    if(locale == "zh_CN"){
-        trans_global.load(":/translations/kylin-music_side.qm");
-        trans_menu.load(":/translations/qt_zh_CN.qm");
-        a.installTranslator(&trans_global);
-        a.installTranslator(&trans_menu);
+
+    QString trans_path;
+    if (QDir("/usr/share/kylin-music/translations").exists()) {
+        trans_path = "/usr/share/kylin-music/translations";
     }
-    qApp->setProperty("noChangeSystemFontSize", true);
+    else {
+        trans_path = qApp->applicationDirPath() + "/translations";
+    }
+    QString qt_trans_path;
+    qt_trans_path = QLibraryInfo::location(QLibraryInfo::TranslationsPath);// /usr/share/qt5/translations
+
+    if (locale == "zh_CN") {
+        if(!app_trans.load("kylin-music_" + locale + ".qm", trans_path))
+            qDebug() << "Load translation file："<< "kylin-music_" + locale + ".qm from" << trans_path << "failed!";
+        else
+            a.installTranslator(&app_trans);
+
+        if(!qt_trans.load("qt_" + locale + ".qm", qt_trans_path))
+            qDebug() << "Load translation file："<< "qt_" + locale + ".qm from" << qt_trans_path << "failed!";
+        else
+            a.installTranslator(&qt_trans);
+    }else if(locale == "bo_CN"){
+        qDebug()<<"藏文";
+        if(!app_trans.load("kylin-music_" + locale + ".qm", trans_path))
+            qDebug() << "Load translation file："<< "kylin-music_" + locale + ".qm from" << trans_path << "failed!";
+        else
+            a.installTranslator(&app_trans);
+
+        if(!qt_trans.load("qt_" + locale + ".qm", qt_trans_path))
+            qDebug() << "Load translation file："<< "qt_" + locale + ".qm from" << qt_trans_path << "failed!";
+        else
+            a.installTranslator(&qt_trans);
+    }
+
+//    QString locale = QLocale::system().name();
+//    QTranslator trans_global, trans_menu;
+//    if(locale == "zh_CN"){
+//        trans_global.load(":/translations/kylin-music_side.qm");
+//        trans_menu.load(":/translations/qt_zh_CN.qm");
+//        a.installTranslator(&trans_global);
+//        a.installTranslator(&trans_menu);
+//    }
+
+//    qApp->setProperty("noChangeSystemFontSize", true);
+
+    QTranslator app_trans_peony;
+    app_trans_peony.load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
+    a.installTranslator(&app_trans_peony);
 #ifndef QT_NO_TRANSLATION
     QString translatorFileName = QLatin1String("qt_");
     translatorFileName += QLocale::system().name();
@@ -173,7 +216,7 @@ int main(int argc, char *argv[])
         }
     }
     Widget w(strList);
-
     w.show();
+    w.creartFinish();
     return a.exec();
 }

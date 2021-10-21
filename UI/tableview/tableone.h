@@ -38,11 +38,12 @@ public:
     explicit TableOne(QString listName,QWidget *parent = nullptr);
     ~TableOne();
 public:
-    MusicListModel *m_model;
+    MusicListModel *m_model = nullptr;
 //    QTableView *tableView;
-    TableBaseView *tableView;
-    QLabel *listTitleLabel;
+    TableBaseView *tableView = nullptr;
+    QLabel *listTitleLabel = nullptr;
     QString nowListName;
+    MusicInfoDialog *infoDialog = nullptr;
     void changeNumber();
     void initTableViewStyle();
     void setHightLightAndSelect();
@@ -55,18 +56,25 @@ public:
 
     void initStyle();
     void addMusicToDatebase(QStringList fileNames);
+public Q_SLOTS:
+    void slotSearchTexts(QString text);
+    void slotSearchReturnPressed(QString listName);
+    void slotLableSetFontSize(int size);
+    void slotFilePath(QString path);
+    void slotSongListBySinger(QString singer);
+    void slotSongListByAlbum(QString album);
 private:
     void initUI();  //初始化ui
     void initConnect();  //信号绑定
     void initRightMenu();  //初始化右键菜单
     void tableViewDoubleClicked();  //双击播放
 
-    static void deleteImage(const QString &savepath);
-    static void _processStart(const QString &cmd , QStringList arguments = QStringList());
-    void processLog();
+//    static void deleteImage(const QString &savepath);
 
     //成功添加多少首歌曲
     void importFinished(int successCount, int failCount, int allCount);
+    //导入失败
+    void importFailed(int successCount, int failCount, int allCount);
 
     void showRightMenu(const QPoint &pos);
 
@@ -77,7 +85,7 @@ private:
 
     void playSongs();
     void showInfo();
-    MusicInfoDialog *infoDialog;
+
     void addToOtherList(QAction *listNameAction);
 
     void addMusicSlot(); // 添加歌曲文件槽函数
@@ -85,30 +93,33 @@ private:
 //    void addMusicToDatebase(QStringList fileNames);
 
 //    void importSongs(QString path);
-    QMenu *m_menu;  //新建一个Menu属性
-    QSqlQueryModel *tableModel;
 
-    QAction * playRow;
-    QAction * removeRow;
-    QAction * removeLocalRow;
-    QAction * showInfoRow;
-    QMenu * addToOtherListMenu;
+    void clearSearchList();
+
+    QMenu *m_menu = nullptr;  //新建一个Menu属性
+    QSqlQueryModel *tableModel = nullptr;
+
+    QAction * playRow = nullptr;
+    QAction * removeRow = nullptr;
+    QAction * removeLocalRow = nullptr;
+    QAction * showInfoRow = nullptr;
+    QMenu * addToOtherListMenu = nullptr;
     QMap<int,QString> getSelectedTaskIdList();
 
-    QMenu *add_menu;
-    QAction *addMusicFileAction;
-    QAction *addDirMusicAction;
+    QMenu *add_menu = nullptr;
+    QAction *addMusicFileAction = nullptr;
+    QAction *addDirMusicAction = nullptr;
 
-    TableViewDelegate *delegate;
+    TableViewDelegate *delegate = nullptr;
 
-    QHBoxLayout *listTitleHBoxLayout;
-    QToolButton *addMusicButton;  //添加歌曲按钮
-    QPushButton *playAllButton;
+    QHBoxLayout *listTitleHBoxLayout = nullptr;
+    QToolButton *addMusicButton = nullptr;  //添加歌曲按钮
+    QPushButton *playAllButton = nullptr;
 
-    QLabel *listTotalNumLabel;
+    QLabel *listTotalNumLabel = nullptr;
     int heightLightIndex = -1;
     QString nowPlayListName;  //后端播放器中正在播放的列表名
-signals:
+Q_SIGNALS:
     void sendPathToPlayer(QString fp);
     void countChanges();
     void hoverIndexChanged(QModelIndex index);
@@ -116,15 +127,16 @@ signals:
 //    void heightIndexChanged(int index);
     void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
     void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
-
-public slots:
+    void signalListSearch();    //取消侧边栏所有按钮的选中状态
+    void signalSongListHigh();  //高亮左侧歌曲列表按钮
+public Q_SLOTS:
     void selectListChanged(QString listname);  //切换歌单
     void playListRenamed(QString oldName,QString newName);  //歌单重命名
     void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 
     void playAll(QString listName);  //播放全部歌曲
     void playAllButtonClicked();
-
+    void slotReturnText(QString text);
 protected:
     void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
@@ -132,20 +144,22 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 private:
-    QWidget *m_musicWidget;
-    QVBoxLayout *m_historyLayout;
-    QWidget *nullPageWidget;
-    QVBoxLayout *nullPageVLayout;
-    QHBoxLayout *nullPageHLayout;
-    QPushButton *n_addMusicButton;
-    QPushButton *n_addDirMusicButton;
-    QLabel *nullPageIconLabel;
-    QLabel *nullPageTextLabel;
+    QWidget *m_musicWidget = nullptr;
+    QVBoxLayout *m_historyLayout = nullptr;
+    QWidget *nullPageWidget = nullptr;
+    QVBoxLayout *nullPageVLayout = nullptr;
+    QHBoxLayout *nullPageHLayout = nullptr;
+    QPushButton *n_addMusicButton = nullptr;
+    QPushButton *n_addDirMusicButton = nullptr;
+    QLabel *nullPageIconLabel = nullptr;
+    QLabel *nullPageTextLabel = nullptr;
 
-    QHeaderView *horizonHeader;
-    QWidget *titleWid;
+    QHeaderView *horizonHeader = nullptr;
+    QWidget *titleWid = nullptr;
 
     int showScrollbarNumber = 10;
+    QString m_text;
+    QMap<int,QString> m_map;
 };
 
 #endif // TableOne_H

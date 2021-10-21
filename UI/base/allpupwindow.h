@@ -36,31 +36,33 @@
 #include <QMessageBox>
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/mylabel.h"
+#include "UI/base/labedit.h"
 
-class AllPupWindow :public QWidget
+class AllPupWindow :public QDialog
 {
     Q_OBJECT
 public:
     explicit AllPupWindow(QWidget *parent = nullptr);
 
-    QDialog     *pupDialog;
-    QPushButton *confirmBtn;
-    QPushButton *cancelBtn;
-    QToolButton *closeBtn;
-    QLabel      *titleLab;
-    QLineEdit   *enterLineEdit;
-    QVBoxLayout *testLayout;
-    QHBoxLayout *titleLayout;
-    QHBoxLayout *btnLayout;
+    QPushButton *confirmBtn = nullptr;
+    QPushButton *cancelBtn = nullptr;
+    QToolButton *closeBtn = nullptr;
+    QLabel      *titleLab = nullptr;
+    QLabel      *tips = nullptr;
+    LabEdit   *enterLineEdit = nullptr;
+    QVBoxLayout *testLayout = nullptr;
+    QHBoxLayout *titleLayout = nullptr;
+    QHBoxLayout *btnLayout = nullptr;
 
-    QStackedWidget *stackWid;
+    QStackedWidget *stackWid = nullptr;
     void dlgcolor();
 
 
 
-public slots:
+public Q_SLOTS:
     void closeDialog();
-
+    void slotTextChanged(QString text);
+    void slotLableSetFontSize(int size);
 private:
     void inpupdialog();
 
@@ -73,23 +75,26 @@ public:
     explicit MusicInfoDialog(musicDataStruct date);
     ~MusicInfoDialog();
     musicDataStruct musicDate;
+public Q_SLOTS:
+    //字体
+    void slotLableSetFontSize(int size);
 private:
-    MyLabel *songNameLabel;
-    MyLabel *singerLabel;
-    MyLabel *albumLabel;
-    MyLabel *filePathLabel;
-    MyLabel *fileTypeLabel;
-    MyLabel *fileTimeLabel;
-    MyLabel *fileSizeLable;
+    MyLabel *songNameLabel = nullptr;
+    MyLabel *singerLabel = nullptr;
+    MyLabel *albumLabel = nullptr;
+    MyLabel *filePathLabel = nullptr;
+    MyLabel *fileTypeLabel = nullptr;
+    MyLabel *fileTimeLabel = nullptr;
+    MyLabel *fileSizeLable = nullptr;
 
-    QLabel *musicInfoLabel;
+    QLabel *musicInfoLabel = nullptr;
 
-    QVBoxLayout *mainVLayout;
+    QVBoxLayout *mainVLayout = nullptr;
 
-    QHBoxLayout *buttonLayout;
-    QWidget *btnWidget;
-    QPushButton *cancelBtn;
-    QPushButton *confirmBtn;
+    QHBoxLayout *buttonLayout = nullptr;
+    QWidget *btnWidget = nullptr;
+    QPushButton *cancelBtn = nullptr;
+    QPushButton *confirmBtn = nullptr;
 
     void initStyle();
 };

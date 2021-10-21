@@ -16,15 +16,26 @@ class TableBaseView : public QTableView
 public:
     explicit TableBaseView(QTableView *parent = nullptr);
     ~TableBaseView();
-    MusicListModel *m_model;
+    MusicListModel *m_model = nullptr;
+    QString getSearchText()const;
+    QString getSearchListName()const;
+    QString getNowPlayListName()const;
+public:
+    void setSearchText(QString text);
+    void setSearchListName(QString listName);
+public Q_SLOTS:
+    void setNowPlayListName(QString listName);
 protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     void hoverIndexChanged(QModelIndex index);
     void leaveFromItem();
 private:
-    TableViewDelegate *m_delegate;
+    TableViewDelegate *m_delegate = nullptr;
+    QString m_searchText;
+    QString m_searchListName;
+    QString m_nowListName = "";
 private:
     void initStyle();
 };

@@ -59,8 +59,8 @@ void MyLabel::elideText()
         QString showText = fm.elidedText(m_fullText, Qt::ElideRight, this->width());
         QLabel::setText(showText);
         if (showText != m_fullText) {
-            QString str = dealMessage(m_fullText);
-            this->setToolTip(str);
+//            QString str = dealMessage(m_fullText);
+            this->setToolTip(m_fullText);
         } else {
             this->setToolTip("");
         }
@@ -70,20 +70,20 @@ void MyLabel::elideText()
     }
 }
 
-QString MyLabel::dealMessage(QString msg)
-{
-    if(msg.size() > fontSize)
-    {
-        QString str;
-        int time = msg.size()/fontSize;
-        for(int i = 0; i <= time-1; i++)
-        {
-            str = QString(str + msg.mid(i*fontSize,fontSize)+"\r\n");
-        }
-        str = QString(str+msg.mid(time*fontSize,fontSize));
-        return str;
-    }
-    else
-        return msg;
-}
+//QString MyLabel::dealMessage(QString msg)
+//{
+//    if(msg.size() > fontSize)
+//    {
+//        QString str;
+//        int time = msg.size()/fontSize;
+//        for(int i = 0; i <= time-1; i++)
+//        {
+//            str = QString(str + msg.mid(i*fontSize,fontSize)+"\r\n");
+//        }
+//        str = QString(str+msg.mid(time*fontSize,fontSize));
+//        return str;
+//    }
+//    else
+//        return msg;
+//}
 

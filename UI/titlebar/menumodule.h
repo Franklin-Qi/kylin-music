@@ -35,7 +35,7 @@ public:
         themeLightOnly = 2
     } themeStatus;
 
-signals:
+Q_SIGNALS:
     void menuModuleClose();
     void menuModuleSetThemeStyle(QString);
 public:
@@ -58,8 +58,9 @@ private:
     QWidget *aboutWindow = nullptr;
     QGSettings *m_pGsettingThemeData = nullptr;
     QGSettings *m_pGsettingThemeStatus = nullptr;
-public slots:
+public Q_SLOTS:
     void dealSystemGsettingChange(const QString);
+    void slotLableSetFontSize(int size);
 private:
     void init();
     QHBoxLayout* initTitleBar(); //关于窗口标题栏初始化

@@ -1,6 +1,9 @@
 #include "menumodule.h"
 #include "UI/mainwidget.h"
 #include "UI/base/xatom-helper.h"
+
+#define PT_14 14
+
 menuModule::menuModule(QWidget *parent = nullptr) : QWidget(parent)
 {
     init();
@@ -13,6 +16,8 @@ void menuModule::init(){
 
 void menuModule::initAction(){
     aboutWindow = new QWidget();
+    aboutWindow->setAutoFillBackground(true);
+    aboutWindow->setBackgroundRole(QPalette::Base);
     titleText = new QLabel();
     bodyAppName = new QLabel();
     bodyAppVersion = new QLabel();
@@ -72,14 +77,14 @@ void menuModule::initAction(){
     //键盘F1响应唤出用户手册绑定
     connect(Widget::mutual,&Widget::signalShowGuide,this,&menuModule::helpAction);
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    m_menu->setFont(sizeFont);
-    bodyAppName->setFont(sizeFont);
-    titleText->setFont(sizeFont);
-    bodyAppVersion->setFont(sizeFont);
-    bodyAppDescribe->setFont(sizeFont);
-    bodySupport->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    m_menu->setFont(sizeFont);
+//    bodyAppName->setFont(sizeFont);
+//    titleText->setFont(sizeFont);
+//    bodyAppVersion->setFont(sizeFont);
+//    bodyAppDescribe->setFont(sizeFont);
+//    bodySupport->setFont(sizeFont);
 
 }
 
@@ -133,7 +138,7 @@ void menuModule::triggerMenu(QAction *act){
 
     QString str = act->text();
     if(tr("Quit") == str){
-        emit menuModuleClose();
+        Q_EMIT menuModuleClose();
     }else if(tr("About") == str){
         aboutAction();
     }else if(tr("Help") == str){
@@ -195,7 +200,7 @@ void menuModule::initAbout(){
     hints.functions = MWM_FUNC_ALL;
     hints.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(aboutWindow->winId(), hints);
-    aboutWindow->setFixedSize(420,380);
+    aboutWindow->setFixedSize(420,390);
     QVBoxLayout *mainlyt = new QVBoxLayout();
     QHBoxLayout *titleLyt = initTitleBar();
     QVBoxLayout *bodylyt = initBody();
@@ -246,23 +251,31 @@ QHBoxLayout* menuModule::initTitleBar(){
     return hlyt;
 }
 
+void menuModule::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_14;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    bodyAppName->setFont(font);
+}
+
 QVBoxLayout* menuModule::initBody(){
     QPushButton* bodyIcon = new QPushButton();
 //    bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
 //    bodyIcon->setStyleSheet("font-size:14px;");
 //    bodyIcon->setScaledContents(true);
-    bodyIcon->setFixedSize(96,96);
-    bodyIcon->setIconSize(QSize(96,96));
+    bodyIcon->setFixedSize(96,94);
+    bodyIcon->setIconSize(QSize(96,94));
     bodyIcon->setIcon(QIcon::fromTheme("kylin-music"));
     bodyIcon->setStyleSheet("QPushButton{border:0px;background:transparent;}"
                             "QPushButton::hover{border:0px;background:transparent;}"
                             "QPushButton::pressed{border:0px;background:transparent;}");
 
-    bodyAppDescribe->setText(tr("Music Player is a kind of multimedia "
-                                "player software for playing various music files."
-                                "It covers a variety of music formats play tool,"
-                                "easy to operate."));
-    bodyAppDescribe->setFixedWidth(356);
+    bodyAppDescribe->setText(tr("Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple."));
+    bodyAppDescribe->setFixedSize(380, 86);
+//    bodyAppDescribe->setFixedHeight();
 //    bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
 //    bodyAppName->setFixedHeight(28);
@@ -281,19 +294,20 @@ QVBoxLayout* menuModule::initBody(){
     bodySupport->setFixedHeight(30);
 //    bodySupport->setStyleSheet("font-size:14px;");
     QVBoxLayout *vlyt = new QVBoxLayout;
-    vlyt->setMargin(0);
-    vlyt->setSpacing(0);
+//    vlyt->setMargin(0);
+//    vlyt->setSpacing(0);
 //    vlyt->addSpacing(20);
     vlyt->addWidget(bodyIcon,0,Qt::AlignHCenter);
-    vlyt->addSpacing(16);
+    vlyt->addSpacing(5);
     vlyt->addWidget(bodyAppName,0,Qt::AlignHCenter);
-    vlyt->addSpacing(12);
+    vlyt->addSpacing(5);
     vlyt->addWidget(bodyAppVersion,0,Qt::AlignHCenter);
-    vlyt->addSpacing(12);
-    vlyt->addWidget(bodyAppDescribe,0,Qt::AlignHCenter);
-    vlyt->addSpacing(24);
-    vlyt->addWidget(bodySupport,0,Qt::AlignHCenter);
-    vlyt->addStretch();
+    vlyt->addSpacing(5);
+    vlyt->addWidget(bodyAppDescribe,0,Qt::AlignLeft);
+    vlyt->addSpacing(5);
+    vlyt->addWidget(bodySupport,0,Qt::AlignLeft);
+//    vlyt->addStretch();
+    vlyt->setContentsMargins(20,10,20,10);
     return vlyt;
 }
 
@@ -325,10 +339,7 @@ void menuModule::refreshThemeBySystemConf(){
 }
 
 void menuModule::setThemeDark(){
-    aboutWindow->setStyleSheet(".QWidget{background-color:rgba(61,61,65,1);}");
-    this->setStyleSheet("QLabel{color:rgba(255,255,255,1);}");
-    titleText->setStyleSheet("color:rgba(255,255,255,1);");
-    emit menuModuleSetThemeStyle("dark-theme");
+    Q_EMIT menuModuleSetThemeStyle("dark-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
                          "style=\"color:rgba(225,225,225,1)\">"
@@ -336,8 +347,7 @@ void menuModule::setThemeDark(){
 }
 
 void menuModule::setThemeLight(){
-    aboutWindow->setStyleSheet(".QWidget{background-color:rgba(255,255,255,1);}");
-    emit menuModuleSetThemeStyle("light-theme");
+    Q_EMIT menuModuleSetThemeStyle("light-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
                          "style=\"color:rgba(0,0,0,1)\">"

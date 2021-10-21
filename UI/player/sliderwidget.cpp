@@ -88,7 +88,7 @@ void SliderWidget::initColor()
     if(WidgetStyle::themeColor == 1)
     {
         vSlider->setStyleSheet(
-                               "QSlider::groove:vertical {height: 70px;width: 4px;\
+                               "QSlider::groove:vertical {width: 4px;\
                                                        border: 1px solid #4A708B;\
                                                        padding-left:-1px;\
                                                        padding-right:-1px;\
@@ -115,7 +115,7 @@ void SliderWidget::initColor()
     else if(WidgetStyle::themeColor == 0)
     {
         vSlider->setStyleSheet(
-                               "QSlider::groove:vertical {height: 70px;width: 4px;\
+                               "QSlider::groove:vertical {width: 4px;\
                                                        border: 1px solid #4A708B;\
                                                        padding-left:-1px;\
                                                        padding-right:-1px;\

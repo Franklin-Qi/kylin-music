@@ -1,4 +1,4 @@
-#ifndef WIDGET_H
+﻿#ifndef WIDGET_H
 #define WIDGET_H
 
 #include <QWidget>
@@ -46,7 +46,7 @@ public:
 public:
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
-public slots:
+public Q_SLOTS:
     //mini窗口
     void slotShowMiniWidget();
     //关闭主窗体
@@ -69,7 +69,15 @@ public slots:
     int kylin_music_play_request(QString cmd1, QString cmd2 = "", QString cmd3 = "");
     //判断当前点击的按钮是否为歌曲列表（歌单名）
     void slotText(QString btnText);
-private slots:
+    //
+    void slotReturnPressed();
+    //构造完成之后的流程事件函数
+    void creartFinish();
+    //构造完成后需要弹窗
+    void setCreatFinishMsg(QString msg);
+    //如果正在播放，阻止锁屏
+    void slotStateChanged(playController::PlayState state);
+private Q_SLOTS:
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
     void client_get(QString str);
@@ -79,7 +87,7 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 //    void mousePressEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     //空格键控制播放暂停
     void signalSpaceKey();
 private:
@@ -101,16 +109,19 @@ private:
     //初始化音乐
     void initMusic();
 private:
-    QVBoxLayout *mainVBoxLayout;
-    QHBoxLayout *mainHBoxLayout;
-    TableOne *musicListTable;
-    TableHistory *historyListTable;
+    QDBusInterface *interface;
+    quint32 m_inhibitValue = 0;             // 阻止锁屏cookie
+
+    QVBoxLayout *mainVBoxLayout = nullptr;
+    QHBoxLayout *mainHBoxLayout = nullptr;
+    TableOne *musicListTable = nullptr;
+    TableHistory *historyListTable = nullptr;
     QGSettings *themeData = nullptr;
-    SideBarWidget *sideBarWid;
-    PlaySongArea *playSongArea;
-    TitleBar *m_titleBar;
-    miniWidget *m_miniWidget;
-    QWidget *rightVWidget;
+    SideBarWidget *sideBarWid = nullptr;
+    PlaySongArea *playSongArea = nullptr;
+    TitleBar *m_titleBar = nullptr;
+    miniWidget *m_miniWidget = nullptr;
+    QWidget *rightVWidget = nullptr;
 
     bool Minimize = false;       //最大化和还原俩个状态
 
@@ -123,10 +134,15 @@ private:
     QString m_playTitle;
     //避免初始化流程中触发点击事件
     bool m_initFinish = false;
+    //主界面初始化完成后执行的操作
+    enum CreatFinishEnum{NONE=0,MESSAGE,OTHER} m_creatFinishEnum = NONE;
+    QString m_creatFinishMsg;
 
-signals:
+Q_SIGNALS:
     void signalShowGuide();
     //刷新歌曲列表界面
     void signalRefreshList(QString listName);
+    //字体
+    void signalSetFontSize(int);
 };
 #endif // WIDGET_H

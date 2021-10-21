@@ -38,15 +38,16 @@ public:
     MMediaContent media(int index) const; //获取列表中特定位置的媒体
     bool clear(); //清空列表
     bool removeMedia(int pos); //移出特定位置的歌曲
-public slots:
+public Q_SLOTS:
     void palyFinish(); //播放完成槽函数
     void playError(); //播放异常槽函数
+    void playErrorMsg(int Damage); //播放错误异常
 private:
     int randomIndex(); //生成随机数
     QList<QUrl> m_playerList; //实际的播放队列
     int m_index = 0; //当前播放的歌曲位置
     PlaybackMode m_playbackMode = Loop; //当前列表的循环模式
-signals:
+Q_SIGNALS:
     void currentIndexChanged(int); //媒体切换信号
     void playbackModeChanged(MMediaPlaylist::PlaybackMode mode); //播放循环模式切换信号
     void autoPlay(MMediaPlaylist::PlaybackMode playbackMode); //自动播放下一首信号

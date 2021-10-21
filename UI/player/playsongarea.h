@@ -25,19 +25,19 @@ class PlaySongArea : public QWidget
 public:
     explicit PlaySongArea(QWidget *parent = nullptr);
 public:
-    static PlaySongArea& getInstance()
-    {
-        static PlaySongArea instance;
-        return instance;
-    }
+//    static PlaySongArea& getInstance()
+//    {
+//        static PlaySongArea instance;
+//        return instance;
+//    }
 public:
      void playcolor();
 public:
-      SliderWidget *m_volSliderWid;
-      PlayBackModeWidget *m_playBackModeWid;
+      SliderWidget *m_volSliderWid = nullptr;
+      PlayBackModeWidget *m_playBackModeWid = nullptr;
       //播放列表
-      QPushButton *listBtn;
-signals:
+      QPushButton *listBtn = nullptr;
+Q_SIGNALS:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
@@ -51,7 +51,7 @@ signals:
 //    void signalAddFromFavButton(QString listName);
 //    //按钮从我喜欢删除刷新界面
 //    void signalDelFromFavButton(QString listName);
-public slots:
+public Q_SLOTS:
     //上一首
     void slotPrevious();
     //播放/暂停
@@ -72,6 +72,10 @@ public slots:
     void volumeReduce();
     //改变音量
     void slotVolumeChanged(int values);
+    //系统音乐音量改变
+    void slotVolume(int volume);
+    //系统音乐音量是否静音（ mute = true 静音 ）
+    void slotMute(bool mute);
     //我喜欢按钮
     void slotFav();
     //改变播放模式弹窗
@@ -100,9 +104,12 @@ public slots:
 
     //没有歌曲在播放
     void slotNotPlaying();
-
+    //设置进度条归 0
+    void slotSetValue();
     //播放历史按钮选中状态改变
     void slotHistoryBtnChecked(bool checked);
+    //字体
+    void slotLableSetFontSize(int size);
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 private:
@@ -118,42 +125,42 @@ private:
     void playMeta();
 private:
 
-    QHBoxLayout *m_mainLayout;
+    QHBoxLayout *m_mainLayout = nullptr;
     //上一首
-    QPushButton *preBtn;
+    QPushButton *preBtn = nullptr;
     //播放/暂停
-    QPushButton *playBtn;
+    QPushButton *playBtn = nullptr;
     //下一首
-    QPushButton *nextBtn;
+    QPushButton *nextBtn = nullptr;
     //音量
-    QPushButton *volumeBtn;
+    QPushButton *volumeBtn = nullptr;
     //我喜欢
-    QPushButton *favBtn;
+    QPushButton *favBtn = nullptr;
     //播放模式
     //QPushButton *playModeBtn;
-    QToolButton *playModeBtn;
+    QToolButton *playModeBtn = nullptr;
     //歌词
-    QPushButton *lyricBtn;
+    QPushButton *lyricBtn = nullptr;
 
     //封面
-    QLabel *coverPhotoLabel;
+    QLabel *coverPhotoLabel = nullptr;
     //正在播放
-    MyLabel *playingLabel;
+    MyLabel *playingLabel = nullptr;
     //时长
-    QLabel *timeLabel;
+    QLabel *timeLabel = nullptr;
     //播放滑动条
-    MusicSlider *hSlider;
+    MusicSlider *hSlider = nullptr;
     //保存库解析总时间
-    QString m_time;
+    QString m_time = nullptr;
     //路径
-    QString filePath;
+    QString filePath = nullptr;
     //歌单名
-    QString listName;
+    QString listName = nullptr;
     //播放模式菜单
-    QMenu *m_playMode;
-    QAction *loopAct;
-    QAction *randomAct;
-    QAction *currentItemInLoopAct;
+    QMenu *m_playMode = nullptr;
+    QAction *loopAct = nullptr;
+    QAction *randomAct = nullptr;
+    QAction *currentItemInLoopAct = nullptr;
 };
 
 #endif // PLAYSONGAREA_H

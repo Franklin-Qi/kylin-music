@@ -1,6 +1,8 @@
 #include "tablehistory.h"
 #include "UI/mainwidget.h"
 
+#define PT_15 15
+
 TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 {
     initSetModel();
@@ -13,12 +15,16 @@ TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 
 void TableHistory::initSetModel()
 {
+    //禁用界面拖拽
+    this->setProperty("useStyleWindowManager", false);
     mainVLayout = new QVBoxLayout();
     m_tableHistory = new TableBaseView;
     m_tableHistory->setObjectName("m_tableHistory");
 
     m_tableHistory->setContextMenuPolicy(Qt::CustomContextMenu);
     m_tableHistory->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_tableHistory->setShowGrid(false);
+    m_tableHistory->verticalHeader()->setDefaultSectionSize(40);
     m_model = new MusicListModel;
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
@@ -26,7 +32,7 @@ void TableHistory::initSetModel()
     m_model->setView(*m_tableHistory);
 
     historyTitileLabel = new QLabel(this);
-    historyTitileLabel->setText(tr("PlayList"));
+    historyTitileLabel->setText(tr("History"));
     listCountLabel = new QLabel(this);
     historyTitileWidget = new QWidget(this);
     historyTitileWidget->setFixedHeight(64);
@@ -41,7 +47,7 @@ void TableHistory::initSetModel()
     titleHBoxLayout->addWidget(historyTitileLabel,0,Qt::AlignLeft);
     titleHBoxLayout->addWidget(listCountLabel,1,Qt::AlignBottom);
     titleHBoxLayout->addWidget(deleteAllBtn,Qt::AlignRight);
-    titleHBoxLayout->setContentsMargins(16,22,16,12);
+    titleHBoxLayout->setContentsMargins(16,16,16,12);
 
     nullPageWidget = new QWidget(this);
     nullIconLabel = new QLabel(this);
@@ -81,14 +87,23 @@ void TableHistory::initStyle()
 
 
     m_tableHistory->setStyleSheet("#m_tableHistory{border:none;}");
-    historyTitileLabel->setStyleSheet("height:20px;"
-                                 "font-size:20px;\
+    historyTitileLabel->setStyleSheet("height:20px;\
                                  font-weight: 600;\
                                  line-height: 20px;");
 
     listCountLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
-                                  line-height: 14px;font-size:14px;");
+                                  line-height: 14px;");
     deleteAllBtn->setStyleSheet("color:#8F9399;background:transparent;");
+}
+
+void TableHistory::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_15;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    historyTitileLabel->setFont(font);
 }
 
 void TableHistory::deleteAllClicked()
@@ -122,7 +137,7 @@ void TableHistory::slotPlayIndexChanged(int index, QString listname)
     if(listname == HISTORY) {
         nowPlayListName = HISTORY;
         nowPlayIndex = index;
-        refreshHistoryTable();
+        noRefreshHistory();
     }
     else {
         nowPlayListName = listname;
@@ -144,7 +159,7 @@ void TableHistory::slotPlayPathChanged(QString songPath)
     else if(songPath == "")
     {
         nowPlayIndex = -1;
-        refreshHistoryTable();
+        noRefreshHistory();
     }
     else
     {
@@ -164,17 +179,19 @@ bool TableHistory::nativeEvent(const QByteArray &eventType, void *message, long 
     switch (event->response_type & ~0x80)
     {
         case XCB_FOCUS_OUT:
+            // -playHistoryPosWidth (负数原因：因为计算按钮的右下角点)
             QRect rect(playHistoryPosX, playHistoryPosY, -playHistoryPosWidth, playHistoryPosHeight);
-            if(rect.contains(QCursor::pos(), false))
-            {
-                return 0;
+            if(rect.contains(QCursor::pos(), false)) {
+                return false;
             }
-            else
-            {
-                this->hide();
-                emit signalHistoryBtnChecked(false);
-                break;
+
+            if (this->geometry().contains(QCursor::pos(), false)) {
+                return false;
             }
+
+            this->hide();
+            Q_EMIT signalHistoryBtnChecked(false);
+            break;
     }
     return false;
 }
@@ -191,8 +208,6 @@ void TableHistory::initTableStyle()
     m_tableHistory->setAlternatingRowColors(false);
 
 }
-
-
 
 void TableHistory::initConnect()
 {
@@ -223,7 +238,7 @@ void TableHistory::showHistroryPlayList()
 void TableHistory::changeNumber()
 {
     int num = m_model->count();
-    listCountLabel->setText(tr("Total ") + QString::number(num) + tr(" songs"));
+    listCountLabel->setText(QString::number(num) + tr(" songs"));
     if(num == 0) {
         nullPageWidget->show();
         m_tableHistory->hide();
@@ -239,6 +254,12 @@ void TableHistory::refreshHistoryTable()
     QList<musicDataStruct> resList;
     g_db->getSongInfoListFromHistoryMusic(resList);
     m_model->add(resList);
+    changeNumber();
+    initTableStyle();
+    setHighlight(nowPlayIndex);
+}
+void TableHistory::noRefreshHistory()
+{
     changeNumber();
     initTableStyle();
     setHighlight(nowPlayIndex);
@@ -276,7 +297,7 @@ void TableHistory::playSongs()
     pathList = m_model->getPathList(nowListName);
     playController::getInstance().setCurPlaylist(nowListName,pathList);
     playController::getInstance().play(nowListName,index);
-    emit signalHistoryPlaying();
+    Q_EMIT signalHistoryPlaying();
 }
 void TableHistory::deleteSongs()
 {

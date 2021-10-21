@@ -14,7 +14,7 @@ MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
     m_musicType << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r"
                 << "*.mka" << "*.mmf" << "*.mp2" << "*.mp4" << "*.mpa" << "*.wv"
-                << "*.voc" << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac"
+                << "*.mp3" << "*.ogg" << "*.wma" << "*.amr" << "*.flac"
                 << "*.wav" << "*.ape" << "*.m4a" << "*.ac3" << "*.aac";
 }
 
@@ -26,6 +26,7 @@ QStringList MusicFileInformation::getMusicType()
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
     int count = 0;
+    int failCount = 0;
     resList.clear();
 
     for(auto &filepath : addFile)
@@ -39,6 +40,11 @@ void MusicFileInformation::addFile(const QStringList &addFile)
         {
             continue;
         }
+        //过滤U盘路径
+//        if(filepath.startsWith("/media/"))
+//        {
+//            continue;
+//        }
         QFileInfo fileInfo(filepath);
         if(fileInfo.isDir())
         {
@@ -60,6 +66,10 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                         resList.append(musicdataStruct);
                     }
                 }
+                else
+                {
+                    failCount++;
+                }
             }
         }
         else if(fileInfo.isFile())
@@ -77,9 +87,14 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                     resList.append(musicdataStruct);
                 }
             }
+            else
+            {
+                failCount++;
+            }
         }
     }
     musicCount = count;
+    m_failCount = failCount;
 //    resList.clear();
 //    if(!addFile.isEmpty())
 //    {
@@ -114,6 +129,11 @@ void MusicFileInformation::addFile(const QStringList &addFile)
 int MusicFileInformation::getCount()
 {
     return musicCount;
+}
+
+int MusicFileInformation::getFailCount()
+{
+    return m_failCount;
 }
 
 QString MusicFileInformation::filterTextCode(QString str)
@@ -451,7 +471,7 @@ void MusicFileInformation::durationChange(qint64 duration)
     }
     dur = duration;
     success = true;
-    emit durations();
+    Q_EMIT durations();
 }
 
 int MusicFileInformation::findIndexFromPlayList(QString listname,QString filepath)

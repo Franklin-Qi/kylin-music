@@ -3,6 +3,7 @@
 #include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
 #define VOLUME 5
+#define PT_9 9
 
 PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
 {
@@ -166,7 +167,7 @@ void PlaySongArea::initWidget()
     coverPhotoLabel->setFixedSize(40,40);
 
     playingLabel = new MyLabel(this);
-    playingLabel->setFixedHeight(20);
+    playingLabel->setFixedHeight(28);
 //    playingLabel->setText(tr("Music Player"));
 
     timeLabel = new QLabel(this);
@@ -191,11 +192,11 @@ void PlaySongArea::initWidget()
     QHBoxLayout *leftLayout = new QHBoxLayout(letfWid);
 
     QWidget *vWidget = new QWidget(letfWid);
-    vWidget->setFixedHeight(40);
+    vWidget->setFixedHeight(44);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addStretch();
     vLayout->addWidget(playingLabel,0,Qt::AlignVCenter);
-    vLayout->addSpacing(8);
+//    vLayout->addSpacing(8);
     vLayout->addWidget(timeLabel,0,Qt::AlignVCenter);
     vLayout->addStretch();
     vLayout->setContentsMargins(8,3,0,3);
@@ -263,10 +264,20 @@ void PlaySongArea::initWidget()
 
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    playingLabel->setFont(sizeFont);
-    timeLabel->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    playingLabel->setFont(sizeFont);
+//    timeLabel->setFont(sizeFont);
+}
+
+void PlaySongArea::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_9;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    timeLabel->setFont(font);
 }
 
 void PlaySongArea::initConnect()
@@ -297,6 +308,9 @@ void PlaySongArea::initConnect()
     connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
     connect(&playController::getInstance(),&playController::signalNotPlaying,this,&PlaySongArea::slotNotPlaying);
+    connect(&playController::getInstance(),&playController::signalSetValue,this,&PlaySongArea::slotSetValue);
+    connect(&playController::getInstance(),&playController::signalVolume,this,&PlaySongArea::slotVolume);
+    connect(&playController::getInstance(),&playController::signalMute,this,&PlaySongArea::slotMute);
 }
 
 void PlaySongArea::slotVolumeChanged(int values)
@@ -351,6 +365,18 @@ void PlaySongArea::slotVolSliderWidget()
     }
 }
 
+void PlaySongArea::slotVolume(int volume)
+{
+    m_volSliderWid->vSlider->setValue(volume);
+}
+
+void PlaySongArea::slotMute(bool mute)
+{
+    if (mute) {
+        volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
+    }
+}
+
 void PlaySongArea::slotText(QString btnText)
 {
     listName = btnText;
@@ -365,7 +391,7 @@ void PlaySongArea::slotFav()
         int ret = g_db->delMusicFromPlayList(filePath,FAV);
         if(ref == DB_OP_SUCC)
         {
-//            emit signalAddFromFavButton("我喜欢");
+//            Q_EMIT signalAddFromFavButton("我喜欢");
             //根据歌单名title值查询对应歌单列表
 //            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
             if(ret == DB_OP_SUCC)
@@ -378,7 +404,7 @@ void PlaySongArea::slotFav()
                         //刷新我喜欢界面
                         if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav(FAV);
+                            Q_EMIT signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -392,13 +418,13 @@ void PlaySongArea::slotFav()
         if(ref == DB_OP_SUCC)
         {
             playController::getInstance().addSongToCurList(FAV, filePath);
-//            emit signalDelFromFavButton("我喜欢");
+//            Q_EMIT signalDelFromFavButton("我喜欢");
             if(listName == tr("I Love"))
             {
-                emit signalRefreshFav(FAV);
+                Q_EMIT signalRefreshFav(FAV);
             }
         }
-//        emit signalRefreshFav("我喜欢");
+//        Q_EMIT signalRefreshFav("我喜欢");
     }
     slotFavExixts();
 //    if(favBtn->isVisible())
@@ -496,17 +522,18 @@ void PlaySongArea::setPlayMode(int playModel)
 
 void PlaySongArea::slotSongInfo(QString path)
 {
-    filePath = path.remove("file://");
-
     musicDataStruct musicStruct;
-    g_db->getSongInfoFromDB(filePath, musicStruct);
+    if(!path.isEmpty()) {
+        filePath = path.remove("file://");
+        g_db->getSongInfoFromDB(filePath, musicStruct);
+    }
     //使用库解析总时间
     m_time = musicStruct.time;
     if(musicStruct.title == "")
     {
         playingLabel->setText(tr("Music Player"));
         coverPhotoLabel->setPixmap(QIcon(":/img/fengmian.png").pixmap(QSize(40,40)));
-        emit signalPlayingLab(tr("Music Player"));
+        Q_EMIT signalPlayingLab(tr("Music Player"));
     }
     else
     {
@@ -514,7 +541,7 @@ void PlaySongArea::slotSongInfo(QString path)
         playingLabel->setText(musicStruct.title);
         QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
         setCoverPhotoPixmap(pix);
-        emit signalPlayingLab(musicStruct.title);
+        Q_EMIT signalPlayingLab(musicStruct.title);
     }
     slotFavExixts();
 }
@@ -575,12 +602,12 @@ void PlaySongArea::slotPositionChanged(qint64 position)
     if(m_time == "")
     {
         timeLabel->setText("00:00/00:00");
-        emit signalTimeLab("00:00/00:00");
+        Q_EMIT signalTimeLab("00:00/00:00");
     }
     else
     {
         timeLabel->setText(length);
-        emit signalTimeLab(length);
+        Q_EMIT signalTimeLab(length);
     }
 
     if(hSlider->signalsBlocked())
@@ -600,8 +627,14 @@ void PlaySongArea::slotNotPlaying()
     hSlider->isPlaying(false);
     //禁用
     hSlider->setDisabled(true);
+    hSlider->setValue(0);
     playingLabel->setText(tr("Music Player"));
     timeLabel->setText("00:00/00:00");
+}
+
+void PlaySongArea::slotSetValue()
+{
+    hSlider->setValue(0);
 }
 
 void PlaySongArea::slotDurationChanged(qint64 duration)
@@ -758,7 +791,7 @@ void PlaySongArea::slotNext()
 
 void PlaySongArea::listBtnClicked()
 {
-    emit showHistoryListBtnClicked();
+    Q_EMIT showHistoryListBtnClicked();
 }
 
 void PlaySongArea::slotFavExixts()
@@ -771,7 +804,7 @@ void PlaySongArea::slotFavExixts()
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void PlaySongArea::slotFavExixtsDark()
@@ -786,7 +819,7 @@ void PlaySongArea::slotFavExixtsDark()
         favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 void PlaySongArea::slotHistoryBtnChecked(bool checked)
 {
@@ -879,7 +912,7 @@ void PlaySongArea::playcolor()
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
-        playingLabel->setStyleSheet("font-size:14px;color:#F9F9F9;line-height:14px;");
+        playingLabel->setStyleSheet("color:#F9F9F9;line-height:14px;");
 
         hSlider->initStyle();
     }
@@ -924,9 +957,9 @@ void PlaySongArea::playcolor()
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
-        playingLabel->setStyleSheet("line-height:14px;color:#303133;font-size:14px;");
+        playingLabel->setStyleSheet("line-height:14px;color:#303133;");
 
-        timeLabel->setStyleSheet("line-height:12px;color:#8F9399;font-size:12px;");
+        timeLabel->setStyleSheet("line-height:12px;color:#8F9399;");
 
         hSlider->initStyle();
 
