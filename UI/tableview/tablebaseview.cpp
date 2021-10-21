@@ -5,9 +5,9 @@
 TableBaseView::TableBaseView(QTableView *parent)
 {
     m_delegate = new TableViewDelegate();
+    setItemDelegate(m_delegate);
     connect(this,&TableBaseView::hoverIndexChanged,m_delegate,&TableViewDelegate::onHoverIndexChanged);
     connect(this,&TableBaseView::leaveFromItem,m_delegate,&TableViewDelegate::onLeaveFromItemEvent);
-    setItemDelegate(m_delegate);
     this->setMouseTracking(true);
     initStyle();
 }
@@ -25,9 +25,9 @@ void TableBaseView::initStyle()
 //    this->verticalScrollBarPolicy();
 //    this->setAutoFillBackground(false);
     //限制应用内字体固定大小
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    this->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    this->setFont(sizeFont);
 
 }
 
@@ -37,13 +37,44 @@ TableBaseView::~TableBaseView()
         m_delegate->deleteLater();
     }
 }
+
+QString TableBaseView::getSearchText()const
+{
+    return m_searchText;
+}
+
+void TableBaseView::setSearchText(QString text)
+{
+    m_searchText = text;
+}
+
+QString TableBaseView::getSearchListName()const
+{
+    return m_searchListName;
+}
+
+void TableBaseView::setSearchListName(QString listName)
+{
+    m_searchListName = listName;
+}
+
 void TableBaseView::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = this->indexAt(event->pos());
-    emit hoverIndexChanged(index);
+    Q_EMIT hoverIndexChanged(index);
 }
 void TableBaseView::leaveEvent(QEvent *event)
 {
-    emit leaveFromItem();
+    Q_EMIT leaveFromItem();
     viewport()->update();
+}
+
+QString TableBaseView::getNowPlayListName()const
+{
+    return m_nowListName;
+}
+
+void TableBaseView::setNowPlayListName(QString listName)
+{
+    m_nowListName = listName;
 }

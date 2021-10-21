@@ -33,6 +33,7 @@
 //#include "allpupwindow.h"
 //#include "widgetstyle.h"
 #include "menumodule.h"
+#include "UI/player/searchedit.h"
 
 const QString main_style = "QFrame{background:#FFFFFF;border-top-right-radius:12px;}";
 
@@ -46,65 +47,66 @@ public:
     explicit TitleBar(QWidget *parent = nullptr);
     ~TitleBar(){}
 
-    menuModule *menumodule;
+    menuModule *menumodule = nullptr;
 
-    QLabel *nullLabel;
+    QLabel *nullLabel = nullptr;
 
-    QPushButton *leftBtn;
-    QPushButton *rightBtn;
-    QPushButton *searchBtn;
+    QPushButton *leftBtn = nullptr;
+    QPushButton *rightBtn = nullptr;
+    QPushButton *searchBtn = nullptr;
 
-    QLineEdit *searchEdit;
+    SearchEdit *searchEdit = nullptr;
 
-    QPushButton *userIconBtn;
-    QPushButton *loginBtn;
+    QPushButton *userIconBtn = nullptr;
+    QPushButton *loginBtn = nullptr;
 
-    QPushButton *setBtn;
-    QPushButton *miniBtn;
-    QPushButton *minimumBtn;
-    QPushButton *maximumBtn;
-    QPushButton *recoverNormalSizeBtn;
-    QPushButton *closeBtn;
+    QPushButton *setBtn = nullptr;
+    QPushButton *miniBtn = nullptr;
+    QPushButton *minimumBtn = nullptr;
+    QPushButton *maximumBtn = nullptr;
+    QPushButton *recoverNormalSizeBtn = nullptr;
+    QPushButton *closeBtn = nullptr;
 
     //搜索相关
-    QSqlTableModel *searchModel;
-    QListWidget *searchWidget;
+    QSqlTableModel *searchModel = nullptr;
+    QListWidget *searchWidget = nullptr;
 //    MusicListWid *searchResultWidget; /*搜索部分暂时注释掉*/
 
 
     //设置菜单
-    QMenu *settingMenu;
-    QMenu *changeThemeColorMenu;
-    QAction *darkThemeAct;
-    QAction *lightThemeAct;
-    QAction *aboutAct;
+    QMenu *settingMenu = nullptr;
+    QMenu *changeThemeColorMenu = nullptr;
+    QAction *darkThemeAct = nullptr;
+    QAction *lightThemeAct = nullptr;
+    QAction *aboutAct = nullptr;
 
 //    AllPupWindow *aboutWidget;
 
     void titlecolor();
 
-public slots:
+public Q_SLOTS:
     void searchMusic();
+    void slotFoucusIn();
 
 //    void showAboutWidget();
 
 protected:
 //    virtual void mouseDoubleClickEvent(QMouseEvent *event);
     bool eventFilter(QObject *watched, QEvent *event);
-private slots:
+private Q_SLOTS:
     //进行最小化、最大化、还原、关闭
 //    void slot_showMaximized();
 //    void slot_quit();
-private:
-
 
 private:
     void initTitle();
 
-    QHBoxLayout *titleLayout;
-    QHBoxLayout *searchLayout;
-    QHBoxLayout *LayoutLeft;
-    QHBoxLayout *LayoutRight;
+    QHBoxLayout *titleLayout = nullptr;
+    QHBoxLayout *searchLayout = nullptr;
+    QHBoxLayout *LayoutLeft = nullptr;
+    QHBoxLayout *LayoutRight = nullptr;
+
+    QWidget *m_parent = nullptr;
 };
 
 

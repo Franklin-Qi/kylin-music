@@ -19,16 +19,16 @@ public:
      void defaultStyle();
      void requestCustomContextMenu(const QPoint &pos);
 public:
-    QAction *deleteAct;
-    QAction *renameAct;
+    QAction *deleteAct = nullptr;
+    QAction *renameAct = nullptr;
     QString buttonListName = "";
-signals:
+Q_SIGNALS:
     void playall(QString text);
     void renamePlayList(QString text);
     void removePlayList(QString text);
 
     void selectButtonChanged(QString text);
-public slots:
+public Q_SLOTS:
 
 private:
 

@@ -22,13 +22,13 @@ public:
     void changePlayModePos(int posX, int posY, int width, int height);
     void playModecolor();
 public:
-    QToolButton *loopBtn;
-    QToolButton *randomBtn;
-    QToolButton *sequentialBtn;
-    QToolButton *currentItemInLoopBtn;
+    QToolButton *loopBtn = nullptr;
+    QToolButton *randomBtn = nullptr;
+    QToolButton *sequentialBtn = nullptr;
+    QToolButton *currentItemInLoopBtn = nullptr;
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
 
 private:
     void initWidget();

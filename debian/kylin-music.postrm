@@ -1,12 +1,10 @@
 tmpfilename="/tmp/kylin-music.update"
-timesize=60000
+timesize=60
 current=`date "+%Y-%m-%d %H:%M:%S"`  
 timeStamp=`date -d "$current" +%s`   
 #如果存在更新标签
 if [ -f $tmpfilename ];then
-#将current转换为时间戳，精确到毫秒  
-	currentTimeStamp=$((timeStamp*1000+`date "+%N"`/1000000)) 
-	tmptime=$(expr $currentTimeStamp - $(cat $tmpfilename))
+	tmptime=$(expr $timeStamp - $(cat $tmpfilename))
 #删除临时文件
 	rm $tmpfilename
 #如果时间间隔小于限定值，说明是更新，而非卸载
@@ -24,3 +22,8 @@ do
 		rm $user$path$filename
 	fi
 done
+#libsimple="/usr/lib/libkylinmusicsimple.so"
+#if [ -f $libsimple ];then
+#	echo "删除："$libsimple
+#	rm $libsimple
+#fi

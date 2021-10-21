@@ -1,4 +1,5 @@
-#include "musicDataBase.h"
+﻿#include "musicDataBase.h"
+#include<iostream>
 #include<QSqlQuery>
 #include<QMessageBox>
 #include<QApplication>
@@ -6,13 +7,15 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QSqlRecord>
+#include<QTime>
+#include<sys/time.h>
 
 MusicDataBase::MusicDataBase(QObject *parent) : QObject(parent)
 {
     qDebug() << QSqlDatabase::drivers();//当前环境支持哪些数据库
     QMutexLocker lockData( &m_mutex);  //加锁，函数执行完后自动解锁
     m_database=QSqlDatabase::addDatabase("QSQLITE");
-    QString dirPath = QString(getenv("HOME")) + "/.config/.kylin_music_ver1.1_";
+    QString dirPath = QString(getenv("HOME")) + "/.config/.kylin_music_ver1.2_";
 //TODO
     QFileInfo oldVersion(QString(getenv("HOME")) + "/.config/.kylin_music_ver1.0_" + "mymusic.db");
     if(oldVersion.exists())
@@ -28,6 +31,7 @@ MusicDataBase::~MusicDataBase()
     qDebug() << "析构";
     if(true == m_databaseOpenFlag)
     {
+        sqlite3_shutdown();
         m_database.close();
     }
 }
@@ -62,6 +66,25 @@ int MusicDataBase::initDataBase()
         return DB_UNCONNECT;
     }
 
+    QVariant v = m_database.driver()->handle(); // 获得低级handle包
+    if(v.isValid() && qstrcmp(v.typeName(), "sqlite3*") == 0)
+    {
+        sqlite3_initialize();
+        // 显式地初始化一下。
+        sqlite3 *m_handle = *static_cast<sqlite3 **>(v.data());
+        if(m_handle)
+        {
+            sqlite3_enable_load_extension(m_handle, 1); //允许加载扩展
+            QSqlQuery loadExtension(m_database);
+            bool loadRes = loadExtension.exec("SELECT load_extension('libsimple')"); // 使用sql函数加载libsimple
+            if(!loadRes)
+            {
+                qDebug() << "无法加载分词器扩展" << loadExtension.lastError().text();
+                // 加载不成功先不return
+            }
+        }
+    }
+
     bool queryRes = true;
     QSqlQuery queryInit(m_database);
     //新建表:总表，历史表，我喜欢表
@@ -91,6 +114,18 @@ int MusicDataBase::initDataBase()
 
     queryRes &= queryInit.exec(QString("create table if not exists ListOfPlayList (title varchar primary key)"));//创建播放列表名称列表
 
+    queryRes &= queryInit.exec(QString("create virtual table if not exists AuxIndexLocalMusicContent"
+                                       " using fts5(id UNINDEXED, title, singer, album, filepath UNINDEXED, time UNINDEXED, tokenize='simple', prefix='1 2 3 4 5')"));
+    // 为localMusic本地音乐表创建辅助的全文索引虚拟表fts5，设置前缀索引，设置非索引项，加载simple分词器包。
+//    queryRes &= queryInit.exec(QString("create trigger local_music_add after insert on LocalMusic begin"
+//                                       " insert into AuxIndexLocalMusicContent values(new.id, new.title); end"));
+    // 存在问题：利用触发器插入时需要额外操作（包括对新值处理从中文到拼音、从编码格式到不编码格式）。即便表中存储的并非base64，我们也需要处理从中文到拼音，包括取old变量值到转换，
+    // 废弃方案
+
+    queryRes &= queryInit.exec(QString("create trigger if not exists local_music_delete before delete on LocalMusic begin"
+                                       " delete from AuxIndexLocalMusicContent where id=old.id;"
+                                       " end"));
+    // 创建触发器，根据id删除虚拟表记录
 
     if(true == queryRes)
     {
@@ -164,7 +199,18 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
                     .arg(inPutStringHandle(fileData.filepath));
             setRes &= setSongIDFromLocal.exec(setIndex);
 
-            if(true == (queryRes&setRes))
+            // 每插入一条记录，都要更新辅助的虚拟表AuxIndexLocalMusicContent
+            QSqlQuery addSongToIndexTable(m_database);
+            QString addSongIndex = QString("insert into AuxIndexLocalMusicContent(id,title,singer,album,filepath,time) values('%1', '%2', '%3', '%4', '%5', '%6')")
+                    .arg(tempIndex)
+                    .arg(preHandle(fileData.title),
+                         preHandle(fileData.singer),
+                         preHandle(fileData.album),
+                         preHandle(fileData.filepath),
+                         preHandle(fileData.time));
+            bool setVTableRes = addSongToIndexTable.exec(addSongIndex);
+
+            if(true == (queryRes&setRes&setVTableRes))
             {
                 return DB_OP_SUCC;
             }
@@ -576,6 +622,259 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
     else//位置没变
     {
         return DB_OP_SUCC;
+    }
+}
+
+int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
+{
+    // ph-code
+    if(true == keyword.isEmpty())
+    {
+        // 空keyword不处理
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
+//        QString getSongListStringByKeyword = QString("select * from LocalMusic where `id` in ("
+//                                                     "select id from AuxIndexLocalMusicContent where AuxIndexLocalMusicContent match simple_query('%1') order by rank) ")
+//                                                    .arg(keyword);
+        // 直接在虚表中存取，不再根据id回表。
+        QString getSongListStringByKeyword = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where AuxIndexLocalMusicContent match simple_query('%1') order by rank")
+                                                    .arg(keyword);
+
+        getRes = getSongListFromLocalMusicByKeyword.exec(getSongListStringByKeyword);
+
+        if(true == getRes)
+        {
+            while(getSongListFromLocalMusicByKeyword.next())
+            {
+                musicDataStruct temp;
+                temp.title      = getSongListFromLocalMusicByKeyword.value(1).toString();
+                temp.singer     = getSongListFromLocalMusicByKeyword.value(2).toString();
+                temp.album      = getSongListFromLocalMusicByKeyword.value(3).toString();
+                temp.filepath   = getSongListFromLocalMusicByKeyword.value(4).toString();
+                temp.time       = getSongListFromLocalMusicByKeyword.value(5).toString();
+
+                resList.append(temp);
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getSongListFromLocalMusicByKeyword.lastError().text();
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getCurtEstimatedListByKeyword(const QString& keyword,
+                                                 int Number,
+                                                 QList<musicDataStruct>& titleSongsList,
+                                                 QList<musicDataStruct>& singersList,
+                                                 QList<musicDataStruct>& albumsList)
+{
+//    qDebug() << "\n" << "====================" << "\n"
+//             << keyword
+//             << Number
+//             << "\n" << "====================" << "\n";
+//    Number = 99;
+    if(true == keyword.isEmpty())
+    {
+        // 空keyword不处理
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getTitle = true;
+        bool getSinger = true;
+        bool getAlbum = true;
+
+        QSqlQuery getCurtEstimatedTitleList(m_database);
+
+        QString getCurtEstimatedTitleListString = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where title match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getTitle &= getCurtEstimatedTitleList.exec(getCurtEstimatedTitleListString);
+
+        QSqlQuery getCurtEstimatedSingerList(m_database);
+        QString getCurtEstimatedSingerListString = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where singer match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getSinger &= getCurtEstimatedSingerList.exec(getCurtEstimatedSingerListString);
+
+        QSqlQuery getCurtEstimatedAlbumList(m_database);
+        QString getCurtEstimatedAlbumListString = QString("select * from AuxIndexLocalMusicContent"
+                                                     " where album match simple_query('%1') order by rank limit %2")
+                                                    .arg(keyword, QString::number(Number));
+        getAlbum &= getCurtEstimatedAlbumList.exec(getCurtEstimatedAlbumListString);
+
+        if(getTitle)
+        {
+            while(getCurtEstimatedTitleList.next())
+            {
+                musicDataStruct temp;
+                temp.title      = getCurtEstimatedTitleList.value(1).toString();
+                temp.singer     = getCurtEstimatedTitleList.value(2).toString();
+                temp.album      = getCurtEstimatedTitleList.value(3).toString();
+                temp.filepath   = getCurtEstimatedTitleList.value(4).toString();
+                temp.time       = getCurtEstimatedTitleList.value(5).toString();
+                titleSongsList.append(temp);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedTitleList.lastError().text();
+            qDebug() << getCurtEstimatedTitleList.lastQuery();
+        }
+
+        if(getSinger)
+        {
+            while(getCurtEstimatedSingerList.next())
+            {
+                musicDataStruct temp;
+                temp.title      = getCurtEstimatedSingerList.value(1).toString();
+                temp.singer     = getCurtEstimatedSingerList.value(2).toString();
+                temp.album      = getCurtEstimatedSingerList.value(3).toString();
+                temp.filepath   = getCurtEstimatedSingerList.value(4).toString();
+                temp.time       = getCurtEstimatedSingerList.value(5).toString();
+                singersList.append(temp);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedSingerList.lastError().text();
+        }
+
+        if(getAlbum)
+        {
+            while(getCurtEstimatedAlbumList.next())
+            {
+                musicDataStruct temp;
+                temp.title      = getCurtEstimatedAlbumList.value(1).toString();
+                temp.singer     = getCurtEstimatedAlbumList.value(2).toString();
+                temp.album      = getCurtEstimatedAlbumList.value(3).toString();
+                temp.filepath   = getCurtEstimatedAlbumList.value(4).toString();
+                temp.time       = getCurtEstimatedAlbumList.value(5).toString();
+                albumsList.append(temp);
+            }
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getCurtEstimatedAlbumList.lastError().text();
+        }
+
+        if(getTitle && getSinger && getAlbum)
+        {
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            return DB_OP_GET_FAILED;
+        }
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getSongInfoListByAlbum(QList<musicDataStruct> &resList, const QString &album)
+{
+    if(true == album.isEmpty())
+    {
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongsListByAlbum(m_database);
+        QString getSongsListByAlbumString = QString("select * from LocalMusic where album = '%1'").arg(inPutStringHandle(album));
+        getRes = getSongsListByAlbum.exec(getSongsListByAlbumString);
+
+        if(true == getRes)
+        {
+            while(getSongsListByAlbum.next())
+            {
+                musicDataStruct fileData;
+                fileData.filepath    = outPutStringHandle(getSongsListByAlbum.value(2).toString());
+                fileData.title       = outPutStringHandle(getSongsListByAlbum.value(3).toString());
+                fileData.singer      = outPutStringHandle(getSongsListByAlbum.value(4).toString());
+                fileData.album       = outPutStringHandle(getSongsListByAlbum.value(5).toString());
+                fileData.filetype    = outPutStringHandle(getSongsListByAlbum.value(6).toString());
+                fileData.size        = outPutStringHandle(getSongsListByAlbum.value(7).toString());
+                fileData.time        = outPutStringHandle(getSongsListByAlbum.value(8).toString());
+
+                resList.append(fileData);
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getSongsListByAlbum.lastError().text();
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
+    }
+}
+
+int MusicDataBase::getSongInfoListBySinger(QList<musicDataStruct> &resList, const QString &singer)
+{
+    if(true == singer.isEmpty())
+    {
+        return INVALID_INPUT;
+    }
+    if(true == m_database.isValid())
+    {
+        bool getRes = true;
+
+        QSqlQuery getSongsListBySinger(m_database);
+        QString getSongsListBySingerString = QString("select * from LocalMusic where singer = '%1'").arg(inPutStringHandle(singer));
+        getRes = getSongsListBySinger.exec(getSongsListBySingerString);
+
+        if(true == getRes)
+        {
+            while(getSongsListBySinger.next())
+            {
+                musicDataStruct fileData;
+                fileData.filepath    = outPutStringHandle(getSongsListBySinger.value(2).toString());
+                fileData.title       = outPutStringHandle(getSongsListBySinger.value(3).toString());
+                fileData.singer      = outPutStringHandle(getSongsListBySinger.value(4).toString());
+                fileData.album       = outPutStringHandle(getSongsListBySinger.value(5).toString());
+                fileData.filetype    = outPutStringHandle(getSongsListBySinger.value(6).toString());
+                fileData.size        = outPutStringHandle(getSongsListBySinger.value(7).toString());
+                fileData.time        = outPutStringHandle(getSongsListBySinger.value(8).toString());
+
+                resList.append(fileData);
+            }
+
+            return DB_OP_SUCC;
+        }
+        else
+        {
+            qDebug() << "执行错误信息：" << getSongsListBySinger.lastError().text();
+            return DB_OP_GET_FAILED;
+        }
+
+    }
+    else
+    {
+        return DB_DISORDERD;
     }
 }
 
@@ -997,6 +1296,7 @@ int MusicDataBase::addMusicToHistoryMusic(const QString& filePath)
 
     }
 }
+
 int MusicDataBase::delMusicFromHistoryMusic(const QString& filePath)
 {
     bool delRes = true;
@@ -2054,4 +2354,16 @@ QString MusicDataBase::outPutStringHandle(const QString& output)
     QString outOrigin;
     outOrigin.prepend(text.data());
     return outOrigin;
+}
+
+QString MusicDataBase::preHandle(const QString &input)
+{
+    // 将'替换成''
+    QString res = input;
+    int iPos = res.indexOf("'", 0);
+    while(-1 != iPos){
+        res.insert(iPos, QString("'"));
+        iPos = res.indexOf("'", iPos + 2);
+    }
+    return res;
 }

@@ -1,16 +1,19 @@
 #ifndef MUSICDATABASE_H
 #define MUSICDATABASE_H
 #include <QSqlDatabase>
+#include <QSqlDriver>
 #include <QObject>
 #include <QFile>
 #include <QList>
 #include <QString>
-#include<QThread>
-#include<QMutexLocker>
+#include <QThread>
+#include <QMutexLocker>
+#include <sqlite3.h>
 
 const QString ALLMUSIC = "LocalMusic";                    //本地总表
 const QString HISTORY = "HistoryPlayList";                //历史记录
 const QString FAV = "我喜欢";                              //我喜欢
+const QString SEARCH = "SearchResult";                    //搜索
 const QString SHOWCONTEXTS =
         "filepath,title,singer,album,filetype,size,time"; //播放列表显示项
 
@@ -52,6 +55,9 @@ typedef struct
     QString size;
     QString time;
 }musicDataStruct;
+
+//QVariant保存结构体
+Q_DECLARE_METATYPE(musicDataStruct)
 
 #define g_db (MusicDataBase::getInstance())
 class MusicDataBase : public QObject
@@ -104,6 +110,16 @@ public:
     //更换本地歌单中某首歌曲的位置(从选中的位置更换到目的歌曲的位置的后面)
     int changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath);
 
+    /******************************搜索************************************/
+    //通过输入关键字从本地歌单中模糊检索列表歌曲信息，输入数据必须有效
+    int getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct>& resList, const QString& keyword);
+    //通过输入关键字，Number用于限制展示条数，从本地给出临时提示歌曲列表信息，输入数据必须有效
+    int getCurtEstimatedListByKeyword(const QString& keyword, int Number, QList<musicDataStruct>& titleSongsList, QList<musicDataStruct>& singersList, QList<musicDataStruct>& albumsList);
+    //通过标准专辑名key:album，获取该专辑歌曲信息
+    int getSongInfoListByAlbum(QList<musicDataStruct>& resList, const QString& album);
+    //通过标准歌手名key:singer，获取歌曲信息
+    int getSongInfoListBySinger(QList<musicDataStruct>& resList, const QString& singer);
+
     /**************************历史歌单增删改查****************************/
     //添加歌曲到历史歌单，使用歌曲的path值,输入数据必须有效，
     int addMusicToHistoryMusic(const QString& filePath);
@@ -125,16 +141,13 @@ public:
     bool checkSongIsInFav(const QString& filePath);
     //检查歌单列表是否存在
     int checkPlayListExist(const QString& playListName);
-
     //检查歌曲是否在歌单列表中存在
     int checkIfSongExistsInPlayList(const QString& filePath, const QString& playListName);
 
 protected:
     explicit MusicDataBase(QObject *parent = nullptr);
 
-signals:
-
-public slots:
+Q_SIGNALS:
 
 private:
     //日志处理函数
@@ -143,6 +156,8 @@ private:
     QSqlDatabase m_database;//数据库
     QMutex m_mutex;
     bool m_databaseOpenFlag = false;
+    QStringList listSimpleSpell; // 简拼列表
+    QStringList listSpell; // 拼音列表
     //检查歌曲是否在总表中存在
     int checkIfSongExistsInLocalMusic(const QString& filePath);
     //检查歌曲是否在历史歌单中存在
@@ -150,7 +165,9 @@ private:
     //检查歌曲是否在我喜欢中存在
     int checkIfSongExistsInFavorMusic(const QString& filePath);
 //    //检查歌单列表是否存在
-//    int checkPlayListExist(const QString& playListName);  
+//    int checkPlayListExist(const QString& playListName);
+//    //检查歌曲是否在歌单列表中存在
+//    int checkIfSongExistsInPlayList(const QString& filePath, const QString& playListName);
     //获取歌曲在歌曲总表中的index
     int getSongIndexFromLocalMusic(const QString& filePath, int &songIndex);
     //获取歌曲在歌曲某歌单表中的index
@@ -159,6 +176,8 @@ private:
     /**************************字符串转码接口*******************************/
     QString inPutStringHandle(const QString& input);
     QString outPutStringHandle(const QString& output);
+    // 对包含'的字符串做预处理，避免获取SQL语句时语法出错
+    QString preHandle(const QString& input);
 };
 
 #endif // MUSICDATABASE_H

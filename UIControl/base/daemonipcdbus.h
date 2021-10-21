@@ -46,7 +46,7 @@ public:
 
     DaemonIpcDbus() {}
 
-public slots:
+public Q_SLOTS:
 
     int daemonIsNotRunning();
     void showGuide(QString appName);

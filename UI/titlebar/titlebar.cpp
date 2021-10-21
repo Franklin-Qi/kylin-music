@@ -20,10 +20,11 @@
 
 #include "titlebar.h"
 #include "UI/mainwidget.h"
-
+#include "UI/base/xatom-helper.h"
 
 TitleBar::TitleBar(QWidget *parent) : QFrame(parent)
 {
+    this->m_parent = parent;
     setMouseTracking(true);
     this->installEventFilter(this);
     this->setObjectName("TitleBar");
@@ -69,12 +70,12 @@ void TitleBar::initTitle()
     rightBtn->setDisabled(true);
     rightBtn->hide();
 
-    searchEdit = new QLineEdit;
-    searchEdit->setFixedSize(200,32);
+    searchEdit = new SearchEdit(this);
+    searchEdit->setWidget(m_parent);
 //    searchEdit->setPlaceholderText("搜索音乐，歌手");
-    searchEdit->setPlaceholderText(tr("Search for music, singers"));
+    searchEdit->setPlaceholderText(tr("Search"));
 
-//    searchEdit->setContentsMargins(0,4,0,0);
+//    searchEdit->setContentsMargins(108,4,0,0);
 //    searchEdit->hide();
     searchBtn = new QPushButton(searchEdit);
 
@@ -82,8 +83,8 @@ void TitleBar::initTitle()
     searchBtn->setCursor(Qt::PointingHandCursor);
 //    searchBtn->setIcon(QIcon::fromTheme("search-symbolic"));
 
-    QMargins margins = searchEdit->textMargins();
-    searchEdit->setTextMargins(margins.left()+10, margins.top(), searchBtn->width()+15, margins.bottom());
+//    QMargins margins = searchEdit->textMargins();
+//    searchEdit->setTextMargins(margins.left()+10, margins.top(), searchBtn->width()+15, margins.bottom());
 
     searchLayout = new QHBoxLayout(searchEdit);
     searchLayout->addStretch();
@@ -92,14 +93,15 @@ void TitleBar::initTitle()
     //btn at right
     searchLayout->setContentsMargins(0,0,10,0);
 
-    LayoutLeft->addWidget(leftBtn);
-    LayoutLeft->addSpacing(16);
-    LayoutLeft->addWidget(rightBtn);
-    LayoutLeft->addSpacing(30);
+//    LayoutLeft->addWidget(leftBtn);
+//    LayoutLeft->addSpacing(16);
+//    LayoutLeft->addWidget(rightBtn);
+//    LayoutLeft->addSpacing(30);
     //搜索框暂时隐藏
-//    LayoutLeft->addWidget(searchEdit);
-    LayoutLeft->setSpacing(8);
-    LayoutLeft->setContentsMargins(30,0,0,0);
+    LayoutLeft->addWidget(searchEdit);
+//    LayoutLeft->setSpacing(8);
+    LayoutLeft->setMargin(0);
+    LayoutLeft->setContentsMargins(108,0,0,0);
 
     LayoutRight = new QHBoxLayout;
 
@@ -213,7 +215,8 @@ void TitleBar::initTitle()
 
 
 //    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
-    connect(searchEdit,&QLineEdit::textChanged,this,&TitleBar::searchMusic);
+    connect(searchEdit,&SearchEdit::textChanged,this,&TitleBar::searchMusic);
+    connect(searchEdit,&SearchEdit::sigFoucusIn,this,&TitleBar::slotFoucusIn);
 
 
     LayoutRight->setSpacing(0);
@@ -257,7 +260,14 @@ bool TitleBar::eventFilter(QObject *watched, QEvent *event)
 
 void TitleBar::searchMusic()
 {
-
+//    m_serach = new SearchResult(this);
+//    MotifWmHints hint;
+//    hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+//    hint.functions = MWM_FUNC_ALL;
+//    hint.decorations = MWM_DECOR_BORDER;
+//    XAtomHelper::getInstance()->setWindowMotifHint(m_serach->winId(), hint);
+//    m_serach->show();
+//    m_serach->raise();
 //    QString enterStr = searchEdit->text().trimmed();
 //    qDebug() << "搜索" <<"输入栏" << enterStr;
 //    //    searchEdit->clear();
@@ -290,6 +300,10 @@ void TitleBar::searchMusic()
 //    }
 }
 
+void TitleBar::slotFoucusIn()
+{
+    searchEdit->setFocus();
+}
 
 void TitleBar::titlecolor()
 {
@@ -308,7 +322,7 @@ void TitleBar::titlecolor()
 //                                    "QListWidget::item:selected{background:#303032;color:#F9F9F9;}"
 //                                    );
 
-        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#303032;color:#F9F9F9;}");
+//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#303032;color:#F9F9F9;}");
 
         searchBtn->setStyleSheet("QPushButton{background:transparent;\
                                  border-image:url(:/img/default/search.png);}\
@@ -337,7 +351,7 @@ void TitleBar::titlecolor()
 //                                    "QListWidget::item:selected{background:#F7F7F7;color:#303133;}"
 //                                    );
 
-        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
+//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
 
         searchBtn->setStyleSheet("QPushButton{background:transparent;\
                                  border-image:url(:/img/default/search.png);}\

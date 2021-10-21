@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,10 @@
 
 #include "miniwidget.h"
 #include "UI/base/widgetstyle.h"
+#include "UI/mainwidget.h"
 #include <QDebug>
+
+#define PT_9 9
 
 miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
 {
@@ -25,6 +28,7 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
     this->setObjectName("miniWidget");
 
     m_mouseState = false;
+    setWindowFlags(Qt::WindowStaysOnTopHint);
 //    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool|Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);     //窗体透明
 //    this->setWindowTitle(tr("音乐"));
@@ -101,7 +105,7 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space)
     {
-        emit signalSpaceKey();
+        Q_EMIT signalSpaceKey();
     }
     else if(event->key() == Qt::Key_Right)
     {
@@ -119,11 +123,11 @@ void miniWidget::minicolor()
     if(WidgetStyle::themeColor == 1)
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#252526;}");
-        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
+        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;}");
 //        m_coverLabel->setPixmap(QPixmap(":/img/fengmian.png").scaled(48,48));
         m_coverLabel->setStyleSheet("border-image:url(:/img/fengmian.png);");
 
-        m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#F9F9F9;font-size:14px;}");
+        m_songNameLab->setStyleSheet("color:#F9F9F9;");
 
         m_preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/lastsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
@@ -175,11 +179,11 @@ void miniWidget::minicolor()
     else if(WidgetStyle::themeColor == 0)
     {
         m_mainFrame->setStyleSheet("#mainFrame{border-radius:6px;background-color:#FFFFFF;}");
-        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;font-size:12px;}");
+        m_timeLab->setStyleSheet("QLabel{line-height:12px;color:#8F9399;}");
         m_coverLabel->setStyleSheet("border-image:url(:/img/fengmian.png);");
 //        coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
-        m_songNameLab->setStyleSheet("QLabel{line-height:14px;color:#303133;font-size:14px;}");
+        m_songNameLab->setStyleSheet("color:#303133;");
 
         m_preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/lastsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
@@ -251,12 +255,11 @@ void miniWidget::init_miniWidget()
     m_vInfoLayout = new QVBoxLayout;
 
     m_songNameLab = new MyLabel;
-    m_songNameLab->setFixedSize(180,20);
-    m_songNameLab->setAlignment(Qt::AlignLeft);
+    m_songNameLab->setFixedSize(170,28);
+//    m_songNameLab->setAlignment(Qt::AlignLeft);
 
     m_timeLab = new QLabel;
-    m_timeLab->setFixedSize(180,20);
-    m_timeLab->setAlignment(Qt::AlignLeft);
+//    m_timeLab->setAlignment(Qt::AlignLeft);
 
     QString playPath = playController::getInstance().getPath();
     if(playPath != "")
@@ -274,9 +277,16 @@ void miniWidget::init_miniWidget()
 
 //    m_vInfoLayout->setMargin(3);
 //    m_vInfoLayout->setSpacing(3);
-    m_vInfoLayout->addWidget(m_songNameLab);
-//    m_vInfoLayout->addSpacing(8);
-    m_vInfoLayout->addWidget(m_timeLab);
+    QWidget *vWidget = new QWidget(this);
+    vWidget->setFixedHeight(44);
+    m_vInfoLayout->addStretch();
+    m_vInfoLayout->addWidget(m_songNameLab,0,Qt::AlignVCenter);
+//    m_vInfoLayout->addSpacing(6);
+    m_vInfoLayout->addWidget(m_timeLab,0,Qt::AlignVCenter);
+    m_vInfoLayout->addStretch();
+    m_vInfoLayout->setContentsMargins(8,3,0,3);
+    m_vInfoLayout->setMargin(0);
+    vWidget->setLayout(m_vInfoLayout);
 //    m_vInfoLayout->setAlignment(Qt::AlignVCenter);
 
     /******************************************/
@@ -372,9 +382,9 @@ void miniWidget::init_miniWidget()
     coverWid->setLayout(m_vSysLayout);
     /********************************************/
 
-    m_hMainLayout->setMargin(10);
+//    m_hMainLayout->setMargin(10);
     m_hMainLayout->addWidget(m_coverLabel);
-    m_hMainLayout->addLayout(m_vInfoLayout);
+    m_hMainLayout->addWidget(vWidget);
     m_hMainLayout->addStretch();
     m_hMainLayout->addWidget(m_palyFrame);
     m_hMainLayout->addStretch();
@@ -390,10 +400,10 @@ void miniWidget::init_miniWidget()
     m_HMainLayout->addWidget(coverWid);
 
     //限制应用字体不随着主题变化
-    QFont sizeFont;
-    sizeFont.setPixelSize(14);
-    m_songNameLab->setFont(sizeFont);
-    m_timeLab->setFont(sizeFont);
+//    QFont sizeFont;
+//    sizeFont.setPixelSize(14);
+//    m_songNameLab->setFont(sizeFont);
+//    m_timeLab->setFont(sizeFont);
 
 
 //    QFrame *controlFrame = new QFrame(this);
@@ -403,6 +413,16 @@ void miniWidget::init_miniWidget()
 //    m_hLayout->addWidget(controlFrame);
 
 //    m_mainFrame->setStyleSheet("border-radius:12px;");
+}
+
+void miniWidget::slotLableSetFontSize(int size)
+{
+    //默认大小12px,换算成pt为9
+    double lableBaseFontSize = PT_9;//魔鬼数字，自行处理
+    double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
+    QFont font;
+    font.setPointSizeF(nowFontSize);
+    m_timeLab->setFont(font);
 }
 
 //初始化样式
@@ -488,7 +508,7 @@ void miniWidget::slotFav()
                         //当前为我喜欢界面才刷新
                         if(listName == tr("I Love"))
                         {
-                            emit signalRefreshFav(FAV);
+                            Q_EMIT signalRefreshFav(FAV);
                         }
                         break;
                     }
@@ -504,7 +524,7 @@ void miniWidget::slotFav()
             playController::getInstance().addSongToCurList(FAV, filePath);
             if(listName == tr("I Love"))
             {
-                emit signalRefreshFav(FAV);
+                Q_EMIT signalRefreshFav(FAV);
             }
         }
     }
@@ -522,7 +542,7 @@ void miniWidget::slotFavExixts()
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void miniWidget::slotFavExixtsDark()
@@ -537,7 +557,7 @@ void miniWidget::slotFavExixtsDark()
         m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
-    emit signalFavBtnChange(filePath);
+    Q_EMIT signalFavBtnChange(filePath);
 }
 
 void miniWidget::slotFavIsExixts(QString filePaths)

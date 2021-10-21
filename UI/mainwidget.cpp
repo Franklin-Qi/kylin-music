@@ -3,6 +3,8 @@
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
 
+#define UKUI_FONT_SIZE "systemFontSize"
+
 Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
 Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
@@ -19,6 +21,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     initAllComponent();
     initGSettings();
     allConnect();
+
     //单例
     Single(str);
     //初始化dbus
@@ -128,6 +131,11 @@ void Widget::stateMusicFile(QStringList args)
 
 void Widget::initDbus()//初始化dbus
 {
+    interface = new QDBusInterface("org.gnome.SessionManager",
+                                   "/org/gnome/SessionManager",
+                                   "org.gnome.SessionManager",
+                                   QDBusConnection::sessionBus());
+
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if(sessionBus.registerService("org.ukui.kylin_music"))
     {
@@ -199,7 +207,8 @@ void Widget::client_get(QString str)
     QString s = str.split(":").last();
     if(s == "1")
     {
-        playController::getInstance().play();
+        playSongArea->slotPlayClicked();
+//        playController::getInstance().play();
     }
     else if(s == "2" || key == "163")
     {
@@ -384,7 +393,7 @@ void Widget::importFile(QStringList list)
 //            musicListTable->selectListChanged(tr("Song List"));
             if(listName == ALLMUSIC)
             {
-                emit signalRefreshList(ALLMUSIC);
+                Q_EMIT signalRefreshList(ALLMUSIC);
             }
             QStringList pathList = getPath(ALLMUSIC);
             playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
@@ -406,7 +415,7 @@ void Widget::importFile(QStringList list)
                     playController::getInstance().setCurPlaylist(ALLMUSIC,pathList);
                     if(listName == ALLMUSIC)
                     {
-                        emit signalRefreshList(ALLMUSIC);
+                        Q_EMIT signalRefreshList(ALLMUSIC);
                     }
                     int index = MusicFileInformation::getInstance().findIndexFromPlayList(ALLMUSIC,resList.at(i).filepath);
                     if(index == -1)
@@ -448,6 +457,24 @@ QString Widget::getState()
         state = "停止";
     }
     return state;
+}
+
+void Widget::slotStateChanged(playController::PlayState state)
+{
+    // 如果正在播放，阻止锁屏
+    if(!interface->isValid())
+    {
+        return;
+    }
+    if(state == playController::PlayState::PLAY_STATE)
+    {
+        QDBusMessage reply = interface->call(QDBus::Block, "Inhibit", "kylin-music", (quint32)0, "music is playing", (quint32)8);
+        m_inhibitValue = reply.arguments().takeFirst().toUInt();
+    }
+    else
+    {
+        interface->call("Uninhibit", m_inhibitValue);
+    }
 }
 
 void Widget::initMusic()
@@ -518,6 +545,10 @@ void Widget::initAllComponent()
     {
         playlistName = playController::getInstance().getPlayListName();
         if(playlistName == HISTORY)
+        {
+            playlistName = ALLMUSIC;
+        }
+        if(playlistName == SEARCH)
         {
             playlistName = ALLMUSIC;
         }
@@ -626,10 +657,40 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
     connect(m_miniWidget,&miniWidget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
     connect(this,&Widget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
+
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::selectListChanged);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,playSongArea,&PlaySongArea::slotText);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,this,&Widget::slotText);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,m_miniWidget,&miniWidget::slotText);
+    connect(musicListTable,&TableOne::signalListSearch,sideBarWid,&SideBarWidget::slotListSearch);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnText,musicListTable,&TableOne::slotReturnText);
+    connect(m_titleBar->searchEdit->m_result->m_MusicView,&MusicSearchListview::signalSearchTexts,musicListTable,&TableOne::slotSearchTexts);
+
+    connect(m_titleBar->searchEdit->m_result,&SearchResult::signalFilePath,musicListTable,&TableOne::slotFilePath);
+    connect(m_titleBar->searchEdit->m_result,&SearchResult::signalSongListBySinger,musicListTable,&TableOne::slotSongListBySinger);
+    connect(m_titleBar->searchEdit->m_result,&SearchResult::signalSongListByAlbum,musicListTable,&TableOne::slotSongListByAlbum);
+
+    connect(musicListTable,&TableOne::signalSongListHigh,sideBarWid,&SideBarWidget::slotSongListHigh);
+
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::slotSearchReturnPressed);
+    connect(&playController::getInstance(),&playController::playerStateChange,this,&Widget::slotStateChanged);
 }
 
 void Widget::initGSettings()//初始化GSettings
 {
+    //只有非标准字号的控件才需要绑定
+    connect(this,&Widget::signalSetFontSize,musicListTable,&TableOne::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,playSongArea,&PlaySongArea::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_miniWidget,&miniWidget::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,historyListTable,&TableHistory::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_titleBar->menumodule,&menuModule::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup,&AllPupWindow::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&AllPupWindow::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,musicListTable->infoDialog,&MusicInfoDialog::slotLableSetFontSize);
+
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {
         themeData = new QGSettings(FITTHEMEWINDOW);
@@ -655,14 +716,37 @@ void Widget::initGSettings()//初始化GSettings
                 changeLightTheme();
             }
         });
+
+        connect(themeData,&QGSettings::changed,this,[=] (const QString &key) {
+            if(key == UKUI_FONT_SIZE) {
+                //获取字号的值
+                int fontSizeKey = themeData->get(UKUI_FONT_SIZE).toString().toInt();
+                //发送改变信号
+                if (fontSizeKey > 0) {
+                    Q_EMIT signalSetFontSize(fontSizeKey);
+                }
+            }
+        });
     }
+
+    //启动时设置字号
+    int fontSizeKey = 11;//系统默认字号,魔鬼数字，自行处理
+    if (themeData != nullptr) {
+        int fontSizeKeyTmp = themeData->get(UKUI_FONT_SIZE).toString().toInt();
+        if (fontSizeKeyTmp > 0) {
+            fontSizeKey = fontSizeKeyTmp;
+        }
+    }
+    Q_EMIT signalSetFontSize(fontSizeKey);
     qDebug()<<"初始化GSettings成功";
 }
 
 void Widget::resizeEvent(QResizeEvent *event)
 {
     int max_w = qApp->primaryScreen()->size().width();
-    int max_h = qApp->primaryScreen()->size().height()-46;
+
+    //qApp->primaryScreen()->size().height() - this->height() [计算底边栏的高度]
+    int max_h = qApp->primaryScreen()->size().height() - (qApp->primaryScreen()->size().height() - this->height());
 
     movePlayHistoryWid();
     if(this->width() >= max_w && this->height()>= max_h)
@@ -700,11 +784,11 @@ void Widget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_F1)
     {
-        emit signalShowGuide();
+        Q_EMIT signalShowGuide();
     }
     else if(event->key() == Qt::Key_Space)
     {
-        emit signalSpaceKey();
+        Q_EMIT signalSpaceKey();
     }
     QWidget::keyPressEvent(event);
 }
@@ -748,6 +832,7 @@ void Widget::moveWidget(QString newWidth, QString newHeight)
 
 void Widget::slotClose()
 {
+    interface->call("Uninhibit", m_inhibitValue);
     this->close();
 }
 
@@ -818,6 +903,34 @@ QString Widget::getTitle()
     return m_playTitle;
 }
 
+void Widget::slotReturnPressed()
+{
+
+}
+
+void Widget::creartFinish()
+{
+    if (m_creatFinishEnum == MESSAGE) {
+        if (m_creatFinishMsg.isEmpty()) {
+            return;
+        }
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),m_creatFinishMsg.toLocal8Bit().data(),QMessageBox::Yes,Widget::mutual);
+        warn->button(QMessageBox::Yes)->setText("确定");
+        warn->exec();
+    }
+}
+
+void Widget::setCreatFinishMsg(QString msg)
+{
+    m_creatFinishEnum = MESSAGE;
+    m_creatFinishMsg = msg;
+
+    //如果界面已经显示，调用弹窗
+    if (!this->isHidden()) {
+        creartFinish();
+    }
+}
+
 //切换深色主题
 void Widget::changeDarkTheme()
 {
@@ -831,7 +944,7 @@ void Widget::changeDarkTheme()
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+//    historyListTable->noRefreshHistory();
 //    musicListTable->setStyleSheet("{background:red;border:none;}");
 //    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
     musicListTable->tableView->setAlternatingRowColors(false);
@@ -839,7 +952,7 @@ void Widget::changeDarkTheme()
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+    historyListTable->noRefreshHistory();
 //    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
@@ -860,9 +973,10 @@ void Widget::changeLightTheme()
     musicListTable->initStyle();
 //    musicListTable->setStyleSheet("{background:#FFFFFF;border:none;}");
     musicListTable->tableView->setAlternatingRowColors(false);
+    musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
-    historyListTable->refreshHistoryTable();
+    historyListTable->noRefreshHistory();
 
 }

@@ -13,6 +13,7 @@ class MMediaPlayer : public QObject
 public:
     //          停止播放          播放中       暂停中
     enum State{StoppedState=0,PlayingState,PausedState}; //播放状态枚举
+    enum ErrorMsg{NotFound=-1,Damage=-2}; //播放状态枚举
     MMediaPlayer(QObject *parent = nullptr);
 
     void setPlaylist(MMediaPlaylist *playlist); //设置播放列表
@@ -27,7 +28,7 @@ public:
     qint64 duration() const; //获取总时长
     void setMedia(const MMediaContent &media); //设置待播放媒体
     void play(); //播放
-public slots:
+public Q_SLOTS:
     void stop(); //停止
     void onMpvEvents(); //接收mpv事件
 
@@ -46,15 +47,17 @@ private:
     bool m_positionChangeed = false; //播放进度被设置
     qint64 m_position = 0; //播放进度
     qint64 m_duration = 0; //总时长
-private slots:
+private Q_SLOTS:
     void autoPlay(MMediaPlaylist::PlaybackMode playbackMode); //自动播放
-signals:
+Q_SIGNALS:
     void mpvEvents(); // 触发onMpvEvents()槽函数的信号
     void stateChanged(MMediaPlayer::State); //状态改变信号
     void durationChanged(qint64); //切换媒体时，总时长改变信号
     void positionChanged(qint64); //播放进度改变信号
     void playFinish(); //媒体播放完成信号
     void playError(); //媒体播放错误信号
+    void playErrorMsg(ErrorMsg errorCode);//媒体播放错误信息信号
+//    void signalVolume(int);
 };
 
 #endif // MMEDIAPLAYER_H

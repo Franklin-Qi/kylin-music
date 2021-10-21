@@ -21,11 +21,11 @@ public:
     void sidecolor();
 public:
     //新建歌单弹窗界面
-    AllPupWindow *newSonglistPup;
+    AllPupWindow *newSonglistPup = nullptr;
     //重命名歌单弹窗界面
-    AllPupWindow *renameSongListPup;
-    MyToolButton *playListBtn;
-public slots:
+    AllPupWindow *renameSongListPup = nullptr;
+    MyToolButton *playListBtn = nullptr;
+public Q_SLOTS:
     //添加歌单弹窗输入框
     void addPlayList();
     //添加歌单
@@ -37,7 +37,11 @@ public slots:
     void renamePlayList();
     //删除歌单
     void removePlayList(QString text);
-signals:
+    //取消侧边栏所有按钮的选中状态
+    void slotListSearch();
+    //高亮歌曲列表按钮
+    void slotSongListHigh();
+Q_SIGNALS:
     void playListBtnCliced(QString listname);
     void playListRemoved(QString listname);
     void playListRenamed(QString oldName,QString newName);
@@ -58,21 +62,21 @@ private:
     //我喜欢 QToolButton
 //    MyToolButton *loveBun;
     //添加歌单按钮
-    QPushButton *myPlayListBtn;
+    QPushButton *myPlayListBtn = nullptr;
     //新建歌单按钮界面(包含我喜欢在内)
-    QWidget *newPlayListWidget;
-    QWidget *logoWid;
-    QWidget *mainWid;
-    QWidget *sideWid;
-    QVBoxLayout *newPlayListLayout;
+    QWidget *newPlayListWidget = nullptr;
+    QWidget *logoWid = nullptr;
+    QWidget *mainWid = nullptr;
+    QWidget *sideWid = nullptr;
+    QVBoxLayout *newPlayListLayout = nullptr;
     //歌单名
     QStringList playListName;
     //kylin-music logo
-    QPushButton *logoPushButton;
+    QPushButton *logoPushButton = nullptr;
     //音乐库label
-    QLabel *libraryLabel;
+    QLabel *libraryLabel = nullptr;
     //我的歌单label
-    QLabel *myPlayListLabel;
+    QLabel *myPlayListLabel = nullptr;
     //获取歌单名
     QString btnText;
     //保存程序关闭之前歌单按钮

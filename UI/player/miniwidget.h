@@ -53,7 +53,7 @@ public:
     void songText(QString songName); //mini 正在播放
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-signals:
+Q_SIGNALS:
     //发送信号mini窗口我喜欢按钮改变
     void signalFavBtnChange(QString filePath);
     //刷新我喜欢列表
@@ -69,7 +69,7 @@ private:
     void songInfo(QString path);
     //显示时长
     void slotPositionChanged(qint64 position);
-public slots:
+public Q_SLOTS:
     void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
     void slotFavExixtsDark();
@@ -90,31 +90,33 @@ public slots:
     void slotNotPlaying();
     //判断当前点击的按钮是否为我喜欢（歌单名）
     void slotText(QString btnText);
+    //字体
+    void slotLableSetFontSize(int size);
 public:
-    QFrame *m_mainFrame;
+    QFrame *m_mainFrame = nullptr;
 
-    QLabel *m_coverLabel;
-    QPushButton *m_loveBtn;
-    QPushButton *m_volBtn;
-    QPushButton *m_orderBtn;
+    QLabel *m_coverLabel = nullptr;
+    QPushButton *m_loveBtn = nullptr;
+    QPushButton *m_volBtn = nullptr;
+    QPushButton *m_orderBtn = nullptr;
 
-    QPushButton *m_closeBtn;
-    QPushButton *m_recoveryWinBtn;
+    QPushButton *m_closeBtn = nullptr;
+    QPushButton *m_recoveryWinBtn = nullptr;
 
-    QPushButton *m_preBtn;
-    QPushButton *m_playStateBtn;
-    QPushButton *m_nextBtn;
+    QPushButton *m_preBtn = nullptr;
+    QPushButton *m_playStateBtn = nullptr;
+    QPushButton *m_nextBtn = nullptr;
 
-    MyLabel *m_songNameLab;
-    QLabel *m_timeLab;
+    MyLabel *m_songNameLab = nullptr;
+    QLabel *m_timeLab = nullptr;
 
     void minicolor();
 
-    QMenu *playModeMenu;
-    QAction *playMode_Sequential_Action;
-    QAction *playMode_Loop_Action;
-    QAction *playMode_CurrentItemInLoop_Action;
-    QAction *playMode_Random_Action;
+    QMenu *playModeMenu = nullptr;
+    QAction *playMode_Sequential_Action = nullptr;
+    QAction *playMode_Loop_Action = nullptr;
+    QAction *playMode_CurrentItemInLoop_Action = nullptr;
+    QAction *playMode_Random_Action = nullptr;
 
 private:
     void init_miniWidget();
@@ -123,17 +125,17 @@ private:
     QPoint  m_WindowPos;
     QPoint m_MousePos;
 
-    QHBoxLayout *m_hMainLayout;
-    QHBoxLayout *m_hPlayLayout;
-    QHBoxLayout *m_hLayout;
+    QHBoxLayout *m_hMainLayout = nullptr;
+    QHBoxLayout *m_hPlayLayout = nullptr;
+    QHBoxLayout *m_hLayout = nullptr;
 
-    QFrame *m_palyFrame;
-    QWidget *coverWid;
+    QFrame *m_palyFrame = nullptr;
+    QWidget *coverWid = nullptr;
 
-    QHBoxLayout *m_HMainLayout;
+    QHBoxLayout *m_HMainLayout = nullptr;
 
-    QVBoxLayout *m_vInfoLayout;
-    QVBoxLayout *m_vSysLayout;
+    QVBoxLayout *m_vInfoLayout = nullptr;
+    QVBoxLayout *m_vSysLayout = nullptr;
     QString filePath;
     //歌单名
     QString listName;

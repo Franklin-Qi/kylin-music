@@ -28,6 +28,7 @@ MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
 //    list.append("Type");
 //    list.append("Size");
     m_model.setHorizontalHeaderLabels(titleList); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
+    m_model.horizontalHeaderItem(titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 }
 
 bool MusicListModel::add(musicDataStruct info)
@@ -47,6 +48,7 @@ bool MusicListModel::add(musicDataStruct info)
         item0->setData(info.title, Qt::ToolTipRole);
         item1->setData(info.singer, Qt::ToolTipRole);
         item2->setData(info.album, Qt::ToolTipRole);
+        item3->setData(info.time, Qt::ToolTipRole);
 
         item0->setData(info.title, Qt::DisplayRole);
         item0->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
@@ -60,12 +62,12 @@ bool MusicListModel::add(musicDataStruct info)
         item2->setData(info.size, Qt::DecorationRole);
 
 
-        QFont sizeFont;
-        sizeFont.setPixelSize(14);
-        item0->setFont(sizeFont);
-        item1->setFont(sizeFont);
-        item2->setFont(sizeFont);
-        item3->setFont(sizeFont);
+//        QFont sizeFont;
+//        sizeFont.setPixelSize(14);
+//        item0->setFont(sizeFont);
+//        item1->setFont(sizeFont);
+//        item2->setFont(sizeFont);
+//        item3->setFont(sizeFont);
 
         item0->setEditable(false);
         item1->setEditable(false);
