@@ -18,6 +18,11 @@ LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+TRANSLATIONS += \
+            translations/kylin-music_zh_CN.ts \
+            translations/kylin-music_bo_CN.ts
+!system($$PWD/translations/generate_translations_pm.sh): error("Failed to generate qm")
+
 target.path = /usr/bin
 target.source += $$TARGET
 
@@ -50,7 +55,7 @@ INSTALLS += \
     dict \
     qm_files
 
-TRANSLATIONS += ./translations/kylin-music_zh_CN.ts
+
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gsettings-qt taglib gio-unix-2.0
@@ -154,5 +159,6 @@ DISTFILES += \
     data/org.kylin-music-data.gschema.xml \
     data/org.ukui.log4qt.kylin-music.gschema.xml \
     kylin-music.desktop \
-    translations/kylin-music_zh_CN.qm \
+    translations/generate_translations_pm.sh \
+    translations/kylin-music_bo_CN.ts \
     translations/kylin-music_zh_CN.ts
