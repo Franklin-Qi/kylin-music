@@ -108,52 +108,21 @@ int main(int argc, char *argv[])
     QString qt_trans_path;
     qt_trans_path = QLibraryInfo::location(QLibraryInfo::TranslationsPath);// /usr/share/qt5/translations
 
-    if (locale == "zh_CN") {
-        if(!app_trans.load("kylin-music_" + locale + ".qm", trans_path))
-            qDebug() << "Load translation file："<< "kylin-music_" + locale + ".qm from" << trans_path << "failed!";
-        else
-            a.installTranslator(&app_trans);
+    if(!app_trans.load("kylin-music_" + locale + ".qm", trans_path))
+        qDebug() << "Load translation file："<< "kylin-music_" + locale + ".qm from" << trans_path << "failed!";
+    else
+        a.installTranslator(&app_trans);
 
-        if(!qt_trans.load("qt_" + locale + ".qm", qt_trans_path))
-            qDebug() << "Load translation file："<< "qt_" + locale + ".qm from" << qt_trans_path << "failed!";
-        else
-            a.installTranslator(&qt_trans);
-    }else if(locale == "bo_CN"){
-        qDebug()<<"藏文";
-        if(!app_trans.load("kylin-music_" + locale + ".qm", trans_path))
-            qDebug() << "Load translation file："<< "kylin-music_" + locale + ".qm from" << trans_path << "failed!";
-        else
-            a.installTranslator(&app_trans);
-
-        if(!qt_trans.load("qt_" + locale + ".qm", qt_trans_path))
-            qDebug() << "Load translation file："<< "qt_" + locale + ".qm from" << qt_trans_path << "failed!";
-        else
-            a.installTranslator(&qt_trans);
-    }
-
-//    QString locale = QLocale::system().name();
-//    QTranslator trans_global, trans_menu;
-//    if(locale == "zh_CN"){
-//        trans_global.load(":/translations/kylin-music_side.qm");
-//        trans_menu.load(":/translations/qt_zh_CN.qm");
-//        a.installTranslator(&trans_global);
-//        a.installTranslator(&trans_menu);
-//    }
+    if(!qt_trans.load("qt_" + locale + ".qm", qt_trans_path))
+        qDebug() << "Load translation file："<< "qt_" + locale + ".qm from" << qt_trans_path << "failed!";
+    else
+        a.installTranslator(&qt_trans);
 
 //    qApp->setProperty("noChangeSystemFontSize", true);
 
     QTranslator app_trans_peony;
     app_trans_peony.load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     a.installTranslator(&app_trans_peony);
-#ifndef QT_NO_TRANSLATION
-    QString translatorFileName = QLatin1String("qt_");
-    translatorFileName += QLocale::system().name();
-    QTranslator *translator = new QTranslator();
-    if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-        a.installTranslator(translator);
-    else
-        qDebug() << "Failed to load Chinese translation file.";
-#endif
 
     QString str = "";
     QString str2 = "";

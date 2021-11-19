@@ -1,5 +1,14 @@
 kylin-music (1.1.0-31) v101; urgency=medium
 
+  * BUG号：无.
+  * 任务号：61040 【SP2】各组件藏文翻译导入----kylin-music.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Fri, 19 Nov 2021 11:23:27 +0800
+
+kylin-music (1.1.0-31) v101; urgency=medium
+
   * BUG号：
    - 82817【音乐】【PTOF】添加音乐后，搜索框使用搜狗拼音只能一次性输入中文，第二次继续输入则为英文字符
    - 82831【音乐】深色主题，使用键盘“下键”选择搜索到的歌曲，被选中的歌曲名部分被隐藏
