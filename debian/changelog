@@ -1,11 +1,21 @@
-kylin-music (1.1.0-31) v101; urgency=medium
+kylin-music (1.1.0-33) v101; urgency=medium
+
+  * BUG号：
+   - 83171 【音乐】【概率性】右键正在播放中的音乐“从歌单中删除”应用闪退且产生core文件，概率1/100.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Thu, 02 Dec 2021 16:47:47 +0800
+
+kylin-music (1.1.0-32) v101; urgency=medium
 
   * BUG号：无.
   * 任务号：61040 【SP2】各组件藏文翻译导入----kylin-music.
   * 其他改动说明：无.
   * 影响域：无.
 
- -- liujialin <liujialin@kylinos.cn>  Fri, 19 Nov 2021 11:23:27 +0800
+ -- liujialin <liujialin@kylinos.cn>  Fri, 19 Nov 2021 17:35:27 +0800
 
 kylin-music (1.1.0-31) v101; urgency=medium
 
