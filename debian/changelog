@@ -1,3 +1,13 @@
+kylin-music (1.1.0-34) v101; urgency=medium
+
+  * BUG号：
+   - 89148 【内测】【声音】插3.5mm耳机的情况下；播放音乐；拔掉耳机“音乐”不暂停.
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- liujialin <liujialin@kylinos.cn>  Tue, 21 Dec 2021 15:37:24 +0800
+
 kylin-music (1.1.0-33) v101; urgency=medium
 
   * BUG号：
