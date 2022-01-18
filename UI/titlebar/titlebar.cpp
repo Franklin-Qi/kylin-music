@@ -76,7 +76,7 @@ void TitleBar::initTitle()
     searchEdit->setPlaceholderText(tr("Search"));
 
 //    searchEdit->setContentsMargins(108,4,0,0);
-//    searchEdit->hide();
+    searchEdit->hide();
     searchBtn = new QPushButton(searchEdit);
 
     searchBtn->setFixedSize(16,16);
@@ -98,7 +98,7 @@ void TitleBar::initTitle()
 //    LayoutLeft->addWidget(rightBtn);
 //    LayoutLeft->addSpacing(30);
     //搜索框暂时隐藏
-    LayoutLeft->addWidget(searchEdit);
+//    LayoutLeft->addWidget(searchEdit);
 //    LayoutLeft->setSpacing(8);
     LayoutLeft->setMargin(0);
     LayoutLeft->setContentsMargins(108,0,0,0);

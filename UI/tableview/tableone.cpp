@@ -54,9 +54,6 @@ void TableOne::initStyle()
 
 void TableOne::initTableViewStyle()
 {
-    if (!tableView->horizontalHeader()->length()) {
-        return;
-    }
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,80);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -692,11 +689,7 @@ void TableOne::addMusicSlot()
         });
 
     connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
-        QList<QUrl> lists;
-        QString homePath = "file://" + QDir::homePath();
-        lists << QUrl("file://");
-        lists << QUrl(homePath);
-        fileDialog->setSidebarUrls(lists);
+        fileDialog->setSidebarUrls(list);
     });
     fileDialog->setSidebarUrls(list + mntUrlList);
     QString setFilter = tr("Audio File") + (" (%1) ");
@@ -765,11 +758,7 @@ void TableOne::addDirMusicSlot()
         });
 
         connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
-            QList<QUrl> lists;
-            QString homePath = "file://" + QDir::homePath();
-            lists << QUrl("file://");
-            lists << QUrl(homePath);
-            fileDialog->setSidebarUrls(lists);
+            fileDialog->setSidebarUrls(list);
         });
 
     //自己QFileDialog的用法，这里只是列子

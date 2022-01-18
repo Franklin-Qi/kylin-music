@@ -62,16 +62,14 @@ void SearchEdit::slotTextChanged()
         m_result->hide();
         return;
     }
+
     if (text.length() >= 1) {
         m_result->setListviewSearchString(text);
+        m_result->show();
 
         moveSearchResult();
-        m_result->show();
-//        m_result->activateWindow();
-//        m_result->raise();
-        m_result->autoResize();
-//        m_result->setFocusPolicy(Qt::StrongFocus);
-//        m_result->raise();
+        m_result->setFocusPolicy(Qt::StrongFocus);
+        m_result->raise();
     } else {
         m_result->hide();
     }

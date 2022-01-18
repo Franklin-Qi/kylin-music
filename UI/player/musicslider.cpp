@@ -123,7 +123,7 @@ void MusicSlider::enterEvent(QEvent *event)
                     }"
                     );
     }
-//    QSlider::enterEvent(event);
+    QSlider::enterEvent(event);
 }
 
 void MusicSlider::leaveEvent(QEvent *event)

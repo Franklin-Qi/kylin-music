@@ -11,9 +11,6 @@
 #include <QFrame>
 #include <QX11Info>
 #include <QApplication>
-#include <QScreen>
-#include <QTimer>
-
 #include "UI/search/musicsearchlistview.h"
 #include "UI/player/searchedit.h"
 
@@ -58,7 +55,6 @@ public:
     MusicSearchListview *m_AlbumView  = nullptr;
 
 private:
-    void setCursorWithXEvent();
     QVBoxLayout *vlayout = nullptr;
 
     QLabel *m_MusicLabel = nullptr;
@@ -76,7 +72,6 @@ private:
     int m_resultPosY;
     int m_resultPosWidth;
     int m_resultPosHeight;
-    quint32 m_key;
 };
 
 #endif // SEARCHRESULT_H

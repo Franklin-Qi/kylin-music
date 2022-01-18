@@ -68,8 +68,6 @@ DEPENDPATH += qtsingleapplication
 # 适配窗口管理器圆角阴影
 LIBS +=-lpthread
 LIBS +=-lX11
-# 虚拟键盘按键
-LIBS +=-lXtst
 
 # 解析音频文件
 LIBS += -lavformat
