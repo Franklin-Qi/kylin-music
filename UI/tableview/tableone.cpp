@@ -54,6 +54,10 @@ void TableOne::initStyle()
 
 void TableOne::initTableViewStyle()
 {
+    if (!tableView->horizontalHeader()->length()) {
+        return;
+    }
+
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     tableView->setColumnWidth(3,80);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
