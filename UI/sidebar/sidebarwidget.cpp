@@ -28,7 +28,7 @@ void SideBarWidget::initWidget()
     logoNameLabel->setFixedHeight(28);
     logoPushButton = new QPushButton(this);
     logoPushButton->setFixedSize(24,24);
-    logoPushButton->setIconSize(QSize(25,25));
+    logoPushButton->setIconSize(QSize(24,24));
     logoPushButton->setIcon(QIcon::fromTheme("kylin-music"));
 
     logoLayout->setSpacing(0);

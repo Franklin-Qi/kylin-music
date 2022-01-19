@@ -222,7 +222,7 @@ QHBoxLayout* menuModule::initTitleBar(){
     QPushButton* titleIcon = new QPushButton();
     QPushButton *titleBtnClose = new QPushButton;
     titleIcon->setFixedSize(24,24);
-    titleIcon->setIconSize(QSize(25,25));
+    titleIcon->setIconSize(QSize(24,24));
     //TODO：直接从主题调图标，不会QIcon转qpixmap所以暂时从本地拿
 //    titleIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
     titleIcon->setIcon(QIcon::fromTheme("kylin-music"));
