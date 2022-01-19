@@ -161,8 +161,8 @@ void Widget::initDbus()//初始化dbus
 
     //蓝牙控
     QDBusConnection::systemBus().connect(QString(), QString("/"), "com.monitorkey.interface", "monitorkey", this, SLOT(client_get(QString)));
-    //插拔
-    QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "DbusSingleTest",this, SLOT(inputDevice_get(QString)));
+    //耳机插拔
+    QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "sinkPortChanged",this, SLOT(inputDevice_get(QString)));
     //切换用户
     QDBusConnection::sessionBus().connect(QString("org.gnome.SessionManager"),
                                           QString("/org/gnome/SessionManager"),
