@@ -2,6 +2,7 @@
 
 #include <QDBusMessage>
 #include <QDBusConnection>
+#include <ukui-log4qt.h>
 
 MMediaPlayer::MMediaPlayer(QObject *parent)
     : QObject(parent)
@@ -25,6 +26,8 @@ void MMediaPlayer::setPlaylist(MMediaPlaylist *playlist)
 
 void MMediaPlayer::truePlay(QString startTime)
 {
+    KyInfo() << "startTime = " << startTime;
+
     //异常情况：入参不合法
     if (startTime.isEmpty()) {
         return;
@@ -33,7 +36,10 @@ void MMediaPlayer::truePlay(QString startTime)
     if (m_playList == nullptr) {
         return;
     }
+
     QString filePath = m_playList->getPlayFileName();
+    KyInfo() << "filePath = " << filePath;
+
     //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
         Q_EMIT playErrorMsg(NotFound);
@@ -116,8 +122,18 @@ void MMediaPlayer::setPosition(qint64 pos)
     if (m_state == PausedState) {
         restartPlay = true;
     }
+
+    KyInfo() << "sec = " << sec
+             << "(m_position, current_pos, m_duration) = " << m_position << pos << m_duration;
+    if ((pos == m_duration) && pos != 0)  {
+        //播放结束
+        Q_EMIT playFinish();
+        return;
+    }
+
     //从拖动完成的位置开始播放
     truePlay(QString::number(sec));
+
 
     if (restartPlay) {
         //切换播放状态为播放
@@ -177,6 +193,8 @@ void MMediaPlayer::onMpvEvents()
 
 void MMediaPlayer::handle_mpv_event(mpv_event *event)
 {
+//    KyInfo() << "handle_mpv_event: event_id = " << event->event_id;
+
     switch (event->event_id) {
         case MPV_EVENT_PROPERTY_CHANGE: { //属性改变事件
             mpv_event_property *prop = (mpv_event_property *)event->data;
@@ -189,11 +207,13 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
                     }
                     // 获得播放时间
                     double time = *(double *)prop->data;
+
                     //将单位换算为毫秒
                     m_position = time * 1000;
                     Q_EMIT positionChanged(m_position);
                 } else if (prop->format == MPV_FORMAT_NONE) {
                     //当前时长距离总时长不超过500毫秒判断播放结束
+
                     if ( m_duration!=0 && (m_duration - m_position < 500)) {
                         m_duration = 0;
                         m_position = 0;
@@ -293,9 +313,11 @@ void MMediaPlayer::changeState(MMediaPlayer::State stateNow)
 
 void MMediaPlayer::autoPlay(MMediaPlaylist::PlaybackMode playbackMode)
 {
+    KyInfo() << "autoPlay";
     //如果是单曲循环模式
     if (playbackMode == MMediaPlaylist::PlaybackMode::CurrentItemInLoop) {
         //播放完毕自动切歌（借用播放点改变时间逻辑循环）
+        KyInfo() << "switch another song.";
         m_positionChangeed = true;
     }
     truePlay("0");

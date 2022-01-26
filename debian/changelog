@@ -1,3 +1,14 @@
+kylin-music (1.1.0-20hw) v101.hw; urgency=medium
+
+  * [BUG]
+  - 96064, 【音乐】拖动进度条至歌曲末尾，不播放下一首，重播此音乐
+
+  * 需求号或者任务号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Wed, 26 Jan 2022 15:19:15 +0800
+
 kylin-music (1.1.0-19hw) v101.hw; urgency=medium
 
   * [BUG]

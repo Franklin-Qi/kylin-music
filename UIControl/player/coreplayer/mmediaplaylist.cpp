@@ -1,4 +1,5 @@
 #include "mmediaplaylist.h"
+#include <ukui-log4qt.h>
 
 MMediaPlaylist::MMediaPlaylist(QObject *parent)
     : QObject(parent)
@@ -12,9 +13,12 @@ QString MMediaPlaylist::getPlayFileName()
     if (m_playerList.isEmpty()) {
         return "";
     }
+
+    KyInfo() << "m_index = " << m_index;
     //异常情况：当前播放的媒体在列表中的位置超过列表中媒体总数量
     if (m_index >= m_playerList.length()) {
         m_index = m_playerList.length();
+        KyInfo() << "m_index = " << m_index;
         return m_playerList.last().toString();
     }
     return m_playerList.at(m_index).toString();
@@ -187,12 +191,15 @@ void MMediaPlaylist::playErrorMsg(int Damage)
 
 void MMediaPlaylist::palyFinish()
 {
+    KyInfo() << "playFinish";
+
     //如果没有待播放的媒体则不处理
     if (m_index < 0) {
         return;
     }
     //如果循环模式不是单曲循环则切换下一首
     if (m_playbackMode != CurrentItemInLoop) {
+        KyInfo() << "play next song.";
         next();
         Q_EMIT currentIndexChanged(m_index);
     }

@@ -2,6 +2,8 @@
 #include "UI/base/widgetstyle.h"
 #include "UIControl/player/player.h"
 
+#include <ukui-log4qt.h>
+
 MusicSlider::MusicSlider(QWidget *parent):QSlider(parent),m_isPlaying(false)
 {
     //现在进度条样式已基本符合要求，但是两端稍微有点瑕疵，暂搁置
@@ -80,11 +82,15 @@ void MusicSlider::mouseReleaseEvent(QMouseEvent *event)
     this->blockSignals(false);
     QSlider::mouseReleaseEvent(event);
 
+    KyInfo() << "min->max: " << minimum() << maximum();
+
     int range = this->maximum() - minimum();
     Q_ASSERT(range != 0);
     if(value() <= range)
     {
         int position = value() * playController::getInstance().getPlayer()->duration() / range;
+        KyInfo() << "position: " << position;
+
         playController::getInstance().getPlayer()->setPosition(position);
     }
 

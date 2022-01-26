@@ -188,12 +188,16 @@ void Widget::onPrepareForShutdown(bool Shutdown)
     qDebug()<<"onPrepareForShutdown"<<Shutdown;
 }
 
+/**
+ * @brief Widget::onPrepareForSleep
+ *
+ * @param isSleep
+ *      - isSleep true : 进行睡眠
+ *      - isSleep false: 睡眠唤醒
+ */
 void Widget::onPrepareForSleep(bool isSleep)
 {
     //990
-    //空指针检验
-    //------此处空指针校验（如果用了指针）------
-    //睡眠
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
             playController::getInstance().pause();
@@ -222,6 +226,7 @@ void Widget::client_get(QString str)
 
 void Widget::inputDevice_get(QString str)
 {
+    qInfo() << "test";
     if(playController::getInstance().getState() == playController::PLAY_STATE) {
         playController::getInstance().pause();
     }
