@@ -125,8 +125,8 @@ void MMediaPlayer::setPosition(qint64 pos)
 
     KyInfo() << "sec = " << sec
              << "(m_position, current_pos, m_duration) = " << m_position << pos << m_duration;
-    if ((pos == m_duration) && pos != 0)  {
-        //播放结束
+    if ((pos >= m_duration) && pos != 0)  {
+        //当前音乐播放结束,可以播放下一首
         Q_EMIT playFinish();
         return;
     }
@@ -208,11 +208,22 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
                     // 获得播放时间
                     double time = *(double *)prop->data;
 
+//                    KyInfo() << "(m_position,  m_duration) = " << m_position << m_duration;
                     //将单位换算为毫秒
                     m_position = time * 1000;
-                    Q_EMIT positionChanged(m_position);
+
+                    // 当前播放时长大于mpv获取时长，如aar格式，默认当前播放结束
+                    if (m_position > m_duration) {
+                        m_duration = 0;
+                        m_position = 0;
+                        //播放结束
+                        Q_EMIT playFinish();
+                    } else {
+                        Q_EMIT positionChanged(m_position);
+                    }
                 } else if (prop->format == MPV_FORMAT_NONE) {
                     //当前时长距离总时长不超过500毫秒判断播放结束
+//                    KyInfo() << "(m_position,  m_duration) = " << m_position << m_duration;
 
                     if ( m_duration!=0 && (m_duration - m_position < 500)) {
                         m_duration = 0;
