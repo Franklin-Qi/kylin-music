@@ -42,6 +42,8 @@ void MMediaPlayer::truePlay(QString startTime)
 
     //异常情况：本地文件不存在
     if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+        KyCritical() << "filePath " << filePath << "is not exists.";
+
         Q_EMIT playErrorMsg(NotFound);
         Q_EMIT playError();
         return;
@@ -246,10 +248,26 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         break;
     case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、歌曲异常时会进入此分支
         QString playlist = getProperty("playlist");
+        KyInfo() << "plalist = " << playlist;
+
         if (!playlist.contains(',')) { //排除播放完成
             if (playlist.length() > 2) { //排除刚启动
-                //歌曲播放异常
-                Q_EMIT playErrorMsg(Damage);
+                KyInfo() << "plalist = " << playlist;
+
+                QString filePath = m_playList->getPlayFileName();
+                KyInfo() << "filePath = " << filePath;
+
+                //异常情况：本地文件不存在
+                if (!QFileInfo::exists(QUrl(filePath).toLocalFile())) {
+                    KyCritical() << "filePath " << filePath << "is not exists.";
+
+                    Q_EMIT playErrorMsg(NotFound);
+                    Q_EMIT playError();
+                    return;
+                } else {
+                    //歌曲播放异常
+                    Q_EMIT playErrorMsg(Damage);
+                }
             }
         }
     }

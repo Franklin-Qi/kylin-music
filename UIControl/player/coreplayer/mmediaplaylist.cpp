@@ -175,6 +175,8 @@ void MMediaPlaylist::playError()
 
 void MMediaPlaylist::playErrorMsg(int Damage)
 {
+    KyInfo() << "playErrorMsg: " << Damage;
+
     if (Damage == -2) {
         //如果是列表循环则切换下一首
         if (m_playbackMode == Loop) {
