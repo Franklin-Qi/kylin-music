@@ -182,10 +182,22 @@ void Widget::initStyle()
         btn->setFocusPolicy(Qt::NoFocus);
 }
 
+/**
+ * @brief Widget::onPrepareForShutdown
+ *
+ * @param Shutdown
+ *      - Shutdown true : 进行休眠
+ *      - Shutdown false: 休眠唤醒
+ */
 void Widget::onPrepareForShutdown(bool Shutdown)
 {
-    //目前只做事件监听，不处理
     qDebug()<<"onPrepareForShutdown"<<Shutdown;
+
+    if(Shutdown) {
+        if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            playController::getInstance().pause();
+        }
+    }
 }
 
 /**
@@ -198,6 +210,8 @@ void Widget::onPrepareForShutdown(bool Shutdown)
 void Widget::onPrepareForSleep(bool isSleep)
 {
     //990
+    qDebug()<<"onPrepareForSleep"<<Shutdown;
+
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
             playController::getInstance().pause();

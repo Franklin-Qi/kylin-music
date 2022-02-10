@@ -1,3 +1,14 @@
+kylin-music (1.1.0-21hw) v101.hw; urgency=medium
+
+  * [BUG]
+  - 105731, 播放音乐过程中进入休眠，唤醒之后，音乐没有暂停
+
+  * 需求号或者任务号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 10 Feb 2022 14:23:36 +0800
+
 kylin-music (1.1.0-20hw) v101.hw; urgency=medium
 
   * [BUG]
