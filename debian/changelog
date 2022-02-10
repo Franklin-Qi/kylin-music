@@ -1,3 +1,14 @@
+kylin-music (1.1.0-35) v101; urgency=medium
+
+  * BUG号：
+   - 103646, 播放音乐进入S4，显示器黑屏后声音会继续播放1-2S
+
+  * 需求号：无.
+  * 其他改动说明：无.
+  * 影响域：无.
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 10 Feb 2022 11:24:23 +0800
+
 kylin-music (1.1.0-34) v101; urgency=medium
 
   * BUG号：

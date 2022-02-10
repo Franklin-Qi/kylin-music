@@ -184,8 +184,14 @@ void Widget::initStyle()
 
 void Widget::onPrepareForShutdown(bool Shutdown)
 {
-    //目前只做事件监听，不处理
+    // 休眠
     qDebug()<<"onPrepareForShutdown"<<Shutdown;
+
+    if(Shutdown) {
+        if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            playController::getInstance().pause();
+        }
+    }
 }
 
 void Widget::onPrepareForSleep(bool isSleep)
