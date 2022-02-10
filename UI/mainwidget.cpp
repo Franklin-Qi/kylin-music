@@ -210,7 +210,7 @@ void Widget::onPrepareForShutdown(bool Shutdown)
 void Widget::onPrepareForSleep(bool isSleep)
 {
     //990
-    qDebug()<<"onPrepareForSleep"<<Shutdown;
+    qDebug()<<"onPrepareForSleep"<<isSleep;
 
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
