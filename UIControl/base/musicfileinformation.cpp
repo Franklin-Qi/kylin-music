@@ -9,6 +9,7 @@ extern "C" {
 
 #include "musicfileinformation.h"
 #include "UI/mainwidget.h"
+#include "ukui-log4qt.h"
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
@@ -23,11 +24,13 @@ QStringList MusicFileInformation::getMusicType()
     return m_musicType;
 }
 
-void MusicFileInformation::addFile(const QStringList &addFile)
+int MusicFileInformation::addFile(const QStringList &addFile)
 {
     int count = 0;
     int failCount = 0;
     resList.clear();
+
+    int failDamagedCount = 0; // 文件损坏数目，如wav格式
 
     for(auto &filepath : addFile)
     {
@@ -64,6 +67,13 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                     if(musicdataStruct.time != "")
                     {
                         resList.append(musicdataStruct);
+                    } else {
+                        // 添加损坏音乐文件，如wav格式
+
+                        failCount++;
+                        failDamagedCount++;
+
+                        KyInfo() << "failDamagedCount = " << failDamagedCount;
                     }
                 }
                 else
@@ -81,20 +91,34 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             fileSize(fileInfo);      //文件大小
             if(m_musicType.contains("*." + musicdataStruct.filetype))
             {
+                KyInfo() << "filepath = " << filepath
+                         << "musicdaaStruct.time = " << musicdataStruct.time;
+
                 fileInformation(musicdataStruct.filepath);//获取歌曲文件信息
                 if(musicdataStruct.time != "")
                 {
                     resList.append(musicdataStruct);
+                } else {
+                    // 添加损坏音乐文件，如wav格式
+
+                    failCount++;
+                    failDamagedCount++;
+
+                    KyInfo() << "failDamagedCount = " << failDamagedCount;
                 }
             }
             else
             {
+                KyInfo() << "filepath = " << filepath;
+
                 failCount++;
             }
         }
     }
     musicCount = count;
     m_failCount = failCount;
+
+    return failDamagedCount;
 //    resList.clear();
 //    if(!addFile.isEmpty())
 //    {

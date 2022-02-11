@@ -448,7 +448,11 @@
         <translation>འདེམས་ཐོན་བྱུང་བའི་གཞས་དེ་གཞས་རྐྱང་ནང་ནས་སུབ་ཀྱི་རེད་དམ། </translation>
     </message>
     <message>
-        <source>This format file is not supported</source>
+        <source>damaged %1 songs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>repeated %1 songs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

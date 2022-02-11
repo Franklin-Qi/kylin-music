@@ -40,7 +40,7 @@ public:
 
     QStringList getMusicType();
     QList<musicDataStruct> resList;
-    void addFile(const QStringList &addFile);
+    int addFile(const QStringList &addFile);
     int findIndexFromPlayList(QString listname, QString filepath);
     int getCount();
     int getFailCount();

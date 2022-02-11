@@ -150,6 +150,9 @@ void MMediaPlayer::setVolume(int vol)
     // 设置音量，此音量和系统同步，不单独设置mpv音量
     QDBusMessage message = QDBusMessage::createSignal("/", "org.kylin.music", "sinkInputVolumeChanged");
     message << "kylin-music" << vol << false;
+
+    KyInfo() << "vol = " << vol;
+
     QDBusConnection::sessionBus().send(message);
 }
 

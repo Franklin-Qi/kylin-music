@@ -72,7 +72,7 @@ private:
 //    static void deleteImage(const QString &savepath);
 
     //成功添加多少首歌曲
-    void importFinished(int successCount, int failCount, int allCount);
+    void importFinished(int successCount, int failDamagedCount, int failRepeatedCount, int failCount, int allCount);
     //导入失败
     void importFailed(int successCount, int failCount, int allCount);
 

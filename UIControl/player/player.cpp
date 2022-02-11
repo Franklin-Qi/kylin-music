@@ -5,6 +5,7 @@
 #include "UIControl/base/musicfileinformation.h"
 #include "UI/player/playsongarea.h"
 #include "UI/base/widgetstyle.h"
+#include <ukui-log4qt.h>
 
 bool playController::play(QString playlist, int index)
 {
@@ -408,6 +409,9 @@ int playController::getVolume()
 
 void playController::setVolume(int volume)
 {
+    KyInfo() << "volume = " << volume
+             << "m_receive = " << m_receive;
+
     if(volume > 100) {
         volume = 100;
     }

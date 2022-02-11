@@ -3,6 +3,7 @@
 #include <peony-qt/file-operation-utils.h>
 #include "tableone.h"
 #include "UI/mainwidget.h"
+#include <ukui-log4qt.h>
 
 #define PT_18 18
 
@@ -795,15 +796,21 @@ void TableOne::addDirMusicSlot()
 
 void TableOne::addMusicToDatebase(QStringList fileNames)
 {
-    //成功数量
-    int successCount = 0;
-    //失败数量
-    int failCount = 0;
-    MusicFileInformation::getInstance().addFile(fileNames);
+    KyInfo() << "fileNames = " << fileNames;
+
+    int successCount = 0; //成功数量
+    int failCount = 0; //失败数量
+    int failDamagedCount = 0; // 失败数量中是音乐文件损坏导致
+    int failRepeatedCount = 0; // 失败数量中是重复添加音乐文件导致
+
+    failDamagedCount = MusicFileInformation::getInstance().addFile(fileNames);
     int allCount = MusicFileInformation::getInstance().getCount();
     int fail_count = MusicFileInformation::getInstance().getFailCount();
     QList<musicDataStruct> resList;
     resList = MusicFileInformation::getInstance().resList;
+
+    KyInfo() << "allCount = " << allCount
+             << "fail_count = " << fail_count;
 
     int ret;
     foreach (const musicDataStruct date, resList)
@@ -816,51 +823,83 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
         } else {
             ret = g_db->addNewSongToPlayList(date,nowListName);   //数据库接口
         }
+
+        KyInfo() << "ret = " << ret;
         if(ret == DB_OP_SUCC)
         {
             successCount++;
             playController::getInstance().addSongToCurList(nowListName,date.filepath);
         }
-//        else
-//        {
-//            failCount++;
-//        }
+        else
+        {
+            failCount++;
+
+            if(ret == DB_OP_ADD_REPEAT) {
+                // 当前歌曲重复添加
+                KyInfo() << "music title: " << date.title
+                         << "music filetype: " << date.filetype
+                         << "重复添加";
+
+                failRepeatedCount++;
+            }
+
+        }
     }
     selectListChanged(nowListName);
-    importFinished(successCount, fail_count, allCount);
+    importFinished(successCount, failDamagedCount, failRepeatedCount, fail_count, allCount);
 }
 
-void TableOne::importFinished(int successCount, int m_failCount, int allCount)
+void TableOne::importFinished(int successCount, int failDamagedCount, int failRepeatedCount, int failCount, int allCount)
 {
+    KyInfo() << "successCount = " << successCount
+             << "failCount = " << failCount
+             << "failDamagedCount = " << failDamagedCount
+             << "failRepeatedCount = " << failRepeatedCount
+             << "allCount = " << allCount;
 
-    if(m_failCount > 0) {
-        Widget::mutual->setCreatFinishMsg(tr("This format file is not supported"));
-        return;
-    }
     if(successCount > 0)
     {
+        // 全部成功或部分成功
         if(allCount == 1)
         {
             return;
         }
+
         QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes,Widget::mutual);
         warn->button(QMessageBox::Yes)->setText("确定");
         warn->exec();
     }
     else
     {
-        //此处逻辑待优化，双击打开不应该提示错误
-        //if(allCount == 0)
+        if(allCount == 0)
         {
             return;
         }
-        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Add failed"),QMessageBox::Yes,Widget::mutual);
+
+        QString FailedMsg = tr("Add failed");
+        QString damagedMsg;
+        QString repeatedMsg;
+
+        if(failDamagedCount > 0) {
+            // 损坏文件提示
+
+            damagedMsg = tr("damaged %1 songs").arg(failDamagedCount);
+            FailedMsg  = FailedMsg + ", " + damagedMsg;
+        }
+        if (failRepeatedCount > 0) {
+            // 重复添加文件提示
+
+            repeatedMsg = tr("repeated %1 songs").arg(failRepeatedCount);
+            FailedMsg = FailedMsg + ", " + repeatedMsg;
+        }
+
+        QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"), FailedMsg,QMessageBox::Yes,Widget::mutual);
         warn->button(QMessageBox::Yes)->setText("确定");
         warn->exec();
     }
 }
 
-void TableOne::importFailed(int successCount, int m_failCount, int allCount)
+void TableOne::importFailed(int successCount, int failCount, int allCount)
 {
     if (successCount > 0)
     {
@@ -870,7 +909,7 @@ void TableOne::importFailed(int successCount, int m_failCount, int allCount)
     }
     else
     {
-        if (m_failCount > 0) {
+        if (failCount > 0) {
             QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Repeat add"),QMessageBox::Yes,Widget::mutual);
             warn->button(QMessageBox::Yes)->setText("确定");
             warn->exec();
