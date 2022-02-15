@@ -2,6 +2,7 @@
 
 #include <QDBusMessage>
 #include <QDBusConnection>
+#include <ukui-log4qt.h>
 
 MMediaPlayer::MMediaPlayer(QObject *parent)
     : QObject(parent)
@@ -78,11 +79,18 @@ void MMediaPlayer::pause()
 {
     // 获得mpv播放器的"暂停"状态
     QString pasued = getProperty("pause");
+
+    KyInfo() << "pauseState = " << pasued;
+
     // 根据"暂停"状态来选择暂停还是播放
     if(pasued == "no") {
+        KyInfo() << "set pause yes";
+
         setProperty("pause", "yes");
         changeState(PausedState);
     } else if(pasued == "yes") {
+        KyInfo() << "set pause no";
+
         setProperty("pause", "no");
         changeState(PlayingState);
     }

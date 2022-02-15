@@ -2,6 +2,7 @@
 #include <QDBusMessage>
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
+#include <ukui-log4qt.h>
 
 #define UKUI_FONT_SIZE "systemFontSize"
 
@@ -185,10 +186,12 @@ void Widget::initStyle()
 void Widget::onPrepareForShutdown(bool Shutdown)
 {
     // 休眠
-    qDebug()<<"onPrepareForShutdown"<<Shutdown;
+    KyInfo()<<"onPrepareForShutdown"<<Shutdown
+           << "getState = " << playController::getInstance().getState();
 
     if(Shutdown) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            KyInfo() << "before pause";
             playController::getInstance().pause();
         }
     }
@@ -196,12 +199,13 @@ void Widget::onPrepareForShutdown(bool Shutdown)
 
 void Widget::onPrepareForSleep(bool isSleep)
 {
-    //990
+    KyInfo()<<"onPrepareForShutdown"<< isSleep
+           << "getState = " << playController::getInstance().getState();
+
     //空指针检验
-    //------此处空指针校验（如果用了指针）------
-    //睡眠
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            KyInfo() << "before pause";
             playController::getInstance().pause();
         }
     }
