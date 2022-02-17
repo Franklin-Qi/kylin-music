@@ -34,7 +34,5 @@ Architecture: any
 Depends: libqt5sql5-sqlite,
          ${shlibs:Depends}, 
 		 ${misc:Depends}
-Breaks:
-         taglib,
 Description: kylin-music
  <insert long description, indented with spaces>

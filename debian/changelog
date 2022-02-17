@@ -1,3 +1,10 @@
+kylin-music (1.1.0-36) v101; urgency=medium
+
+  * 其他改动说明：
+  - 取消control文件依赖： Breaks: taglib,
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 17 Feb 2022 17:28:45 +0800
+
 kylin-music (1.1.0-35) v101; urgency=medium
 
   * BUG号：
