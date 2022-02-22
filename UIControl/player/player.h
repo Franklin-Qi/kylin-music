@@ -43,6 +43,7 @@ public:
 
     bool play();
     bool pause();
+    bool pauseOnly();
     bool stop();
 
     int volume();

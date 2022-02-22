@@ -887,7 +887,11 @@ void TableOne::importFinished(int successCount, int failDamagedCount, int failRe
             FailedMsg  = FailedMsg + ", " + damagedMsg;
         }
         if (failRepeatedCount > 0) {
-            // 重复添加文件提示
+            // 只要没有损坏文件或者都是重复添加文件，取消重复添加文件提示
+            if ((failDamagedCount <= 0)
+                    || (failRepeatedCount == allCount)) {
+                return;
+            }
 
             repeatedMsg = tr("repeated %1 songs").arg(failRepeatedCount);
             FailedMsg = FailedMsg + ", " + repeatedMsg;

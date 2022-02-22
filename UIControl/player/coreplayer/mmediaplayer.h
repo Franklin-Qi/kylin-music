@@ -18,6 +18,7 @@ public:
 
     void setPlaylist(MMediaPlaylist *playlist); //设置播放列表
     void pause(); //暂停或继续
+    void pauseOnly(); // 暂停
 
     State state() const; //获取状态
     qint64 position() const; //获取当前播放点

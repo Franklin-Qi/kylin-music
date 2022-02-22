@@ -2,6 +2,7 @@
 #include "UI/base/widgetstyle.h"
 #include "UI/base/xatom-helper.h"
 #include "UIControl/base/musicDataBase.h"
+#include <ukui-log4qt.h>
 #define VOLUME 5
 #define PT_9 9
 
@@ -78,7 +79,7 @@ void PlaySongArea::initWidget()
     hint.functions = MWM_FUNC_ALL;
     hint.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(m_volSliderWid->winId(), hint);
-    m_volSliderWid->hide();
+//    m_volSliderWid->hide();
 
     m_playBackModeWid = new PlayBackModeWidget(this);
     MotifWmHints hints;
@@ -315,6 +316,8 @@ void PlaySongArea::initConnect()
 
 void PlaySongArea::slotVolumeChanged(int values)
 {
+    KyInfo() << "slotVolumeChanged";
+
     playController::getInstance().setVolume(values);
     int volume = playController::getInstance().getVolume();
     if(volume == 0)
@@ -337,6 +340,7 @@ void PlaySongArea::slotVolumeChanged(int values)
 
 void PlaySongArea::volumeIncrease()
 {
+    KyInfo() << "volumeIncrease";
     int value = m_volSliderWid->vSlider->value() + VOLUME;
     if(value > 100)
         value = 100;
@@ -345,6 +349,7 @@ void PlaySongArea::volumeIncrease()
 
 void PlaySongArea::volumeReduce()
 {
+    KyInfo() << "volumeReduce";
     int value = m_volSliderWid->vSlider->value() - VOLUME;
     if(value < 0)
         value = 0;

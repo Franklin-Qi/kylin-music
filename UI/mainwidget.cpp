@@ -195,7 +195,7 @@ void Widget::onPrepareForShutdown(bool Shutdown)
 
     if(Shutdown) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
-            playController::getInstance().pause();
+            playController::getInstance().pauseOnly();
         }
     }
 }
@@ -214,7 +214,7 @@ void Widget::onPrepareForSleep(bool isSleep)
 
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
-            playController::getInstance().pause();
+            playController::getInstance().pauseOnly();
         }
     }
 }

@@ -54,6 +54,16 @@ bool playController::pause()
 
     return true;
 }
+
+bool playController::pauseOnly()
+{
+    if (m_player == nullptr) {
+        return false;
+    }
+    m_player->pauseOnly();
+
+    return true;
+}
 bool playController::stop()
 {
     if (m_player == nullptr) {
@@ -353,6 +363,8 @@ void playController::init()
 {
     volumeSetting = new QGSettings(KYLINMUSIC);
     m_volume = volumeSetting->get("volume").toInt();
+
+    KyInfo() << "init: m_volume = " << m_volume;
     m_player->setVolume(m_volume);
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
@@ -399,6 +411,8 @@ void playController::init()
 
 void playController::initDbus()
 {
+    KyInfo() << "initDbus: ukui-media: sinkVolumeChanged";
+
     QDBusConnection::sessionBus().connect(QString(), "/", "org.ukui.media", "sinkVolumeChanged", this, SLOT(slotVolumeChange(QString,int,bool)));
 }
 
@@ -598,12 +612,18 @@ playController::PlayMode playController::mode() const
 
 void playController::slotVolumeChange(QString app, int value, bool mute)
 {
+    KyInfo() << "m_receive = " << m_receive
+             << "ukui-media:value = " << value
+             << "appname: " << app
+             << "mute = " << mute << "true:静音，false:取消静音";
+
     if (app == "kylin-music") {
         if (value < 0) {
             return;
         }
 
         if (value != m_volume) {
+            KyInfo() << "emit signalVolume";
             m_receive = true;
             Q_EMIT signalVolume(value);
         }

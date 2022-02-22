@@ -1,3 +1,11 @@
+kylin-music (1.1.0-22hw) v101.hw; urgency=medium
+
+  * [BUG] 
+  - 105731, 播放音乐过程中进休眠，唤醒之后，音乐没有暂停
+  - 106446, 双击已在播放列表的音乐进行播放，提示"添加失败，添加已重复1首歌曲“
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 22 Feb 2022 17:00:27 +0800
+
 kylin-music (1.1.0-21hw) v101.hw; urgency=medium
 
   * [BUG]
