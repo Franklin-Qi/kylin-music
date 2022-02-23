@@ -620,6 +620,9 @@ void Widget::initAllComponent()
     hint.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(historyListTable->winId(), hint);
     historyListTable->hide();
+
+    m_quitWindow = new QShortcut(QKeySequence("Ctrl+Q"), this);
+    m_quitWindow->setContext(Qt::WindowShortcut);
 }
 
 void Widget::allConnect()
@@ -634,6 +637,7 @@ void Widget::allConnect()
 
     connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
+    connect(m_quitWindow, &QShortcut::activated, this, &Widget::slotClose);
     connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
     connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
 

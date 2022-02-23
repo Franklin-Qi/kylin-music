@@ -10,6 +10,7 @@
 #include <QStackedWidget>
 #include <QResizeEvent>
 #include <QPropertyAnimation>
+#include <QShortcut>
 //DBus
 #include <QDBusInterface>
 #include <QDBusConnection>
@@ -137,6 +138,9 @@ private:
     //主界面初始化完成后执行的操作
     enum CreatFinishEnum{NONE=0,MESSAGE,OTHER} m_creatFinishEnum = NONE;
     QString m_creatFinishMsg;
+
+    // ctrl+q 退出窗口快捷键
+    QShortcut *m_quitWindow;
 
 Q_SIGNALS:
     void signalShowGuide();
