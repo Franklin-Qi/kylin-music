@@ -1,3 +1,10 @@
+kylin-music (1.1.0-37) v101; urgency=medium
+
+  * BUG号：
+  - 103011, ctrl+Q无法关闭音乐程序
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 24 Feb 2022 16:45:04 +0800
+
 kylin-music (1.1.0-36) v101; urgency=medium
 
   * 其他改动说明：
