@@ -80,6 +80,7 @@ SOURCES += \
     UI/base/labedit.cpp \
     UI/base/mylabel.cpp \
     UI/base/widgetstyle.cpp \
+    UI/dbusadapter.cpp \
     UI/mainwidget.cpp \
     UI/player/miniwidget.cpp \
     UI/player/musicslider.cpp \
@@ -116,6 +117,7 @@ HEADERS += \
     UI/base/labedit.h \
     UI/base/mylabel.h \
     UI/base/widgetstyle.h \
+    UI/dbusadapter.h \
     UI/mainwidget.h \
     UI/player/miniwidget.h \
     UI/player/musicslider.h \

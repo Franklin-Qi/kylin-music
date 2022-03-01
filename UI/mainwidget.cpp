@@ -147,6 +147,7 @@ void Widget::initDbus()//初始化dbus
     {
         qDebug()<<"初始化DBUS失败";
     }
+
     //S3 S4策略
     QDBusConnection::systemBus().connect(QString("org.freedesktop.login1"),
                                          QString("/org/freedesktop/login1"),
@@ -169,6 +170,8 @@ void Widget::initDbus()//初始化dbus
                                           QString("org.gnome.SessionManager"),
                                           QString("PrepareForSwitchuser"), this,
                                           SLOT(slotPrepareForSwitchuser()));
+
+    DbusAdapter *dbs_adapter = new DbusAdapter;
 }
 
 void Widget::initStyle()
@@ -890,6 +893,84 @@ void Widget::slotShowMaximized()
         m_titleBar->maximumBtn->setProperty("isWindowButton", 0x1);
         m_titleBar->maximumBtn->setProperty("useIconHighlightEffect", 0x2);
         m_titleBar->maximumBtn->setFlat(true);
+    }
+}
+
+/**
+ * @brief Widget::Stop
+ * 如果播放已停止，则不起作用；
+ * 在此之后调用播放应会导致播放从曲目的开头重新开始
+ */
+void Widget::Stop() const
+{
+    playController::getInstance().stop();
+}
+
+/**
+ * @brief Widget::VolumeUp
+ * 音量增加
+ */
+void Widget::VolumeUp() const
+{
+    playSongArea->volumeIncrease();
+}
+
+/**
+ * @brief Widget::VolumeDown
+ * 音量降低
+ */
+void Widget::VolumeDown() const
+{
+    playSongArea->volumeReduce();
+}
+
+/**
+ * @brief Widget::Next
+ * 跳转到曲目列表的下一首曲目。
+ * 如果没有下一首曲目（并且循环播放和列表播放都关闭），则停止播放。
+ * 如果播放已暂停或停止，则保持原样。
+ */
+void Widget::Next() const
+{
+    playController::getInstance().onNextSong();
+}
+
+/**
+ * 跳转到曲目列表的上一首曲目。
+ * 如果没有上一首曲目（并且循环播放和列表播放都关闭），则停止播放。
+ * 如果播放已暂停或停止，则保持原样。
+ */
+void Widget::Previous() const
+{
+    playController::getInstance().onPreviousSong();
+}
+
+void Widget::Play() const
+{
+    playController::getInstance().play();
+}
+
+/**
+ * @brief Widget::Pause
+ * 如果播放已暫停，则不起作用。
+ *
+ */
+void Widget::Pause() const
+{
+    playController::getInstance().pauseOnly();
+}
+
+/**
+ * @brief Widget::PlayPause
+ * 如果播放已暫停，则恢复播放；
+ * 如果播放停止，则开始播放。
+ */
+void Widget::PlayPause() const
+{
+    if (playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+        this->Pause();
+    } else if (playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+        this->Play();
     }
 }
 

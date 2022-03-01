@@ -1,3 +1,10 @@
+kylin-music (1.1.0-23) v101.hw; urgency=medium
+
+  * [BUG]
+  - 106740, 组合键F9(上一首)，F10(暂停)，F11（下一首）不可使用
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 03 Mar 2022 10:15:26 +0800
+
 kylin-music (1.1.0-22hw) v101.hw; urgency=medium
 
   * [BUG] 
