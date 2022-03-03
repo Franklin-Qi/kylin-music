@@ -1,3 +1,10 @@
+kylin-music (1.1.0-38) v101; urgency=medium
+
+  * [BUG]
+  - 106740, 组合键F9（上一首）、F10暂停和F11下一周不可用
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 03 Mar 2022 17:02:12 +0800
+
 kylin-music (1.1.0-37) v101; urgency=medium
 
   * BUG号：

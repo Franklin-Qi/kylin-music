@@ -96,6 +96,20 @@ void MMediaPlayer::pause()
     }
 }
 
+void MMediaPlayer::pauseOnly()
+{
+    // 获得mpv播放器的"暂停"状态
+    QString pasued = getProperty("pause");
+    KyInfo() << "pauseStated = " << pasued;
+
+    // 根据"暂停"状态来选择暂停还是播放
+    if(pasued == "no") {
+        KyInfo() << "begin pause.";
+        setProperty("pause", "yes");
+        changeState(PausedState);
+    }
+}
+
 void MMediaPlayer::stop()
 {
     filenameBack = "";

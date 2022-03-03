@@ -44,6 +44,7 @@ bool playController::play()
 
     return true;
 }
+
 bool playController::pause()
 {
     if (m_player == nullptr) {
@@ -53,6 +54,17 @@ bool playController::pause()
 
     return true;
 }
+
+bool playController::pauseOnly()
+{
+    if (m_player == nullptr) {
+        return false;
+    }
+    m_player->pauseOnly();
+
+    return true;
+}
+
 bool playController::stop()
 {
     if (m_player == nullptr) {
@@ -62,6 +74,7 @@ bool playController::stop()
 
     return true;
 }
+
 void playController::setSongIndex(int index)
 {
     if (m_playlist == nullptr) {

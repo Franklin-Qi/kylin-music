@@ -23,6 +23,7 @@
 #include <KWindowSystem>
 #include <QProcess>
 
+#include "./dbusadapter.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/tableview/tableone.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -56,6 +57,25 @@ public Q_SLOTS:
     void slotShowMinimized();
     //最大化
     void slotShowMaximized();
+
+    ////////// mpris
+    // 停止播放
+    void Stop() const;
+    // 增加音量
+    void VolumeUp() const;
+    // 降低音量
+    void VolumeDown() const;
+    // 下一首
+    void Next() const;
+    // 上一首
+    void Previous() const;
+    // 播放
+    void Play() const;
+    // 暂停
+    void Pause() const;
+    // 播放暂停
+    void PlayPause() const;
+
     //mini
     void slotRecoverNormalWidget();
     //mini 关闭窗体
