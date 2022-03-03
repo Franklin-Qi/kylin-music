@@ -1,4 +1,5 @@
 #!/bin/bash
 
 
-rm -f kylin-music.pro.user
+rm -f kylin-music.pro.user \
+    debian/files
