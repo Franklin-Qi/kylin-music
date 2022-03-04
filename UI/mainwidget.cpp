@@ -2,6 +2,7 @@
 #include <QDBusMessage>
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
+#include "ukui-log4qt.h"
 
 #define UKUI_FONT_SIZE "systemFontSize"
 
@@ -243,15 +244,19 @@ void Widget::client_get(QString str)
 
 void Widget::inputDevice_get(QString str)
 {
-    qInfo() << "test";
+    KyInfo() << "receive earphone signal: " << str
+            << "current play state(stop:0, play:1, pause:2): " << playController::getInstance().getState();
+
     if(playController::getInstance().getState() == playController::PLAY_STATE) {
-        playController::getInstance().pause();
+        playController::getInstance().pauseOnly();
     }
 
 }
 
 void Widget::slotPrepareForSwitchuser()
 {
+    KyInfo() << "current play state(stop:0, play:1, pause:2): " << playController::getInstance().getState();
+
     if(playController::getInstance().getState() == playController::PLAY_STATE) {
         playController::getInstance().pause();
     }

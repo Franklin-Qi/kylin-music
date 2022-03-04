@@ -507,6 +507,8 @@ bool playController::playSingleSong(QString Path, bool isPlayNowOrNext)
 
 void playController::slotStateChanged(MMediaPlayer::State newState)
 {
+    KyInfo() << "newState = " << newState;
+
     if(newState == MMediaPlayer::State::PlayingState)
         Q_EMIT playerStateChange(playController::PlayState::PLAY_STATE);
     else if(newState == MMediaPlayer::State::PausedState)

@@ -84,13 +84,21 @@ void MMediaPlayer::play()
 
 void MMediaPlayer::pause()
 {
+    KyInfo() << "exec pause()";
+
     // 获得mpv播放器的"暂停"状态
-    QString pasued = getProperty("pause");
+    QString paused = getProperty("pause");
+    KyInfo() << "pause statu = " << paused;
+
     // 根据"暂停"状态来选择暂停还是播放
-    if(pasued == "no") {
+    if(paused == "no") {
+        KyInfo() << "change states to PauseState";
+
         setProperty("pause", "yes");
         changeState(PausedState);
-    } else if(pasued == "yes") {
+    } else if(paused == "yes") {
+        KyInfo() << "change states to PlayingState";
+
         setProperty("pause", "no");
         changeState(PlayingState);
     }
@@ -99,12 +107,12 @@ void MMediaPlayer::pause()
 void MMediaPlayer::pauseOnly()
 {
     // 获得mpv播放器的"暂停"状态
-    QString pasued = getProperty("pause");
-    KyInfo() << "pauseStated = " << pasued;
+    QString curPausedState= getProperty("pause");
+    KyInfo() << "current pauseStated = " << curPausedState;
 
     // 根据"暂停"状态来选择暂停还是播放
-    if(pasued == "no") {
-        KyInfo() << "begin pause.";
+    if(curPausedState == "no") {
+        KyInfo() << "change state to pauseState.";
         setProperty("pause", "yes");
         changeState(PausedState);
     }
@@ -349,8 +357,12 @@ QString MMediaPlayer::getProperty(const QString &name) const
 
 void MMediaPlayer::changeState(MMediaPlayer::State stateNow)
 {
+    KyInfo() << "m_state = " << m_state
+             << "stateNow = " << stateNow;
+
     //待设置的循环模式和设置之前一致则不处理
     if (m_state == stateNow ) {
+        KyInfo() << "Don't change play state.";
         return;
     }
     m_state = stateNow;
