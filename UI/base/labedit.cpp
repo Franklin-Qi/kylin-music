@@ -15,9 +15,9 @@ void LabEdit::init()
     mainLayout->setAlignment(Qt::AlignRight);
     this->setLayout(mainLayout);
 
-    QRegExp rx = QRegExp("[^\\\\/:*?\"&<>|]*"); //限制以下特殊符号在lineEdit中的输入
-    QRegExpValidator* validator = new QRegExpValidator(rx);
-    this->setValidator(validator);
+//    QRegExp rx = QRegExp("[^\\\\/:*?\"&<>|]*"); //限制以下特殊符号在lineEdit中的输入
+//    QRegExpValidator* validator = new QRegExpValidator(rx);
+//    this->setValidator(validator);
 }
 
 void LabEdit::setLabelNumber(int num)

@@ -35,6 +35,10 @@
         <source>Please input playlist name:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Could not contain characters:  / : * ? &quot; &amp; &lt; &gt; |</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MusicFileInformation</name>

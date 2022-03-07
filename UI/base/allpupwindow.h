@@ -17,6 +17,9 @@
 
 #ifndef ALLPUPWINDOW_H
 #define ALLPUPWINDOW_H
+
+#include <QMessageBox>
+#include <QRegExp>
 #include <QFrame>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -57,6 +60,7 @@ public:
     QStackedWidget *stackWid = nullptr;
     void dlgcolor();
 
+    bool nameIsValid(QString textName);
 
 
 public Q_SLOTS:
