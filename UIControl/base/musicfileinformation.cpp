@@ -36,10 +36,10 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             continue;
         }
         //过滤掉CD和远程目录
-        if(filepath.startsWith("/run/user/"))
-        {
-            continue;
-        }
+//        if(filepath.startsWith("/run/user/"))
+//        {
+//            continue;
+//        }
         //过滤U盘路径
 //        if(filepath.startsWith("/media/"))
 //        {
