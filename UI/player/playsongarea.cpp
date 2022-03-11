@@ -283,12 +283,13 @@ void PlaySongArea::slotLableSetFontSize(int size)
 
 void PlaySongArea::initConnect()
 {
-    //
     connect(preBtn,&QPushButton::clicked,this,&PlaySongArea::slotPrevious);
     connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
     connect(nextBtn,&QPushButton::clicked,this,&PlaySongArea::slotNext);
     connect(listBtn,&QPushButton::clicked,this,&PlaySongArea::listBtnClicked);
+
     connect(m_volSliderWid->vSlider,&QSlider::valueChanged,this,&PlaySongArea::slotVolumeChanged);
+
     connect(volumeBtn,&QPushButton::clicked,this,&PlaySongArea::slotVolSliderWidget);
     connect(favBtn,&QPushButton::clicked,this,&PlaySongArea::slotFav);
     //connect(playModeBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayBackModeChanged);
@@ -304,12 +305,19 @@ void PlaySongArea::initConnect()
     connect(&playController::getInstance(),&playController::playerStateChange,this,&PlaySongArea::playerStateChange);
     connect(playController::getInstance().getPlayer(),SIGNAL(positionChanged(qint64)),this,SLOT(slotPositionChanged(qint64)));
     connect(playController::getInstance().getPlayer(),SIGNAL(durationChanged(qint64)),this,SLOT(slotDurationChanged(qint64)));
+
+    ///// 音乐播放进度条相关
     connect(hSlider,SIGNAL(sliderPressed()),this,SLOT(slotSlidePressd()));
     connect(hSlider,SIGNAL(sliderReleased()),this,SLOT(slotSlideReleased()));
+    // 音乐播放滑动条值有所改变：如自动播放下一首会切换到0
     connect(hSlider,&MusicSlider::valueChanged,this,&PlaySongArea::setPosition);
+
     connect(&playController::getInstance(),&playController::signalPlayMode,this,&PlaySongArea::setPlayMode);
     connect(&playController::getInstance(),&playController::signalNotPlaying,this,&PlaySongArea::slotNotPlaying);
+
+    // 刪除暂停歌曲，播放下一首歌曲
     connect(&playController::getInstance(),&playController::signalSetValue,this,&PlaySongArea::slotSetValue);
+
     connect(&playController::getInstance(),&playController::signalVolume,this,&PlaySongArea::slotVolume);
     connect(&playController::getInstance(),&playController::signalMute,this,&PlaySongArea::slotMute);
 }
@@ -642,6 +650,9 @@ void PlaySongArea::slotNotPlaying()
 void PlaySongArea::slotSetValue()
 {
     hSlider->setValue(0);
+
+    // 删除当前暂停音乐，此时下一首也是暂停，所以Position == 0，最好加上一个条件： 前后的value 为 0
+    playController::getInstance().getPlayer()->setPosition(0);
 }
 
 void PlaySongArea::slotDurationChanged(qint64 duration)
@@ -661,14 +672,22 @@ void PlaySongArea::slotSlideReleased()
     playController::getInstance().getPlayer()->play();
 }
 
+/**
+ * @brief PlaySongArea::setPosition
+ * 音乐播放滑动条值有所改变：如自动播放下一首会切换到0,此时会偶然进行播放或暂停，需要额外处理。
+ * @param position
+ */
 void PlaySongArea::setPosition(int position)
 {
-//    qDebug() << "position" << position;
-//    qDebug() << "playController::getInstance().getPlayer()->position()" << playController::getInstance().getPlayer()->position();
-//    qDebug() << "playController::getInstance().getPlayer()->position() - position" << playController::getInstance().getPlayer()->position() - position;
+    KyInfo() << "position" << position;
+    KyInfo() << "playController::getInstance().getPlayer()->position()" << playController::getInstance().getPlayer()->position();
+    KyInfo() << "playController::getInstance().getPlayer()->position() - position" << playController::getInstance().getPlayer()->position() - position;
+
     //判断播放的位置 - 滑块的位置是否大于0.1s
-    if (qAbs(playController::getInstance().getPlayer()->position() - position) > 99)
-       playController::getInstance().getPlayer()->setPosition(position);
+    if (qAbs(playController::getInstance().getPlayer()->position() - position) > 99) {
+        KyInfo() << "normal set position.";
+        playController::getInstance().getPlayer()->setPosition(position);
+    }
 }
 
 void PlaySongArea::resizeEvent(QResizeEvent *event)

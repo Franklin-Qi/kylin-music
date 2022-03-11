@@ -1,3 +1,10 @@
+kylin-music (1.1.0-25hw) v101.hw; urgency=medium
+
+  * [BUG]
+  - 102995, 删除暂停的歌曲，下一首播放策略不一致
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 17 Mar 2022 17:10:37 +0800
+
 kylin-music (1.1.0-24hw) v101.hw; urgency=medium
 
   * [BUG]
