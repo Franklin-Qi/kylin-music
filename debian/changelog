@@ -1,3 +1,11 @@
+kylin-music (1.1.0-39) v101; urgency=medium
+
+  * [BUG]
+  - 101813, 在侧边栏新建歌单，不识别&等特殊字符
+  - 109390, 双击商用音乐CD中的音频文件，打开音乐但没有播放音频
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Fri, 11 Mar 2022 13:52:10 +0800
+
 kylin-music (1.1.0-38) v101; urgency=medium
 
   * [BUG]
