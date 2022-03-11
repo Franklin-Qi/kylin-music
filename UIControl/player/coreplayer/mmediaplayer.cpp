@@ -143,6 +143,8 @@ void MMediaPlayer::setPosition(qint64 pos)
     m_positionChangeed = true;
     //记录拖动进度条之前播放状态是否为暂停
     bool restartPlay = false;
+
+    KyInfo() << "播放状态： " << m_state;
     if (m_state == PausedState) {
         restartPlay = true;
     }
@@ -271,7 +273,7 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
         Q_EMIT durationChanged(m_duration);
     }
         break;
-    case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、歌曲异常时会进入此分支
+    case MPV_EVENT_IDLE:{ //播放器空闲事件，只有刚启动时、播放完成时、暂停歌曲后删除当前歌曲、歌曲异常时会进入此分支
         QString playlist = getProperty("playlist");
         KyInfo() << "plalist = " << playlist;
 
@@ -291,6 +293,7 @@ void MMediaPlayer::handle_mpv_event(mpv_event *event)
                     return;
                 } else {
                     //歌曲播放异常
+                    KyInfo() << "歌曲播放异常";
                     Q_EMIT playErrorMsg(Damage);
                 }
             }

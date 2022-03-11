@@ -210,12 +210,16 @@ void playController::removeSongFromCurList(QString name, int index)
 //                    setSongIndex(m_curIndex);
                     setSongIndex(m_curIndex);
                 }
+
+                KyInfo() << "player.cpp: m_player state: " << state;
                 //删除当前播放歌曲不更改播放状态  2021.09.10
                 if (state == MMediaPlayer::State::PlayingState) {
                     m_player->play();
                 } else {                            //设置进度条归 0
+                    // 可能导致删除当前歌曲的下一首歌曲从头开始播放
                     Q_EMIT signalSetValue();
-                    m_player->pause();
+
+                    m_player->pauseOnly();
                 }
             }
             else if(m_curIndex > index)
@@ -544,6 +548,8 @@ void playController::slotIndexChange(int index)
     }
     m_curIndex = index;
     MMediaContent content = m_playlist->media(index);
+
+    // 刪除当前歌曲，那么path为下一首要播放的歌曲
     QString path = content.canonicalUrl().toLocalFile();
     QFileInfo file(path.remove("file://"));
     if(file.exists())
