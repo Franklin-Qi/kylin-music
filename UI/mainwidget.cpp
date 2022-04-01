@@ -538,6 +538,10 @@ void Widget::initMusic()
 
 void Widget::initAllComponent()
 {
+
+    this->setProperty("useSystemStyleBlur", true);
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
+
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
@@ -573,6 +577,11 @@ void Widget::initAllComponent()
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
 
+//    musicListTable->hide();
+//    playSongArea->hide();
+
+
+    // 去掉标题栏
     MotifWmHints hintt;
     hintt.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hintt.functions = MWM_FUNC_ALL;
@@ -585,6 +594,7 @@ void Widget::initAllComponent()
     hints.functions = MWM_FUNC_ALL;
     hints.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(m_miniWidget->winId(), hints);
+
 
     rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
@@ -603,16 +613,6 @@ void Widget::initAllComponent()
     mainVBoxLayout->setMargin(0);
     this->resize(960,640);
     this->setLayout(mainHBoxLayout);
-//    this->setAutoFillBackground(true);
-//    this->setBackgroundRole(QPalette::Base);
-//    if (WidgetStyle::themeColor == 1)
-//    {
-//        this->setStyleSheet("{background:#252526;}");
-//    }
-//    else if(WidgetStyle::themeColor == 0)
-//    {
-//        this->setStyleSheet("{background:#FFFFFF;}");
-//    }
 
     historyListTable = new TableHistory(this);
     MotifWmHints hint;
@@ -621,6 +621,8 @@ void Widget::initAllComponent()
     hint.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(historyListTable->winId(), hint);
     historyListTable->hide();
+
+    this->setAutoFillBackground(true);
 
     m_quitWindow = new QShortcut(QKeySequence("Ctrl+Q"), this);
     m_quitWindow->setContext(Qt::WindowShortcut);
@@ -705,6 +707,19 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,musicListTable->infoDialog,&MusicInfoDialog::slotLableSetFontSize);
+
+    if (QGSettings::isSchemaInstalled(FITCONTROLTRANS)) {
+        m_transparencyGSettings = new QGSettings(FITCONTROLTRANS);
+    }
+    if (m_transparencyGSettings != nullptr) {
+        connect(m_transparencyGSettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "transparency") {
+                transparencyChange();
+            }
+        });
+        transparencyChange();
+    }
+
 
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
     {
@@ -792,6 +807,43 @@ void Widget::movePlayHistoryWid()
     int newPosY = historyPos.y() + 30 + size.height();
     historyListTable->changePlayHistoryPos(newPosX, newPosY, historySize.width(), historySize.height());
     historyListTable->move(historyPos);
+}
+
+void Widget::paintEvent(QPaintEvent *event)
+{
+//    return QWidget::paintEvent(event);
+#if 1
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+
+    KyInfo() << "transparency = " << m_transparencyGSettings->get("transparency").toDouble()
+             << "m_transparency = " << m_transparency;
+
+    QColor color;
+
+    color = palette().color(QPalette::Window);
+    color.setAlpha(m_transparency);
+
+
+    QPalette pal(this->palette());
+    pal.setColor(QPalette::Window,QColor(color));
+    this->setPalette(pal);
+    QBrush brush =QBrush(color);
+    p.setBrush(brush);
+    p.drawRoundedRect(opt.rect,0,0);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    return QWidget::paintEvent(event);
+#endif
+
+}
+
+void Widget::transparencyChange()
+{
+    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
+    this->update();
 }
 
 //键盘F1响应唤出用户手册
@@ -1038,15 +1090,12 @@ void Widget::changeDarkTheme()
     musicListTable->initStyle();
     historyListTable->initStyle();
 //    historyListTable->noRefreshHistory();
-//    musicListTable->setStyleSheet("{background:red;border:none;}");
-//    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
     musicListTable->tableView->setAlternatingRowColors(false);
     musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
     historyListTable->noRefreshHistory();
-//    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
 }
@@ -1054,7 +1103,6 @@ void Widget::changeDarkTheme()
 //切换浅色主题
 void Widget::changeLightTheme()
 {
-//    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
@@ -1064,7 +1112,6 @@ void Widget::changeLightTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
-//    musicListTable->setStyleSheet("{background:#FFFFFF;border:none;}");
     musicListTable->tableView->setAlternatingRowColors(false);
     musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();

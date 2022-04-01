@@ -11,6 +11,14 @@
 #include <QResizeEvent>
 #include <QPropertyAnimation>
 #include <QShortcut>
+
+#include <QPainter>
+#include <QPainterPath>
+#include <QBrush>
+#include <QColor>
+#include <QStyleOption>
+#include <QPaintEvent>
+
 //DBus
 #include <QDBusInterface>
 #include <QDBusConnection>
@@ -45,9 +53,19 @@ public:
     ~Widget();
     //计算播放历史
     void movePlayHistoryWid();
-public:
+
+    // 毛玻璃
+    void paintEvent(QPaintEvent *event);
+    void transparencyChange();
+
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
+
+    QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
+    double m_transparency = 1.0;  // 透明度
+
+
+
 public Q_SLOTS:
     //mini窗口
     void slotShowMiniWidget();

@@ -74,8 +74,7 @@ void MyToolButton::defaultStyle()
         if(WidgetStyle::themeColor == 0)
         {
             //padding-left:15px;  左内边距
-            this->setStyleSheet("QToolButton{padding-left:14px;\
-                                background-color:#F5F5F5;color:#303133;border-radius:4px;}"
+            this->setStyleSheet("QToolButton{padding-left:14px; background-color:#F5F5F5;color:#303133;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
             if(buttonListName == ALLMUSIC)
             {
@@ -93,7 +92,7 @@ void MyToolButton::defaultStyle()
 
         else if(WidgetStyle::themeColor == 1)
         {
-            this->setStyleSheet("QToolButton{padding-left:14px;background-color:#1F2022;color:#F9F9F9;border-radius:4px;}"
+            this->setStyleSheet("QToolButton{padding-left:14px;background-color:#1f2022;color:#f9f9f9;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#303032;border-radius:4px;}");
             if(buttonListName == ALLMUSIC)
             {
@@ -113,7 +112,9 @@ void MyToolButton::defaultStyle()
 
 void MyToolButton::requestCustomContextMenu(const QPoint &pos)
 {
-    QMenu *menu = new QMenu(this);
+    // 不用this，因此可以使用主题的QMenu
+    QMenu *menu = new QMenu();
+
 //    QFont sizeFont;
 //    sizeFont.setPixelSize(14);
 //    menu->setFont(sizeFont);

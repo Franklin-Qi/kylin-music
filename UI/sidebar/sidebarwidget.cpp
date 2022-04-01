@@ -3,8 +3,9 @@
 #include "UIControl/base/musicDataBase.h"
 #include "UI/base/widgetstyle.h"
 #include "UI/mainwidget.h"
+#include <ukui-log4qt.h>
 
-SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
+SideBarWidget::SideBarWidget(QWidget *parent) : LeftsiderbarWidget(parent)
 {
 //    setFixedSize(210, 640);
     resize(210, 640);
@@ -18,6 +19,9 @@ SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
 
 void SideBarWidget::initWidget()
 {
+//    this->setProperty("useSystemStyleBlur", true);
+//    this->setAttribute(Qt::WA_TranslucentBackground, true);
+
     //侧边栏界面样式
     QVBoxLayout *mainLayout = new QVBoxLayout();
 
@@ -37,8 +41,7 @@ void SideBarWidget::initWidget()
     logoLayout->addSpacing(8);
     logoLayout->addWidget(logoNameLabel,0,Qt::AlignLeft);
     logoLayout->addStretch();
-
-//    logoLayout->setContentsMargins(8,8,0,0);
+    logoLayout->setContentsMargins(8,8,0,0);
 
     //音乐库
     QHBoxLayout *libraryLayout = new QHBoxLayout();
@@ -78,7 +81,7 @@ void SideBarWidget::initWidget()
     myPlayListLayout->addWidget(myPlayListBtn);
     myPlayListLayout->setContentsMargins(38,0,38,0);
 
-    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea = new myScrollArea(this);
     scrollArea->setFrameStyle(0);
 
     //歌单界面
@@ -88,16 +91,12 @@ void SideBarWidget::initWidget()
     scrollArea->setWidgetResizable(true);
 //    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setFrameShape(QFrame::NoFrame);
 
 
     newPlayListLayout->setAlignment(Qt::AlignTop);
     newPlayListWidget->setLayout(newPlayListLayout);
     newPlayListLayout->setContentsMargins(24,0,24,0);
-
-//    mainLayout->addLayout(logoLayout);
-//    mainLayout->addSpacing(16);
 
     mainLayout->addLayout(libraryLayout);
     mainLayout->addSpacing(6);
@@ -129,7 +128,6 @@ void SideBarWidget::initWidget()
     logoWid->setFixedHeight(40);
     logoWid->setLayout(logoLayout);
     logoWid->setObjectName("logoWid");
-
     //放置活动条
     QVBoxLayout *scrollLayout = new QVBoxLayout(this);
     scrollLayout->addWidget(logoWid);
@@ -138,27 +136,20 @@ void SideBarWidget::initWidget()
     scrollLayout->setMargin(0);
     scrollLayout->setSpacing(0);
 
-    // 真正的主widget
-    sideWid = new QWidget(this);
-    sideWid->setLayout(scrollLayout);
-    sideWid->setObjectName("sideWid");
-
-    QVBoxLayout *sideLayout = new QVBoxLayout(this);
-    sideLayout->addWidget(sideWid);
-    sideLayout->setMargin(0);
-    sideLayout->setSpacing(0);
-
+    this->setLayout(scrollLayout);
 
     this->setAutoFillBackground(true);
-    //限制应用内字体固定大小
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    myPlayListBtn->setFont(sizeFont);
-//    playListBtn->setFont(sizeFont);
-//    logoPushButton->setFont(sizeFont);
-//    libraryLabel->setFont(sizeFont);
-//    myPlayListLabel->setFont(sizeFont);
-//    logoNameLabel->setFont(sizeFont);
+
+//    // 真正的主widget
+//    sideWid = new QWidget(this);
+//    sideWid->setLayout(scrollLayout);
+//    sideWid->setObjectName("sideWid");
+
+//    QVBoxLayout *sideLayout = new QVBoxLayout(this);
+//    sideLayout->addWidget(sideWid);
+//    sideLayout->setMargin(0);
+//    sideLayout->setSpacing(0);
+
 
 }
 
@@ -171,10 +162,14 @@ void SideBarWidget::initConnect()
 
     connect(renameSongListPup->confirmBtn,SIGNAL(clicked(bool)),this,SLOT(renamePlayList()));
     connect(renameSongListPup->enterLineEdit,SIGNAL(returnPressed()),this,SLOT(renamePlayList()));
+
 }
 
 void SideBarWidget::sidecolor()
 {
+    myPlayListLabel->setStyleSheet("line-height: 14px;");
+    libraryLabel->setStyleSheet("line-height: 14px;");
+
     if(WidgetStyle::themeColor == 1)
     {
         QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
@@ -182,20 +177,6 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
-        setStyleSheet("SideBarWidget{background: #1F2022;}");
-        logoWid->setStyleSheet("width: 210px;\
-                             background: #1F2022;");
-        sideWid->setStyleSheet("#sideWid{width: 210px;\
-                      background: #1F2022;\
-                      }");
-        mainWid->setStyleSheet("#mainWid{width: 210px;\
-                      background: #1F2022;\
-                      }");
-        logoPushButton->setStyleSheet("QPushButton{border:0px;background:transparent;}"
-                                      "QPushButton::hover{border:0px;background:transparent;}"
-                                      "QPushButton::pressed{border:0px;background:transparent;}");
-        myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
-        libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
     }
     else if(WidgetStyle::themeColor == 0)
     {
@@ -204,21 +185,10 @@ void SideBarWidget::sidecolor()
         {
             tmp->defaultStyle();
         }
-        setStyleSheet("");
-        logoWid->setStyleSheet("width: 210px;background: #F5F5F5;");
-        sideWid->setStyleSheet("#sideWid{width: 210px;\
-                      background: #F5F5F5;\
-                      }");
-        mainWid->setStyleSheet("#mainWid{width: 210px;\
-                      background: #F5F5F5;\
-                      }");
-        logoPushButton->setStyleSheet("QPushButton{border:0px;background:transparent;}"
-                                      "QPushButton::hover{border:0px;background:transparent;}"
-                                      "QPushButton::pressed{border:0px;background:transparent;}");
-        myPlayListLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
-        libraryLabel->setStyleSheet("color: #8F9399;line-height: 14px;");
     }
 }
+
+
 
 void SideBarWidget::getPlayListName()
 {
@@ -281,11 +251,7 @@ void SideBarWidget::addPlayList()
 void SideBarWidget::addItemToSongList()
 {
     MyToolButton *newBtn = new MyToolButton();
-//    QIcon icon = QIcon(":/img/default/songlist.png");
-//    newBtn->setIcon(QIcon(":/img/default/songlist.png"));
-//    newBtn->setIcon(QIcon::fromTheme("stock_contact-list"));
     newPlayListLayout->setAlignment(Qt::AlignTop);
-//    newPlayListLayout->setContentsMargins(24,0,24,0);
     newPlayListLayout->setSpacing(6);
 
     QString text = newSonglistPup->enterLineEdit->text();
@@ -357,6 +323,7 @@ QString SideBarWidget::newPlayListName()
     }
     return QString("%1 %2").arg(name).arg(i);
 }
+
 
 void SideBarWidget::playAll(QString btnText)
 {

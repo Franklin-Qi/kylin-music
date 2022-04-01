@@ -9,16 +9,26 @@
 #include <QScrollArea>
 #include <UI/base/allpupwindow.h>
 #include <QPalette>
+#include <QPainter>
+#include <QPainterPath>
+#include <QColor>
+#include <QStyleOption>
+#include <QGSettings>
 
+#include "myscrollarea.h"
 #include "mytoolbutton.h"
+#include "leftsiderbarwidget.h"
 
-class SideBarWidget : public QWidget
+class SideBarWidget : public LeftsiderbarWidget
 {
     Q_OBJECT
 public:
     explicit SideBarWidget(QWidget *parent = nullptr);
 public:
     void sidecolor();
+    // 毛玻璃
+    void transparencyChange();
+
 public:
     //新建歌单弹窗界面
     AllPupWindow *newSonglistPup = nullptr;
@@ -56,18 +66,26 @@ private:
     void getPlayListName();
     //输入为空添加歌单
     QString newPlayListName();
+
+
 private:
     //歌曲列表 QToolButton
     //MyToolButton *playListBtn;
     //我喜欢 QToolButton
 //    MyToolButton *loveBun;
+
+    QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
+    double m_transparency = 1.0;  // 透明度
+
     //添加歌单按钮
     QPushButton *myPlayListBtn = nullptr;
     //新建歌单按钮界面(包含我喜欢在内)
+    myScrollArea *scrollArea;
+
     QWidget *newPlayListWidget = nullptr;
     QWidget *logoWid = nullptr;
     QWidget *mainWid = nullptr;
-    QWidget *sideWid = nullptr;
+//    QWidget *sideWid = nullptr;
     QVBoxLayout *newPlayListLayout = nullptr;
     //歌单名
     QStringList playListName;
