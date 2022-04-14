@@ -1,3 +1,9 @@
+kylin-music (1.1.0-40update1) v101; urgency=medium
+
+  *  基于1.1.0-40版本增加update标识，更改版本号
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 14 Apr 2022 16:58:39 +0800
+
 kylin-music (1.1.0-40) v101; urgency=medium
 
   * [BUG]
