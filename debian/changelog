@@ -1,3 +1,14 @@
+kylin-music (1.1.0-40) v101; urgency=medium
+
+  * [BUG]
+  - #114427, 音乐列表不为空，文管中选中多个音频文件，enter之后只能添加部分文件
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 14 Apr 2022 16:24:35 +0800
+
 kylin-music (1.1.0-39) v101; urgency=medium
 
   * [BUG]

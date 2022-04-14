@@ -11,6 +11,10 @@ Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
     mutual = this;//！！！赋值，非常重要
+
+    //单例
+    Single(str);
+
     stateMusicFile(str);
     int res;
     res = g_db->initDataBase();
@@ -23,8 +27,6 @@ Widget::Widget(QStringList str, QWidget *parent)
     initGSettings();
     allConnect();
 
-    //单例
-    Single(str);
     //初始化dbus
     initDbus();
     initStyle();
