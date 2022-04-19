@@ -142,5 +142,7 @@
         <file>img/clicked/media-playlist-shuffle-symbolic-w.svg</file>
         <file>img/default/media-playlist-repeat-one-symbolic-b.svg</file>
         <file>img/clicked/media-playlist-repeat-one-symbolic-w.svg</file>
+        <file>img/default/defaultIconDark.png</file>
+        <file>img/default/defaultIconLight.png</file>
     </qresource>
 </RCC>

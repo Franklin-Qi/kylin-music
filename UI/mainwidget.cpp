@@ -820,8 +820,8 @@ void Widget::paintEvent(QPaintEvent *event)
     QPainter p(this);
     p.setPen(Qt::NoPen);
 
-    KyInfo() << "transparency = " << m_transparencyGSettings->get("transparency").toDouble()
-             << "m_transparency = " << m_transparency;
+//    KyInfo() << "transparency = " << m_transparencyGSettings->get("transparency").toDouble()
+//             << "m_transparency = " << m_transparency;
 
     QColor color;
 
