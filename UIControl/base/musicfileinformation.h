@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QEventLoop>
+#include <QProcess>
 
 //taglib
 #include <taglib/fileref.h>
@@ -68,6 +69,7 @@ private:
 
     QString fileType(QFileInfo fileInfo);
     QString fileSize(QFileInfo fileInfo);
+    bool checkFileIsDamaged(QString filepath);
     QStringList fileInformation(QString filepath);
     QString filterTextCode(QString str);
     int preNum(unsigned char byte);
