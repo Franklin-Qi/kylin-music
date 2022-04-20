@@ -1,3 +1,12 @@
+kylin-music (1.1.0-42) v101; urgency=medium
+
+  * [BUG] 无
+  * 需求号： 无
+  * 其他改动说明： 更改ppa 缺少svg模块导致的编译错误
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Wed, 20 Apr 2022 13:53:19 +0800
+
 kylin-music (1.1.0-41) v101; urgency=medium
 
   * [BUG]
