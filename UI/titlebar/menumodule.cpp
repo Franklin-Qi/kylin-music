@@ -316,8 +316,8 @@ void menuModule::setStyle(){
 }
 
 void menuModule::initGsetting(){
-    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW)){
-        m_pGsettingThemeData = new QGSettings(FITTHEMEWINDOW);
+    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS)){
+        m_pGsettingThemeData = new QGSettings(FITTHEMEWINDOWS);
         connect(m_pGsettingThemeData,&QGSettings::changed,this,&menuModule::dealSystemGsettingChange);
     }
 

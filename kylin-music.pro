@@ -57,7 +57,7 @@ INSTALLS += \
 
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gsettings-qt taglib gio-unix-2.0
+PKGCONFIG += gsettings-qt taglib gio-unix-2.0 kysdk-qtwidgets
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.

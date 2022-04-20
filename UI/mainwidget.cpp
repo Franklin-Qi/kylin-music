@@ -723,9 +723,9 @@ void Widget::initGSettings()//初始化GSettings
     }
 
 
-    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
+    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS))
     {
-        themeData = new QGSettings(FITTHEMEWINDOW);
+        themeData = new QGSettings(FITTHEMEWINDOWS);
         if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
             WidgetStyle::themeColor = 1;
             changeDarkTheme();

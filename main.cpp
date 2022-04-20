@@ -4,6 +4,9 @@
 #include <QDebug>
 #include <ukui-log4qt.h>
 
+#include "kwidget.h"
+using namespace kdk;
+
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     // 加锁
@@ -93,6 +96,17 @@ int main(int argc, char *argv[])
 //    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon::fromTheme("kylin-music"));
+
+    QTranslator trankdk;
+    QString localeKdk = QLocale::system().name();
+    if(localeKdk == "zh_CN")
+    {
+        if(trankdk.load(":/translations/gui_zh_CN.qm"))
+        {
+            a.installTranslator(&trankdk);
+        }
+    }
+
 
     QTranslator app_trans;
     QTranslator qt_trans;

@@ -28,6 +28,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <QListWidgetItem>
+#include <QEvent>
 
 //#include "changelistwid.h"
 //#include "allpupwindow.h"
@@ -53,7 +54,6 @@ public:
 
     QPushButton *leftBtn = nullptr;
     QPushButton *rightBtn = nullptr;
-    QPushButton *searchBtn = nullptr;
 
     SearchEdit *searchEdit = nullptr;
 

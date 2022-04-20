@@ -72,31 +72,8 @@ void TitleBar::initTitle()
 
     searchEdit = new SearchEdit(this);
     searchEdit->setWidget(m_parent);
-//    searchEdit->setPlaceholderText("搜索音乐，歌手");
-    searchEdit->setPlaceholderText(tr("Search"));
+//    searchEdit->setPlaceholderText(tr("Search"));
 
-//    searchEdit->setContentsMargins(108,4,0,0);
-//    searchEdit->hide();
-    searchBtn = new QPushButton(searchEdit);
-
-    searchBtn->setFixedSize(16,16);
-    searchBtn->setCursor(Qt::PointingHandCursor);
-//    searchBtn->setIcon(QIcon::fromTheme("search-symbolic"));
-
-//    QMargins margins = searchEdit->textMargins();
-//    searchEdit->setTextMargins(margins.left()+10, margins.top(), searchBtn->width()+15, margins.bottom());
-
-    searchLayout = new QHBoxLayout(searchEdit);
-    searchLayout->addStretch();
-    searchLayout->addWidget(searchBtn);
-    searchLayout->setSpacing(0);
-    //btn at right
-    searchLayout->setContentsMargins(0,0,10,0);
-
-//    LayoutLeft->addWidget(leftBtn);
-//    LayoutLeft->addSpacing(16);
-//    LayoutLeft->addWidget(rightBtn);
-//    LayoutLeft->addSpacing(30);
     //搜索框暂时隐藏
     LayoutLeft->addWidget(searchEdit);
 //    LayoutLeft->setSpacing(8);
@@ -214,7 +191,6 @@ void TitleBar::initTitle()
     closeBtn->setFlat(true);
 
 
-//    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
     connect(searchEdit,&SearchEdit::textChanged,this,&TitleBar::searchMusic);
     connect(searchEdit,&SearchEdit::sigFoucusIn,this,&TitleBar::slotFoucusIn);
 
@@ -252,57 +228,21 @@ bool TitleBar::eventFilter(QObject *watched, QEvent *event)
             if (mouseEvent->button() == Qt::LeftButton) //判断左键
             {
                 Widget::mutual->slotShowMaximized();
+                searchEdit->clearFocus();
             }
         }
     }
+
     return QWidget::eventFilter(watched,event);
 }
 
 void TitleBar::searchMusic()
 {
-//    m_serach = new SearchResult(this);
-//    MotifWmHints hint;
-//    hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-//    hint.functions = MWM_FUNC_ALL;
-//    hint.decorations = MWM_DECOR_BORDER;
-//    XAtomHelper::getInstance()->setWindowMotifHint(m_serach->winId(), hint);
-//    m_serach->show();
-//    m_serach->raise();
-//    QString enterStr = searchEdit->text().trimmed();
-//    qDebug() << "搜索" <<"输入栏" << enterStr;
-//    //    searchEdit->clear();
-//    if(enterStr == "")
-//    {
-//        searchWidget->close();
-//        return;
-//    }
-//    searchWidget->show();
-//    searchWidget->raise();
-
-//    searchWidget->clear();
-
-//    QSqlQuery searchQuery;
-//    QString searchStr = QString("select * from LocalMusic where musicname LIKE '%%1%'").arg(enterStr);
-//    qDebug() << "搜索" <<"数据库" << searchStr;
-//    searchQuery.exec(searchStr);
-//    while(searchQuery.next())
-//    {
-//        QString songName = searchQuery.value(1).toString();
-//        QString Path = searchQuery.value(2).toString();
-//        QString Title = searchQuery.value(3).toString();
-//        QString Album = searchQuery.value(4).toString();
-//        QString Time = searchQuery.value(7).toString();
-
-//        qDebug() << "搜索" << songName << Path ;
-
-//        QListWidgetItem *item1 = new QListWidgetItem(searchWidget);
-//        item1->setText(songName+" "+Title+" "+Album);
-//    }
 }
 
 void TitleBar::slotFoucusIn()
 {
-    searchEdit->setFocus();
+//    searchEdit->setFocus();
 }
 
 void TitleBar::titlecolor()
@@ -316,17 +256,6 @@ void TitleBar::titlecolor()
 
         this->setStyleSheet("#TitleBar{background-color:#252526;}");
 
-//        searchWidget->setStyleSheet("QListWidget{border:5px;background:#3D3D41;color:#F9F9F9; }"
-//                                    "QListWidget::Item{height:30px;color:#F9F9F9;}"
-//                                    "QListWidget::Item:hover{background:#303032;color:#F9F9F9; }"
-//                                    "QListWidget::item:selected{background:#303032;color:#F9F9F9;}"
-//                                    );
-
-//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#303032;color:#F9F9F9;}");
-
-        searchBtn->setStyleSheet("QPushButton{background:transparent;\
-                                 border-image:url(:/img/default/search.png);}\
-                                 QPushButton::hover{border-image:url(:/img/hover/search.png);}");
 
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"
@@ -345,17 +274,6 @@ void TitleBar::titlecolor()
 
         this->setStyleSheet("#TitleBar{background-color:#FFFFFF;}");
 
-//        searchWidget->setStyleSheet("QListWidget{border:5px;color:#303133; }"
-//                                    "QListWidget::Item{height:30px;color:#303133;}"
-//                                    "QListWidget::Item:hover{background:#F7F7F7;color:#303133; }"
-//                                    "QListWidget::item:selected{background:#F7F7F7;color:#303133;}"
-//                                    );
-
-//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
-
-        searchBtn->setStyleSheet("QPushButton{background:transparent;\
-                                 border-image:url(:/img/default/search.png);}\
-                                 QPushButton::hover{border-image:url(:/img/hover/search.png);}");
 
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"
