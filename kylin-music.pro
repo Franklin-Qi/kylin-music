@@ -1,5 +1,4 @@
-QT       += core gui sql widgets
-QT       += dbus x11extras KWindowSystem network
+QT       += core gui sql widgets dbus x11extras KWindowSystem network svg
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -95,7 +94,6 @@ SOURCES += \
     UI/search/musicsearchlistdelegate.cpp \
     UI/search/musicsearchlistmodel.cpp \
     UI/search/musicsearchlistview.cpp \
-    UI/sidebar/kylintoolbutton.cpp \
     UI/sidebar/leftsiderbarwidget.cpp \
     UI/sidebar/myscrollarea.cpp \
     UI/sidebar/mytoolbutton.cpp \
@@ -135,7 +133,6 @@ HEADERS += \
     UI/search/musicsearchlistdelegate.h \
     UI/search/musicsearchlistmodel.h \
     UI/search/musicsearchlistview.h \
-    UI/sidebar/kylintoolbutton.h \
     UI/sidebar/leftsiderbarwidget.h \
     UI/sidebar/myscrollarea.h \
     UI/sidebar/mytoolbutton.h \
