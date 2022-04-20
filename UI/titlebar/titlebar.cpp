@@ -229,6 +229,7 @@ bool TitleBar::eventFilter(QObject *watched, QEvent *event)
             {
                 Widget::mutual->slotShowMaximized();
                 searchEdit->clearFocus();
+                searchEdit->setFocusPolicy(Qt::NoFocus);
             }
         }
     }
@@ -242,7 +243,7 @@ void TitleBar::searchMusic()
 
 void TitleBar::slotFoucusIn()
 {
-//    searchEdit->setFocus();
+    searchEdit->setFocus();
 }
 
 void TitleBar::titlecolor()
