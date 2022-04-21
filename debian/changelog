@@ -1,3 +1,14 @@
+kylin-music (1.1.0-43) v101; urgency=medium
+
+  * [BUG]
+  - #114352, 播放按钮UI样式问题
+
+  * 需求号： 无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 21 Apr 2022 11:04:17 +0800
+
 kylin-music (1.1.0-42) v101; urgency=medium
 
   * [BUG]

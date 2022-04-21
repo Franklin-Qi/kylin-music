@@ -337,7 +337,7 @@
     <name>TableOne</name>
     <message>
         <source>Add</source>
-        <translation>སྣོན་པ་ </translation>
+        <translation type="vanished">སྣོན་པ་ </translation>
     </message>
     <message>
         <source>Play</source>
@@ -455,6 +455,10 @@
         <source>This format file is not supported</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add Music</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TitleBar</name>
@@ -489,10 +493,6 @@
     <message>
         <source>forward</source>
         <translation>མདུན་དུ་སྐྱོད་པ་ </translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -132,31 +132,10 @@ void TableOne::initUI()
     titleWid->setFixedHeight(95);
 
     playAllButton->setText(tr("Play All"));
-    playAllButton->setIconSize(QSize(16,16));
-    playAllButton->setIcon(QIcon(":/img/default/play_w.png"));
-//    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    playAllButton->setIconSize(QSize(16,16));
-//    addMusicButton->setText(tr("   Add"));
-    playAllButton->setFixedSize(125,36);
     playAllButton->setProperty("isImportant", true);
-//    playAllButton->setPopupMode(QToolButton::InstantPopup);
-//    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
-//                                 "QToolButton::hover{background-color: #40A9FB;}"
-//                                 "QToolButton::pressed{background-color: #296CD9;}");
-//    playAllButton->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
 
-    addMusicButton->setText(tr("Add"));
-    addMusicButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    addMusicButton->setIconSize(QSize(16,16));
-
-    addMusicButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    addMusicButton->setProperty("useIconHighlightEffect", 0x8);
-//    addMusicButton->setProperty("useIconHighlightEffect", 0x2);
-//    addMusicButton->setFocusPolicy(Qt::NoFocus);
-//    addMusicButton->setProperty("isImportant",true);
-
-//    addMusicButton->setText(tr("   Add"));
-    addMusicButton->setFixedSize(125,36);
+    addMusicButton->setText(tr("Add Music"));
+    addMusicButton->setProperty("isImportant",true);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
@@ -283,8 +262,6 @@ void TableOne::initUI()
 //    sizeFont.setPixelSize(14);
 //    add_menu->setFont(sizeFont);
 //    listTotalNumLabel->setFont(sizeFont);
-//    addMusicButton->setFont(sizeFont);
-//    playAllButton->setFont(sizeFont);
 //    n_addDirMusicButton->setFont(sizeFont);
 //    n_addMusicButton->setFont(sizeFont);
 //    nullPageTextLabel->setFont(sizeFont);
