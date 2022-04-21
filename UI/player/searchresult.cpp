@@ -17,20 +17,20 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 
     //窗体禁止拖动
     this->setProperty("useStyleWindowManager", false);
-//    setFixedWidth(200);
     vlayout = new QVBoxLayout(this);
-    vlayout->setContentsMargins(32, 0, 32, 0);
+    vlayout->setContentsMargins(4, 4, 4, 4);
     vlayout->setSpacing(0);
 //    this->setLayout(vlayout);
     //歌曲名
     m_MusicLabel = new QLabel(tr("Music"),this);
     m_MusicLabel->setFixedHeight(36);
+    m_MusicLabel->setIndent(28);
 //    m_MusicLabel->setContentsMargins(32, 0, 0, 0);
 
     m_MusicView = new MusicSearchListview(this);
     m_MusicView->setSearchType(SearchType::TitleType);
-    m_MusicView->setMinimumWidth(136);
-//    m_MusicView->setContentsMargins(32, 0, 0, 0);
+    m_MusicView->setMinimumWidth(232);
+//    m_MusicView->setContentsMargins(28, 0, 28, 0);
 
 //    m_SingerFrame = new QFrame(this);
 //    m_SingerFrame->setFrameShape(QFrame::HLine);
@@ -40,11 +40,12 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     //歌手
     m_SingerLabel = new QLabel(tr("Singer"),this);
     m_SingerLabel->setFixedHeight(36);
+    m_SingerLabel->setIndent(28);
 //    m_SingerLabel->setContentsMargins(32, 0, 0, 0);
 
     m_SingerView = new MusicSearchListview(this);
     m_SingerView->setSearchType(SearchType::SingerType);
-    m_SingerView->setMinimumWidth(136);
+    m_SingerView->setMinimumWidth(232);
 //    m_SingerView->setContentsMargins(32, 0, 0, 0);
 
 //    m_AlbumFrame = new QFrame(this);
@@ -55,11 +56,12 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
     //专辑
     m_AlbumLabel = new QLabel(tr("Album"),this);
     m_AlbumLabel->setFixedHeight(36);
+    m_AlbumLabel->setIndent(28);
 //    m_AlbumLabel->setContentsMargins(32, 0, 0, 0);
 
     m_AlbumView = new MusicSearchListview(this);
     m_AlbumView->setSearchType(SearchType::AlbumType);
-    m_AlbumView->setMinimumWidth(136);
+    m_AlbumView->setMinimumWidth(232);
 //    m_AlbumView->setContentsMargins(32, 0, 0, 0);
 
     m_MusicLabel->setStyleSheet("color:#8F9399;");
@@ -68,10 +70,10 @@ SearchResult::SearchResult(QWidget *parent) : QWidget(parent)
 
     vlayout->addWidget(m_MusicLabel, 1);
     vlayout->addWidget(m_MusicView, 0);
-    vlayout->addWidget(m_SingerFrame);
+//    vlayout->addWidget(m_SingerFrame);
     vlayout->addWidget(m_SingerLabel, 1);
     vlayout->addWidget(m_SingerView, 0);
-    vlayout->addWidget(m_AlbumFrame);
+//    vlayout->addWidget(m_AlbumFrame);
     vlayout->addWidget(m_AlbumLabel, 1);
     vlayout->addWidget(m_AlbumView, 0);
 

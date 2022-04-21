@@ -72,13 +72,12 @@ void TitleBar::initTitle()
 
     searchEdit = new SearchEdit(this);
     searchEdit->setWidget(m_parent);
+    searchEdit->setFixedSize(QSize(240, 32));
+
 //    searchEdit->setPlaceholderText(tr("Search"));
 
     //搜索框暂时隐藏
-    LayoutLeft->addWidget(searchEdit);
-//    LayoutLeft->setSpacing(8);
-    LayoutLeft->setMargin(0);
-    LayoutLeft->setContentsMargins(108,0,0,0);
+    LayoutLeft->addWidget(searchEdit, Qt::AlignHCenter);
 
     LayoutRight = new QHBoxLayout;
 
@@ -210,6 +209,7 @@ void TitleBar::initTitle()
     LayoutRight->addWidget(closeBtn);
 
 
+    titleLayout->addStretch();
     titleLayout->addLayout(LayoutLeft);
     titleLayout->addStretch();
     titleLayout->addLayout(LayoutRight);
@@ -228,8 +228,8 @@ bool TitleBar::eventFilter(QObject *watched, QEvent *event)
             if (mouseEvent->button() == Qt::LeftButton) //判断左键
             {
                 Widget::mutual->slotShowMaximized();
-                searchEdit->clearFocus();
-                searchEdit->setFocusPolicy(Qt::NoFocus);
+//                searchEdit->clearFocus();
+//                searchEdit->setFocusPolicy(Qt::NoFocus);
             }
         }
     }

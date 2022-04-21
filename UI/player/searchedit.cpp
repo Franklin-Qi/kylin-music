@@ -6,7 +6,6 @@ SearchEdit::SearchEdit(QWidget *parent) : KSearchLineEdit(parent)
     setContextMenuPolicy(Qt::DefaultContextMenu);
     setCompleter(nullptr); // kdk自带记忆功能，取消搜索记忆功能
 
-    setFixedSize(200, 32);
     connect(this, &SearchEdit::textChanged,this,&SearchEdit::slotTextChanged);
     connect(this, &SearchEdit::returnPressed,this,&SearchEdit::slotReturnPressed);
 //    connect(this, &SearchEdit::editingFinished,this,&SearchEdit::slotEditingFinished);
@@ -111,7 +110,7 @@ void SearchEdit::setWidget(QWidget *mainWidget)
 
 void SearchEdit::moveSearchResult()
 {
-    m_result->setFixedWidth(200);
+    m_result->setFixedWidth(240);
     QPoint resultPos = this->mapToGlobal(this->rect().bottomLeft());
     resultPos.setX(resultPos.x());
     resultPos.setY(resultPos.y() + 12);
