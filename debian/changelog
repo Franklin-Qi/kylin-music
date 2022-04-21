@@ -5,7 +5,7 @@ kylin-music (1.1.0-43) v101; urgency=medium
   - #114359, 音乐-音量圆角与主题未统一
 
   * 需求号： 无
-  * 其他改动说明：无
+  * 其他改动说明： 增加 libkysdk-qtwidgets-dev 编译依赖
   * 其他改动影响域：无
 
  -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 21 Apr 2022 11:04:17 +0800
