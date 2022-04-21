@@ -19,8 +19,8 @@ SideBarWidget::SideBarWidget(QWidget *parent) : LeftsiderbarWidget(parent)
 
 void SideBarWidget::initWidget()
 {
-//    this->setProperty("useSystemStyleBlur", true);
-//    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setProperty("useSystemStyleBlur", true);
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
 
     //侧边栏界面样式
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -30,14 +30,14 @@ void SideBarWidget::initWidget()
     QLabel *logoNameLabel = new QLabel(this);
     logoNameLabel->setText(tr("Music Player"));
     logoNameLabel->setFixedHeight(28);
-    logoPushButton = new QPushButton(this);
-    logoPushButton->setFixedSize(24,24);
-    logoPushButton->setIconSize(QSize(25,25));
-    logoPushButton->setIcon(QIcon::fromTheme("kylin-music"));
+
+    QLabel *logoIconLabel = new QLabel(this);
+    logoIconLabel->setFixedSize(QSize(25, 25));
+    logoIconLabel->setPixmap(QIcon::fromTheme("kylin-music").pixmap(logoIconLabel->size()));
 
     logoLayout->setSpacing(0);
     logoLayout->setMargin(8);
-    logoLayout->addWidget(logoPushButton,Qt::AlignLeft);
+    logoLayout->addWidget(logoIconLabel,Qt::AlignLeft);
     logoLayout->addSpacing(8);
     logoLayout->addWidget(logoNameLabel,0,Qt::AlignLeft);
     logoLayout->addStretch();
@@ -172,6 +172,12 @@ void SideBarWidget::sidecolor()
 
     if(WidgetStyle::themeColor == 1)
     {
+        // 黑色主题，跟随主题切换，否则paintevent主题切换不生效
+        QPalette pal(palette());
+        pal.setColor(QPalette::Background, QColor(38, 38, 38));
+        setAutoFillBackground(true);
+        setPalette(pal);
+
         QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
         for(MyToolButton *tmp : list)
         {
@@ -180,6 +186,11 @@ void SideBarWidget::sidecolor()
     }
     else if(WidgetStyle::themeColor == 0)
     {
+        QPalette pal(palette());
+        pal.setColor(QPalette::Background, QColor(255, 255, 255));
+        setAutoFillBackground(true);
+        setPalette(pal);
+
         QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
         for(MyToolButton *tmp : list)
         {
@@ -187,7 +198,6 @@ void SideBarWidget::sidecolor()
         }
     }
 }
-
 
 
 void SideBarWidget::getPlayListName()

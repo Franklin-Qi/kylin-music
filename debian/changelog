@@ -4,9 +4,14 @@ kylin-music (1.1.0-43) v101; urgency=medium
   - #114352, 播放按钮UI样式问题
   - #114359, 音乐-音量圆角与主题未统一
   - #114364, 搜素展开样式与右键菜单样式统一，留有一定的间距
+  - #103774, 音乐侧边栏没有么欧铂丽效果
 
   * 需求号： 无
-  * 其他改动说明： 增加 libkysdk-qtwidgets-dev 编译依赖
+
+  * 其他改动说明： 
+  - 增加 libkysdk-qtwidgets-dev 编译依赖
+  - 更改音乐侧边栏音乐图标
+
   * 其他改动影响域：无
 
  -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 21 Apr 2022 11:04:17 +0800

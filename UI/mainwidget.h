@@ -55,7 +55,7 @@ public:
     void movePlayHistoryWid();
 
     // 毛玻璃
-    void paintEvent(QPaintEvent *event);
+//    void paintEvent(QPaintEvent *event);
     void transparencyChange();
 
     static Widget *mutual;          //指针类型静态成员变量
