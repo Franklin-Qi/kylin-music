@@ -39,7 +39,7 @@ void PlaySongArea::initWidget()
     nextBtn->setToolTip(tr("Next"));
 
     volumeBtn = new QPushButton(this);
-    volumeBtn->setFixedSize(25,25);
+    volumeBtn->setFixedSize(36, 36);
     volumeBtn->setCursor(Qt::PointingHandCursor);
     volumeBtn->setToolTip(tr("Volume"));    //音量
     int volume = playController::getInstance().getVolume();
@@ -92,7 +92,7 @@ void PlaySongArea::initWidget()
     hSlider->setValue(0);
     hSlider->setDisabled(true);
     favBtn = new QPushButton;
-    favBtn->setFixedSize(25,25);
+    favBtn->setFixedSize(36, 36);
 //    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    favBtn->setChecked(false);
     favBtn->setCursor(Qt::PointingHandCursor);
@@ -104,7 +104,7 @@ void PlaySongArea::initWidget()
 
     //播放模式
     playModeBtn = new QToolButton;
-    playModeBtn->setFixedSize(25,25);
+    playModeBtn->setFixedSize(36, 36);
     playModeBtn->setCursor(Qt::PointingHandCursor);
     playModeBtn->setPopupMode(QToolButton::InstantPopup);
     playModeBtn->setProperty("isWindowButton", 0x1);
@@ -153,7 +153,7 @@ void PlaySongArea::initWidget()
 
     //历史播放列表
     listBtn = new QPushButton;
-    listBtn->setFixedSize(25,25);
+    listBtn->setFixedSize(36, 36);
     listBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);

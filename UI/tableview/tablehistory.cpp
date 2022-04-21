@@ -39,8 +39,7 @@ void TableHistory::initSetModel()
     deleteAllBtn = new QToolButton(this);
     deleteAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     deleteAllBtn->setIconSize(QSize(16,16));
-//    deleteAllBtn->setFixedHeight(40);
-    deleteAllBtn->setIcon(QIcon(":/img/default/delete.png"));
+    deleteAllBtn->setIcon(QIcon::fromTheme("edit-delete-symbolic"));
     deleteAllBtn->setText(tr("Empty"));
     titleHBoxLayout = new QHBoxLayout();
     historyTitileWidget->setLayout(titleHBoxLayout);

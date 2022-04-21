@@ -316,7 +316,7 @@ void miniWidget::init_miniWidget()
     /****************************************************/
 
     m_loveBtn = new QPushButton;
-    m_loveBtn->setFixedSize(25,25);
+    m_loveBtn->setFixedSize(36, 36);
     m_loveBtn->setCursor(Qt::PointingHandCursor);
 //    m_loveBtn->setFocusPolicy(Qt::NoFocus);
     m_loveBtn->setProperty("isWindowButton", 0x1);
@@ -324,7 +324,7 @@ void miniWidget::init_miniWidget()
     m_loveBtn->setFlat(true);
 
     m_orderBtn = new QPushButton;
-    m_orderBtn->setFixedSize(25,25);
+    m_orderBtn->setFixedSize(36, 36);
     m_orderBtn->setCursor(Qt::PointingHandCursor);
 
     switch (playController::getInstance().mode()) {
