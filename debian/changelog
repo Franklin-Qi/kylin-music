@@ -1,3 +1,14 @@
+kylin-music (1.1.0-44) v101; urgency=medium
+
+  * [BUG]
+  - #114357, mini模式图标浅色模式下应该是白色图标
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Fri, 22 Apr 2022 14:51:07 +0800
+
 kylin-music (1.1.0-43) v101; urgency=medium
 
   * [BUG]

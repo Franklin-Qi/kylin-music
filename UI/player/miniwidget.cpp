@@ -158,14 +158,6 @@ void miniWidget::minicolor()
 
         slotFavExixtsDark();
 
-        m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
-
-        m_closeBtn->setIconSize(QSize(30, 30));
-        m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
-
-        m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.png"));
-        m_recoveryWinBtn->setIconSize(QSize(30, 30));
-        m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
         m_nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/nextsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
@@ -212,14 +204,6 @@ void miniWidget::minicolor()
         }
 
         slotFavExixts();
-
-        m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
-        m_closeBtn->setIconSize(QSize(30, 30));
-        m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
-
-        m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.png"));
-        m_recoveryWinBtn->setIconSize(QSize(30, 30));
-        m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
         m_nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/nextsong.png);}"
                                  "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
@@ -364,6 +348,9 @@ void miniWidget::init_miniWidget()
     m_closeBtn = new QPushButton;
     m_closeBtn->setFixedSize(30,30);
     m_closeBtn->setCursor(Qt::PointingHandCursor);
+    m_closeBtn->setIcon(QIcon(":/img/lightshow/close.svg"));
+    m_closeBtn->setIconSize(QSize(18, 18));
+    m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
 
     connect(m_closeBtn,&QPushButton::clicked,this,&miniWidget::close);
     //just hide not close
@@ -371,6 +358,9 @@ void miniWidget::init_miniWidget()
     m_recoveryWinBtn = new QPushButton;
     m_recoveryWinBtn->setFixedSize(30,30);
     m_recoveryWinBtn->setCursor(Qt::PointingHandCursor);
+    m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.svg"));
+    m_recoveryWinBtn->setIconSize(QSize(14, 14));
+    m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
 
     m_vSysLayout->setSpacing(0);
