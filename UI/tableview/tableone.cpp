@@ -36,6 +36,7 @@ void TableOne::initStyle()
 
     if (WidgetStyle::themeColor == 1)
     {
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
         this->setStyleSheet("#TableOne{background:red;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#252526;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
@@ -44,6 +45,7 @@ void TableOne::initStyle()
     }
     else if(WidgetStyle::themeColor == 0)
     {
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
         this->setStyleSheet("#TableOne{background:#FFFFFF;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#FFFFFF;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#FFFFFF;}");
@@ -234,7 +236,13 @@ void TableOne::initUI()
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
     n_addMusicButton->setText(tr("Add Local Songs"));
     n_addDirMusicButton->setText(tr("Add Local Folder"));
-    nullPageIconLabel->setPixmap(QPixmap(":/img/default/pict1.png").scaled(200,180));
+
+    if (WidgetStyle::themeColor == 1) {
+        // black theme
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+    } else {
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+    }
 
     nullPageWidget->setLayout(nullPageVLayout);
     nullPageVLayout->addStretch();

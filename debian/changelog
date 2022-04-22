@@ -1,3 +1,18 @@
+kylin-music (1.1.0-40update2) v101; urgency=medium
+
+  * [BUG]
+  - #115930, 占位图替换
+
+  * 需求号： 无
+
+  * 其他改动说明： 
+  - 处理 svg 依赖编译错误
+  - 处理添加损坏aac文件闪退问题
+
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Fri, 22 Apr 2022 09:58:52 +0800
+
 kylin-music (1.1.0-40update1) v101; urgency=medium
 
   *  基于1.1.0-40版本增加update标识，更改版本号

@@ -10,6 +10,8 @@ extern "C" {
 #include "musicfileinformation.h"
 #include "UI/mainwidget.h"
 
+#include "ukui-log4qt.h"
+
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
     m_musicType << "*.voc" << "*.aiff" << "*.au" << "*.dts" << "*.flv" << "*.m4r"
@@ -25,6 +27,8 @@ QStringList MusicFileInformation::getMusicType()
 
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
+    qDebug() << "addFile";
+
     int count = 0;
     int failCount = 0;
     resList.clear();
@@ -64,6 +68,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                     if(musicdataStruct.time != "")
                     {
                         resList.append(musicdataStruct);
+                    } else {
+                        failCount++;
                     }
                 }
                 else
@@ -85,6 +91,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 if(musicdataStruct.time != "")
                 {
                     resList.append(musicdataStruct);
+                } else {
+                    failCount++;
                 }
             }
             else
@@ -237,6 +245,17 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         avformat_close_input(&pFormatCtx);
         avformat_free_context(pFormatCtx);
     }
+    if (f.file() == nullptr) {
+        KyInfo() << "f.file == nullptr";
+        QStringList str;
+        musicdataStruct.singer = "";
+        musicdataStruct.album = "";
+        musicdataStruct.title  = "";
+        musicdataStruct.time  = "";
+        str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+        return str;
+    }
+
     TagLib::PropertyMap propertyMap = f.file() ->properties();
     QString musicName = propertyMap["TITLE"].toString().toCString(true);
     if(filterTextCode(musicName).isEmpty())
@@ -454,6 +473,24 @@ QString MusicFileInformation::fileSize(QFileInfo fileInfo)
         musicSize = QString::number(size,10)+"B";
     musicdataStruct.size = musicSize;
     return musicdataStruct.size;
+}
+
+bool MusicFileInformation::checkFileIsDamaged(QString filepath)
+{
+    QProcess *ffmpegCheckProcess = new QProcess(this);
+    QString cmd = "/usr/bin/ffmpeg";
+    QStringList args;
+    args.append("-i");
+    args.append(filepath);
+    ffmpegCheckProcess->start(cmd, args);
+    ffmpegCheckProcess->waitForFinished();
+    ffmpegCheckProcess->waitForReadyRead();
+
+    QString results = QString::fromLocal8Bit(ffmpegCheckProcess->readAllStandardOutput());
+    KyInfo() << "ffmpeg info: "<< results;
+
+    return true;
+
 }
 
 QString MusicFileInformation::fileType(QFileInfo fileInfo)

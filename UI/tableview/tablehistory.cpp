@@ -51,7 +51,12 @@ void TableHistory::initSetModel()
 
     nullPageWidget = new QWidget(this);
     nullIconLabel = new QLabel(this);
-    nullIconLabel->setPixmap(QPixmap(":/img/default/null.png").scaled(133,122));
+    if (WidgetStyle::themeColor == 1) {
+        // black theme
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+    } else {
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+    }
     nullTextLabel = new QLabel(this);
     nullTextLabel->setFixedHeight(30);
     nullTextLabel->setText(tr("The playlist has no songs"));
