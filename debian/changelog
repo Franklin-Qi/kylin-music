@@ -1,0 +1,23 @@
+kylin-music (1.1.3-0k0) yangtze; urgency=medium
+
+  * 版本号规范化
+
+ -- Xie Wei <xiewei@kylinos.cn>  Fri, 06 May 2022 17:44:22 +0800
+
+kylin-music (1.1.3-1) jammy; urgency=medium
+
+  *  商业版的代码更新到Debian分支做为2204
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 03 Mar 2022 17:08:56 +0800
+
+kylin-music (1.1.2-1) unstable; urgency=medium
+
+  * New upstream release. 
+
+ -- Allen <zouchang@kylinos.cn>  Thu, 04 Nov 2021 17:22:55 +0800
+
+kylin-music (1.1.1-1~0804) unstable; urgency=medium
+
+  * Initial release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 04 Aug 2021 15:03:49 +0800
