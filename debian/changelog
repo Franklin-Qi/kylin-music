@@ -1,3 +1,15 @@
+kylin-music (1.1.0-45) v101; urgency=medium
+
+  * [BUG]
+  - #114341, 音乐底部收藏之后的红色爱心有白底色
+  - #114366, 搜索激活后点击旁边位置退出不了激活状态
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 10 May 2022 17:20:14 +0800
+
 kylin-music (1.1.0-44) v101; urgency=medium
 
   * [BUG]
