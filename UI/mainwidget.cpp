@@ -12,6 +12,7 @@ Widget::Widget(QStringList str, QWidget *parent)
 {
     mutual = this;//！！！赋值，非常重要
 
+
     //单例
     Single(str);
 
@@ -883,6 +884,15 @@ void Widget::keyPressEvent(QKeyEvent *event)
         Q_EMIT signalSpaceKey();
     }
     QWidget::keyPressEvent(event);
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        this->setFocus();
+    }
+
+//    return Widget::mousePressEvent(event);
 }
 
 void Widget::slotShowMiniWidget()

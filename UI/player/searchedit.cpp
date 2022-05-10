@@ -38,6 +38,13 @@ void SearchEdit::keyPressEvent(QKeyEvent *event)
     QLineEdit::keyPressEvent(event);
 }
 
+void SearchEdit::focusInEvent(QFocusEvent *event)
+{
+    this->setFocus();
+
+    return QLineEdit::focusInEvent(event);
+}
+
 void SearchEdit::focusOutEvent(QFocusEvent *event)
 {
     this->clearFocus();

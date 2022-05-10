@@ -9,6 +9,7 @@
 #include <QToolButton>
 #include <QStackedWidget>
 #include <QResizeEvent>
+#include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QShortcut>
 
@@ -125,7 +126,7 @@ private Q_SLOTS:
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-//    void mousePressEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 Q_SIGNALS:
     //空格键控制播放暂停
     void signalSpaceKey();
