@@ -1,3 +1,10 @@
+kylin-music (1.1.0-26hw) v101.hw; urgency=medium
+
+  *[BUG]
+  -86808,【音乐】鼠标悬停播放/暂停按钮，没有tooltips提示 
+
+ -- denghao <denghao@kylinos.cn>  Tue, 17 May 2022 16:07:34 +0800
+
 kylin-music (1.1.0-25hw) v101.hw; urgency=medium
 
   * [BUG]
