@@ -213,6 +213,14 @@
         <source>CurrentItemInLoop</source>
         <translation>རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
     </message>
+    <message>
+        <source>play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pause</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
