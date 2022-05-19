@@ -161,6 +161,17 @@ void Widget::initDbus()//初始化dbus
                                          QString("org.freedesktop.login1.Manager"),
                                          QString("PrepareForSleep"), this,
                                          SLOT(onPrepareForSleep(bool)));
+    // 锁屏
+    QDBusConnection::sessionBus().connect(QString("org.ukui.ScreenSaver"),
+                                         QString("/"),
+                                         QString("org.ukui.ScreenSaver"),
+                                         QString("lock"), this,
+                                         SLOT(onScreenLock()));
+    QDBusConnection::sessionBus().connect(QString("org.ukui.ScreenSaver"),
+                                         QString("/"),
+                                         QString("org.ukui.ScreenSaver"),
+                                         QString("unlock"), this,
+                                         SLOT(onScreenUnlock()));
 
     //蓝牙控
     QDBusConnection::systemBus().connect(QString(), QString("/"), "com.monitorkey.interface", "monitorkey", this, SLOT(client_get(QString)));
@@ -488,6 +499,31 @@ void Widget::slotStateChanged(playController::PlayState state)
     {
         interface->call("Uninhibit", m_inhibitValue);
     }
+}
+
+void Widget::onScreenLock()
+{
+    KyInfo() << "getState = " << playController::getInstance().getState();
+
+    // 锁屏
+    if(playController::getInstance().getState() == playController::PLAY_STATE) {
+        KyInfo() << "screenlock pause";
+        playController::getInstance().pauseOnly();
+    }
+
+}
+
+void Widget::onScreenUnlock()
+{
+    KyInfo() << "getState = " << playController::getInstance().getState();
+
+    // 锁屏解锁
+    if(playController::getInstance().getState() == playController::STOP_STATE
+            || playController::getInstance().getState() == playController::PAUSED_STATE) {
+        KyInfo() << "screenunlock play";
+        playController::getInstance().play();
+    }
+
 }
 
 void Widget::initMusic()
