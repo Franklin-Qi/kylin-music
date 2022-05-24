@@ -386,6 +386,7 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         return 0;
     }
     importFile(list);
+    playController::getInstance().delayMsecondSetVolume();
 
     return 0;
 }

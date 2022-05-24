@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QDBusConnection>
+#include <ukui-log4qt.h>
 #include "player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/base/musicfileinformation.h"
@@ -359,12 +360,16 @@ playController::playController()
     connect(m_player,&MMediaPlayer::stateChanged,this,&playController::slotStateChanged);
     connect(m_playlist,&MMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
 //    connect(m_player,&MMediaPlayer::playErrorMsg,this,&playController::slotPlayErrorMsg);
+    m_volume = volumeSetting->get("volume").toInt();
+    delayMsecond(100);
+    m_player->setVolume(m_volume);
 }
 
 void playController::init()
 {
     volumeSetting = new QGSettings(KYLINMUSIC);
     m_volume = volumeSetting->get("volume").toInt();
+    delayMsecond(100);
     m_player->setVolume(m_volume);
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
@@ -419,6 +424,23 @@ int playController::getVolume()
     return m_volume;
 }
 
+void playController::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
+}
+
+void playController::delayMsecondSetVolume()
+{
+    int currentVolume = getVolume();
+    KyInfo() << "currentVolume = " << currentVolume
+             << "playState = " << getPlayer()->state();
+
+    delayMsecond(100);
+    setVolume(currentVolume);
+}
+
 void playController::setVolume(int volume)
 {
     if(volume > 100) {
@@ -430,7 +452,10 @@ void playController::setVolume(int volume)
 
     m_volume = volume;
     volumeSetting->set("volume", volume);
+
+    KyInfo() << "m_receive = " << m_receive;
     if (!m_receive) {
+        KyInfo() << "begin setVolume";
         m_player->setVolume(volume);
     } else {
         m_receive = false;
@@ -613,6 +638,9 @@ void playController::slotVolumeChange(QString app, int value, bool mute)
         }
 
         if (value != m_volume) {
+            KyInfo() << "value != m_volume."
+                     << "value = " << value;
+
             m_receive = true;
             Q_EMIT signalVolume(value);
         }

@@ -1,3 +1,15 @@
+kylin-music (1.1.0-43) v101; urgency=medium
+
+  * [BUG]
+  - #113934, 使用15个字的中文歌单，调整字体至13号，歌单显示不全
+  - #118347, 音乐播放器设置静音时，影音播放器调节音量也无声音输出
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 24 May 2022 15:05:37 +0800
+
 kylin-music (1.1.0-42) v101; urgency=medium
 
   * [BUG]

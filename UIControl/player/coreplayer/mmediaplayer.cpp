@@ -152,8 +152,13 @@ void MMediaPlayer::setVolume(int vol)
 //    setProperty("volume",QString::number(vol));
 //    Q_EMIT signalVolume(vol);
     // 设置音量，此音量和系统同步，不单独设置mpv音量
+
+//    delayMsecond(100);
+
     QDBusMessage message = QDBusMessage::createSignal("/", "org.kylin.music", "sinkInputVolumeChanged");
     message << "kylin-music" << vol << false;
+
+    KyInfo() << "createSignal: volume = " << vol;
     QDBusConnection::sessionBus().send(message);
 }
 
@@ -181,6 +186,13 @@ void MMediaPlayer::setMedia(const MMediaContent &media)
 bool MMediaPlayer::isAvailable() const
 {
     return true;
+}
+
+void MMediaPlayer::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
 }
 
 
