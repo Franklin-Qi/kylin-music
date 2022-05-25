@@ -519,11 +519,13 @@ void Widget::onScreenUnlock()
     KyInfo() << "getState = " << playController::getInstance().getState();
 
     // 锁屏解锁
+#if 0
     if(playController::getInstance().getState() == playController::STOP_STATE
             || playController::getInstance().getState() == playController::PAUSED_STATE) {
         KyInfo() << "screenunlock play";
         playController::getInstance().play();
     }
+#endif
 
 }
 
