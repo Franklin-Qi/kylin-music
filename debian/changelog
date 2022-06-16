@@ -1,3 +1,14 @@
+kylin-music (1.1.0-46) v101; urgency=medium
+
+  * [BUG]
+  - #120405, 解決主题变更导致图标展示不全问题
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Thu, 16 Jun 2022 17:21:04 +0800
+
 kylin-music (1.1.0-45) v101; urgency=medium
 
   * [BUG]

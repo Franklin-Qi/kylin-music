@@ -525,7 +525,7 @@ void miniWidget::slotFav()
 void miniWidget::slotFavExixts()
 {
     if (g_db->checkSongIsInFav(filePath)) {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     } else {
         m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
@@ -539,7 +539,7 @@ void miniWidget::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
@@ -563,7 +563,7 @@ void miniWidget::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
@@ -581,7 +581,7 @@ void miniWidget::slotFavBtnChange(QString filePath)
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else

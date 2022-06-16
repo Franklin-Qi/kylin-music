@@ -6,12 +6,11 @@
 
 #define UKUI_FONT_SIZE "systemFontSize"
 
-Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
+Widget *Widget::mutual = nullptr;
 Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
-    mutual = this;//！！！赋值，非常重要
-
+    mutual = this;
 
     //单例
     Single(str);
