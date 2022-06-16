@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QGSettings>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include "coreplayer/mmediaplayer.h"
 #include "coreplayer/mmediaplaylist.h"
 
@@ -79,6 +82,8 @@ public:
     void setPosition(int position);
     //获取音量
     int getVolume();
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
+    void delayMsecondSetVolume();
     //设置音量
     void setVolume(int volume);
     //获取歌单名

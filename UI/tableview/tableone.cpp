@@ -1,6 +1,7 @@
 #include <QMimeData>
 #include <QDirIterator>
 #include <peony-qt/file-operation-utils.h>
+#include <ukui-log4qt.h>
 #include "tableone.h"
 #include "UI/mainwidget.h"
 
@@ -298,6 +299,8 @@ void TableOne::slotLableSetFontSize(int size)
     QFont font;
     font.setPointSizeF(nowFontSize);
     listTitleLabel->setFont(font);
+
+    selectListChanged(listTitleLabel->text());
 
     if (infoDialog != nullptr) {
         infoDialog->slotLableSetFontSize(size);
@@ -615,6 +618,8 @@ void TableOne::playMusicforIndex(QString listName, int index)
     pathList = m_model->getPathList(listName);
     playController::getInstance().setCurPlaylist(listName,pathList);
     playController::getInstance().play(listName,index);
+
+    playController::getInstance().delayMsecondSetVolume();
 }
 void TableOne::showInfo()
 {
@@ -661,6 +666,8 @@ void TableOne::addToOtherList(QAction *listNameAction)
 }
 void TableOne::addMusicSlot()
 {
+    KyInfo() << "addMusicSlot";
+
     QFileDialog *fileDialog = new QFileDialog(Widget::mutual);
 //    fileDialog->setParent(Widget::mutual);
     QList<QUrl> list = fileDialog->sidebarUrls();
@@ -734,6 +741,8 @@ void TableOne::addMusicSlot()
 
 void TableOne::addDirMusicSlot()
 {
+    KyInfo() << "addDirMusicSlot";
+
     QFileDialog *fileDialog = new QFileDialog(Widget::mutual);
 
     QList<QUrl> list = fileDialog->sidebarUrls();
@@ -843,6 +852,7 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     }
     selectListChanged(nowListName);
     importFinished(successCount, fail_count, allCount);
+    playController::getInstance().delayMsecondSetVolume();
 }
 
 void TableOne::importFinished(int successCount, int m_failCount, int allCount)
@@ -1245,6 +1255,7 @@ void TableOne::dropEvent(QDropEvent *event)
         addMusicToDatebase(localpath);
     }
 
+    playController::getInstance().delayMsecondSetVolume();
 
 }
 

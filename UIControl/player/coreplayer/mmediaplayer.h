@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include <client.h> // MPV库头文件
 
 #include "mmediaplaylist.h"
@@ -25,6 +28,7 @@ public:
     void setPosition(qint64 pos); //设置播放起始点
 
     bool isAvailable() const; //暂无实际功能
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
     void setVolume(int vol); //设置音量
     qint64 duration() const; //获取总时长
     void setMedia(const MMediaContent &media); //设置待播放媒体

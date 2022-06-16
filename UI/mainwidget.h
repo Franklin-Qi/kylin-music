@@ -117,6 +117,8 @@ public Q_SLOTS:
     //如果正在播放，阻止锁屏
     void slotStateChanged(playController::PlayState state);
 private Q_SLOTS:
+    void onScreenLock();
+    void onScreenUnlock();
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
     void client_get(QString str);

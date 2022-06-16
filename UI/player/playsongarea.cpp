@@ -1,3 +1,5 @@
+#include <ukui-log4qt.h>
+
 #include "playsongarea.h"
 #include "UI/base/widgetstyle.h"
 #include "UI/base/xatom-helper.h"
@@ -317,6 +319,8 @@ void PlaySongArea::slotVolumeChanged(int values)
 {
     playController::getInstance().setVolume(values);
     int volume = playController::getInstance().getVolume();
+    KyInfo() << "volume = " << volume;
+
     if(volume == 0)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
@@ -713,6 +717,10 @@ void PlaySongArea::movePlayMenu()
 
 void PlaySongArea::slotPlayClicked()
 {
+    KyInfo() << QString("%1 %2")
+                .arg("slotPlayCliked: ")
+                .arg(playController::getInstance().getPlayer()->state());
+
     if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
     {
         playController::getInstance().getPlayer()->pause();
@@ -720,10 +728,24 @@ void PlaySongArea::slotPlayClicked()
     else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PausedState)
     {
         playController::getInstance().getPlayer()->play();
+
+        int currentVolume = playController::getInstance().getVolume();
+        KyInfo() << "currentVolume = " << currentVolume
+                 << "playState = " << playController::getInstance().getPlayer()->state();
+
+        delayMsecond(100);
+        playController::getInstance().setVolume(currentVolume);
     }
     else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::StoppedState)
     {
         playMeta();
+
+        int currentVolume = playController::getInstance().getVolume();
+        KyInfo() << "currentVolume = " << currentVolume
+                 << "playState = " << playController::getInstance().getPlayer()->state();
+
+        delayMsecond(100);
+        playController::getInstance().setVolume(currentVolume);
     }
 }
 
@@ -782,6 +804,13 @@ void PlaySongArea::playMeta()
 void PlaySongArea::slotPrevious()
 {
     playController::getInstance().onPreviousSong();
+}
+
+void PlaySongArea::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
 }
 
 void PlaySongArea::slotNext()

@@ -2,6 +2,9 @@
 #define PLAYSONGAREA_H
 
 #include <QWidget>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -9,6 +12,7 @@
 #include <QVariant>
 #include <QShortcut>
 #include <QMenu>
+#include <QDebug>
 
 #include "sliderwidget.h"
 #include "playbackmodewidget.h"
@@ -54,6 +58,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     //上一首
     void slotPrevious();
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
     //播放/暂停
     void slotPlayClicked();
     //下一首
@@ -124,7 +129,6 @@ private:
     void listBtnClicked();
     void playMeta();
 private:
-
     QHBoxLayout *m_mainLayout = nullptr;
     //上一首
     QPushButton *preBtn = nullptr;
