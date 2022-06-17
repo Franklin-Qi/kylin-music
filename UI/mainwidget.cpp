@@ -6,11 +6,11 @@
 
 #define UKUI_FONT_SIZE "systemFontSize"
 
-Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
+Widget *Widget::mutual = nullptr;
 Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
-    mutual = this;//！！！赋值，非常重要
+    mutual = this;
 
     //单例
     Single(str);
@@ -580,7 +580,7 @@ void Widget::initMusic()
 void Widget::initAllComponent()
 {
 
-    this->setProperty("useSystemStyleBlur", true);
+//    this->setProperty("useSystemStyleBlur", true);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
 
 //    this->setWindowFlag(Qt::FramelessWindowHint);
@@ -752,19 +752,19 @@ void Widget::initGSettings()//初始化GSettings
     if (QGSettings::isSchemaInstalled(FITCONTROLTRANS)) {
         m_transparencyGSettings = new QGSettings(FITCONTROLTRANS);
     }
-    if (m_transparencyGSettings != nullptr) {
-        connect(m_transparencyGSettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "transparency") {
-                transparencyChange();
-            }
-        });
-        transparencyChange();
-    }
+//    if (m_transparencyGSettings != nullptr) {
+//        connect(m_transparencyGSettings, &QGSettings::changed, this, [=](const QString &key) {
+//            if (key == "transparency") {
+//                transparencyChange();
+//            }
+//        });
+//        transparencyChange();
+//    }
 
 
-    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
+    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS))
     {
-        themeData = new QGSettings(FITTHEMEWINDOW);
+        themeData = new QGSettings(FITTHEMEWINDOWS);
         if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
             WidgetStyle::themeColor = 1;
             changeDarkTheme();
@@ -850,10 +850,32 @@ void Widget::movePlayHistoryWid()
     historyListTable->move(historyPos);
 }
 
+#if 0
 void Widget::paintEvent(QPaintEvent *event)
 {
 //    return QWidget::paintEvent(event);
-#if 1
+    Q_UNUSED(event);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPainterPath rectPath;
+    rectPath.addRoundedRect(this->rect(), 0, 0);
+    QStyleOption opt;
+    opt.init(this);
+
+    QColor mainColor;
+//    KyInfo() << opt.palette.color(QPalette::Base);
+
+    if (QColor(255,255,255) == opt.palette.color(QPalette::Base)
+            || QColor(248,248,248) == opt.palette.color(QPalette::Base)
+            || QColor(245, 245, 245) == opt.palette.color(QPalette::Base)) {
+        mainColor = QColor(242, 242, 242, m_transparency);
+    } else {
+        mainColor = QColor(20, 20, 20, m_transparency);
+    }
+
+    p.fillPath(rectPath,QBrush(mainColor));
+
+#if 0
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
@@ -880,11 +902,12 @@ void Widget::paintEvent(QPaintEvent *event)
 #endif
 
 }
+#endif
 
 void Widget::transparencyChange()
 {
-    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
-    this->update();
+//    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
+//    this->update();
 }
 
 //键盘F1响应唤出用户手册
@@ -899,6 +922,15 @@ void Widget::keyPressEvent(QKeyEvent *event)
         Q_EMIT signalSpaceKey();
     }
     QWidget::keyPressEvent(event);
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        this->setFocus();
+    }
+
+//    return Widget::mousePressEvent(event);
 }
 
 void Widget::slotShowMiniWidget()
@@ -1120,6 +1152,11 @@ void Widget::setCreatFinishMsg(QString msg)
 //切换深色主题
 void Widget::changeDarkTheme()
 {
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(38, 38, 38));
+    setAutoFillBackground(true);
+    setPalette(pal);
+
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
@@ -1144,6 +1181,11 @@ void Widget::changeDarkTheme()
 //切换浅色主题
 void Widget::changeLightTheme()
 {
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(255, 255, 255));
+    setAutoFillBackground(true);
+    setPalette(pal);
+
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();

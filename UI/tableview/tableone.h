@@ -38,10 +38,12 @@ public:
     explicit TableOne(QString listName,QWidget *parent = nullptr);
     ~TableOne();
 public:
-    MusicListModel *m_model = nullptr;
-//    QTableView *tableView;
-    TableBaseView *tableView = nullptr;
-    QLabel *listTitleLabel = nullptr;
+    /// 基于MVC设计模式设计的, C(controllor)控制在Qt中被弱化，与View合并到一起。
+    /// 表格视图控件 V(TableBaseView)，需要和 M(MusicListModel), 配套使用
+    MusicListModel *m_model = nullptr; // 数据模型，不能单独显示出来
+    TableBaseView *tableView = nullptr; // 视图，要来显示数据模型MusicListModel， 歌单列表，包括歌单标题和内容
+
+    QLabel *listTitleLabel = nullptr; // 歌单名称
     QString nowListName;
     MusicInfoDialog *infoDialog = nullptr;
     void changeNumber();
@@ -116,7 +118,7 @@ private:
     QToolButton *addMusicButton = nullptr;  //添加歌曲按钮
     QPushButton *playAllButton = nullptr;
 
-    QLabel *listTotalNumLabel = nullptr;
+    QLabel *listTotalNumLabel = nullptr; // 统计歌单中歌曲总数
     int heightLightIndex = -1;
     QString nowPlayListName;  //后端播放器中正在播放的列表名
 Q_SIGNALS:
@@ -154,7 +156,7 @@ private:
     QLabel *nullPageIconLabel = nullptr;
     QLabel *nullPageTextLabel = nullptr;
 
-    QHeaderView *horizonHeader = nullptr;
+    QHeaderView *horizonHeader = nullptr; // 表头内容
     QWidget *titleWid = nullptr;
 
     int showScrollbarNumber = 10;

@@ -26,8 +26,6 @@ public:
     explicit SideBarWidget(QWidget *parent = nullptr);
 public:
     void sidecolor();
-    // 毛玻璃
-    void transparencyChange();
 
 public:
     //新建歌单弹窗界面
@@ -89,8 +87,6 @@ private:
     QVBoxLayout *newPlayListLayout = nullptr;
     //歌单名
     QStringList playListName;
-    //kylin-music logo
-    QPushButton *logoPushButton = nullptr;
     //音乐库label
     QLabel *libraryLabel = nullptr;
     //我的歌单label

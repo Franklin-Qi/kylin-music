@@ -1,7 +1,7 @@
 #ifndef MENUMODULE_H
 #define MENUMODULE_H
 #define DEBUG_MENUMODULE 0  //DEBUG模式开关，代码上线之前务必关掉
-#define FITTHEMEWINDOW "org.ukui.style"
+#define FITTHEMEWINDOWS "org.ukui.style"
 #define FITCONTROLTRANS "org.ukui.control-center.personalise"
 
 

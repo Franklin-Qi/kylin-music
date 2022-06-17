@@ -9,24 +9,6 @@ MusicListModel::MusicListModel(QObject* parent) : QObject(parent)
     titleList.append(tr("Album"));
     titleList.append(tr("Time"));
 
-//    for(int i= 0; i < 4;i++ )
-//    {
-//        item[i] = new QStandardItem();
-
-//    }
-//    item[0]->setData(titleList.at(0),Qt::DisplayRole);
-//    item[1]->setData(titleList.at(1),Qt::DisplayRole);
-//    item[2]->setData(titleList.at(2),Qt::DisplayRole);
-//    item[3]->setData(titleList.at(3),Qt::DisplayRole);
-
-//    for(int i= 0; i < 4;i++ )
-//    {
-//        item[i]->setTextAlignment(Qt::AlignLeft);
-//        m_model.setHorizontalHeaderItem(i,item[i]);
-//    }
-//    list.append("Path");
-//    list.append("Type");
-//    list.append("Size");
     m_model.setHorizontalHeaderLabels(titleList); //使用list设置水平标题标签。如有必要，将列数增加到标签的大小
     m_model.horizontalHeaderItem(titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 }
@@ -55,19 +37,13 @@ bool MusicListModel::add(musicDataStruct info)
         item1->setData(info.singer, Qt::DisplayRole);
         item2->setData(info.album, Qt::DisplayRole);
         item3->setData(info.time, Qt::DisplayRole);
-        item3->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        item3->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         item0->setData(info.filepath, Qt::DecorationRole);
         item1->setData(info.filetype, Qt::DecorationRole);
         item2->setData(info.size, Qt::DecorationRole);
 
 
-//        QFont sizeFont;
-//        sizeFont.setPixelSize(14);
-//        item0->setFont(sizeFont);
-//        item1->setFont(sizeFont);
-//        item2->setFont(sizeFont);
-//        item3->setFont(sizeFont);
 
         item0->setEditable(false);
         item1->setEditable(false);

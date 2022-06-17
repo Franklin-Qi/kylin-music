@@ -27,22 +27,19 @@ TableOne::~TableOne()
 
 void TableOne::initStyle()
 {
-    listTitleLabel->setStyleSheet("\
-                                 font-weight: 600;\
-                                 line-height: 24px;");
+    listTitleLabel->setStyleSheet("font-weight: 600; line-height: 24px;");
+    listTotalNumLabel->setStyleSheet("font-weight: 400;color:#8C8C8C; border:none; line-height: 14px;");
 
-    listTotalNumLabel->setStyleSheet("font-weight: 400;color:#8C8C8C;\
-                                        border:none;\
-                                        line-height: 14px;");
+    tableView->setAlternatingRowColors(false);
 
     if (WidgetStyle::themeColor == 1)
     {
         nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
-        this->setStyleSheet("#TableOne{background:red;border:none;}");
+        this->setStyleSheet("#TableOne{background:#252526;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#252526;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
         tableView->setStyleSheet("#tableView{background:#252526;border:none;}");
-        tableView->setAlternatingRowColors(false);
+        //tableView->setAlternatingRowColors(false);
     }
     else if(WidgetStyle::themeColor == 0)
     {
@@ -51,7 +48,12 @@ void TableOne::initStyle()
         titleWid->setStyleSheet("#titleWid{background:#FFFFFF;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#FFFFFF;}");
         tableView->setStyleSheet("#tableView{background:#FFFFFF;border:none;}");
-        tableView->setAlternatingRowColors(false);
+//        // 整个表格样式
+//        tableView->setStyleSheet("#tableView{color: white;  "
+//                                 "background-color: #FFFFFF; alternate-background-color: #FFFFFF; "
+//                                 "selection-color: white; selection-background-color: rgb(77, 77, 77); "
+//                                 "border: 0px groove gray; border-radius: 0px; padding: 10px 2px 10px 2px;"
+//                                 "margin: 10px; }");
     }
 }
 
@@ -61,32 +63,41 @@ void TableOne::initTableViewStyle()
         return;
     }
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3,80);
+    tableView->setColumnWidth(3, 80);
     tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
     tableView->verticalHeader()->setVisible(false);// 垂直不可见
     tableView->verticalHeader()->setDefaultSectionSize(40);
+
     tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
-    tableView->setAlternatingRowColors(false);
+//    tableView->horizontalHeader()->setSectionResizeMode(3,QHeaderView::setFixedWidth(25));
+    tableView->setAlternatingRowColors(false); // 奇偶行颜色变化
+
+
     horizonHeader = tableView->horizontalHeader();
     horizonHeader->setEnabled(false);
-    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
+    //m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
     horizonHeader->setHighlightSections(false);
     horizonHeader->setFixedHeight(36);
+
+    // 表头内容样式
     if(WidgetStyle::themeColor == 0) {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
-                                                                border: none;border-bottom: 1px solid white;\
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px; \
+                                                                border: none ;border-bottom: 1px solid white;\
                                                                 border-right: 1px solid white;border-bottom: 1px transparent;\
                                                                 background-color:white;color:#8F9399;}");
     } else {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px;\
+        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left:25px; \
                                                         border: none;border-bottom: 1px solid #252526;\
                                                         border-right: 1px solid #252526;border-bottom: 1px transparent;\
                                                         background-color:#252526;color:#8F9399;}");
     }
 
     horizonHeader->setDefaultAlignment(Qt::AlignLeft);
+
+    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
     //列表刷新，时长右对齐需加到默认表头左对齐之后
     m_model->m_model.horizontalHeaderItem(m_model->titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 
@@ -101,8 +112,8 @@ void TableOne::initTableViewStyle()
 
 void TableOne::initUI()
 {
-    QVBoxLayout *tableLayout = new QVBoxLayout();
-    this->setLayout(tableLayout);
+    //QVBoxLayout *tableLayout = new QVBoxLayout();
+    //this->setLayout(tableLayout);
 
     listTitleLabel = new QLabel(this);
     listTitleLabel->setAlignment(Qt::AlignBottom);
@@ -133,31 +144,10 @@ void TableOne::initUI()
     titleWid->setFixedHeight(95);
 
     playAllButton->setText(tr("Play All"));
-    playAllButton->setIconSize(QSize(16,16));
-    playAllButton->setIcon(QIcon(":/img/default/play_w.png"));
-//    playAllButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    playAllButton->setIconSize(QSize(16,16));
-//    addMusicButton->setText(tr("   Add"));
-    playAllButton->setFixedSize(125,36);
     playAllButton->setProperty("isImportant", true);
-//    playAllButton->setPopupMode(QToolButton::InstantPopup);
-//    playAllButton->setStyleSheet("QToolButton{padding-left:18px;background-color: #3790FA; color:#FFFFFF;border-radius: 6px;}"
-//                                 "QToolButton::hover{background-color: #40A9FB;}"
-//                                 "QToolButton::pressed{background-color: #296CD9;}");
-//    playAllButton->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
 
-    addMusicButton->setText(tr("Add"));
-    addMusicButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    addMusicButton->setIconSize(QSize(16,16));
-
-    addMusicButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    addMusicButton->setProperty("useIconHighlightEffect", 0x8);
-//    addMusicButton->setProperty("useIconHighlightEffect", 0x2);
-//    addMusicButton->setFocusPolicy(Qt::NoFocus);
-//    addMusicButton->setProperty("isImportant",true);
-
-//    addMusicButton->setText(tr("   Add"));
-    addMusicButton->setFixedSize(125,36);
+    addMusicButton->setText(tr("Add Music"));
+    addMusicButton->setProperty("isImportant",true);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
     addMusicFileAction = new QAction(this);
@@ -168,37 +158,11 @@ void TableOne::initUI()
     add_menu->addAction(addDirMusicAction);
     addMusicButton->setMenu(add_menu);
 
-    QHBoxLayout *tableTitleLayout = new QHBoxLayout();
-    QWidget *tableTitleWidget = new QWidget(this);
-    tableTitleWidget->setLayout(tableTitleLayout);
-    QLabel *songNameTitle = new QLabel(tr("Song"));
-    QLabel *singerTitle = new QLabel(tr("Singer"));
-    QLabel *albumTitle = new QLabel(tr("Album"));
-    QLabel *songtimeTitle = new QLabel(tr("Time"));
-    songtimeTitle->setAlignment(Qt::AlignRight);
-    songtimeTitle->setFixedWidth(60);
-    tableTitleLayout->setAlignment(Qt::AlignLeft);
-    tableTitleLayout->addWidget(songNameTitle,1);
-    tableTitleLayout->addSpacing(20);
-    tableTitleLayout->addWidget(singerTitle,1);
-    tableTitleLayout->addSpacing(20);
-    tableTitleLayout->addWidget(albumTitle,1);
-    tableTitleLayout->addStretch(0);
-    tableTitleLayout->addWidget(songtimeTitle,Qt::AlignRight);
-//    tableTitleLayout->addSpacing(10);
-    tableTitleLayout->setSpacing(0);
-    tableTitleLayout->setMargin(0);
-//    tableTitleLayout->setContentsMargins(25,0,10,0);
-    songNameTitle->setStyleSheet("color:#8F9399;");
-    singerTitle->setStyleSheet("color:#8F9399;");
-    albumTitle->setStyleSheet("color:#8F9399;");
-    songtimeTitle->setStyleSheet("color:#8F9399;");
-
 
     tableView = new TableBaseView();
-    tableView->setObjectName("tableView");
+    tableView->setObjectName("tableView"); // 可以通过 #tableView 设置样式表
     tableView->setFocusPolicy(Qt::NoFocus);
-    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); // 使用右键菜单，需启用该属性
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
     tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
     QList<musicDataStruct> resList;
@@ -211,16 +175,6 @@ void TableOne::initUI()
         m_model->setView(*tableView);
     }
 
-    tableTitleWidget->hide();
-//    m_musicWidget = new QWidget(this);
-//    m_historyLayout = new QVBoxLayout();
-//    m_musicWidget->setLayout(m_historyLayout);
-//    m_historyLayout->addWidget(tableTitleWidget);
-//    m_historyLayout->addWidget(tableView);
-//    m_historyLayout->setSpacing(0);
-//    m_historyLayout->setMargin(0);
-
-//    m_historyLayout->setContentsMargins(0,0,20,0);
 
     nullPageWidget = new QWidget(this);
     nullPageWidget->setObjectName("nullPageWidget");
@@ -265,30 +219,19 @@ void TableOne::initUI()
     nullPageVLayout->setSpacing(0);
     nullPageVLayout->setMargin(0);
 
-    tableLayout->addWidget(titleWid,Qt::AlignTop);
-//    tableLayout->addSpacing(10);
+    QVBoxLayout *tableLayout = new QVBoxLayout();
+    tableLayout->addWidget(titleWid, Qt::AlignTop);
     tableLayout->addWidget(tableView);
     tableLayout->addWidget(nullPageWidget);
     tableLayout->setMargin(0);
-//    tableLayout->setContentsMargins(0,0,20,0);
     tableLayout->setSpacing(0);
+    this->setLayout(tableLayout);
 
     initTableViewStyle();
 //    listTitleLabel->setFixedWidth(120);
     listTotalNumLabel->setFixedWidth(120);
     showTitleText(nowListName);
     changeNumber();
-
-    //限制应用字体不随着主题变化
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    add_menu->setFont(sizeFont);
-//    listTotalNumLabel->setFont(sizeFont);
-//    addMusicButton->setFont(sizeFont);
-//    playAllButton->setFont(sizeFont);
-//    n_addDirMusicButton->setFont(sizeFont);
-//    n_addMusicButton->setFont(sizeFont);
-//    nullPageTextLabel->setFont(sizeFont);
 }
 
 void TableOne::slotLableSetFontSize(int size)
@@ -967,7 +910,6 @@ void TableOne::setHightLightAndSelect()
 void TableOne::changeNumber()
 {
     int num = m_model->count();
-//    listTotalNumLabel->setText(tr("共") + QString::number(num) + tr("首"));
     listTotalNumLabel->setText(QString::number(num) + tr(" songs"));
     if(num == 0) {
         tableView->hide();
@@ -989,6 +931,11 @@ void TableOne::changeNumber()
         playAllButton->show();
     }
 }
+
+/**
+ * @brief TableOne::getMusicList
+ * 从数据库中获取歌单列表并显示
+ */
 void TableOne::getMusicList()
 {
     if(nowListName == SEARCH)
@@ -1011,7 +958,7 @@ void TableOne::getMusicList()
     {
         QList<musicDataStruct> resList;
         int ret;
-        ret = g_db->getSongInfoListFromDB(resList,nowListName);
+        ret = g_db->getSongInfoListFromDB(resList, nowListName);
         if(ret == DB_OP_SUCC)
         {
             m_model->clear();

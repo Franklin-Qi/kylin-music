@@ -22,7 +22,7 @@ public:
     musicDataStruct getItem(int i);
     QStringList getPathList(QString listName);
     void getMusicDateList(QList<musicDataStruct> list);
-    QStandardItemModel m_model;
+    QStandardItemModel m_model; // 数据模型，不能单独显示出来
     QStringList titleList;
     QStandardItem* item[4];
 private:
