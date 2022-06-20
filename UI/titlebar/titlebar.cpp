@@ -153,7 +153,7 @@ void TitleBar::initTitle()
     miniBtn->setFixedSize(30,30);
 //    miniBtn->setToolTip("精简模式");
     miniBtn->setToolTip(tr("mini model"));
-    miniBtn->setIcon(QIcon::fromTheme("ukui-mini"));
+    miniBtn->setIcon(QIcon::fromTheme("ukui-mini-symbolic"));
     miniBtn->setProperty("isWindowButton", 0x1);
     miniBtn->setProperty("useIconHighlightEffect", 0x2);
     miniBtn->setFlat(true);

@@ -321,7 +321,7 @@ void miniWidget::init_miniWidget()
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         m_orderBtn->setProperty("isWindowButton", 0x1);
         m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
         m_orderBtn->setFlat(true);
@@ -528,7 +528,7 @@ void miniWidget::slotFavExixts()
         m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     } else {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
@@ -544,7 +544,7 @@ void miniWidget::slotFavExixtsDark()
     }
     else
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     Q_EMIT signalFavBtnChange(filePath);
@@ -572,7 +572,7 @@ void miniWidget::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -586,7 +586,7 @@ void miniWidget::slotFavBtnChange(QString filePath)
     }
     else
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -688,7 +688,7 @@ void miniWidget::setPlayMode(int playModel)
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         m_orderBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;

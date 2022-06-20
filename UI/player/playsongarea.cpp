@@ -123,7 +123,7 @@ void PlaySongArea::initWidget()
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         //playModeBtn->setProperty("isWindowButton", 0x1);
         //playModeBtn->setProperty("useIconHighlightEffect", 0x2);
         //playModeBtn->setFlat(true);
@@ -143,7 +143,7 @@ void PlaySongArea::initWidget()
     }
     m_playMode = new QMenu(this);
     loopAct = new QAction(tr("Loop"));
-    loopAct->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    loopAct->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
     randomAct = new QAction(tr("Random"));
     randomAct->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
     currentItemInLoopAct = new QAction(tr("CurrentItemInLoop"));
@@ -462,7 +462,7 @@ void PlaySongArea::slotPlayBackModeChanged()
 void PlaySongArea::slotLoopClicked()
 {
     playController::getInstance().setMode(playController::Loop);
-    playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
     playModeBtn->setToolTip(tr("Loop"));
     playController::getInstance().setPlaymode(playController::Loop);
     m_playBackModeWid->hide();
@@ -508,7 +508,7 @@ void PlaySongArea::setPlayMode(int playModel)
 //        playController::getInstance().setPlaymode(playController::Sequential);
 //        break;
     case 3:
-        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         playModeBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
@@ -829,7 +829,7 @@ void PlaySongArea::slotFavExixts()
         favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
     } else {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
@@ -845,7 +845,7 @@ void PlaySongArea::slotFavExixtsDark()
     }
     else
     {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     Q_EMIT signalFavBtnChange(filePath);
@@ -877,7 +877,7 @@ void PlaySongArea::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -895,7 +895,7 @@ void PlaySongArea::slotFavBtnChange(QString filePath)
     }
     else
     {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
