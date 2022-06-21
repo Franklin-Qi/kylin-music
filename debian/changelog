@@ -1,3 +1,14 @@
+kylin-music (1.1.0-47) v101; urgency=medium
+
+  * [BUG]
+  - #125072, 解决安装介绍页内容介绍以及图片都未更新问题
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 21 Jun 2022 16:27:10 +0800
+
 kylin-music (1.1.0-46) v101; urgency=medium
 
   * [BUG]
