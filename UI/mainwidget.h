@@ -65,8 +65,6 @@ public:
     QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
     double m_transparency = 1.0;  // 透明度
 
-
-
 public Q_SLOTS:
     //mini窗口
     void slotShowMiniWidget();
@@ -129,9 +127,29 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+
 Q_SIGNALS:
-    //空格键控制播放暂停
-    void signalSpaceKey();
+    // Space 控制播放/暂停
+    void playPauseKeySignal();
+
+    // Ctrl+Left 控制上一首
+    void previousPlayKeySignal();
+
+    // Ctrl+Right 控制下一首
+    void nextPlayKeySignal();
+
+    // Ctrl+Up 控制音量增加
+    void addVolumeKeySignal();
+
+    // Ctrl+down 控制音量降低
+    void downVolumeKeySignal();
+
+    // Ctrl+M 切换 Mini/完整模式
+    void miniCompleteSwitchKeySignal();
+
+    // Ctrl+L 将歌曲添加到喜欢歌单
+    void loveSongKeySignal();
+
 private:
     //初始化dbus
     void initDbus();

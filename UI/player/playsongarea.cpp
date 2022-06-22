@@ -284,7 +284,6 @@ void PlaySongArea::slotLableSetFontSize(int size)
 
 void PlaySongArea::initConnect()
 {
-    //
     connect(preBtn,&QPushButton::clicked,this,&PlaySongArea::slotPrevious);
     connect(playBtn,&QPushButton::clicked,this,&PlaySongArea::slotPlayClicked);
     connect(nextBtn,&QPushButton::clicked,this,&PlaySongArea::slotNext);

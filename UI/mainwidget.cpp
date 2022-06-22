@@ -671,67 +671,82 @@ void Widget::initAllComponent()
 
 void Widget::allConnect()
 {
-    connect(sideBarWid,&SideBarWidget::playListBtnCliced,musicListTable,&TableOne::selectListChanged);
-    connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
-    connect(historyListTable,&TableHistory::signalHistoryBtnChecked,playSongArea,&PlaySongArea::slotHistoryBtnChecked);
-    connect(musicListTable,&TableOne::refreshHistoryListSignal,historyListTable,&TableHistory::refreshHistoryTable);
+    // 侧边栏区域
+    connect(sideBarWid,&SideBarWidget::playListBtnClicked,musicListTable,&TableOne::selectListChanged);
     connect(sideBarWid,&SideBarWidget::playListRenamed,musicListTable,&TableOne::playListRenamed);
     connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
-    connect(sideBarWid,&SideBarWidget::playListBtnCliced,playSongArea,&PlaySongArea::slotText);
+    connect(sideBarWid,&SideBarWidget::playListBtnClicked,this,&Widget::slotText);
+    connect(sideBarWid,&SideBarWidget::playListBtnClicked,playSongArea,&PlaySongArea::slotText);
+    connect(sideBarWid,&SideBarWidget::playListBtnClicked,m_miniWidget,&miniWidget::slotText);
 
-    connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
-    connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
-    connect(m_quitWindow, &QShortcut::activated, this, &Widget::slotClose);
-    connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
-    connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
-
-    //迷你模式槽函数绑定
-    connect(m_miniWidget->m_recoveryWinBtn,&QPushButton::clicked,this,&Widget::slotRecoverNormalWidget);
-//    connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,this,&Widget::slotPlayNext);
-//    connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,this,&Widget::slotPlaySong);
-//    connect(m_miniWidget->m_preBtn,&QPushButton::clicked,this,&Widget::slotPlayPre);
-//    connect(m_miniWidget->m_orderBtn,&QPushButton::clicked,this,&Widget::slotPlayModeChanged);
-    connect(m_miniWidget->m_closeBtn,&QPushButton::clicked,this,&Widget::slotCloseMiniWidget);
-//    connect(m_miniWidget->m_loveBtn,&QPushButton::clicked,this,&Widget::slotAddLike);
-    connect(sideBarWid,&SideBarWidget::playListBtnCliced,this,&Widget::slotText);
+    // 歌单列表区域
     connect(this,&Widget::signalRefreshList,musicListTable,&TableOne::selectListChanged);
-
-    connect(musicListTable,&TableOne::addILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
-    connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
-//    connect(playSongArea,&PlaySongArea::signalAddFromFavButton,musicListTable,&TableOne::selectListChanged);
-//    connect(playSongArea,&PlaySongArea::signalDelFromFavButton,musicListTable,&TableOne::selectListChanged);
-    connect(m_miniWidget->m_preBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPrevious);
-    connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPlayClicked);
-    connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotNext);
     connect(musicListTable,&TableOne::addILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
     connect(musicListTable,&TableOne::removeILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
-    connect(m_miniWidget,&miniWidget::signalFavBtnChange,playSongArea,&PlaySongArea::slotFavBtnChange);
-    connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&miniWidget::slotFavBtnChange);
-    connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&miniWidget::slotPlayingLab);
-    connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
-    connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
-    connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
-    connect(sideBarWid,&SideBarWidget::playListBtnCliced,m_miniWidget,&miniWidget::slotText);
-    connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
-    connect(m_miniWidget,&miniWidget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
-    connect(this,&Widget::signalSpaceKey,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(musicListTable,&TableOne::addILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
+    connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
+    connect(musicListTable,&TableOne::refreshHistoryListSignal,historyListTable,&TableHistory::refreshHistoryTable);
+    connect(musicListTable,&TableOne::signalListSearch,sideBarWid,&SideBarWidget::slotListSearch);
+    connect(musicListTable,&TableOne::signalSongListHigh,sideBarWid,&SideBarWidget::slotSongListHigh);
 
+    // 标题栏区域
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::selectListChanged);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,playSongArea,&PlaySongArea::slotText);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,this,&Widget::slotText);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,m_miniWidget,&miniWidget::slotText);
-    connect(musicListTable,&TableOne::signalListSearch,sideBarWid,&SideBarWidget::slotListSearch);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnText,musicListTable,&TableOne::slotReturnText);
     connect(m_titleBar->searchEdit->m_result->m_MusicView,&MusicSearchListview::signalSearchTexts,musicListTable,&TableOne::slotSearchTexts);
-
     connect(m_titleBar->searchEdit->m_result,&SearchResult::signalFilePath,musicListTable,&TableOne::slotFilePath);
     connect(m_titleBar->searchEdit->m_result,&SearchResult::signalSongListBySinger,musicListTable,&TableOne::slotSongListBySinger);
     connect(m_titleBar->searchEdit->m_result,&SearchResult::signalSongListByAlbum,musicListTable,&TableOne::slotSongListByAlbum);
-
-    connect(musicListTable,&TableOne::signalSongListHigh,sideBarWid,&SideBarWidget::slotSongListHigh);
-
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::slotSearchReturnPressed);
+    connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
+    connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
+    connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
+    connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
+
+
+    // 播放区域
+//    connect(playSongArea,&PlaySongArea::signalAddFromFavButton,musicListTable,&TableOne::selectListChanged);
+//    connect(playSongArea,&PlaySongArea::signalDelFromFavButton,musicListTable,&TableOne::selectListChanged);
+    connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
+    connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
+    connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&miniWidget::slotFavBtnChange);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&miniWidget::slotPlayingLab);
+    connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
+
     connect(&playController::getInstance(),&playController::playerStateChange,this,&Widget::slotStateChanged);
+
+    // 播放历史区域
+    connect(historyListTable,&TableHistory::signalHistoryBtnChecked,playSongArea,&PlaySongArea::slotHistoryBtnChecked);
+
+    // mini模式
+    connect(m_miniWidget->m_recoveryWinBtn,&QPushButton::clicked,this,&Widget::slotRecoverNormalWidget);
+    connect(m_miniWidget->m_closeBtn,&QPushButton::clicked,this,&Widget::slotCloseMiniWidget);
+    connect(m_miniWidget->m_preBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPrevious);
+    connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotNext);
+    connect(m_miniWidget,&miniWidget::signalFavBtnChange,playSongArea,&PlaySongArea::slotFavBtnChange);
+    connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
+    // mini模式快捷键
+    connect(m_miniWidget, &miniWidget::playPauseKeySignal,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(m_miniWidget, &miniWidget::previousPlayKeySignal, playSongArea,&PlaySongArea::slotPrevious);
+    connect(m_miniWidget, &miniWidget::nextPlayKeySignal, playSongArea,&PlaySongArea::slotNext);
+    connect(m_miniWidget, &miniWidget::addVolumeKeySignal, this, &Widget::VolumeUp);
+    connect(m_miniWidget, &miniWidget::downVolumeKeySignal, this, &Widget::VolumeDown);
+    connect(m_miniWidget, &miniWidget::miniCompleteSwitchKeySignal, this, &Widget::slotRecoverNormalWidget);
+    connect(m_miniWidget, &miniWidget::loveSongKeySignal, playSongArea, &PlaySongArea::slotFav);
+
+    // 快捷键设置
+    connect(m_quitWindow, &QShortcut::activated, this, &Widget::slotClose);
+    connect(this,&Widget::playPauseKeySignal,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(this, &Widget::previousPlayKeySignal, playSongArea,&PlaySongArea::slotPrevious);
+    connect(this, &Widget::nextPlayKeySignal, playSongArea,&PlaySongArea::slotNext);
+    connect(this, &Widget::addVolumeKeySignal, this, &Widget::VolumeUp);
+    connect(this, &Widget::downVolumeKeySignal, this, &Widget::VolumeDown);
+    connect(this, &Widget::miniCompleteSwitchKeySignal, this,&Widget::slotShowMiniWidget);
+    connect(this, &Widget::loveSongKeySignal, playSongArea, &PlaySongArea::slotFav);
 }
 
 void Widget::initGSettings()//初始化GSettings
@@ -907,10 +922,9 @@ void Widget::paintEvent(QPaintEvent *event)
 void Widget::transparencyChange()
 {
 //    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
-//    this->update();
+    //    this->update();
 }
 
-//键盘F1响应唤出用户手册
 void Widget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_F1)
@@ -919,8 +933,44 @@ void Widget::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == Qt::Key_Space)
     {
-        Q_EMIT signalSpaceKey();
+        Q_EMIT playPauseKeySignal();
     }
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Left) {
+        qDebug() << "ctrl+left";
+        Q_EMIT previousPlayKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Right) {
+        qDebug() << "ctrl+right";
+        Q_EMIT nextPlayKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Up) {
+        qDebug() << "ctrl+up";
+        Q_EMIT addVolumeKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Down) {
+        qDebug() << "ctrl+down";
+        Q_EMIT downVolumeKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_M) {
+        qDebug() << "ctrl+m";
+        Q_EMIT miniCompleteSwitchKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_L) {
+        qDebug() << "ctrl+l";
+        Q_EMIT loveSongKeySignal();
+    }
+
     QWidget::keyPressEvent(event);
 }
 
@@ -937,7 +987,8 @@ void Widget::slotShowMiniWidget()
 {
     // 添加过渡动画
     QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
-    animation->setDuration(200);
+    // 当数值为100后，重复性按快捷键ctrl+m会出现界面消失，所以需要减少到50
+    animation->setDuration(50);
     animation->setStartValue(1);
     animation->setEndValue(0);
     connect(animation, &QPropertyAnimation::valueChanged, [&](QVariant value){
@@ -949,7 +1000,7 @@ void Widget::slotShowMiniWidget()
     });
 
     QPropertyAnimation *animation_mini = new QPropertyAnimation(m_miniWidget, "windowOpacity");
-    animation_mini->setDuration(200);
+    animation_mini->setDuration(50);
     animation_mini->setStartValue(0);
     animation_mini->setEndValue(1);
     connect(animation_mini, &QPropertyAnimation::valueChanged, [&](QVariant value){
@@ -1094,12 +1145,9 @@ void Widget::PlayPause() const
 
 void Widget::slotRecoverNormalWidget()
 {
-    if(Minimize == true)
-    {
+    if(Minimize == true) {
         this->showMaximized();
-    }
-    else
-    {
+    } else {
         this->showNormal();
     }
     m_miniWidget->hide();

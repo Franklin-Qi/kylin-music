@@ -105,8 +105,45 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space)
     {
-        Q_EMIT signalSpaceKey();
+        Q_EMIT playPauseKeySignal();
     }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Left) {
+        qDebug() << "ctrl+left";
+        Q_EMIT previousPlayKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Right) {
+        qDebug() << "ctrl+right";
+        Q_EMIT nextPlayKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Up) {
+        qDebug() << "ctrl+up";
+        Q_EMIT addVolumeKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_Down) {
+        qDebug() << "ctrl+down";
+        Q_EMIT downVolumeKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_M) {
+        qDebug() << "ctrl+m";
+        Q_EMIT miniCompleteSwitchKeySignal();
+    }
+
+    if (event->modifiers() == Qt::ControlModifier
+            && event->key() == Qt::Key_L) {
+        qDebug() << "ctrl+l";
+        Q_EMIT loveSongKeySignal();
+    }
+
     else if(event->key() == Qt::Key_Right)
     {
         return;

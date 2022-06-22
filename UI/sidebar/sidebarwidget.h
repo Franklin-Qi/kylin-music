@@ -50,7 +50,7 @@ public Q_SLOTS:
     //高亮歌曲列表按钮
     void slotSongListHigh();
 Q_SIGNALS:
-    void playListBtnCliced(QString listname);
+    void playListBtnClicked(QString listname);
     void playListRemoved(QString listname);
     void playListRenamed(QString oldName,QString newName);
     void playListAdded(QString listName);

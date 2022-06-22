@@ -1,3 +1,15 @@
+kylin-music (1.1.0-48) v101; urgency=medium
+
+  * [BUG]
+  - #125240，解决缺少上一首、下一首、音量控制等快捷键问题
+  - #125411，解决切换到深色模式界面显示异常问题
+
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Wed, 22 Jun 2022 16:21:52 +0800
+
 kylin-music (1.1.0-47) v101; urgency=medium
 
   * [BUG]

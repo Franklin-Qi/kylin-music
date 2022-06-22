@@ -58,8 +58,28 @@ Q_SIGNALS:
     void signalFavBtnChange(QString filePath);
     //刷新我喜欢列表
     void signalRefreshFav(QString listName);
+
     //空格键控制播放暂停
-    void signalSpaceKey();
+    void playPauseKeySignal();
+
+    // Ctrl+Left 控制上一首
+    void previousPlayKeySignal();
+
+    // Ctrl+Right 控制下一首
+    void nextPlayKeySignal();
+
+    // Ctrl+Up 控制音量增加
+    void addVolumeKeySignal();
+
+    // Ctrl+down 控制音量降低
+    void downVolumeKeySignal();
+
+    // Ctrl+M 切换 Mini/完整模式
+    void miniCompleteSwitchKeySignal();
+
+    // Ctrl+L 将歌曲添加到喜欢歌单
+    void loveSongKeySignal();
+
 private:
     void initAction();
     void initConnect();

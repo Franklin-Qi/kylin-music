@@ -62,7 +62,7 @@ void SideBarWidget::initWidget()
     playListBtn->defaultStyle();
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
 //    playListBtnLayout->setContentsMargins(24,0,24,0);
-    connect(playListBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnCliced);
+    connect(playListBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
     //我的歌单
     QHBoxLayout *myPlayListLayout = new QHBoxLayout();
@@ -237,7 +237,7 @@ void SideBarWidget::getPlayListName()
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-        connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnCliced);
+        connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
         QString name = playController::getInstance().getPlayListName();
         if(listName == name )
@@ -304,7 +304,7 @@ void SideBarWidget::addItemToSongList()
     connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
     connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-    connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnCliced);
+    connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
 }
 
