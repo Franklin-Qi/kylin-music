@@ -1,0 +1,37 @@
+Source: kylin-music
+Section: utils
+Priority: optional
+Maintainer: liujialin <liujialin@kylinos.cn>
+Build-Depends: cmake,
+               debhelper,
+               gcc,
+               libavformat-dev,
+               libgsettings-qt-dev,
+               libkf5windowsystem-dev,
+               libmpv-dev,
+               libpeony-dev,
+               libqt5svg5-dev,
+               libqt5x11extras5-dev,
+               libsqlite3-dev,
+               libtag1-dev,
+               libukui-log4qt-dev,
+               libxtst-dev,
+               make,
+               pkgconf,
+               qt5-qmake,
+               qtbase5-dev,
+               qtbase5-dev-tools,
+               qtchooser,
+               qtmultimedia5-dev,
+               qtscript5-dev,
+               qttools5-dev-tools
+Standards-Version: 4.4.1
+Homepage: https://github.com/ubuntukylin/kylin-music
+Vcs-Browser: https://github.com/ubuntukylin/kylin-music
+Vcs-Git: https://github.com/ubuntukylin/kylin-music.git
+
+Package: kylin-music
+Architecture: any
+Depends: libqt5sql5-sqlite, ${misc:Depends}, ${shlibs:Depends}
+Description: kylin-music
+ <insert long description, indented with spaces>
