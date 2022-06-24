@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #ifndef MUSICFILEINFORMATION_H
 #define MUSICFILEINFORMATION_H
 
@@ -27,6 +10,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QEventLoop>
+#include <QProcess>
 
 //taglib
 #include <taglib/fileref.h>
@@ -85,6 +69,7 @@ private:
 
     QString fileType(QFileInfo fileInfo);
     QString fileSize(QFileInfo fileInfo);
+    bool checkFileIsDamaged(QString filepath);
     QStringList fileInformation(QString filepath);
     QString filterTextCode(QString str);
     int preNum(unsigned char byte);

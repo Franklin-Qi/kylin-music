@@ -1,25 +1,11 @@
-﻿/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-#ifndef PLAYER_H
+﻿#ifndef PLAYER_H
 #define PLAYER_H
 
 #include <QObject>
 #include <QGSettings>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include "coreplayer/mmediaplayer.h"
 #include "coreplayer/mmediaplaylist.h"
 
@@ -60,6 +46,7 @@ public:
 
     bool play();
     bool pause();
+    bool pauseOnly();
     bool stop();
 
     int volume();
@@ -95,6 +82,8 @@ public:
     void setPosition(int position);
     //获取音量
     int getVolume();
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
+    void delayMsecondSetVolume();
     //设置音量
     void setVolume(int volume);
     //获取歌单名

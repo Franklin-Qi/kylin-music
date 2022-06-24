@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@
 
 #ifndef ALLPUPWINDOW_H
 #define ALLPUPWINDOW_H
+
+#include <QMessageBox>
+#include <QRegExp>
 #include <QFrame>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -57,6 +60,7 @@ public:
     QStackedWidget *stackWid = nullptr;
     void dlgcolor();
 
+    bool nameIsValid(QString textName);
 
 
 public Q_SLOTS:

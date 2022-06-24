@@ -1,24 +1,8 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "mmediaplayer.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
+#include <ukui-log4qt.h>
 
 MMediaPlayer::MMediaPlayer(QObject *parent)
     : QObject(parent)
@@ -95,13 +79,34 @@ void MMediaPlayer::pause()
 {
     // 获得mpv播放器的"暂停"状态
     QString pasued = getProperty("pause");
+
+    KyInfo() << "pauseState = " << pasued;
+
     // 根据"暂停"状态来选择暂停还是播放
     if(pasued == "no") {
+        KyInfo() << "set pause yes";
+
         setProperty("pause", "yes");
         changeState(PausedState);
     } else if(pasued == "yes") {
+        KyInfo() << "set pause no";
+
         setProperty("pause", "no");
         changeState(PlayingState);
+    }
+}
+
+void MMediaPlayer::pauseOnly()
+{
+    // 获得mpv播放器的"暂停"状态
+    QString pasued = getProperty("pause");
+    KyInfo() << "pauseStated = " << pasued;
+
+    // 根据"暂停"状态来选择暂停还是播放
+    if(pasued == "no") {
+        KyInfo() << "begin pause.";
+        setProperty("pause", "yes");
+        changeState(PausedState);
     }
 }
 
@@ -147,8 +152,13 @@ void MMediaPlayer::setVolume(int vol)
 //    setProperty("volume",QString::number(vol));
 //    Q_EMIT signalVolume(vol);
     // 设置音量，此音量和系统同步，不单独设置mpv音量
+
+//    delayMsecond(100);
+
     QDBusMessage message = QDBusMessage::createSignal("/", "org.kylin.music", "sinkInputVolumeChanged");
     message << "kylin-music" << vol << false;
+
+    KyInfo() << "createSignal: volume = " << vol;
     QDBusConnection::sessionBus().send(message);
 }
 
@@ -176,6 +186,13 @@ void MMediaPlayer::setMedia(const MMediaContent &media)
 bool MMediaPlayer::isAvailable() const
 {
     return true;
+}
+
+void MMediaPlayer::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
 }
 
 

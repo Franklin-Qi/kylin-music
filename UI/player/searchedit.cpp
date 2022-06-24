@@ -1,29 +1,11 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "searchedit.h"
 #include "UI/base/xatom-helper.h"
 
-SearchEdit::SearchEdit(QWidget *parent) : QLineEdit(parent)
+SearchEdit::SearchEdit(QWidget *parent) : KSearchLineEdit(parent)
 {
-    setFocusPolicy(Qt::ClickFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
+    setCompleter(nullptr); // kdk自带记忆功能，取消搜索记忆功能
 
-    setFixedSize(200, 32);
     connect(this, &SearchEdit::textChanged,this,&SearchEdit::slotTextChanged);
     connect(this, &SearchEdit::returnPressed,this,&SearchEdit::slotReturnPressed);
 //    connect(this, &SearchEdit::editingFinished,this,&SearchEdit::slotEditingFinished);
@@ -54,6 +36,20 @@ void SearchEdit::keyPressEvent(QKeyEvent *event)
         m_result->selectDown();
     }
     QLineEdit::keyPressEvent(event);
+}
+
+void SearchEdit::focusInEvent(QFocusEvent *event)
+{
+    this->setFocus();
+
+    return QLineEdit::focusInEvent(event);
+}
+
+void SearchEdit::focusOutEvent(QFocusEvent *event)
+{
+    this->clearFocus();
+
+    return QLineEdit::focusOutEvent(event);
 }
 
 void SearchEdit::slotTextChanged()
@@ -121,7 +117,7 @@ void SearchEdit::setWidget(QWidget *mainWidget)
 
 void SearchEdit::moveSearchResult()
 {
-    m_result->setFixedWidth(200);
+    m_result->setFixedWidth(240);
     QPoint resultPos = this->mapToGlobal(this->rect().bottomLeft());
     resultPos.setX(resultPos.x());
     resultPos.setY(resultPos.y() + 12);

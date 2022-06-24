@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "playbackmodewidget.h"
 #include "UI/base/widgetstyle.h"
 
@@ -37,7 +20,7 @@ void PlayBackModeWidget::initWidget()
     loopBtn = new QToolButton(this);
     loopBtn->setFixedSize(118,30);
     loopBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    loopBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    loopBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
     loopBtn->setProperty("useIconHighlightEffect", 0x8);
 //    loopBtn->setProperty("useIconHighlightEffect", 0x2);
 //    loopBtn->setFocusPolicy(Qt::NoFocus);

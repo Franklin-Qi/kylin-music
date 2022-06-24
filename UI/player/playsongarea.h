@@ -1,24 +1,10 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #ifndef PLAYSONGAREA_H
 #define PLAYSONGAREA_H
 
 #include <QWidget>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -26,6 +12,7 @@
 #include <QVariant>
 #include <QShortcut>
 #include <QMenu>
+#include <QDebug>
 
 #include "sliderwidget.h"
 #include "playbackmodewidget.h"
@@ -71,6 +58,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     //上一首
     void slotPrevious();
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
     //播放/暂停
     void slotPlayClicked();
     //下一首

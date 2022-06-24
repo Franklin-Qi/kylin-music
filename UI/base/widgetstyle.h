@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <QGSettings>
 
 #define KYLINMUSIC "org.kylin-music-data.settings"
-#define FITTHEMEWINDOW "org.ukui.style"
+#define FITTHEMEWINDOWS "org.ukui.style"
 
 //static int themeColor = 0;   //test  主题颜色适配--浅色
 //int WidgetStyle::themeColor = 1;   //test  主题颜色适配--深色

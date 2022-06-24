@@ -1,32 +1,20 @@
-/*
-* Copyright (C) 2021, KylinSoft Co., Ltd.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
-*
-*/
 #include <stdio.h>
 #include <QDBusMessage>
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
+#include <ukui-log4qt.h>
 
 #define UKUI_FONT_SIZE "systemFontSize"
 
-Widget *Widget::mutual = nullptr;  //！！！！初始化，非常重要
+Widget *Widget::mutual = nullptr;
 Widget::Widget(QStringList str, QWidget *parent)
     : QWidget(parent)
 {
-    mutual = this;//！！！赋值，非常重要
+    mutual = this;
+
+    //单例
+    Single(str);
+
     stateMusicFile(str);
     int res;
     res = g_db->initDataBase();
@@ -39,8 +27,6 @@ Widget::Widget(QStringList str, QWidget *parent)
     initGSettings();
     allConnect();
 
-    //单例
-    Single(str);
     //初始化dbus
     initDbus();
     initStyle();
@@ -175,17 +161,29 @@ void Widget::initDbus()//初始化dbus
                                          QString("org.freedesktop.login1.Manager"),
                                          QString("PrepareForSleep"), this,
                                          SLOT(onPrepareForSleep(bool)));
+    // 锁屏
+    QDBusConnection::sessionBus().connect(QString("org.ukui.ScreenSaver"),
+                                         QString("/"),
+                                         QString("org.ukui.ScreenSaver"),
+                                         QString("lock"), this,
+                                         SLOT(onScreenLock()));
+    QDBusConnection::sessionBus().connect(QString("org.ukui.ScreenSaver"),
+                                         QString("/"),
+                                         QString("org.ukui.ScreenSaver"),
+                                         QString("unlock"), this,
+                                         SLOT(onScreenUnlock()));
 
     //蓝牙控
     QDBusConnection::systemBus().connect(QString(), QString("/"), "com.monitorkey.interface", "monitorkey", this, SLOT(client_get(QString)));
     //插拔
-    QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "DbusSingleTest",this, SLOT(inputDevice_get(QString)));
+    QDBusConnection::sessionBus().connect(QString(), QString( "/"), "org.ukui.media", "sinkPortChanged",this, SLOT(inputDevice_get(QString)));
     //切换用户
     QDBusConnection::sessionBus().connect(QString("org.gnome.SessionManager"),
                                           QString("/org/gnome/SessionManager"),
                                           QString("org.gnome.SessionManager"),
                                           QString("PrepareForSwitchuser"), this,
                                           SLOT(slotPrepareForSwitchuser()));
+    DbusAdapter *dbs_adapter = new DbusAdapter;
 }
 
 void Widget::initStyle()
@@ -201,19 +199,28 @@ void Widget::initStyle()
 
 void Widget::onPrepareForShutdown(bool Shutdown)
 {
-    //目前只做事件监听，不处理
-    qDebug()<<"onPrepareForShutdown"<<Shutdown;
+    // 休眠
+    KyInfo()<<"onPrepareForShutdown"<<Shutdown
+           << "getState = " << playController::getInstance().getState();
+
+    if(Shutdown) {
+        if(playController::getInstance().getState() == playController::PLAY_STATE) {
+            KyInfo() << "before pause";
+            playController::getInstance().pauseOnly();
+        }
+    }
 }
 
 void Widget::onPrepareForSleep(bool isSleep)
 {
-    //990
-    //空指针检验
-    //------此处空指针校验（如果用了指针）------
-    //睡眠
+    KyInfo()<<"onPrepareForShutdown"<< isSleep
+           << "getState = " << playController::getInstance().getState();
+
+    // 睡眠
     if(isSleep) {
         if(playController::getInstance().getState() == playController::PLAY_STATE) {
-            playController::getInstance().pause();
+            KyInfo() << "before pause";
+            playController::getInstance().pauseOnly();
         }
     }
 }
@@ -379,6 +386,7 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
         return 0;
     }
     importFile(list);
+    playController::getInstance().delayMsecondSetVolume();
 
     return 0;
 }
@@ -494,6 +502,33 @@ void Widget::slotStateChanged(playController::PlayState state)
     }
 }
 
+void Widget::onScreenLock()
+{
+    KyInfo() << "getState = " << playController::getInstance().getState();
+
+    // 锁屏
+    if(playController::getInstance().getState() == playController::PLAY_STATE) {
+        KyInfo() << "screenlock pause";
+        playController::getInstance().pauseOnly();
+    }
+
+}
+
+void Widget::onScreenUnlock()
+{
+    KyInfo() << "getState = " << playController::getInstance().getState();
+
+    // 锁屏解锁
+#if 0
+    if(playController::getInstance().getState() == playController::STOP_STATE
+            || playController::getInstance().getState() == playController::PAUSED_STATE) {
+        KyInfo() << "screenunlock play";
+        playController::getInstance().play();
+    }
+#endif
+
+}
+
 void Widget::initMusic()
 {
     QStringList playListName;
@@ -544,6 +579,10 @@ void Widget::initMusic()
 
 void Widget::initAllComponent()
 {
+
+//    this->setProperty("useSystemStyleBlur", true);
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
+
 //    this->setWindowFlag(Qt::FramelessWindowHint);
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
@@ -579,6 +618,11 @@ void Widget::initAllComponent()
     playSongArea = new PlaySongArea(this);
     m_titleBar = new TitleBar(this);
 
+//    musicListTable->hide();
+//    playSongArea->hide();
+
+
+    // 去掉标题栏
     MotifWmHints hintt;
     hintt.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hintt.functions = MWM_FUNC_ALL;
@@ -591,6 +635,7 @@ void Widget::initAllComponent()
     hints.functions = MWM_FUNC_ALL;
     hints.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(m_miniWidget->winId(), hints);
+
 
     rightVWidget = new QWidget(this);
     rightVWidget->setLayout(mainVBoxLayout);
@@ -609,16 +654,6 @@ void Widget::initAllComponent()
     mainVBoxLayout->setMargin(0);
     this->resize(960,640);
     this->setLayout(mainHBoxLayout);
-//    this->setAutoFillBackground(true);
-//    this->setBackgroundRole(QPalette::Base);
-//    if (WidgetStyle::themeColor == 1)
-//    {
-//        this->setStyleSheet("{background:#252526;}");
-//    }
-//    else if(WidgetStyle::themeColor == 0)
-//    {
-//        this->setStyleSheet("{background:#FFFFFF;}");
-//    }
 
     historyListTable = new TableHistory(this);
     MotifWmHints hint;
@@ -627,6 +662,11 @@ void Widget::initAllComponent()
     hint.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(historyListTable->winId(), hint);
     historyListTable->hide();
+
+    this->setAutoFillBackground(true);
+
+    m_quitWindow = new QShortcut(QKeySequence("Ctrl+Q"), this);
+    m_quitWindow->setContext(Qt::WindowShortcut);
 }
 
 void Widget::allConnect()
@@ -641,6 +681,7 @@ void Widget::allConnect()
 
     connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
+    connect(m_quitWindow, &QShortcut::activated, this, &Widget::slotClose);
     connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
     connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
 
@@ -708,9 +749,22 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,musicListTable->infoDialog,&MusicInfoDialog::slotLableSetFontSize);
 
-    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOW))
+    if (QGSettings::isSchemaInstalled(FITCONTROLTRANS)) {
+        m_transparencyGSettings = new QGSettings(FITCONTROLTRANS);
+    }
+//    if (m_transparencyGSettings != nullptr) {
+//        connect(m_transparencyGSettings, &QGSettings::changed, this, [=](const QString &key) {
+//            if (key == "transparency") {
+//                transparencyChange();
+//            }
+//        });
+//        transparencyChange();
+//    }
+
+
+    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS))
     {
-        themeData = new QGSettings(FITTHEMEWINDOW);
+        themeData = new QGSettings(FITTHEMEWINDOWS);
         if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
             WidgetStyle::themeColor = 1;
             changeDarkTheme();
@@ -796,6 +850,66 @@ void Widget::movePlayHistoryWid()
     historyListTable->move(historyPos);
 }
 
+#if 0
+void Widget::paintEvent(QPaintEvent *event)
+{
+//    return QWidget::paintEvent(event);
+    Q_UNUSED(event);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPainterPath rectPath;
+    rectPath.addRoundedRect(this->rect(), 0, 0);
+    QStyleOption opt;
+    opt.init(this);
+
+    QColor mainColor;
+//    KyInfo() << opt.palette.color(QPalette::Base);
+
+    if (QColor(255,255,255) == opt.palette.color(QPalette::Base)
+            || QColor(248,248,248) == opt.palette.color(QPalette::Base)
+            || QColor(245, 245, 245) == opt.palette.color(QPalette::Base)) {
+        mainColor = QColor(242, 242, 242, m_transparency);
+    } else {
+        mainColor = QColor(20, 20, 20, m_transparency);
+    }
+
+    p.fillPath(rectPath,QBrush(mainColor));
+
+#if 0
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+
+//    KyInfo() << "transparency = " << m_transparencyGSettings->get("transparency").toDouble()
+//             << "m_transparency = " << m_transparency;
+
+    QColor color;
+
+    color = palette().color(QPalette::Window);
+    color.setAlpha(m_transparency);
+
+
+    QPalette pal(this->palette());
+    pal.setColor(QPalette::Window,QColor(color));
+    this->setPalette(pal);
+    QBrush brush =QBrush(color);
+    p.setBrush(brush);
+    p.drawRoundedRect(opt.rect,0,0);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    return QWidget::paintEvent(event);
+#endif
+
+}
+#endif
+
+void Widget::transparencyChange()
+{
+//    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
+//    this->update();
+}
+
 //键盘F1响应唤出用户手册
 void Widget::keyPressEvent(QKeyEvent *event)
 {
@@ -808,6 +922,15 @@ void Widget::keyPressEvent(QKeyEvent *event)
         Q_EMIT signalSpaceKey();
     }
     QWidget::keyPressEvent(event);
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        this->setFocus();
+    }
+
+//    return Widget::mousePressEvent(event);
 }
 
 void Widget::slotShowMiniWidget()
@@ -891,6 +1014,84 @@ void Widget::slotShowMaximized()
     }
 }
 
+/**
+ * @brief Widget::Stop
+ * 如果播放已停止，则不起作用；
+ * 在此之后调用播放应会导致播放从曲目的开头重新开始
+ */
+void Widget::Stop() const
+{
+    playController::getInstance().stop();
+}
+
+/**
+ * @brief Widget::VolumeUp
+ * 音量增加
+ */
+void Widget::VolumeUp() const
+{
+    playSongArea->volumeIncrease();
+}
+
+/**
+ * @brief Widget::VolumeDown
+ * 音量降低
+ */
+void Widget::VolumeDown() const
+{
+    playSongArea->volumeReduce();
+}
+
+/**
+ * @brief Widget::Next
+ * 跳转到曲目列表的下一首曲目。
+ * 如果没有下一首曲目（并且循环播放和列表播放都关闭），则停止播放。
+ * 如果播放已暂停或停止，则保持原样。
+ */
+void Widget::Next() const
+{
+    playController::getInstance().onNextSong();
+}
+
+/**
+ * 跳转到曲目列表的上一首曲目。
+ * 如果没有上一首曲目（并且循环播放和列表播放都关闭），则停止播放。
+ * 如果播放已暂停或停止，则保持原样。
+ */
+void Widget::Previous() const
+{
+    playController::getInstance().onPreviousSong();
+}
+
+void Widget::Play() const
+{
+    playController::getInstance().play();
+}
+
+/**
+ * @brief Widget::Pause
+ * 如果播放已暫停，则不起作用。
+ *
+ */
+void Widget::Pause() const
+{
+    playController::getInstance().pauseOnly();
+}
+
+/**
+ * @brief Widget::PlayPause
+ * 如果播放已暫停，则恢复播放；
+ * 如果播放停止，则开始播放。
+ */
+void Widget::PlayPause() const
+{
+    if (playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+        this->Pause();
+    } else if (playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+        this->Play();
+    }
+}
+
 void Widget::slotRecoverNormalWidget()
 {
     if(Minimize == true)
@@ -951,6 +1152,11 @@ void Widget::setCreatFinishMsg(QString msg)
 //切换深色主题
 void Widget::changeDarkTheme()
 {
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(38, 38, 38));
+    setAutoFillBackground(true);
+    setPalette(pal);
+
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
@@ -962,15 +1168,12 @@ void Widget::changeDarkTheme()
     musicListTable->initStyle();
     historyListTable->initStyle();
 //    historyListTable->noRefreshHistory();
-//    musicListTable->setStyleSheet("{background:red;border:none;}");
-//    musicListTable->tableView->setStyleSheet("#tableView{background:#252526;border:none;)");
     musicListTable->tableView->setAlternatingRowColors(false);
     musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
     historyListTable->noRefreshHistory();
-//    this->setStyleSheet("#mainWidget{background:#252526;}");
 
 
 }
@@ -978,7 +1181,11 @@ void Widget::changeDarkTheme()
 //切换浅色主题
 void Widget::changeLightTheme()
 {
-//    this->setStyleSheet("#mainWidget{background:#FFFFFF;}");
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(255, 255, 255));
+    setAutoFillBackground(true);
+    setPalette(pal);
+
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
@@ -988,7 +1195,6 @@ void Widget::changeLightTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
-//    musicListTable->setStyleSheet("{background:#FFFFFF;border:none;}");
     musicListTable->tableView->setAlternatingRowColors(false);
     musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();

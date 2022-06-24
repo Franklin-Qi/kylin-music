@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <QListWidgetItem>
+#include <QEvent>
 
 //#include "changelistwid.h"
 //#include "allpupwindow.h"
@@ -53,7 +54,6 @@ public:
 
     QPushButton *leftBtn = nullptr;
     QPushButton *rightBtn = nullptr;
-    QPushButton *searchBtn = nullptr;
 
     SearchEdit *searchEdit = nullptr;
 

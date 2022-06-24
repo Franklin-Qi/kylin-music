@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,14 @@
 
 #include "allpupwindow.h"
 #include "widgetstyle.h"
+#include "UI/mainwidget.h"
 #include "xatom-helper.h"
+#include <ukui-log4qt.h>
 
 #define PT_12 12
 #define PT_11 11
+
+QRegExp gInvalidName("[\\\\/:\\*\\?\\\"&<>\\|]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、&、<、>、|  */
 
 AllPupWindow::AllPupWindow(QWidget *parent) : QDialog(parent)
 {
@@ -36,7 +40,15 @@ void AllPupWindow::closeDialog()
 
 void AllPupWindow::slotTextChanged(QString text)
 {
-    enterLineEdit->setLabelNumber(15 - text.length());
+    KyInfo() << "text = " << text;
+    if (!nameIsValid(text) && text != "") {
+        QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Could not contain characters: \ / : * ? \" & < > |"), QMessageBox::Ok);
+
+        enterLineEdit->cursorBackward(true, 1);
+        enterLineEdit->del();
+    }
+
+    enterLineEdit->setLabelNumber(15 - enterLineEdit->text().length());
     if (text.length() == 15) {
         tips->setText(tr("Reached upper character limit"));
         tips->setStyleSheet("QLabel{color:#F44E50;}");
@@ -112,7 +124,7 @@ void AllPupWindow::inpupdialog()
     btnLayout->setSpacing(20);
     btnLayout->setMargin(0);
 
-//    enterLineEdit->setPlaceholderText("请输入歌单标题：");
+    enterLineEdit->setPlaceholderText("请输入歌单标题：");
     enterLineEdit->setPlaceholderText(tr("Please input playlist name:"));
 
     testLayout->setMargin(0);
@@ -199,6 +211,15 @@ void AllPupWindow::dlgcolor()
 //                                color: #1B1B1B;\
 //                                line-height:14px;");
     }
+}
+
+bool AllPupWindow::nameIsValid(QString textName)
+{
+    if (nullptr == textName) {
+        return false;
+    }
+
+    return !textName.contains(gInvalidName);
 }
 
 

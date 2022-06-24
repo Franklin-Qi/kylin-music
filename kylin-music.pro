@@ -1,5 +1,4 @@
-QT       += core gui sql widgets
-QT       += dbus x11extras KWindowSystem network
+QT       += core gui sql widgets dbus x11extras KWindowSystem network svg
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,6 +16,11 @@ LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+
+TRANSLATIONS += \
+            translations/kylin-music_zh_CN.ts \
+            translations/kylin-music_bo_CN.ts
+!system($$PWD/translations/generate_translations_pm.sh): error("Failed to generate qm")
 
 target.path = /usr/bin
 target.source += $$TARGET
@@ -50,10 +54,10 @@ INSTALLS += \
     dict \
     qm_files
 
-TRANSLATIONS += ./translations/kylin-music_zh_CN.ts
+
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gsettings-qt taglib gio-unix-2.0
+PKGCONFIG += gsettings-qt taglib gio-unix-2.0 kysdk-qtwidgets
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -77,6 +81,7 @@ SOURCES += \
     UI/base/labedit.cpp \
     UI/base/mylabel.cpp \
     UI/base/widgetstyle.cpp \
+    UI/dbusadapter.cpp \
     UI/mainwidget.cpp \
     UI/player/miniwidget.cpp \
     UI/player/musicslider.cpp \
@@ -89,6 +94,8 @@ SOURCES += \
     UI/search/musicsearchlistdelegate.cpp \
     UI/search/musicsearchlistmodel.cpp \
     UI/search/musicsearchlistview.cpp \
+    UI/sidebar/leftsiderbarwidget.cpp \
+    UI/sidebar/myscrollarea.cpp \
     UI/sidebar/mytoolbutton.cpp \
     UI/sidebar/sidebarwidget.cpp \
     UI/tableview/tablebaseview.cpp \
@@ -113,6 +120,7 @@ HEADERS += \
     UI/base/labedit.h \
     UI/base/mylabel.h \
     UI/base/widgetstyle.h \
+    UI/dbusadapter.h \
     UI/mainwidget.h \
     UI/player/miniwidget.h \
     UI/player/musicslider.h \
@@ -125,6 +133,8 @@ HEADERS += \
     UI/search/musicsearchlistdelegate.h \
     UI/search/musicsearchlistmodel.h \
     UI/search/musicsearchlistview.h \
+    UI/sidebar/leftsiderbarwidget.h \
+    UI/sidebar/myscrollarea.h \
     UI/sidebar/mytoolbutton.h \
     UI/sidebar/sidebarwidget.h \
     UI/tableview/tablebaseview.h \
@@ -154,5 +164,6 @@ DISTFILES += \
     data/org.kylin-music-data.gschema.xml \
     data/org.ukui.log4qt.kylin-music.gschema.xml \
     kylin-music.desktop \
-    translations/kylin-music_zh_CN.qm \
+    translations/generate_translations_pm.sh \
+    translations/kylin-music_bo_CN.ts \
     translations/kylin-music_zh_CN.ts

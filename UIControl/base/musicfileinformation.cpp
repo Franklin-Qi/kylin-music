@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -26,6 +9,8 @@ extern "C" {
 
 #include "musicfileinformation.h"
 #include "UI/mainwidget.h"
+
+#include "ukui-log4qt.h"
 
 MusicFileInformation::MusicFileInformation(QObject *parent) : QObject(parent)
 {
@@ -42,6 +27,8 @@ QStringList MusicFileInformation::getMusicType()
 
 void MusicFileInformation::addFile(const QStringList &addFile)
 {
+    qDebug() << "addFile";
+
     int count = 0;
     int failCount = 0;
     resList.clear();
@@ -53,10 +40,10 @@ void MusicFileInformation::addFile(const QStringList &addFile)
             continue;
         }
         //过滤掉CD和远程目录
-        if(filepath.startsWith("/run/user/"))
-        {
-            continue;
-        }
+//        if(filepath.startsWith("/run/user/"))
+//        {
+//            continue;
+//        }
         //过滤U盘路径
 //        if(filepath.startsWith("/media/"))
 //        {
@@ -81,6 +68,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                     if(musicdataStruct.time != "")
                     {
                         resList.append(musicdataStruct);
+                    } else {
+                        failCount++;
                     }
                 }
                 else
@@ -102,6 +91,8 @@ void MusicFileInformation::addFile(const QStringList &addFile)
                 if(musicdataStruct.time != "")
                 {
                     resList.append(musicdataStruct);
+                } else {
+                    failCount++;
                 }
             }
             else
@@ -254,6 +245,17 @@ QStringList MusicFileInformation::fileInformation(QString filepath)
         avformat_close_input(&pFormatCtx);
         avformat_free_context(pFormatCtx);
     }
+    if (f.file() == nullptr) {
+        KyInfo() << "f.file == nullptr";
+        QStringList str;
+        musicdataStruct.singer = "";
+        musicdataStruct.album = "";
+        musicdataStruct.title  = "";
+        musicdataStruct.time  = "";
+        str << musicdataStruct.title << musicdataStruct.singer << musicdataStruct.album << musicdataStruct.time;
+        return str;
+    }
+
     TagLib::PropertyMap propertyMap = f.file() ->properties();
     QString musicName = propertyMap["TITLE"].toString().toCString(true);
     if(filterTextCode(musicName).isEmpty())
@@ -471,6 +473,24 @@ QString MusicFileInformation::fileSize(QFileInfo fileInfo)
         musicSize = QString::number(size,10)+"B";
     musicdataStruct.size = musicSize;
     return musicdataStruct.size;
+}
+
+bool MusicFileInformation::checkFileIsDamaged(QString filepath)
+{
+    QProcess *ffmpegCheckProcess = new QProcess(this);
+    QString cmd = "/usr/bin/ffmpeg";
+    QStringList args;
+    args.append("-i");
+    args.append(filepath);
+    ffmpegCheckProcess->start(cmd, args);
+    ffmpegCheckProcess->waitForFinished();
+    ffmpegCheckProcess->waitForReadyRead();
+
+    QString results = QString::fromLocal8Bit(ffmpegCheckProcess->readAllStandardOutput());
+    KyInfo() << "ffmpeg info: "<< results;
+
+    return true;
+
 }
 
 QString MusicFileInformation::fileType(QFileInfo fileInfo)

@@ -1,25 +1,11 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #ifndef MMEDIAPLAYER_H
 #define MMEDIAPLAYER_H
 
 #include <QObject>
 #include <QDebug>
+#include <QTimerEvent>
+#include <QTimer>
+#include <QEventLoop>
 #include <client.h> // MPV库头文件
 
 #include "mmediaplaylist.h"
@@ -35,12 +21,14 @@ public:
 
     void setPlaylist(MMediaPlaylist *playlist); //设置播放列表
     void pause(); //暂停或继续
+    void pauseOnly(); // 暂停
 
     State state() const; //获取状态
     qint64 position() const; //获取当前播放点
     void setPosition(qint64 pos); //设置播放起始点
 
     bool isAvailable() const; //暂无实际功能
+    void delayMsecond(unsigned int msec); // 延时函数，不阻塞线程
     void setVolume(int vol); //设置音量
     qint64 duration() const; //获取总时长
     void setMedia(const MMediaContent &media); //设置待播放媒体

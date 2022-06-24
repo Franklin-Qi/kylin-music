@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #ifndef SIDEBARWIDGET_H
 #define SIDEBARWIDGET_H
 
@@ -26,16 +9,24 @@
 #include <QScrollArea>
 #include <UI/base/allpupwindow.h>
 #include <QPalette>
+#include <QPainter>
+#include <QPainterPath>
+#include <QColor>
+#include <QStyleOption>
+#include <QGSettings>
 
+#include "myscrollarea.h"
 #include "mytoolbutton.h"
+#include "leftsiderbarwidget.h"
 
-class SideBarWidget : public QWidget
+class SideBarWidget : public LeftsiderbarWidget
 {
     Q_OBJECT
 public:
     explicit SideBarWidget(QWidget *parent = nullptr);
 public:
     void sidecolor();
+
 public:
     //新建歌单弹窗界面
     AllPupWindow *newSonglistPup = nullptr;
@@ -73,23 +64,29 @@ private:
     void getPlayListName();
     //输入为空添加歌单
     QString newPlayListName();
+
+
 private:
     //歌曲列表 QToolButton
     //MyToolButton *playListBtn;
     //我喜欢 QToolButton
 //    MyToolButton *loveBun;
+
+    QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
+    double m_transparency = 1.0;  // 透明度
+
     //添加歌单按钮
     QPushButton *myPlayListBtn = nullptr;
     //新建歌单按钮界面(包含我喜欢在内)
+    myScrollArea *scrollArea;
+
     QWidget *newPlayListWidget = nullptr;
     QWidget *logoWid = nullptr;
     QWidget *mainWid = nullptr;
-    QWidget *sideWid = nullptr;
+//    QWidget *sideWid = nullptr;
     QVBoxLayout *newPlayListLayout = nullptr;
     //歌单名
     QStringList playListName;
-    //kylin-music logo
-    QPushButton *logoPushButton = nullptr;
     //音乐库label
     QLabel *libraryLabel = nullptr;
     //我的歌单label

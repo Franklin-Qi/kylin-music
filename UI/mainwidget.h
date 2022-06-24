@@ -1,21 +1,4 @@
-﻿/*
-* Copyright (C) 2021, KylinSoft Co., Ltd.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
-*
-*/
-#ifndef WIDGET_H
+﻿#ifndef WIDGET_H
 #define WIDGET_H
 
 #include <QWidget>
@@ -26,7 +9,17 @@
 #include <QToolButton>
 #include <QStackedWidget>
 #include <QResizeEvent>
+#include <QMouseEvent>
 #include <QPropertyAnimation>
+#include <QShortcut>
+
+#include <QPainter>
+#include <QPainterPath>
+#include <QBrush>
+#include <QColor>
+#include <QStyleOption>
+#include <QPaintEvent>
+
 //DBus
 #include <QDBusInterface>
 #include <QDBusConnection>
@@ -39,6 +32,7 @@
 #include <KWindowSystem>
 #include <QProcess>
 
+#include "./dbusadapter.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/tableview/tableone.h"
 #include "UIControl/tableview/musiclistmodel.h"
@@ -60,9 +54,19 @@ public:
     ~Widget();
     //计算播放历史
     void movePlayHistoryWid();
-public:
+
+    // 毛玻璃
+//    void paintEvent(QPaintEvent *event);
+    void transparencyChange();
+
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
+
+    QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
+    double m_transparency = 1.0;  // 透明度
+
+
+
 public Q_SLOTS:
     //mini窗口
     void slotShowMiniWidget();
@@ -72,6 +76,25 @@ public Q_SLOTS:
     void slotShowMinimized();
     //最大化
     void slotShowMaximized();
+
+    ////////// mpris
+    // 停止播放
+    void Stop() const;
+    // 增加音量
+    void VolumeUp() const;
+    // 降低音量
+    void VolumeDown() const;
+    // 下一首
+    void Next() const;
+    // 上一首
+    void Previous() const;
+    // 播放
+    void Play() const;
+    // 暂停
+    void Pause() const;
+    // 播放暂停
+    void PlayPause() const;
+
     //mini
     void slotRecoverNormalWidget();
     //mini 关闭窗体
@@ -95,6 +118,8 @@ public Q_SLOTS:
     //如果正在播放，阻止锁屏
     void slotStateChanged(playController::PlayState state);
 private Q_SLOTS:
+    void onScreenLock();
+    void onScreenUnlock();
     void onPrepareForShutdown(bool Shutdown);
     void onPrepareForSleep(bool isSleep);
     void client_get(QString str);
@@ -103,7 +128,7 @@ private Q_SLOTS:
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-//    void mousePressEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 Q_SIGNALS:
     //空格键控制播放暂停
     void signalSpaceKey();
@@ -154,6 +179,9 @@ private:
     //主界面初始化完成后执行的操作
     enum CreatFinishEnum{NONE=0,MESSAGE,OTHER} m_creatFinishEnum = NONE;
     QString m_creatFinishMsg;
+
+    // ctrl+q 退出窗口快捷键
+    QShortcut *m_quitWindow;
 
 Q_SIGNALS:
     void signalShowGuide();

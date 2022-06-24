@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "tablehistory.h"
 #include "UI/mainwidget.h"
 
@@ -56,8 +39,7 @@ void TableHistory::initSetModel()
     deleteAllBtn = new QToolButton(this);
     deleteAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     deleteAllBtn->setIconSize(QSize(16,16));
-//    deleteAllBtn->setFixedHeight(40);
-    deleteAllBtn->setIcon(QIcon(":/img/default/delete.png"));
+    deleteAllBtn->setIcon(QIcon::fromTheme("edit-delete-symbolic"));
     deleteAllBtn->setText(tr("Empty"));
     titleHBoxLayout = new QHBoxLayout();
     historyTitileWidget->setLayout(titleHBoxLayout);
@@ -68,7 +50,12 @@ void TableHistory::initSetModel()
 
     nullPageWidget = new QWidget(this);
     nullIconLabel = new QLabel(this);
-    nullIconLabel->setPixmap(QPixmap(":/img/default/null.png").scaled(133,122));
+    if (WidgetStyle::themeColor == 1) {
+        // black theme
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+    } else {
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+    }
     nullTextLabel = new QLabel(this);
     nullTextLabel->setFixedHeight(30);
     nullTextLabel->setText(tr("The playlist has no songs"));

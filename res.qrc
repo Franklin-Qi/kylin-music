@@ -114,10 +114,6 @@
         <file>img/kylin-music-logo.png</file>
         <file>img/fengmian.png</file>
         <file>img/promptwhile.png</file>
-        <file>translations/generate_translations_pm.sh</file>
-        <file>translations/kylin-music_zh_CN.qm</file>
-        <file>translations/kylin-music_zh_CN.ts</file>
-        <file>translations/qt_zh_CN.qm</file>
         <file>img/default/null.png</file>
         <file>img/default/point.png</file>
         <file>img/dark/ukui-play-love-symbolic.svg</file>
@@ -146,5 +142,9 @@
         <file>img/clicked/media-playlist-shuffle-symbolic-w.svg</file>
         <file>img/default/media-playlist-repeat-one-symbolic-b.svg</file>
         <file>img/clicked/media-playlist-repeat-one-symbolic-w.svg</file>
+        <file>img/default/defaultIconDark.png</file>
+        <file>img/default/defaultIconLight.png</file>
+        <file>img/lightshow/maximize.svg</file>
+        <file>img/lightshow/close.svg</file>
     </qresource>
 </RCC>

@@ -1,19 +1,4 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+#include <ukui-log4qt.h>
 
 #include "playsongarea.h"
 #include "UI/base/widgetstyle.h"
@@ -56,7 +41,7 @@ void PlaySongArea::initWidget()
     nextBtn->setToolTip(tr("Next"));
 
     volumeBtn = new QPushButton(this);
-    volumeBtn->setFixedSize(25,25);
+    volumeBtn->setFixedSize(36, 36);
     volumeBtn->setCursor(Qt::PointingHandCursor);
     volumeBtn->setToolTip(tr("Volume"));    //音量
     int volume = playController::getInstance().getVolume();
@@ -109,7 +94,7 @@ void PlaySongArea::initWidget()
     hSlider->setValue(0);
     hSlider->setDisabled(true);
     favBtn = new QPushButton;
-    favBtn->setFixedSize(25,25);
+    favBtn->setFixedSize(36, 36);
 //    favBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    favBtn->setChecked(false);
     favBtn->setCursor(Qt::PointingHandCursor);
@@ -121,7 +106,7 @@ void PlaySongArea::initWidget()
 
     //播放模式
     playModeBtn = new QToolButton;
-    playModeBtn->setFixedSize(25,25);
+    playModeBtn->setFixedSize(36, 36);
     playModeBtn->setCursor(Qt::PointingHandCursor);
     playModeBtn->setPopupMode(QToolButton::InstantPopup);
     playModeBtn->setProperty("isWindowButton", 0x1);
@@ -138,7 +123,7 @@ void PlaySongArea::initWidget()
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         //playModeBtn->setProperty("isWindowButton", 0x1);
         //playModeBtn->setProperty("useIconHighlightEffect", 0x2);
         //playModeBtn->setFlat(true);
@@ -158,7 +143,7 @@ void PlaySongArea::initWidget()
     }
     m_playMode = new QMenu(this);
     loopAct = new QAction(tr("Loop"));
-    loopAct->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    loopAct->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
     randomAct = new QAction(tr("Random"));
     randomAct->setIcon(QIcon::fromTheme("media-playlist-shuffle-symbolic"));
     currentItemInLoopAct = new QAction(tr("CurrentItemInLoop"));
@@ -170,7 +155,7 @@ void PlaySongArea::initWidget()
 
     //历史播放列表
     listBtn = new QPushButton;
-    listBtn->setFixedSize(25,25);
+    listBtn->setFixedSize(36, 36);
     listBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
@@ -334,6 +319,8 @@ void PlaySongArea::slotVolumeChanged(int values)
 {
     playController::getInstance().setVolume(values);
     int volume = playController::getInstance().getVolume();
+    KyInfo() << "volume = " << volume;
+
     if(volume == 0)
     {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
@@ -475,7 +462,7 @@ void PlaySongArea::slotPlayBackModeChanged()
 void PlaySongArea::slotLoopClicked()
 {
     playController::getInstance().setMode(playController::Loop);
-    playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+    playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
     playModeBtn->setToolTip(tr("Loop"));
     playController::getInstance().setPlaymode(playController::Loop);
     m_playBackModeWid->hide();
@@ -521,7 +508,7 @@ void PlaySongArea::setPlayMode(int playModel)
 //        playController::getInstance().setPlaymode(playController::Sequential);
 //        break;
     case 3:
-        playModeBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
+        playModeBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
         playModeBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
@@ -730,6 +717,10 @@ void PlaySongArea::movePlayMenu()
 
 void PlaySongArea::slotPlayClicked()
 {
+    KyInfo() << QString("%1 %2")
+                .arg("slotPlayCliked: ")
+                .arg(playController::getInstance().getPlayer()->state());
+
     if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
     {
         playController::getInstance().getPlayer()->pause();
@@ -737,10 +728,24 @@ void PlaySongArea::slotPlayClicked()
     else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PausedState)
     {
         playController::getInstance().getPlayer()->play();
+
+        int currentVolume = playController::getInstance().getVolume();
+        KyInfo() << "currentVolume = " << currentVolume
+                 << "playState = " << playController::getInstance().getPlayer()->state();
+
+        delayMsecond(100);
+        playController::getInstance().setVolume(currentVolume);
     }
     else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::StoppedState)
     {
         playMeta();
+
+        int currentVolume = playController::getInstance().getVolume();
+        KyInfo() << "currentVolume = " << currentVolume
+                 << "playState = " << playController::getInstance().getPlayer()->state();
+
+        delayMsecond(100);
+        playController::getInstance().setVolume(currentVolume);
     }
 }
 
@@ -801,6 +806,13 @@ void PlaySongArea::slotPrevious()
     playController::getInstance().onPreviousSong();
 }
 
+void PlaySongArea::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
+}
+
 void PlaySongArea::slotNext()
 {
     playController::getInstance().onNextSong();
@@ -814,10 +826,10 @@ void PlaySongArea::listBtnClicked()
 void PlaySongArea::slotFavExixts()
 {
     if (g_db->checkSongIsInFav(filePath)) {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
     } else {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
@@ -828,12 +840,12 @@ void PlaySongArea::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     Q_EMIT signalFavBtnChange(filePath);
@@ -855,7 +867,7 @@ void PlaySongArea::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
@@ -865,7 +877,7 @@ void PlaySongArea::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -878,12 +890,12 @@ void PlaySongArea::slotFavBtnChange(QString filePath)
         {
             return;
         }
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
+        favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-        favBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
+        favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }

@@ -1,25 +1,11 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "UI/mainwidget.h"
 #include "UI/base/xatom-helper.h"
 #include <QApplication>
 #include <QDebug>
 #include <ukui-log4qt.h>
+
+#include "kwidget.h"
+using namespace kdk;
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -111,6 +97,17 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon::fromTheme("kylin-music"));
 
+    QTranslator trankdk;
+    QString localeKdk = QLocale::system().name();
+    if(localeKdk == "zh_CN")
+    {
+        if(trankdk.load(":/translations/gui_zh_CN.qm"))
+        {
+            a.installTranslator(&trankdk);
+        }
+    }
+
+
     QTranslator app_trans;
     QTranslator qt_trans;
     QString locale = QLocale::system().name();
@@ -135,29 +132,11 @@ int main(int argc, char *argv[])
     else
         a.installTranslator(&qt_trans);
 
-//    QString locale = QLocale::system().name();
-//    QTranslator trans_global, trans_menu;
-//    if(locale == "zh_CN"){
-//        trans_global.load(":/translations/kylin-music_side.qm");
-//        trans_menu.load(":/translations/qt_zh_CN.qm");
-//        a.installTranslator(&trans_global);
-//        a.installTranslator(&trans_menu);
-//    }
-
 //    qApp->setProperty("noChangeSystemFontSize", true);
 
     QTranslator app_trans_peony;
     app_trans_peony.load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     a.installTranslator(&app_trans_peony);
-//#ifndef QT_NO_TRANSLATION
-//    QString translatorFileName = QLatin1String("qt_");
-//    translatorFileName += QLocale::system().name();
-//    QTranslator *translator = new QTranslator();
-//    if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-//        a.installTranslator(translator);
-//    else
-//        qDebug() << "Failed to load Chinese translation file.";
-//#endif
 
     QString str = "";
     QString str2 = "";

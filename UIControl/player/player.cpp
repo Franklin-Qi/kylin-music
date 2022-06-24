@@ -1,22 +1,6 @@
-/*
- * Copyright (C) 2021, KylinSoft Co., Ltd.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include <QDebug>
 #include <QDBusConnection>
+#include <ukui-log4qt.h>
 #include "player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/base/musicfileinformation.h"
@@ -61,6 +45,7 @@ bool playController::play()
 
     return true;
 }
+
 bool playController::pause()
 {
     if (m_player == nullptr) {
@@ -70,6 +55,17 @@ bool playController::pause()
 
     return true;
 }
+
+bool playController::pauseOnly()
+{
+    if (m_player == nullptr) {
+        return false;
+    }
+    m_player->pauseOnly();
+
+    return true;
+}
+
 bool playController::stop()
 {
     if (m_player == nullptr) {
@@ -79,6 +75,7 @@ bool playController::stop()
 
     return true;
 }
+
 void playController::setSongIndex(int index)
 {
     if (m_playlist == nullptr) {
@@ -363,12 +360,16 @@ playController::playController()
     connect(m_player,&MMediaPlayer::stateChanged,this,&playController::slotStateChanged);
     connect(m_playlist,&MMediaPlaylist::playbackModeChanged,this,&playController::slotPlayModeChange);
 //    connect(m_player,&MMediaPlayer::playErrorMsg,this,&playController::slotPlayErrorMsg);
+    m_volume = volumeSetting->get("volume").toInt();
+    delayMsecond(100);
+    m_player->setVolume(m_volume);
 }
 
 void playController::init()
 {
     volumeSetting = new QGSettings(KYLINMUSIC);
     m_volume = volumeSetting->get("volume").toInt();
+    delayMsecond(100);
     m_player->setVolume(m_volume);
     playSetting = new QGSettings(KYLINMUSIC);
     m_playListName = playSetting->get("playlistname").toString();
@@ -423,6 +424,23 @@ int playController::getVolume()
     return m_volume;
 }
 
+void playController::delayMsecond(unsigned int msec)
+{
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
+}
+
+void playController::delayMsecondSetVolume()
+{
+    int currentVolume = getVolume();
+    KyInfo() << "currentVolume = " << currentVolume
+             << "playState = " << getPlayer()->state();
+
+    delayMsecond(100);
+    setVolume(currentVolume);
+}
+
 void playController::setVolume(int volume)
 {
     if(volume > 100) {
@@ -434,7 +452,10 @@ void playController::setVolume(int volume)
 
     m_volume = volume;
     volumeSetting->set("volume", volume);
+
+    KyInfo() << "m_receive = " << m_receive;
     if (!m_receive) {
+        KyInfo() << "begin setVolume";
         m_player->setVolume(volume);
     } else {
         m_receive = false;
@@ -617,6 +638,9 @@ void playController::slotVolumeChange(QString app, int value, bool mute)
         }
 
         if (value != m_volume) {
+            KyInfo() << "value != m_volume."
+                     << "value = " << value;
+
             m_receive = true;
             Q_EMIT signalVolume(value);
         }
