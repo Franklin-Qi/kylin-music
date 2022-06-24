@@ -87,56 +87,56 @@ void SliderWidget::initColor()
 {
     if(WidgetStyle::themeColor == 1)
     {
-//        vSlider->setStyleSheet(
-//                               "QSlider::groove:vertical {width: 4px;\
-//                                                       border: 1px solid #4A708B;\
-//                                                       padding-left:-1px;\
-//                                                       padding-right:-1px;\
-//                                                       border-radius:2px;\
-//                                                       padding-top:-1px;\
-//                                                       padding-bottom:-1px;\
-//                                                       }"
-//                               "QSlider::add-page:vertical{background:#3790FA;}"
-//                               "QSlider::sub-page:vertical{background:#4D4D4D;}"
-//                               "QSlider::handle:vertical {\
-//                                   background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
-//                                   stop:0 #3790FA, stop:0.1 #3790FA);\
-//                                   width: 10px;\
-//                                   height: 10px;\
-//                                   margin-top: -4px;\
-//                                   margin-left: -3px;\
-//                                   margin-bottom: -4px;\
-//                                   margin-right: -3px;\
-//                                   border-radius: 4px;\
-//                                   margin: 0 -3px;\
-//                               }"
-//                               );
+        vSlider->setStyleSheet(
+                               "QSlider::groove:vertical {width: 4px;\
+                                                       border: 1px solid #4A708B;\
+                                                       padding-left:-1px;\
+                                                       padding-right:-1px;\
+                                                       border-radius:2px;\
+                                                       padding-top:-1px;\
+                                                       padding-bottom:-1px;\
+                                                       }"
+                               "QSlider::add-page:vertical{background:#3790FA;}"
+                               "QSlider::sub-page:vertical{background:#4D4D4D;}"
+                               "QSlider::handle:vertical {\
+                                   background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
+                                   stop:0 #3790FA, stop:0.1 #3790FA);\
+                                   width: 10px;\
+                                   height: 10px;\
+                                   margin-top: -4px;\
+                                   margin-left: -3px;\
+                                   margin-bottom: -4px;\
+                                   margin-right: -3px;\
+                                   border-radius: 4px;\
+                                   margin: 0 -3px;\
+                               }"
+                               );
     }
     else if(WidgetStyle::themeColor == 0)
     {
-//        vSlider->setStyleSheet(
-//                               "QSlider::groove:vertical {width: 4px;\
-//                                                       border: 1px solid #4A708B;\
-//                                                       padding-left:-1px;\
-//                                                       padding-right:-1px;\
-//                                                       border-radius:2px;\
-//                                                       padding-top:-1px;\
-//                                                       padding-bottom:-1px;\
-//                                                       }"
-//                               "QSlider::add-page:vertical{background:#3790FA;}"
-//                               "QSlider::sub-page:vertical{background:#ECEEF5;}"
-//                               "QSlider::handle:vertical {\
-//                                   background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
-//                                   stop:0 #3790FA, stop:0.1 #3790FA);\
-//                                   width: 10px;\
-//                                   height: 10px;\
-//                                   margin-top: -4px;\
-//                                   margin-left: -3px;\
-//                                   margin-bottom: -4px;\
-//                                   margin-right: -3px;\
-//                                   border-radius: 4px;\
-//                                   margin: 0 -3px;\
-//                               }"
-//                               );
+        vSlider->setStyleSheet(
+                               "QSlider::groove:vertical {width: 4px;\
+                                                       border: 1px solid #4A708B;\
+                                                       padding-left:-1px;\
+                                                       padding-right:-1px;\
+                                                       border-radius:2px;\
+                                                       padding-top:-1px;\
+                                                       padding-bottom:-1px;\
+                                                       }"
+                               "QSlider::add-page:vertical{background:#3790FA;}"
+                               "QSlider::sub-page:vertical{background:#ECEEF5;}"
+                               "QSlider::handle:vertical {\
+                                   background: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,\
+                                   stop:0 #3790FA, stop:0.1 #3790FA);\
+                                   width: 10px;\
+                                   height: 10px;\
+                                   margin-top: -4px;\
+                                   margin-left: -3px;\
+                                   margin-bottom: -4px;\
+                                   margin-right: -3px;\
+                                   border-radius: 4px;\
+                                   margin: 0 -3px;\
+                               }"
+                               );
     }
 }

@@ -74,7 +74,7 @@ void MyToolButton::defaultStyle()
         if(WidgetStyle::themeColor == 0)
         {
             //padding-left:15px;  左内边距
-            this->setStyleSheet("QToolButton{padding-left:14px; background-color:#FFFFFF;color:#303133;border-radius:4px;}"
+            this->setStyleSheet("QToolButton{padding-left:14px; background-color:#F5F5F5;color:#303133;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
             if(buttonListName == ALLMUSIC)
             {
@@ -92,7 +92,7 @@ void MyToolButton::defaultStyle()
 
         else if(WidgetStyle::themeColor == 1)
         {
-            this->setStyleSheet("QToolButton{padding-left:14px;background-color:#252526;color:#f9f9f9;border-radius:4px;}"
+            this->setStyleSheet("QToolButton{padding-left:14px;background-color:#1f2022;color:#f9f9f9;border-radius:4px;}"
                                 "QToolButton::hover{background-color:#303032;border-radius:4px;}");
             if(buttonListName == ALLMUSIC)
             {

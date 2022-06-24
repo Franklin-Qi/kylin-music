@@ -129,7 +129,6 @@ private:
     void listBtnClicked();
     void playMeta();
 private:
-
     QHBoxLayout *m_mainLayout = nullptr;
     //上一首
     QPushButton *preBtn = nullptr;

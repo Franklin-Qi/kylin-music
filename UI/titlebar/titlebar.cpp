@@ -72,12 +72,36 @@ void TitleBar::initTitle()
 
     searchEdit = new SearchEdit(this);
     searchEdit->setWidget(m_parent);
-    searchEdit->setFixedSize(QSize(240, 32));
+//    searchEdit->setPlaceholderText("搜索音乐，歌手");
+    searchEdit->setPlaceholderText(tr("Search"));
 
-//    searchEdit->setPlaceholderText(tr("Search"));
+//    searchEdit->setContentsMargins(108,4,0,0);
+//    searchEdit->hide();
+    searchBtn = new QPushButton(searchEdit);
 
+    searchBtn->setFixedSize(16,16);
+    searchBtn->setCursor(Qt::PointingHandCursor);
+//    searchBtn->setIcon(QIcon::fromTheme("search-symbolic"));
+
+//    QMargins margins = searchEdit->textMargins();
+//    searchEdit->setTextMargins(margins.left()+10, margins.top(), searchBtn->width()+15, margins.bottom());
+
+    searchLayout = new QHBoxLayout(searchEdit);
+    searchLayout->addStretch();
+    searchLayout->addWidget(searchBtn);
+    searchLayout->setSpacing(0);
+    //btn at right
+    searchLayout->setContentsMargins(0,0,10,0);
+
+//    LayoutLeft->addWidget(leftBtn);
+//    LayoutLeft->addSpacing(16);
+//    LayoutLeft->addWidget(rightBtn);
+//    LayoutLeft->addSpacing(30);
     //搜索框暂时隐藏
-    LayoutLeft->addWidget(searchEdit, Qt::AlignHCenter);
+    LayoutLeft->addWidget(searchEdit);
+//    LayoutLeft->setSpacing(8);
+    LayoutLeft->setMargin(0);
+    LayoutLeft->setContentsMargins(108,0,0,0);
 
     LayoutRight = new QHBoxLayout;
 
@@ -153,7 +177,7 @@ void TitleBar::initTitle()
     miniBtn->setFixedSize(30,30);
 //    miniBtn->setToolTip("精简模式");
     miniBtn->setToolTip(tr("mini model"));
-    miniBtn->setIcon(QIcon::fromTheme("ukui-mini-symbolic"));
+    miniBtn->setIcon(QIcon::fromTheme("ukui-mini"));
     miniBtn->setProperty("isWindowButton", 0x1);
     miniBtn->setProperty("useIconHighlightEffect", 0x2);
     miniBtn->setFlat(true);
@@ -190,6 +214,7 @@ void TitleBar::initTitle()
     closeBtn->setFlat(true);
 
 
+//    connect(searchBtn,SIGNAL(clicked(bool)),this,SLOT(searchMusic()));
     connect(searchEdit,&SearchEdit::textChanged,this,&TitleBar::searchMusic);
     connect(searchEdit,&SearchEdit::sigFoucusIn,this,&TitleBar::slotFoucusIn);
 
@@ -209,7 +234,6 @@ void TitleBar::initTitle()
     LayoutRight->addWidget(closeBtn);
 
 
-    titleLayout->addStretch();
     titleLayout->addLayout(LayoutLeft);
     titleLayout->addStretch();
     titleLayout->addLayout(LayoutRight);
@@ -231,7 +255,6 @@ bool TitleBar::eventFilter(QObject *watched, QEvent *event)
             }
         }
     }
-
     return QWidget::eventFilter(watched,event);
 }
 
@@ -293,6 +316,17 @@ void TitleBar::titlecolor()
 
         this->setStyleSheet("#TitleBar{background-color:#252526;}");
 
+//        searchWidget->setStyleSheet("QListWidget{border:5px;background:#3D3D41;color:#F9F9F9; }"
+//                                    "QListWidget::Item{height:30px;color:#F9F9F9;}"
+//                                    "QListWidget::Item:hover{background:#303032;color:#F9F9F9; }"
+//                                    "QListWidget::item:selected{background:#303032;color:#F9F9F9;}"
+//                                    );
+
+//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#303032;color:#F9F9F9;}");
+
+        searchBtn->setStyleSheet("QPushButton{background:transparent;\
+                                 border-image:url(:/img/default/search.png);}\
+                                 QPushButton::hover{border-image:url(:/img/hover/search.png);}");
 
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"
@@ -311,6 +345,17 @@ void TitleBar::titlecolor()
 
         this->setStyleSheet("#TitleBar{background-color:#FFFFFF;}");
 
+//        searchWidget->setStyleSheet("QListWidget{border:5px;color:#303133; }"
+//                                    "QListWidget::Item{height:30px;color:#303133;}"
+//                                    "QListWidget::Item:hover{background:#F7F7F7;color:#303133; }"
+//                                    "QListWidget::item:selected{background:#F7F7F7;color:#303133;}"
+//                                    );
+
+//        searchEdit->setStyleSheet("QLineEdit{border-radius:16px;background-color:#F6F6F6;color:#303133;}");
+
+        searchBtn->setStyleSheet("QPushButton{background:transparent;\
+                                 border-image:url(:/img/default/search.png);}\
+                                 QPushButton::hover{border-image:url(:/img/hover/search.png);}");
 
         menumodule->menuButton->setStyleSheet("QPushButton{background:transparent;border-radius:4px;\
                               }"

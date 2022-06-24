@@ -89,9 +89,6 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 //    QFont fontT6;
 //    fontT6.setPixelSize(14);
 
-    // 通过字体宽度来对齐左右间隔
-    int allFontWidth = 232 - 28 -28;
-
     if (listview->getSearchType() == SearchType::TitleType) {
         // 绘制歌曲
         musicDataStruct metaPtr = index.data(Qt::UserRole + SearchType::TitleType).value<musicDataStruct>();
@@ -99,7 +96,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QString mtext;
         mtext = metaPtr.title + "-" + metaPtr.singer;
         QFontMetricsF fontWidth(listview->font());
-        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, allFontWidth);
+        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
 
         QStyleOptionViewItem viewOption(option);
         initStyleOption(&viewOption, index);
@@ -145,9 +142,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QAbstractTextDocumentLayout::PaintContext paintContext;
 
         int margin = static_cast<int>(((option.rect.height() - fontWidth.height()) / 2));
-//        QRect textRect(0+28, option.rect.y() + margin, 287, option.rect.height());
-        // 0+28 为左缩进28px
-        QRect textRect(0+28, option.rect.y() + margin, allFontWidth, option.rect.height());
+        QRect textRect(0, option.rect.y() + margin, 287, option.rect.height());
         painter->save();
         painter->translate(textRect.topLeft());
         painter->setClipRect(textRect.translated(-textRect.topLeft()));
@@ -161,7 +156,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QString mtext;
         mtext = metaPtr.title + "-" + metaPtr.singer;
         QFontMetricsF fontWidth(listview->font());
-        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, allFontWidth);
+        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
         QStyleOptionViewItem viewOption(option);
         initStyleOption(&viewOption, index);
         if (option.state.testFlag(QStyle::State_HasFocus))
@@ -205,7 +200,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QAbstractTextDocumentLayout::PaintContext paintContext;
 
         int margin = static_cast<int>(((option.rect.height() - fontWidth.height()) / 2));
-        QRect textRect(0+28, option.rect.y() + margin, allFontWidth, option.rect.height());
+        QRect textRect(0, option.rect.y() + margin, 287, option.rect.height());
         painter->save();
         painter->translate(textRect.topLeft());
         painter->setClipRect(textRect.translated(-textRect.topLeft()));
@@ -219,7 +214,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QString mtext;
         mtext = metaPtr.album + "-" + metaPtr.singer;
         QFontMetricsF fontWidth(listview->font());
-        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, allFontWidth);
+        mtext = fontWidth.elidedText(mtext, Qt::ElideRight, 136);
         QStyleOptionViewItem viewOption(option);
         initStyleOption(&viewOption, index);
         if (option.state.testFlag(QStyle::State_HasFocus))
@@ -263,7 +258,7 @@ void MusicSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         QAbstractTextDocumentLayout::PaintContext paintContext;
 
         int margin = static_cast<int>(((option.rect.height() - fontWidth.height()) / 2));
-        QRect textRect(0+28, option.rect.y() + margin, allFontWidth, option.rect.height());
+        QRect textRect(0, option.rect.y() + margin, 287, option.rect.height());
         painter->save();
         painter->translate(textRect.topLeft());
         painter->setClipRect(textRect.translated(-textRect.topLeft()));

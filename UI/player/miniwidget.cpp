@@ -158,6 +158,14 @@ void miniWidget::minicolor()
 
         slotFavExixtsDark();
 
+        m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
+
+        m_closeBtn->setIconSize(QSize(30, 30));
+        m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
+
+        m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.png"));
+        m_recoveryWinBtn->setIconSize(QSize(30, 30));
+        m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
         m_nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/nextsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
@@ -204,6 +212,14 @@ void miniWidget::minicolor()
         }
 
         slotFavExixts();
+
+        m_closeBtn->setIcon(QIcon(":/img/clicked/close.png"));
+        m_closeBtn->setIconSize(QSize(30, 30));
+        m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
+
+        m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.png"));
+        m_recoveryWinBtn->setIconSize(QSize(30, 30));
+        m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
         m_nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/nextsong.png);}"
                                  "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
@@ -300,7 +316,7 @@ void miniWidget::init_miniWidget()
     /****************************************************/
 
     m_loveBtn = new QPushButton;
-    m_loveBtn->setFixedSize(36, 36);
+    m_loveBtn->setFixedSize(25,25);
     m_loveBtn->setCursor(Qt::PointingHandCursor);
 //    m_loveBtn->setFocusPolicy(Qt::NoFocus);
     m_loveBtn->setProperty("isWindowButton", 0x1);
@@ -308,7 +324,7 @@ void miniWidget::init_miniWidget()
     m_loveBtn->setFlat(true);
 
     m_orderBtn = new QPushButton;
-    m_orderBtn->setFixedSize(36, 36);
+    m_orderBtn->setFixedSize(25,25);
     m_orderBtn->setCursor(Qt::PointingHandCursor);
 
     switch (playController::getInstance().mode()) {
@@ -321,7 +337,7 @@ void miniWidget::init_miniWidget()
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
+        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
         m_orderBtn->setProperty("isWindowButton", 0x1);
         m_orderBtn->setProperty("useIconHighlightEffect", 0x2);
         m_orderBtn->setFlat(true);
@@ -348,9 +364,6 @@ void miniWidget::init_miniWidget()
     m_closeBtn = new QPushButton;
     m_closeBtn->setFixedSize(30,30);
     m_closeBtn->setCursor(Qt::PointingHandCursor);
-    m_closeBtn->setIcon(QIcon(":/img/lightshow/close.svg"));
-    m_closeBtn->setIconSize(QSize(18, 18));
-    m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
 
     connect(m_closeBtn,&QPushButton::clicked,this,&miniWidget::close);
     //just hide not close
@@ -358,9 +371,6 @@ void miniWidget::init_miniWidget()
     m_recoveryWinBtn = new QPushButton;
     m_recoveryWinBtn->setFixedSize(30,30);
     m_recoveryWinBtn->setCursor(Qt::PointingHandCursor);
-    m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.svg"));
-    m_recoveryWinBtn->setIconSize(QSize(14, 14));
-    m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
 
     m_vSysLayout->setSpacing(0);
@@ -525,10 +535,10 @@ void miniWidget::slotFav()
 void miniWidget::slotFavExixts()
 {
     if (g_db->checkSongIsInFav(filePath)) {
-        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     } else {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 
@@ -539,12 +549,12 @@ void miniWidget::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
     Q_EMIT signalFavBtnChange(filePath);
@@ -563,7 +573,7 @@ void miniWidget::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
@@ -572,7 +582,7 @@ void miniWidget::slotFavIsExixts(QString filePaths)
         {
             return;
         }
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -581,12 +591,12 @@ void miniWidget::slotFavBtnChange(QString filePath)
 {
     if(g_db->checkSongIsInFav(filePath))
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-red"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x4);
     }
     else
     {
-        m_loveBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
+        m_loveBtn->setIcon(QIcon::fromTheme("ukui-play-love-symbolic"));
         m_loveBtn->setProperty("useIconHighlightEffect", 0x2);
     }
 }
@@ -688,7 +698,7 @@ void miniWidget::setPlayMode(int playModel)
         playController::getInstance().setPlaymode(playController::CurrentItemInLoop);
         break;
     case 3:
-        m_orderBtn->setIcon(QIcon::fromTheme("media-playlist-repeat-symbolic"));
+        m_orderBtn->setIcon(QIcon::fromTheme("ukui-playlist-order-symbolic"));
         m_orderBtn->setToolTip(tr("Loop"));
         playController::getInstance().setPlaymode(playController::Loop);
         break;
