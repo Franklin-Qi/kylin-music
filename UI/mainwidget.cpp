@@ -5,6 +5,7 @@
 #include <ukui-log4qt.h>
 
 #define UKUI_FONT_SIZE "systemFontSize"
+#define UKUI_THEME_COLOR "themeColor"
 
 Widget *Widget::mutual = nullptr;
 Widget::Widget(QStringList str, QWidget *parent)
@@ -811,6 +812,16 @@ void Widget::initGSettings()//初始化GSettings
                 if (fontSizeKey > 0) {
                     Q_EMIT signalSetFontSize(fontSizeKey);
                 }
+            }
+        });
+
+        connect(themeData,&QGSettings::changed,this,[=] (const QString &key) {
+            if(key == UKUI_THEME_COLOR) {
+                //获取字号的值
+                QString themeColorKey = themeData->get(UKUI_THEME_COLOR).toString();
+                qDebug() << "主题色为： " << themeColorKey;
+                //发送改变信号
+                Q_EMIT signalSetThemeColor(themeColorKey);
             }
         });
     }

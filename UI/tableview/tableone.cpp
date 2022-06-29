@@ -316,6 +316,7 @@ void TableOne::showRightMenu(const QPoint &pos)
     }
 //    m_menu->move(0,0);
     m_menu->addAction(playRow);      //添加动作到菜单
+//    addToOtherListMenu->setMaximumHeight(240); // 设置添加到歌单的菜单控件宽度
     m_menu->addMenu(addToOtherListMenu);
     m_menu->addAction(removeRow);  //添加动作到菜单
     m_menu->addAction(removeLocalRow);

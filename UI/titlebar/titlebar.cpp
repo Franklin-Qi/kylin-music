@@ -53,7 +53,7 @@ void TitleBar::initTitle()
     leftBtn->setFixedSize(16,16);
 //    leftBtn->setStyleSheet()
 //    leftBtn->setToolTip("后退");
-    leftBtn->setCursor(Qt::PointingHandCursor);
+//    leftBtn->setCursor(Qt::PointingHandCursor);
     leftBtn->setToolTip(tr("back"));
     leftBtn->setDisabled(true);
     leftBtn->setContentsMargins(8,0,0,0);
@@ -65,7 +65,7 @@ void TitleBar::initTitle()
                             border-image:url(:/img/default/forward.png);}");
     rightBtn->setFixedSize(16,16);
 //    rightBtn->setToolTip("前进");
-    rightBtn->setCursor(Qt::PointingHandCursor);
+//    rightBtn->setCursor(Qt::PointingHandCursor);
     rightBtn->setToolTip(tr("forward"));
     rightBtn->setDisabled(true);
     rightBtn->hide();
@@ -82,7 +82,7 @@ void TitleBar::initTitle()
     LayoutRight = new QHBoxLayout;
 
     userIconBtn = new QPushButton;
-    userIconBtn->setCursor(Qt::PointingHandCursor);
+//    userIconBtn->setCursor(Qt::PointingHandCursor);
     userIconBtn->setFixedSize(20,20);
     userIconBtn->setStyleSheet("QPushButton{background:transparent;\
                                border-image:url(:/img/default/headportrait.png);}");
@@ -92,7 +92,7 @@ void TitleBar::initTitle()
     loginBtn->setText(tr("Not logged in"));
     loginBtn->setFlat(true);
     loginBtn->adjustSize();
-    loginBtn->setCursor(Qt::PointingHandCursor);
+//    loginBtn->setCursor(Qt::PointingHandCursor);
     loginBtn->setStyleSheet("QPushButton{background:transparent;\
                             color:rgb(238,238,238);\
                             border:none;}");
@@ -102,7 +102,7 @@ void TitleBar::initTitle()
     loginBtn->setMenu(loginMenu);
 
     setBtn = new QPushButton;
-    setBtn->setCursor(Qt::PointingHandCursor);
+//    setBtn->setCursor(Qt::PointingHandCursor);
     setBtn->setFixedSize(30,30);
     setBtn->setIcon(QIcon::fromTheme("application-menu"));
     settingMenu = new QMenu(this);
@@ -149,7 +149,7 @@ void TitleBar::initTitle()
     nullLabel->setPixmap(QPixmap(":/images/TitleBar/line.png"));
 
     miniBtn = new QPushButton;
-    miniBtn->setCursor(Qt::PointingHandCursor);
+//    miniBtn->setCursor(Qt::PointingHandCursor);
     miniBtn->setFixedSize(30,30);
 //    miniBtn->setToolTip("精简模式");
     miniBtn->setToolTip(tr("mini model"));
@@ -159,7 +159,7 @@ void TitleBar::initTitle()
     miniBtn->setFlat(true);
 
     minimumBtn = new QPushButton;
-    minimumBtn->setCursor(Qt::PointingHandCursor);
+//    minimumBtn->setCursor(Qt::PointingHandCursor);
 //    minimumBtn->setToolTip(tr("最小化"));
     minimumBtn->setToolTip(tr("To minimize the"));
     minimumBtn->setFixedSize(30,30);
@@ -169,7 +169,7 @@ void TitleBar::initTitle()
     minimumBtn->setFlat(true);
 
     maximumBtn = new QPushButton;
-    maximumBtn->setCursor(Qt::PointingHandCursor);
+//    maximumBtn->setCursor(Qt::PointingHandCursor);
     maximumBtn->setFixedSize(30,30);
 //    maximumBtn->setToolTip(tr("最大化"));
     maximumBtn->setToolTip(tr("maximize"));
@@ -180,7 +180,7 @@ void TitleBar::initTitle()
 
 
     closeBtn = new QPushButton;
-    closeBtn->setCursor(Qt::PointingHandCursor);
+//    closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setFixedSize(30,30);
 //    closeBtn->setToolTip("关闭");
     closeBtn->setToolTip(tr("close"));

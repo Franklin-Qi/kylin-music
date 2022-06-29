@@ -207,5 +207,7 @@ Q_SIGNALS:
     void signalRefreshList(QString listName);
     //字体
     void signalSetFontSize(int);
+    // 主题强调色
+    void signalSetThemeColor(QString themeColor);
 };
 #endif // WIDGET_H
