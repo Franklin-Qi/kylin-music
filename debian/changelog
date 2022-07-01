@@ -1,7 +1,8 @@
-kylin-music (1.1.0-48ubuntu1) UNRELEASED; urgency=medium
+kylin-music (1.1.0-49) v101; urgency=medium
 
   * [BUG]
   - #118613，解決音乐应用右上角的按鈕的鼠标样式显示错误问题
+  - #119278, 解决音乐主界面和mini模式封面不是圆角问题
 
   * 需求号： 无
   * 其他改动说明： 无

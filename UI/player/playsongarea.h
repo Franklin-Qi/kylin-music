@@ -9,6 +9,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QBitmap>
+#include <QPainter>
 #include <QVariant>
 #include <QShortcut>
 #include <QMenu>
@@ -96,6 +98,7 @@ public Q_SLOTS:
     void setPlayMode(int playModel);
     //获取当前播放歌曲的路径
     void slotSongInfo(QString path);
+    QPixmap setCoverPhotoPixmapRadius(QPixmap pixmap);
     void setCoverPhotoPixmap(QPixmap pixmap);
     void playerStateChange(playController::PlayState newState);
     //播放滑动条相关

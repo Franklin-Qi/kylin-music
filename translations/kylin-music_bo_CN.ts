@@ -345,11 +345,11 @@
     </message>
     <message>
         <source>Song</source>
-        <translation>གླུ་གཞས་ </translation>
+        <translation type="vanished">གླུ་གཞས་ </translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>དུས་ཡུན་རིང་བ་ </translation>
+        <translation type="vanished">དུས་ཡུན་རིང་བ་ </translation>
     </message>
     <message>
         <source>Audio File</source>
@@ -357,7 +357,7 @@
     </message>
     <message>
         <source>Album</source>
-        <translation>ཆེད་སྒྲིག་ </translation>
+        <translation type="vanished">ཆེད་སྒྲིག་ </translation>
     </message>
     <message>
         <source>Add local folders</source>
@@ -397,7 +397,7 @@
     </message>
     <message>
         <source>Singer</source>
-        <translation>གླུ་བ་ </translation>
+        <translation type="vanished">གླུ་བ་ </translation>
     </message>
     <message>
         <source>Total </source>
@@ -493,6 +493,10 @@
     <message>
         <source>forward</source>
         <translation>མདུན་དུ་སྐྱོད་པ་ </translation>
+    </message>
+    <message>
+        <source>menu</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

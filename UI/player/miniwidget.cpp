@@ -503,6 +503,7 @@ void miniWidget::slotSongInfo(QString path)
     }
     else
     {
+        pix = setCoverPhotoPixmapRadius(pix);
         pix = pix.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
     }
     m_coverLabel->setPixmap(pix);
@@ -614,6 +615,33 @@ void miniWidget::slotFavIsExixts(QString filePaths)
     }
 }
 
+/**
+ * @brief miniWidget::setCoverPhotoPixmapRadius 修改封面圆角10px
+ * @param pixmap
+ * @return
+ */
+QPixmap miniWidget::setCoverPhotoPixmapRadius(QPixmap pixmap)
+{
+    int width = m_coverLabel->width();
+    int height = m_coverLabel->height();
+    QSize size(width, height);
+
+    QBitmap mask(size);
+
+    QPainter painter(&mask);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRoundedRect(0, 0, size.width(), size.height(), 10, 10); //修改这个值，可以改弧度，和直径相等就是圆形
+
+    QPixmap image = pixmap.scaled(size);
+    image.setMask(mask);
+
+    return image;
+
+}
+
 void miniWidget::slotFavBtnChange(QString filePath)
 {
     if(g_db->checkSongIsInFav(filePath))
@@ -651,6 +679,7 @@ void miniWidget::songInfo(QString path)
         }
         else
         {
+            pix = setCoverPhotoPixmapRadius(pix);
             pix = pix.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
         }
         m_coverLabel->setPixmap(pix);

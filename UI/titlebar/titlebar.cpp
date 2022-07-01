@@ -52,7 +52,6 @@ void TitleBar::initTitle()
                            border-image:url(:/img/default/backoff.png);}");
     leftBtn->setFixedSize(16,16);
 //    leftBtn->setStyleSheet()
-//    leftBtn->setToolTip("后退");
 //    leftBtn->setCursor(Qt::PointingHandCursor);
     leftBtn->setToolTip(tr("back"));
     leftBtn->setDisabled(true);
@@ -64,7 +63,6 @@ void TitleBar::initTitle()
     rightBtn->setStyleSheet("QPushButton{background:transparent;\
                             border-image:url(:/img/default/forward.png);}");
     rightBtn->setFixedSize(16,16);
-//    rightBtn->setToolTip("前进");
 //    rightBtn->setCursor(Qt::PointingHandCursor);
     rightBtn->setToolTip(tr("forward"));
     rightBtn->setDisabled(true);
@@ -102,6 +100,7 @@ void TitleBar::initTitle()
     loginBtn->setMenu(loginMenu);
 
     setBtn = new QPushButton;
+    setBtn->setToolTip(tr("menu"));
 //    setBtn->setCursor(Qt::PointingHandCursor);
     setBtn->setFixedSize(30,30);
     setBtn->setIcon(QIcon::fromTheme("application-menu"));
@@ -151,7 +150,6 @@ void TitleBar::initTitle()
     miniBtn = new QPushButton;
 //    miniBtn->setCursor(Qt::PointingHandCursor);
     miniBtn->setFixedSize(30,30);
-//    miniBtn->setToolTip("精简模式");
     miniBtn->setToolTip(tr("mini model"));
     miniBtn->setIcon(QIcon::fromTheme("ukui-mini-symbolic"));
     miniBtn->setProperty("isWindowButton", 0x1);
@@ -160,7 +158,6 @@ void TitleBar::initTitle()
 
     minimumBtn = new QPushButton;
 //    minimumBtn->setCursor(Qt::PointingHandCursor);
-//    minimumBtn->setToolTip(tr("最小化"));
     minimumBtn->setToolTip(tr("To minimize the"));
     minimumBtn->setFixedSize(30,30);
     minimumBtn->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
@@ -171,7 +168,6 @@ void TitleBar::initTitle()
     maximumBtn = new QPushButton;
 //    maximumBtn->setCursor(Qt::PointingHandCursor);
     maximumBtn->setFixedSize(30,30);
-//    maximumBtn->setToolTip(tr("最大化"));
     maximumBtn->setToolTip(tr("maximize"));
     maximumBtn->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
     maximumBtn->setProperty("isWindowButton", 0x1);
@@ -182,7 +178,6 @@ void TitleBar::initTitle()
     closeBtn = new QPushButton;
 //    closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setFixedSize(30,30);
-//    closeBtn->setToolTip("关闭");
     closeBtn->setToolTip(tr("close"));
     closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
     closeBtn->setProperty("isWindowButton", 0x2);

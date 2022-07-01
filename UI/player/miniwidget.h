@@ -27,6 +27,9 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QAction>
+#include <QPixmap>
+#include <QPainter>
+#include <QBitmap>
 
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
@@ -94,6 +97,7 @@ public Q_SLOTS:
     void slotFavExixts();
     void slotFavExixtsDark();
     void slotFavIsExixts(QString filePaths);
+    QPixmap setCoverPhotoPixmapRadius(QPixmap pixmap);
     void slotSongInfo(QString path);
     void slotFav();
     //接收播放区我喜欢按钮改变
@@ -115,7 +119,7 @@ public Q_SLOTS:
 public:
     QFrame *m_mainFrame = nullptr;
 
-    QLabel *m_coverLabel = nullptr;
+    QLabel *m_coverLabel = nullptr; // 封面图
     QPushButton *m_loveBtn = nullptr;
     QPushButton *m_volBtn = nullptr;
     QPushButton *m_orderBtn = nullptr;

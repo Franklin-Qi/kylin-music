@@ -549,6 +549,32 @@ void PlaySongArea::slotSongInfo(QString path)
     slotFavExixts();
 }
 
+/**
+ * @brief PlaySongArea::setCoverPhotoPixmapRadius 修改图片，形成圆角
+ * @param pixmap
+ * @return
+ */
+QPixmap PlaySongArea::setCoverPhotoPixmapRadius(QPixmap pixmap)
+{
+    int width = coverPhotoLabel->width();
+    int height = coverPhotoLabel->height();
+    QSize size(width, height);
+
+    QBitmap mask(size);
+
+    QPainter painter(&mask);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRoundedRect(0, 0, size.width(), size.height(), 10, 10); //修改这个值，可以改弧度，和直径相等就是圆形
+
+    QPixmap image = pixmap.scaled(size);
+    image.setMask(mask);
+
+    return image;
+}
+
 void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
 {
     if(pixmap.isNull())
@@ -557,6 +583,7 @@ void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
     }
     else
     {
+        pixmap = setCoverPhotoPixmapRadius(pixmap);
         pixmap = pixmap.scaled(QSize(40,40),Qt::KeepAspectRatio,Qt::SmoothTransformation);
     }
     coverPhotoLabel->setPixmap(pixmap);
