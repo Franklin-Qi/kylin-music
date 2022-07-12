@@ -99,12 +99,17 @@ void TitleBar::initTitle()
     QMenu *loginMenu = new QMenu;
     loginBtn->setMenu(loginMenu);
 
-    setBtn = new QPushButton;
-    setBtn->setToolTip(tr("menu"));
-//    setBtn->setCursor(Qt::PointingHandCursor);
-    setBtn->setFixedSize(30,30);
-    setBtn->setIcon(QIcon::fromTheme("application-menu"));
-    settingMenu = new QMenu(this);
+//    m_optionButton = new QToolButton(this);
+//    m_optionButton->setToolTip(tr("Menu"));
+//    m_optionButton->setPopupMode(QToolButton::InstantPopup);
+//    m_optionButton->setFixedSize(30,30);
+//    m_optionButton->setIcon(QIcon::fromTheme("application-menu"));
+//    m_optionButton->setProperty("useIconHighlightEffect", 0x2);
+//    m_optionButton->setProperty("isWindowButton", 0x01);
+//    m_optionButton->setAutoRaise(true);
+
+
+    settingMenu = new QMenu();
 
     changeThemeColorMenu = new QMenu(this);
     darkThemeAct = new QAction(this);
@@ -139,7 +144,7 @@ void TitleBar::initTitle()
 //    changeThemeColorMenu->addAction(darkThemeAct);
 //    settingMenu->addAction(aboutAct);
 
-    setBtn->setMenu(settingMenu);   //下拉三角图标
+//    m_optionButton->setMenu(settingMenu);   //下拉三角图标
 
 //    connect(aboutAct,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
 
@@ -215,13 +220,11 @@ void TitleBar::initTitle()
 
 bool TitleBar::eventFilter(QObject *watched, QEvent *event)
 {
-    if(watched == this)
-    {
-        if (event->type() == QEvent::MouseButtonDblClick)           //判断类型
-        {
+    if(watched == this) {
+        if (event->type() == QEvent::MouseButtonDblClick) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-            if (mouseEvent->button() == Qt::LeftButton) //判断左键
-            {
+
+            if (mouseEvent->button() == Qt::LeftButton)  {
                 Widget::mutual->slotShowMaximized();
             }
         }

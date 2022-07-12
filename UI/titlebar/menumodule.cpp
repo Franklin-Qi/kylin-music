@@ -23,15 +23,19 @@ void menuModule::initAction(){
     bodyAppVersion = new QLabel();
     bodyAppDescribe = new QLabel();
     bodySupport = new QLabel();
+
     menuButton = new QToolButton;
+    menuButton->setToolTip(tr("Menu"));
     menuButton->setProperty("isWindowButton", 0x1);
     menuButton->setProperty("useIconHighlightEffect", 0x2);
     menuButton->setPopupMode(QToolButton::InstantPopup);
     menuButton->setFixedSize(30,30);
     menuButton->setIconSize(QSize(16, 16));
     menuButton->setAutoRaise(true);
-    menuButton->setIcon(QIcon::fromTheme("open-menu-symbolic"));
+    menuButton->setIcon(QIcon::fromTheme("application-menu"));
+
     m_menu = new QMenu();
+
     QList<QAction *> actions ;
     QAction *actionTheme = new QAction(m_menu);
     actionTheme->setText(tr("Theme"));
@@ -67,6 +71,7 @@ void menuModule::initAction(){
     themeActions<<autoTheme<<lightTheme<<darkTheme;
 //    autoTheme->setChecked(true);
     actionTheme->setMenu(themeMenu);
+
     menuButton->setMenu(m_menu);
     connect(m_menu,&QMenu::triggered,this,&menuModule::triggerMenu);
     initGsetting();

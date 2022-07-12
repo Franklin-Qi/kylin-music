@@ -21,6 +21,7 @@
 #include <QFrame>
 #include <QLabel>
 #include <QPushButton>
+#include <QToolButton>
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QSqlTableModel>
@@ -60,7 +61,7 @@ public:
     QPushButton *userIconBtn = nullptr;
     QPushButton *loginBtn = nullptr;
 
-    QPushButton *setBtn = nullptr;
+    QToolButton *m_optionButton = nullptr; // 菜单选项
     QPushButton *miniBtn = nullptr;
     QPushButton *minimumBtn = nullptr;
     QPushButton *maximumBtn = nullptr;

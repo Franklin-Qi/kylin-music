@@ -34,7 +34,7 @@ void TableOne::initStyle()
 
     if (WidgetStyle::themeColor == 1)
     {
-        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
         this->setStyleSheet("#TableOne{background:#252526;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#252526;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
@@ -43,7 +43,7 @@ void TableOne::initStyle()
     }
     else if(WidgetStyle::themeColor == 0)
     {
-        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
         this->setStyleSheet("#TableOne{background:#FFFFFF;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#FFFFFF;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#FFFFFF;}");
@@ -150,10 +150,12 @@ void TableOne::initUI()
     addMusicButton->setProperty("isImportant",true);
     addMusicButton->setPopupMode(QToolButton::InstantPopup);
     add_menu = new QMenu(this);
+
     addMusicFileAction = new QAction(this);
+    addMusicFileAction->setText(tr("Open File"));
+
     addDirMusicAction = new QAction(this);
-    addMusicFileAction->setText(tr("Add local songs"));
-    addDirMusicAction->setText(tr("Add local folders"));
+    addDirMusicAction->setText(tr("Open Folder"));
     add_menu->addAction(addMusicFileAction);
     add_menu->addAction(addDirMusicAction);
     addMusicButton->setMenu(add_menu);
@@ -184,19 +186,20 @@ void TableOne::initUI()
     nullPageIconLabel = new QLabel(this);
     nullPageTextLabel = new QLabel(this);
     n_addDirMusicButton = new QPushButton(this);
-    n_addDirMusicButton->setFixedSize(190,36);
     n_addMusicButton = new QPushButton(this);
-    n_addMusicButton->setFixedSize(190,36);
+
+    n_addDirMusicButton->setFixedSize(110,36);
+    n_addMusicButton->setFixedSize(110,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
-    n_addMusicButton->setText(tr("Add Local Songs"));
-    n_addDirMusicButton->setText(tr("Add Local Folder"));
+    n_addMusicButton->setText(tr("Open File"));
+    n_addDirMusicButton->setText(tr("Open Folder"));
 
     if (WidgetStyle::themeColor == 1) {
         // black theme
-        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
     } else {
-        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+        nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
     }
 
     nullPageWidget->setLayout(nullPageVLayout);

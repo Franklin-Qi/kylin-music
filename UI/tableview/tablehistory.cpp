@@ -52,9 +52,9 @@ void TableHistory::initSetModel()
     nullIconLabel = new QLabel(this);
     if (WidgetStyle::themeColor == 1) {
         // black theme
-        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(200,180));
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
     } else {
-        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(200,180));
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
     }
     nullTextLabel = new QLabel(this);
     nullTextLabel->setFixedHeight(30);

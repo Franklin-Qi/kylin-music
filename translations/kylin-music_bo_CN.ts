@@ -361,11 +361,11 @@
     </message>
     <message>
         <source>Add local folders</source>
-        <translation>ས་གནས་དེ་གའི་ཡིག་ཁུག་ཁ་སྣོན། </translation>
+        <translation type="vanished">ས་གནས་དེ་གའི་ཡིག་ཁུག་ཁ་སྣོན། </translation>
     </message>
     <message>
         <source>Add Local Folder</source>
-        <translation>ས་གནས་དེ་གའི་ཡིག་ཁུག་ཁ་སྣོན། </translation>
+        <translation type="vanished">ས་གནས་དེ་གའི་ཡིག་ཁུག་ཁ་སྣོན། </translation>
     </message>
     <message>
         <source> songs</source>
@@ -413,11 +413,11 @@
     </message>
     <message>
         <source>Add Local Songs</source>
-        <translation>ས་གནས་དེ་གའི་གླུ་དབྱངས་ཁ་སྣོན་བྱེད། </translation>
+        <translation type="vanished">ས་གནས་དེ་གའི་གླུ་དབྱངས་ཁ་སྣོན་བྱེད། </translation>
     </message>
     <message>
         <source>Add local songs</source>
-        <translation>ས་གནས་དེ་གའི་གླུ་དབྱངས་ཁ་སྣོན་བྱེད། </translation>
+        <translation type="vanished">ས་གནས་དེ་གའི་གླུ་དབྱངས་ཁ་སྣོན་བྱེད། </translation>
     </message>
     <message>
         <source>Delete from list</source>
@@ -459,6 +459,14 @@
         <source>Add Music</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TitleBar</name>
@@ -493,10 +501,6 @@
     <message>
         <source>forward</source>
         <translation>མདུན་དུ་སྐྱོད་པ་ </translation>
-    </message>
-    <message>
-        <source>menu</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -566,6 +570,10 @@
     </message>
     <message>
         <source>Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Menu</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
