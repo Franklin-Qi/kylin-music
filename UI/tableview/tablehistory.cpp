@@ -335,6 +335,13 @@ void TableHistory::changePlayHistoryPos(int posX, int posY, int width, int heigh
 
 void TableHistory::setHighlight(int index)
 {
+    if (WidgetStyle::themeColor == 1) {
+        // black theme
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
+    } else {
+        nullIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
+    }
+
     //播放历史模块高亮
     if(m_model->count() == 0 ||  index >= m_model->count()) {
         return;
