@@ -137,9 +137,9 @@ void TableOne::initUI()
     listTitleHBoxLayout->addSpacing(16);
     listTitleHBoxLayout->addWidget(listTotalNumLabel);
     listTitleHBoxLayout->addStretch();
-    listTitleHBoxLayout->addWidget(playAllButton,1,Qt::AlignRight);
+    listTitleHBoxLayout->addWidget(addMusicButton, 1, Qt::AlignRight);
     listTitleHBoxLayout->addSpacing(16);
-    listTitleHBoxLayout->addWidget(addMusicButton,0,Qt::AlignRight);
+    listTitleHBoxLayout->addWidget(playAllButton, 0, Qt::AlignRight);
     listTitleHBoxLayout->setContentsMargins(25,20,25,30);
     titleWid->setFixedHeight(95);
 
