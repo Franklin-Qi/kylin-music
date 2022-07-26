@@ -33,7 +33,7 @@
 
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
-#include "UI/base/mylabel.h"
+#include "UI/base/customLabel.h"
 #include "UIControl/base/musicfileinformation.h"
 
 const QString miniMainColor = "QFrame{background:#FFFFFF;}";
@@ -131,7 +131,7 @@ public:
     QPushButton *m_playStateBtn = nullptr;
     QPushButton *m_nextBtn = nullptr;
 
-    MyLabel *m_songNameLab = nullptr;
+    CustomLabel *m_songNameLab = nullptr;
     QLabel *m_timeLab = nullptr;
 
     void minicolor();

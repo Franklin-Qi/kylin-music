@@ -275,7 +275,7 @@ void miniWidget::init_miniWidget()
     /************************************/
     m_vInfoLayout = new QVBoxLayout;
 
-    m_songNameLab = new MyLabel;
+    m_songNameLab = new CustomLabel;
     m_songNameLab->setFixedSize(170,28);
 //    m_songNameLab->setAlignment(Qt::AlignLeft);
 

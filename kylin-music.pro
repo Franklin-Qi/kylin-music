@@ -77,9 +77,9 @@ LIBS += -lavformat
 LIBS += -lsqlite3
 
 SOURCES += \
-    UI/base/allpupwindow.cpp \
-    UI/base/labedit.cpp \
-    UI/base/mylabel.cpp \
+    UI/base/customLabel.cpp \
+    UI/base/newSonglistLineEdit.cpp \
+    UI/base/popupDialog.cpp \
     UI/base/widgetstyle.cpp \
     UI/dbusadapter.cpp \
     UI/mainwidget.cpp \
@@ -94,9 +94,9 @@ SOURCES += \
     UI/search/musicsearchlistdelegate.cpp \
     UI/search/musicsearchlistmodel.cpp \
     UI/search/musicsearchlistview.cpp \
+    UI/sidebar/customSiderBarScrollArea.cpp \
+    UI/sidebar/customToolButton.cpp \
     UI/sidebar/leftsiderbarwidget.cpp \
-    UI/sidebar/myscrollarea.cpp \
-    UI/sidebar/mytoolbutton.cpp \
     UI/sidebar/sidebarwidget.cpp \
     UI/tableview/tablebaseview.cpp \
     UI/tableview/tablehistory.cpp \
@@ -116,9 +116,9 @@ SOURCES += \
 
 
 HEADERS += \
-    UI/base/allpupwindow.h \
-    UI/base/labedit.h \
-    UI/base/mylabel.h \
+    UI/base/customLabel.h \
+    UI/base/newSonglistLineEdit.h \
+    UI/base/popupDialog.h \
     UI/base/widgetstyle.h \
     UI/dbusadapter.h \
     UI/mainwidget.h \
@@ -133,9 +133,9 @@ HEADERS += \
     UI/search/musicsearchlistdelegate.h \
     UI/search/musicsearchlistmodel.h \
     UI/search/musicsearchlistview.h \
+    UI/sidebar/customSiderBarScrollArea.h \
+    UI/sidebar/customToolButton.h \
     UI/sidebar/leftsiderbarwidget.h \
-    UI/sidebar/myscrollarea.h \
-    UI/sidebar/mytoolbutton.h \
     UI/sidebar/sidebarwidget.h \
     UI/tableview/tablebaseview.h \
     UI/tableview/tablehistory.h \

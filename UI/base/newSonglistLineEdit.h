@@ -1,5 +1,5 @@
-#ifndef LABEDIT_H
-#define LABEDIT_H
+#ifndef NEWSONGLISTLINEEDIT_H
+#define NEWSONGLISTLINEEDIT_H
 
 #include <QLineEdit>
 #include <QLabel>
@@ -8,11 +8,11 @@
 
 #define PT_11 11
 
-class LabEdit : public QLineEdit
+class NewSonglistLineEdit : public QLineEdit
 {
     Q_OBJECT
 public:
-    LabEdit();
+    NewSonglistLineEdit();
     void setLabelNumber(int num);
 public Q_SLOTS:
     void slotLableSetFontSize(int size);
@@ -23,4 +23,4 @@ private:
     int leng = 15;
 };
 
-#endif // LABEDIT_H
+#endif // NEWSONGLISTLINEEDIT_H

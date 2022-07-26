@@ -1,12 +1,13 @@
-﻿#include "labedit.h"
+﻿#include "newSonglistLineEdit.h"
+#include "UI/base/widgetstyle.h"
 #include <QRegExpValidator>
 
-LabEdit::LabEdit()
+NewSonglistLineEdit::NewSonglistLineEdit()
 {
     init();
 }
 
-void LabEdit::init()
+void NewSonglistLineEdit::init()
 {
     QHBoxLayout* mainLayout = new QHBoxLayout();
     lab = new QLabel(this);
@@ -20,18 +21,22 @@ void LabEdit::init()
 //    this->setValidator(validator);
 }
 
-void LabEdit::setLabelNumber(int num)
+void NewSonglistLineEdit::setLabelNumber(int num)
 {
     lab->setText(QString("%1").arg(num));
 
     if (num == 0) {
         lab->setStyleSheet("QLabel{color:#F44E50;}");
     } else {
-        lab->setStyleSheet("QLabel{color:#000000;}");
+        if (WidgetStyle::themeColor == 1) {
+            lab->setStyleSheet("QLabel{color:#FFFFFF;}");
+        } else {
+            lab->setStyleSheet("QLabel{color:#000000;}");
+        }
     }
 }
 
-void LabEdit::slotLableSetFontSize(int size)
+void NewSonglistLineEdit::slotLableSetFontSize(int size)
 {
     //默认大小12px,换算成pt为9
     double lableBaseFontSize = PT_11;//魔鬼数字，自行处理

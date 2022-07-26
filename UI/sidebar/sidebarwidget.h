@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QScrollArea>
-#include <UI/base/allpupwindow.h>
+#include <UI/base/popupDialog.h>
 #include <QPalette>
 #include <QPainter>
 #include <QPainterPath>
@@ -15,8 +15,8 @@
 #include <QStyleOption>
 #include <QGSettings>
 
-#include "myscrollarea.h"
-#include "mytoolbutton.h"
+#include "customSiderBarScrollArea.h"
+#include "customToolButton.h"
 #include "leftsiderbarwidget.h"
 
 class SideBarWidget : public LeftsiderbarWidget
@@ -29,10 +29,10 @@ public:
 
 public:
     //新建歌单弹窗界面
-    AllPupWindow *newSonglistPup = nullptr;
+    PopupDialog *newSonglistPup = nullptr;
     //重命名歌单弹窗界面
-    AllPupWindow *renameSongListPup = nullptr;
-    MyToolButton *playListBtn = nullptr;
+    PopupDialog *renameSongListPup = nullptr;
+    CustomToolButton *playListBtn = nullptr;
 public Q_SLOTS:
     //添加歌单弹窗输入框
     void addPlayList();
@@ -78,7 +78,7 @@ private:
     //添加歌单按钮
     QPushButton *myPlayListBtn = nullptr;
     //新建歌单按钮界面(包含我喜欢在内)
-    myScrollArea *scrollArea;
+    CustomSiderBarScrollArea *scrollArea;
 
     QWidget *newPlayListWidget = nullptr;
     QWidget *logoWid = nullptr;
@@ -94,7 +94,7 @@ private:
     //获取歌单名
     QString btnText;
     //保存程序关闭之前歌单按钮
-    MyToolButton *m_lastBtn = nullptr;
+    CustomToolButton *m_lastBtn = nullptr;
 };
 
 #endif // SIDEBARWIDGET_H

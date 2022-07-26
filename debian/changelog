@@ -1,3 +1,14 @@
+kylin-music (1.1.0-51) v101; urgency=medium
+
+  * [BUG]
+  - #114000, 解決深色主题下,添加歌单字符颜色未反白问题
+
+  * 需求号： 无
+  * 其他改动说明： 优化变量名称和文件名称
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 26 Jul 2022 10:48:18 +0800
+
 kylin-music (1.1.0-50) v101; urgency=medium
 
   * [BUG]

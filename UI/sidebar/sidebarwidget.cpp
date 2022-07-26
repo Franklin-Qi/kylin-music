@@ -54,7 +54,7 @@ void SideBarWidget::initWidget()
 
     //歌曲列表
     QHBoxLayout *playListBtnLayout = new QHBoxLayout();
-    playListBtn = new MyToolButton;
+    playListBtn = new CustomToolButton;
     playListBtn->setText(tr("Song List"));
 //    playListBtn->setIcon(QIcon::fromTheme("ukui-folder-music-symbolic"));
     playListBtn->setStatusTip(IS_SELECT);
@@ -62,7 +62,7 @@ void SideBarWidget::initWidget()
     playListBtn->defaultStyle();
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
 //    playListBtnLayout->setContentsMargins(24,0,24,0);
-    connect(playListBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+    connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
     //我的歌单
     QHBoxLayout *myPlayListLayout = new QHBoxLayout();
@@ -81,7 +81,7 @@ void SideBarWidget::initWidget()
     myPlayListLayout->addWidget(myPlayListBtn);
     myPlayListLayout->setContentsMargins(38,0,38,0);
 
-    scrollArea = new myScrollArea(this);
+    scrollArea = new CustomSiderBarScrollArea(this);
     scrollArea->setFrameStyle(0);
 
     //歌单界面
@@ -109,11 +109,11 @@ void SideBarWidget::initWidget()
     mainLayout->setMargin(0);
 
     //新建歌单弹窗
-    newSonglistPup = new AllPupWindow(this);
+    newSonglistPup = new PopupDialog(this);
     newSonglistPup->titleLab->setText(tr("New Playlist"));
     newSonglistPup->hide();
 
-    renameSongListPup = new AllPupWindow(this);
+    renameSongListPup = new PopupDialog(this);
     renameSongListPup->titleLab->setText(tr("Rename"));
     renameSongListPup->hide();
 
@@ -178,8 +178,8 @@ void SideBarWidget::sidecolor()
         setAutoFillBackground(true);
         setPalette(pal);
 
-        QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-        for(MyToolButton *tmp : list)
+        QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+        for(CustomToolButton *tmp : list)
         {
             tmp->defaultStyle();
         }
@@ -191,8 +191,8 @@ void SideBarWidget::sidecolor()
         setAutoFillBackground(true);
         setPalette(pal);
 
-        QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-        for(MyToolButton *tmp : list)
+        QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+        for(CustomToolButton *tmp : list)
         {
             tmp->defaultStyle();
         }
@@ -216,7 +216,7 @@ void SideBarWidget::getPlayListName()
         {
             continue;
         }
-        MyToolButton *newBtn = new MyToolButton;
+        CustomToolButton *newBtn = new CustomToolButton;
         newPlayListLayout->setAlignment(Qt::AlignTop);
         newPlayListLayout->addWidget(newBtn);
     //    newPlayListLayout->setContentsMargins(24,0,24,0);
@@ -237,7 +237,7 @@ void SideBarWidget::getPlayListName()
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-        connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+        connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
         QString name = playController::getInstance().getPlayListName();
         if(listName == name )
@@ -260,7 +260,7 @@ void SideBarWidget::addPlayList()
 
 void SideBarWidget::addItemToSongList()
 {
-    MyToolButton *newBtn = new MyToolButton();
+    CustomToolButton *newBtn = new CustomToolButton();
     newPlayListLayout->setAlignment(Qt::AlignTop);
     newPlayListLayout->setSpacing(6);
 
@@ -304,7 +304,7 @@ void SideBarWidget::addItemToSongList()
     connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
     connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-    connect(newBtn,&MyToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+    connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
 }
 
@@ -350,8 +350,8 @@ void SideBarWidget::rename(QString text)
 
 void SideBarWidget::renamePlayList()
 {
-    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-    for(MyToolButton *tmp : list)
+    QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+    for(CustomToolButton *tmp : list)
     {
         if(tmp->text() ==  btnText)
         {
@@ -394,8 +394,8 @@ void SideBarWidget::renamePlayList()
 
 void SideBarWidget::removePlayList(QString text)
 {
-    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-    MyToolButton *tmp = nullptr;
+    QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+    CustomToolButton *tmp = nullptr;
 
      for(auto i = list.begin();i < list.end();i++)
      {
@@ -433,8 +433,8 @@ void SideBarWidget::removePlayList(QString text)
 
 void SideBarWidget::slotListSearch()
 {
-    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-    for(MyToolButton *tmp : list)
+    QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+    for(CustomToolButton *tmp : list)
     {
         tmp->setStatusTip("");
         tmp->buttonListName = "";
@@ -444,8 +444,8 @@ void SideBarWidget::slotListSearch()
 
 void SideBarWidget::slotSongListHigh()
 {
-    QList<MyToolButton *> list = this->findChildren<MyToolButton *>();
-    for(MyToolButton *tmp : list)
+    QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+    for(CustomToolButton *tmp : list)
     {
         tmp->setStatusTip("");
         tmp->buttonListName = "";

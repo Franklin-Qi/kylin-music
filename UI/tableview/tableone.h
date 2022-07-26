@@ -27,9 +27,9 @@
 #include "tableviewdelegate.h"
 #include "tablebaseview.h"
 #include "UIControl/base/musicfileinformation.h"
-#include "UI/base/mylabel.h"
+#include "UI/base/customLabel.h"
 #include "UI/base/widgetstyle.h"
-#include "UI/base/allpupwindow.h"
+#include "UI/base/popupDialog.h"
 
 class TableOne : public QWidget
 {

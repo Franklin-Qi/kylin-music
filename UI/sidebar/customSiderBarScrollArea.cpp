@@ -1,6 +1,6 @@
-#include "myscrollarea.h"
+#include "customSiderBarScrollArea.h"
 
-myScrollArea::myScrollArea(QWidget *parent) : QScrollArea(parent)
+CustomSiderBarScrollArea::CustomSiderBarScrollArea(QWidget *parent) : QScrollArea(parent)
 {
     // QScrollArea本身主题有背景，避免干扰需要设置全透明，不使用主题的背景颜色,只有1种恰当方式, rgba(0,0,0,0)
     this->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
@@ -23,7 +23,7 @@ myScrollArea::myScrollArea(QWidget *parent) : QScrollArea(parent)
 
 }
 
-myScrollArea::~myScrollArea()
+CustomSiderBarScrollArea::~CustomSiderBarScrollArea()
 {
 
 }

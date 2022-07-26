@@ -1,9 +1,9 @@
-#include "mytoolbutton.h"
+#include "customToolButton.h"
 #include "UI/base/widgetstyle.h"
 #include "UIControl/base/musicDataBase.h"
 #include <QDebug>
 
-MyToolButton::MyToolButton()
+CustomToolButton::CustomToolButton()
 {
     //在按钮没有默认选中时，实例化时先调用（故注释）
 //    defaultStyle();
@@ -11,11 +11,11 @@ MyToolButton::MyToolButton()
     //文字在图标旁边
     this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     this->setIconSize(QSize(16,16));
-    connect(this,&MyToolButton::clicked,this,&MyToolButton::selectChanged);
+    connect(this,&CustomToolButton::clicked,this,&CustomToolButton::selectChanged);
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this,&MyToolButton::customContextMenuRequested,this,&MyToolButton::selectChanged);
-    connect(this,&MyToolButton::customContextMenuRequested,this,&MyToolButton::requestCustomContextMenu);
+    connect(this,&CustomToolButton::customContextMenuRequested,this,&CustomToolButton::selectChanged);
+    connect(this,&CustomToolButton::customContextMenuRequested,this,&CustomToolButton::requestCustomContextMenu);
 
     //限制应用内字体固定大小
 //    QFont sizeFont;
@@ -24,12 +24,12 @@ MyToolButton::MyToolButton()
 
 }
 
-MyToolButton::~MyToolButton()
+CustomToolButton::~CustomToolButton()
 {
 
 }
 
-void MyToolButton::selectChanged()
+void CustomToolButton::selectChanged()
 {
     if(this->statusTip() == IS_SELECT)
     {
@@ -37,8 +37,8 @@ void MyToolButton::selectChanged()
         return;
     }
     Q_EMIT selectButtonChanged(this->text());
-    QList<MyToolButton *> list = this->parent()->parent()->parent()->findChildren<MyToolButton *>();
-    for(MyToolButton *tmp : list)
+    QList<CustomToolButton *> list = this->parent()->parent()->parent()->findChildren<CustomToolButton *>();
+    for(CustomToolButton *tmp : list)
     {
         if(tmp->statusTip() == IS_SELECT)
         {
@@ -50,7 +50,7 @@ void MyToolButton::selectChanged()
     this->defaultStyle();
 }
 
-void MyToolButton::defaultStyle()
+void CustomToolButton::defaultStyle()
 {
     if(this->statusTip() == IS_SELECT)
     {
@@ -110,7 +110,7 @@ void MyToolButton::defaultStyle()
     }
 }
 
-void MyToolButton::requestCustomContextMenu(const QPoint &pos)
+void CustomToolButton::requestCustomContextMenu(const QPoint &pos)
 {
     // 不用this，因此可以使用主题的QMenu
     QMenu *menu = new QMenu();

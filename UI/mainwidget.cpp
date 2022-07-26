@@ -758,10 +758,10 @@ void Widget::initGSettings()//初始化GSettings
     connect(this,&Widget::signalSetFontSize,m_miniWidget,&miniWidget::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,historyListTable,&TableHistory::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->menumodule,&menuModule::slotLableSetFontSize);
-    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup,&AllPupWindow::slotLableSetFontSize);
-    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
-    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&AllPupWindow::slotLableSetFontSize);
-    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&LabEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup,&PopupDialog::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup->enterLineEdit,&NewSonglistLineEdit::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup,&PopupDialog::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,sideBarWid->renameSongListPup->enterLineEdit,&NewSonglistLineEdit::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->searchEdit->m_result,&SearchResult::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,musicListTable->infoDialog,&MusicInfoDialog::slotLableSetFontSize);
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "allpupwindow.h"
+#include "popupDialog.h"
 #include "widgetstyle.h"
 #include "UI/mainwidget.h"
 #include "xatom-helper.h"
@@ -26,19 +26,19 @@
 
 QRegExp gInvalidName("[\\\\/:\\*\\?\\\"&<>\\|]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、&、<、>、|  */
 
-AllPupWindow::AllPupWindow(QWidget *parent) : QDialog(parent)
+PopupDialog::PopupDialog(QWidget *parent) : QDialog(parent)
 {
     inpupdialog();
     dlgcolor();
 }
 
-void AllPupWindow::closeDialog()
+void PopupDialog::closeDialog()
 {
     this->close();
     enterLineEdit->clear();
 }
 
-void AllPupWindow::slotTextChanged(QString text)
+void PopupDialog::slotTextChanged(QString text)
 {
     KyInfo() << "text = " << text;
     if (!nameIsValid(text) && text != "") {
@@ -57,7 +57,7 @@ void AllPupWindow::slotTextChanged(QString text)
     }
 }
 
-void AllPupWindow::inpupdialog()
+void PopupDialog::inpupdialog()
 {
     this->setWindowTitle(tr("Music Player"));
     this->setFixedSize(376, 222);
@@ -93,7 +93,7 @@ void AllPupWindow::inpupdialog()
     titleLayout->setMargin(0);
     titleLayout->setSpacing(0);
 
-    enterLineEdit = new LabEdit;
+    enterLineEdit = new NewSonglistLineEdit;
     enterLineEdit->setFixedSize(312, 40);
     enterLineEdit->setMaxLength(15);
 
@@ -156,7 +156,7 @@ void AllPupWindow::inpupdialog()
 
 }
 
-void AllPupWindow::slotLableSetFontSize(int size)
+void PopupDialog::slotLableSetFontSize(int size)
 {
     //默认大小12px,换算成pt为9
     double lableBaseFontSize = PT_11;//魔鬼数字，自行处理
@@ -166,7 +166,7 @@ void AllPupWindow::slotLableSetFontSize(int size)
     tips->setFont(font);
 }
 
-void AllPupWindow::dlgcolor()
+void PopupDialog::dlgcolor()
 {
     if(WidgetStyle::themeColor == 1 )
     {
@@ -213,7 +213,7 @@ void AllPupWindow::dlgcolor()
     }
 }
 
-bool AllPupWindow::nameIsValid(QString textName)
+bool PopupDialog::nameIsValid(QString textName)
 {
     if (nullptr == textName) {
         return false;
@@ -242,13 +242,13 @@ void MusicInfoDialog::initStyle()
 {
     mainVLayout = new QVBoxLayout(this);
     this->setLayout(mainVLayout);
-    songNameLabel = new MyLabel(this);
-    singerLabel = new MyLabel(this);
-    albumLabel = new MyLabel(this);
-    filePathLabel = new MyLabel(this);
-    fileTypeLabel = new MyLabel(this);
-    fileTimeLabel = new MyLabel(this);
-    fileSizeLable = new MyLabel(this);
+    songNameLabel = new CustomLabel(this);
+    singerLabel = new CustomLabel(this);
+    albumLabel = new CustomLabel(this);
+    filePathLabel = new CustomLabel(this);
+    fileTypeLabel = new CustomLabel(this);
+    fileTimeLabel = new CustomLabel(this);
+    fileSizeLable = new CustomLabel(this);
     musicInfoLabel = new QLabel(this);
     musicInfoLabel->setText(tr("Music Information"));
     musicInfoLabel->setFixedHeight(24);

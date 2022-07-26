@@ -22,7 +22,7 @@
 #include "UIControl/player/player.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UI/tableview/tableone.h"
-#include "UI/base/mylabel.h"
+#include "UI/base/customLabel.h"
 #include "UI/player/sliderwidget.h"
 
 class PlaySongArea : public QWidget
@@ -153,7 +153,7 @@ private:
     //封面
     QLabel *coverPhotoLabel = nullptr;
     //正在播放
-    MyLabel *playingLabel = nullptr;
+    CustomLabel *playingLabel = nullptr;
     //时长
     QLabel *timeLabel = nullptr;
     //播放滑动条

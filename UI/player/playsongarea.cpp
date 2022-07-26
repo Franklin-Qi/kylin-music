@@ -168,7 +168,7 @@ void PlaySongArea::initWidget()
     coverPhotoLabel = new QLabel(this);
     coverPhotoLabel->setFixedSize(40,40);
 
-    playingLabel = new MyLabel(this);
+    playingLabel = new CustomLabel(this);
     playingLabel->setFixedHeight(28);
 //    playingLabel->setText(tr("Music Player"));
 

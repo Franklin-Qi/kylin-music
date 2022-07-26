@@ -23,14 +23,12 @@
 #define KYLINMUSIC "org.kylin-music-data.settings"
 #define FITTHEMEWINDOWS "org.ukui.style"
 
-//static int themeColor = 0;   //test  主题颜色适配--浅色
-//int WidgetStyle::themeColor = 1;   //test  主题颜色适配--深色
 class WidgetStyle
 {
 public:
     WidgetStyle() {}
 
-    static int themeColor;   //test  主题颜色适配--浅色
+    static int themeColor;   // themeColor: 0 (浅色主题) 1 (深色主题)
 //    const QColor highlightTextColor;
 
 };

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ALLPUPWINDOW_H
-#define ALLPUPWINDOW_H
+#ifndef POPUPDIALOG_H
+#define POPUPDIALOG_H
 
 #include <QMessageBox>
 #include <QRegExp>
@@ -38,21 +38,21 @@
 #include <QDebug>
 #include <QMessageBox>
 #include "UIControl/base/musicDataBase.h"
-#include "UI/base/mylabel.h"
-#include "UI/base/labedit.h"
+#include "UI/base/customLabel.h"
+#include "UI/base/newSonglistLineEdit.h"
 
-class AllPupWindow :public QDialog
+class PopupDialog :public QDialog
 {
     Q_OBJECT
 public:
-    explicit AllPupWindow(QWidget *parent = nullptr);
+    explicit PopupDialog(QWidget *parent = nullptr);
 
     QPushButton *confirmBtn = nullptr;
     QPushButton *cancelBtn = nullptr;
     QToolButton *closeBtn = nullptr;
     QLabel      *titleLab = nullptr;
     QLabel      *tips = nullptr;
-    LabEdit   *enterLineEdit = nullptr;
+    NewSonglistLineEdit   *enterLineEdit = nullptr;
     QVBoxLayout *testLayout = nullptr;
     QHBoxLayout *titleLayout = nullptr;
     QHBoxLayout *btnLayout = nullptr;
@@ -83,13 +83,13 @@ public Q_SLOTS:
     //字体
     void slotLableSetFontSize(int size);
 private:
-    MyLabel *songNameLabel = nullptr;
-    MyLabel *singerLabel = nullptr;
-    MyLabel *albumLabel = nullptr;
-    MyLabel *filePathLabel = nullptr;
-    MyLabel *fileTypeLabel = nullptr;
-    MyLabel *fileTimeLabel = nullptr;
-    MyLabel *fileSizeLable = nullptr;
+    CustomLabel *songNameLabel = nullptr;
+    CustomLabel *singerLabel = nullptr;
+    CustomLabel *albumLabel = nullptr;
+    CustomLabel *filePathLabel = nullptr;
+    CustomLabel *fileTypeLabel = nullptr;
+    CustomLabel *fileTimeLabel = nullptr;
+    CustomLabel *fileSizeLable = nullptr;
 
     QLabel *musicInfoLabel = nullptr;
 
@@ -103,4 +103,4 @@ private:
     void initStyle();
 };
 
-#endif // ALLPUPWINDOW_H
+#endif // POPUPDIALOG_H

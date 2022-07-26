@@ -1,5 +1,5 @@
-#ifndef MYTOOLBUTTON_H
-#define MYTOOLBUTTON_H
+#ifndef CUSTOMTOOLBUTTON_H
+#define CUSTOMTOOLBUTTON_H
 
 #include <QToolButton>
 #include <QPainter>
@@ -9,12 +9,12 @@
 #include <QtWidgets>
 
 const QString IS_SELECT = "IS_SELECT";
-class MyToolButton : public QToolButton
+class CustomToolButton : public QToolButton
 {
      Q_OBJECT
 public:
-     MyToolButton();
-    ~MyToolButton();
+     CustomToolButton();
+    ~CustomToolButton();
      void selectChanged();
      void defaultStyle();
      void requestCustomContextMenu(const QPoint &pos);
@@ -33,6 +33,5 @@ public Q_SLOTS:
 private:
 
 };
-
 
 #endif

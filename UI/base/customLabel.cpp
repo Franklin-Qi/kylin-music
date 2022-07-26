@@ -1,57 +1,57 @@
-#include "mylabel.h"
+#include "customLabel.h"
 #include <QtWidgets>
 
-MyLabel::MyLabel(QWidget *parent, Qt::WindowFlags f)
+CustomLabel::CustomLabel(QWidget *parent, Qt::WindowFlags f)
     : QLabel(parent, f)
 {
     this->setMinimumWidth(minSize);
     setTextFormat(Qt::PlainText);
 }
 
-MyLabel::MyLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)
+CustomLabel::CustomLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)
     : QLabel(text, parent, f), m_fullText(text)
 {
     this->setMinimumWidth(minSize);
     setTextFormat(Qt::PlainText);
 }
 
-void MyLabel::setText(const QString &text)
+void CustomLabel::setText(const QString &text)
 {
     setFullText(text);
 }
 
-void MyLabel::setFullText(const QString &text)
+void CustomLabel::setFullText(const QString &text)
 {
     m_fullText = text;
     update();
 }
 
-void MyLabel::setTextLimitShrink(const QString &text, int width)
+void CustomLabel::setTextLimitShrink(const QString &text, int width)
 {
     this->setMinimumWidth(qMin(this->fontMetrics().width(text), width));
 //    this->setMinimumSize(200);
     setFullText(text);
 }
 
-void MyLabel::setTextLimitExpand(const QString &text)
+void CustomLabel::setTextLimitExpand(const QString &text)
 {
     int textWidth = this->fontMetrics().width(text);
     this->setMaximumWidth(textWidth);
     setFullText(text);
 }
 
-QString MyLabel::fullText() const
+QString CustomLabel::fullText() const
 {
     return m_fullText;
 }
 
-void MyLabel::paintEvent(QPaintEvent *event)
+void CustomLabel::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
     elideText();
 }
 
-void MyLabel::elideText()
+void CustomLabel::elideText()
 {
     QFontMetrics fm = this->fontMetrics();
     int dif = fm.width(m_fullText) - this->width();
