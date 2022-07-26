@@ -313,8 +313,7 @@ void TableOne::initRightMenu()
 void TableOne::showRightMenu(const QPoint &pos)
 {
     QModelIndex index = tableView->indexAt(pos);
-    if(index.row() < 0)
-    {
+    if(index.row() < 0) {
         return;
     }
 //    m_menu->move(0,0);
@@ -636,7 +635,7 @@ void TableOne::addMusicSlot()
     QFileSystemWatcher fsw(fileDialog);
     fsw.addPath("/media/" + home + "/");
     connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
-    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+    [=, &sidebarNum, &mntUrlList, &list](const QString path) {
         QDir wmntDir(path);
         wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
         QFileInfoList wfilist = wmntDir.entryInfoList();
@@ -653,7 +652,7 @@ void TableOne::addMusicSlot()
              fileDialog->update();
         });
 
-    connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+    connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list]() {
         QList<QUrl> lists;
         QString homePath = "file://" + QDir::homePath();
         lists << QUrl("file://");
@@ -711,7 +710,7 @@ void TableOne::addDirMusicSlot()
     QFileSystemWatcher fsw(fileDialog);
     fsw.addPath("/media/" + home + "/");
     connect(&fsw, &QFileSystemWatcher::directoryChanged, fileDialog,
-    [=, &sidebarNum, &mntUrlList, &list, fileDialog](const QString path) {
+            [=, &sidebarNum, &mntUrlList, &list](const QString path) {
         QDir wmntDir(path);
         wmntDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
         QFileInfoList wfilist = wmntDir.entryInfoList();
@@ -728,7 +727,7 @@ void TableOne::addDirMusicSlot()
              fileDialog->update();
         });
 
-        connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list, fileDialog]() {
+        connect(fileDialog, &QFileDialog::finished, fileDialog, [=, &list]() {
             QList<QUrl> lists;
             QString homePath = "file://" + QDir::homePath();
             lists << QUrl("file://");
@@ -770,6 +769,7 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     int successCount = 0;
     //失败数量
     int failCount = 0;
+
     MusicFileInformation::getInstance().addFile(fileNames);
     int allCount = MusicFileInformation::getInstance().getCount();
     int fail_count = MusicFileInformation::getInstance().getFailCount();
@@ -800,6 +800,8 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     selectListChanged(nowListName);
     importFinished(successCount, fail_count, allCount);
     playController::getInstance().delayMsecondSetVolume();
+
+    qDebug() << "failCount = " << failCount;
 }
 
 void TableOne::importFinished(int successCount, int m_failCount, int allCount)
@@ -834,14 +836,13 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
 
 void TableOne::importFailed(int successCount, int m_failCount, int allCount)
 {
-    if (successCount > 0)
-    {
+    qDebug() << "allCount = " << allCount;
+
+    if (successCount > 0) {
         QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Success add %1 songs").arg(successCount),QMessageBox::Yes,Widget::mutual);
         warn->button(QMessageBox::Yes)->setText("确定");
         warn->exec();
-    }
-    else
-    {
+    } else {
         if (m_failCount > 0) {
             QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Repeat add"),QMessageBox::Yes,Widget::mutual);
             warn->button(QMessageBox::Yes)->setText("确定");
@@ -1190,19 +1191,19 @@ void TableOne::dragEnterEvent(QDragEnterEvent *event)
 
 void TableOne::dropEvent(QDropEvent *event)
 {
+    QStringList localpath;
+
     auto urls = event->mimeData()->urls();
-    if(urls.isEmpty())
-    {
+
+    if(urls.isEmpty()) {
         return;
     }
-    QStringList localpath;
-    for(auto &url : urls)
-    {
+
+    for(auto &url : urls) {
         localpath << url.toLocalFile();
     }
 
-    if(!localpath.isEmpty())
-    {
+    if(!localpath.isEmpty()) {
         addMusicToDatebase(localpath);
     }
 
@@ -1213,7 +1214,7 @@ void TableOne::dropEvent(QDropEvent *event)
 void TableOne::mouseMoveEvent(QMouseEvent *event)
 {
     QModelIndex index = tableView->indexAt(event->pos());
-    int row = index.row();
+
     Q_EMIT hoverIndexChanged(index);
 }
 
@@ -1222,6 +1223,8 @@ void TableOne::resizeEvent(QResizeEvent *event)
     // 使用变量保存tableView一页最多可以完全显示多少条目，实时刷新，实现滑动条的显示和隐藏
     showScrollbarNumber = tableView->height()/42;
     initTableViewStyle();
+
+    QWidget::resizeEvent(event);
 }
 
 void TableOne::keyPressEvent(QKeyEvent *event)

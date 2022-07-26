@@ -168,48 +168,10 @@ void PopupDialog::slotLableSetFontSize(int size)
 
 void PopupDialog::dlgcolor()
 {
-    if(WidgetStyle::themeColor == 1 )
-    {
-//        cancelBtn->setStyleSheet("PushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
-//                                 "QPushButton::hover{background:#4D4D4D;}");
-//        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#606265;}"
-//                                 "QPushButton::hover{background:#4D4D4D;}");
+    if(WidgetStyle::themeColor == 1 ) {
 
-//        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;\
-//                                     border: 1px solid #606265;color:#F9F9F9;background:#3D3D41;");
+    } else if(WidgetStyle::themeColor == 0) {
 
-//        pupDialog->setStyleSheet("background-color:#3D3D41;");
-
-//        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
-//                                  "QPushButton::hover{background:#40A9FB;}"
-//                                  "QPushButton::pressed{background:#296CD9;}"
-//                                  );
-
-//        titleLab->setStyleSheet("width:80px;height:14px;\
-//                                font-weight: 600;\
-//                                border:none;\
-//                                color: #F9F9F9;\
-//                                line-height:14px;");
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
-//        cancelBtn->setStyleSheet("QPushButton{border-radius:4px;border:1px solid #DDDFE7;color:#8F9399;}"
-//                                 "QPushButton::hover{background:#F2F6FD;}");
-
-//        enterLineEdit->setStyleSheet("width:392px;height:32px;border-radius:4px;border:1px solid #DDDFE7;");
-
-//        pupDialog->setStyleSheet("background-color:#FFFFFF;");
-
-//        confirmBtn->setStyleSheet("QPushButton{background:#3790FA;border-radius:4px;color:#FFFFFF;}"
-//                                  "QPushButton::hover{background:#40A9FB;}"
-//                                  "QPushButton::pressed{background:#296CD9;}"
-//                                  );
-
-//        titleLab->setStyleSheet("width:80px;height:14px;\
-//                                font-weight: 600;\
-//                                border:none;\
-//                                color: #1B1B1B;\
-//                                line-height:14px;");
     }
 }
 

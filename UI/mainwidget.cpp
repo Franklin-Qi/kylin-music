@@ -247,6 +247,8 @@ void Widget::client_get(QString str)
 
 void Widget::inputDevice_get(QString str)
 {
+    qDebug() << "inputDevice: " << str;
+
     if(playController::getInstance().getState() == playController::PLAY_STATE) {
         playController::getInstance().pause();
     }
@@ -460,7 +462,10 @@ QStringList Widget::getPath(QString playListName)
     QStringList path;
     int ret;
     QList<musicDataStruct> resList;
+
     ret = g_db->getSongInfoListFromDB(resList,playListName);
+    qDebug() << "getSongInfoListFromDB ret: " << ret;
+
     foreach (const musicDataStruct date, resList) {
         path.append(date.filepath);
     }
