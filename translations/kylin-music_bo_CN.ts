@@ -58,6 +58,22 @@
         <source>I Love</source>
         <translation type="unfinished">ང་དགའ་པོ་ཡོད། </translation>
     </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">གཏོང་བ་ </translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximize</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MusicFileInformation</name>
@@ -208,6 +224,14 @@
     <message>
         <source>CurrentItemInLoop</source>
         <translation>རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">གཏོང་བ་ </translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
     </message>
 </context>
 <context>

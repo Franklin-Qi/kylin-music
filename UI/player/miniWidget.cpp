@@ -168,24 +168,18 @@ void MiniWidget::minicolor()
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-//        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-//                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-//                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
-        {
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+            m_playStateBtn->setToolTip(tr("Play"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+            m_playStateBtn->setToolTip(tr("Pause"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
+            m_playStateBtn->setToolTip(tr("Pause"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
@@ -215,24 +209,19 @@ void MiniWidget::minicolor()
         m_preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/lastsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
-//        m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-//                                      "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-//                                      "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
 
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
-        {
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+            m_playStateBtn->setToolTip(tr("Play"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+            m_playStateBtn->setToolTip(tr("Pause"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
+            m_playStateBtn->setToolTip(tr("Pause"));
             m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                           "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                           "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
@@ -383,6 +372,7 @@ void MiniWidget::init_miniWidget()
     m_closeBtn->setCursor(Qt::PointingHandCursor);
     m_closeBtn->setIcon(QIcon(":/img/lightshow/close.svg"));
     m_closeBtn->setIconSize(QSize(18, 18));
+    m_closeBtn->setToolTip(tr("Close"));
     m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
 
     connect(m_closeBtn,&QPushButton::clicked,this,&MiniWidget::close);
@@ -393,6 +383,7 @@ void MiniWidget::init_miniWidget()
     m_recoveryWinBtn->setCursor(Qt::PointingHandCursor);
     m_recoveryWinBtn->setIcon(QIcon(":/img/lightshow/maximize.svg"));
     m_recoveryWinBtn->setIconSize(QSize(14, 14));
+    m_recoveryWinBtn->setToolTip(tr("Maximize"));
     m_recoveryWinBtn->setStyleSheet("QPushButton{background-color:transparent;}");
 
 
@@ -469,20 +460,18 @@ void MiniWidget::initConnect()
 
 void MiniWidget::playerStateChange(playController::PlayState newState)
 {
-    if(newState == playController::PlayState::PLAY_STATE)
-    {
+    if(newState == playController::PlayState::PLAY_STATE) {
+        m_playStateBtn->setToolTip(tr("Play"));
         m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                       "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                       "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-    }
-    else if(newState == playController::PlayState::PAUSED_STATE)
-    {
+    } else if(newState == playController::PlayState::PAUSED_STATE) {
+        m_playStateBtn->setToolTip(tr("Pause"));
         m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                       "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                       "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-    }
-    else if(newState == playController::PlayState::STOP_STATE)
-    {
+    } else if(newState == playController::PlayState::STOP_STATE) {
+        m_playStateBtn->setToolTip(tr("Pause"));
         m_playStateBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                       "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                       "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");

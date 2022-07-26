@@ -31,7 +31,7 @@ void PlaySongArea::initWidget()
     playBtn = new QPushButton(this);
     playBtn->setFixedSize(36,36);
     playBtn->setCursor(Qt::PointingHandCursor);
-//    playBtn->setToolTip(tr("play"));
+    playBtn->setToolTip(tr("Play"));
 
     nextBtn = new QPushButton;
     nextBtn->setFixedSize(18,18);
@@ -231,22 +231,16 @@ void PlaySongArea::initWidget()
     rightLayout->setMargin(0);
 
     letfWid->setLayout(leftLayout);
-//    letfWid->setStyleSheet("background: red;");
     centreWid->setLayout(playLayout);
-//    centreWid->setStyleSheet("background: blue;");
     rightWid->setLayout(rightLayout);
-//    rightWid->setStyleSheet("background: green;");
 
     m_hmainLayout->addWidget(hSlider);
     m_hmainLayout->setMargin(0);
     m_hmainLayout->setSpacing(0);
 
     m_mainLayout->addWidget(letfWid);
-//    m_mainLayout->addStretch(0);
     m_mainLayout->addWidget(centreWid);
-//    m_mainLayout->addStretch(0);
     m_mainLayout->addWidget(rightWid);
-//    m_mainLayout->setMargin(0);
     m_mainLayout->setSpacing(0);
 
     m_mainLayout->setStretchFactor(letfWid,1);
@@ -589,20 +583,18 @@ void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
 
 void PlaySongArea::playerStateChange(playController::PlayState newState)
 {
-    if(newState == playController::PlayState::PLAY_STATE)
-    {
+    if(newState == playController::PlayState::PLAY_STATE) {
+        playBtn->setToolTip(tr("Play"));
         playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-    }
-    else if(newState == playController::PlayState::PAUSED_STATE)
-    {
+    } else if(newState == playController::PlayState::PAUSED_STATE) {
+        playBtn->setToolTip(tr("Pause"));
         playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                             "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                              "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-    }
-    else if(newState == playController::PlayState::STOP_STATE)
-    {
+    } else if(newState == playController::PlayState::STOP_STATE) {
+        playBtn->setToolTip(tr("Pause"));
         playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                             "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                              "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
@@ -933,20 +925,18 @@ void PlaySongArea::playcolor()
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
-        {
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+            playBtn->setToolTip(tr("Play"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                    "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                    "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+            playBtn->setToolTip(tr("Pause"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                 "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                  "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
+            playBtn->setToolTip(tr("Pause"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                 "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                  "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
@@ -976,23 +966,18 @@ void PlaySongArea::playcolor()
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-//        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-//                               "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-//                               "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE)
-        {
+        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
+            playBtn->setToolTip(tr("Play"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
                                    "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
                                    "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
+            playBtn->setToolTip(tr("Pause"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                 "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                  "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
-        else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE)
-        {
+        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
+            playBtn->setToolTip(tr("Pause"));
             playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
                                 "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
                                  "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
