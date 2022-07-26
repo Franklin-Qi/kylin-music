@@ -42,7 +42,7 @@
 #include "UI/player/playsongarea.h"
 #include "UI/tableview/tablehistory.h"
 #include "UI/titlebar/titlebar.h"
-#include "UI/player/miniwidget.h"
+#include "UI/player/miniWidget.h"
 #include "UIControl/base/daemonipcdbus.h"
 
 class Widget : public QWidget
@@ -180,7 +180,7 @@ private:
     SideBarWidget *sideBarWid = nullptr;
     PlaySongArea *playSongArea = nullptr;
     TitleBar *m_titleBar = nullptr;
-    miniWidget *m_miniWidget = nullptr;
+    MiniWidget *m_miniWidget = nullptr;
     QWidget *rightVWidget = nullptr;
 
     bool Minimize = false;       //最大化和还原俩个状态

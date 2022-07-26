@@ -630,7 +630,7 @@ void Widget::initAllComponent()
     hintt.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hintt);
 
-    m_miniWidget = new miniWidget();
+    m_miniWidget = new MiniWidget();
     MotifWmHints hints;
     hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hints.functions = MWM_FUNC_ALL;
@@ -678,12 +678,12 @@ void Widget::allConnect()
     connect(sideBarWid,&SideBarWidget::signalPlayAll,musicListTable,&TableOne::playAll);
     connect(sideBarWid,&SideBarWidget::playListBtnClicked,this,&Widget::slotText);
     connect(sideBarWid,&SideBarWidget::playListBtnClicked,playSongArea,&PlaySongArea::slotText);
-    connect(sideBarWid,&SideBarWidget::playListBtnClicked,m_miniWidget,&miniWidget::slotText);
+    connect(sideBarWid,&SideBarWidget::playListBtnClicked,m_miniWidget,&MiniWidget::slotText);
 
     // 歌单列表区域
     connect(this,&Widget::signalRefreshList,musicListTable,&TableOne::selectListChanged);
-    connect(musicListTable,&TableOne::addILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
-    connect(musicListTable,&TableOne::removeILoveFilepathSignal,m_miniWidget,&miniWidget::slotFavIsExixts);
+    connect(musicListTable,&TableOne::addILoveFilepathSignal,m_miniWidget,&MiniWidget::slotFavIsExixts);
+    connect(musicListTable,&TableOne::removeILoveFilepathSignal,m_miniWidget,&MiniWidget::slotFavIsExixts);
     connect(musicListTable,&TableOne::addILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
     connect(musicListTable,&TableOne::removeILoveFilepathSignal,playSongArea,&PlaySongArea::slotFavIsExixts);
     connect(musicListTable,&TableOne::refreshHistoryListSignal,historyListTable,&TableHistory::refreshHistoryTable);
@@ -694,7 +694,7 @@ void Widget::allConnect()
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::selectListChanged);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,playSongArea,&PlaySongArea::slotText);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,this,&Widget::slotText);
-    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,m_miniWidget,&miniWidget::slotText);
+    connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,m_miniWidget,&MiniWidget::slotText);
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnText,musicListTable,&TableOne::slotReturnText);
     connect(m_titleBar->searchEdit->m_result->m_MusicView,&MusicSearchListview::signalSearchTexts,musicListTable,&TableOne::slotSearchTexts);
     connect(m_titleBar->searchEdit->m_result,&SearchResult::signalFilePath,musicListTable,&TableOne::slotFilePath);
@@ -713,9 +713,9 @@ void Widget::allConnect()
     connect(playSongArea,&PlaySongArea::showHistoryListBtnClicked,historyListTable,&TableHistory::showHistroryPlayList);
     connect(playSongArea,&PlaySongArea::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     connect(playSongArea,&PlaySongArea::signalPlayingLab,this,&Widget::slotPlayingTitle);
-    connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&miniWidget::slotFavBtnChange);
-    connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&miniWidget::slotPlayingLab);
-    connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&miniWidget::slotTimeLab);
+    connect(playSongArea,&PlaySongArea::signalFavBtnChange,m_miniWidget,&MiniWidget::slotFavBtnChange);
+    connect(playSongArea,&PlaySongArea::signalPlayingLab,m_miniWidget,&MiniWidget::slotPlayingLab);
+    connect(playSongArea,&PlaySongArea::signalTimeLab,m_miniWidget,&MiniWidget::slotTimeLab);
 
     connect(&playController::getInstance(),&playController::playerStateChange,this,&Widget::slotStateChanged);
 
@@ -728,16 +728,16 @@ void Widget::allConnect()
     connect(m_miniWidget->m_preBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPrevious);
     connect(m_miniWidget->m_playStateBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotPlayClicked);
     connect(m_miniWidget->m_nextBtn,&QPushButton::clicked,playSongArea,&PlaySongArea::slotNext);
-    connect(m_miniWidget,&miniWidget::signalFavBtnChange,playSongArea,&PlaySongArea::slotFavBtnChange);
-    connect(m_miniWidget,&miniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
+    connect(m_miniWidget,&MiniWidget::signalFavBtnChange,playSongArea,&PlaySongArea::slotFavBtnChange);
+    connect(m_miniWidget,&MiniWidget::signalRefreshFav,musicListTable,&TableOne::selectListChanged);
     // mini模式快捷键
-    connect(m_miniWidget, &miniWidget::playPauseKeySignal,playSongArea,&PlaySongArea::slotPlayClicked);
-    connect(m_miniWidget, &miniWidget::previousPlayKeySignal, playSongArea,&PlaySongArea::slotPrevious);
-    connect(m_miniWidget, &miniWidget::nextPlayKeySignal, playSongArea,&PlaySongArea::slotNext);
-    connect(m_miniWidget, &miniWidget::addVolumeKeySignal, this, &Widget::VolumeUp);
-    connect(m_miniWidget, &miniWidget::downVolumeKeySignal, this, &Widget::VolumeDown);
-    connect(m_miniWidget, &miniWidget::miniCompleteSwitchKeySignal, this, &Widget::slotRecoverNormalWidget);
-    connect(m_miniWidget, &miniWidget::loveSongKeySignal, playSongArea, &PlaySongArea::slotFav);
+    connect(m_miniWidget, &MiniWidget::playPauseKeySignal,playSongArea,&PlaySongArea::slotPlayClicked);
+    connect(m_miniWidget, &MiniWidget::previousPlayKeySignal, playSongArea,&PlaySongArea::slotPrevious);
+    connect(m_miniWidget, &MiniWidget::nextPlayKeySignal, playSongArea,&PlaySongArea::slotNext);
+    connect(m_miniWidget, &MiniWidget::addVolumeKeySignal, this, &Widget::VolumeUp);
+    connect(m_miniWidget, &MiniWidget::downVolumeKeySignal, this, &Widget::VolumeDown);
+    connect(m_miniWidget, &MiniWidget::miniCompleteSwitchKeySignal, this, &Widget::slotRecoverNormalWidget);
+    connect(m_miniWidget, &MiniWidget::loveSongKeySignal, playSongArea, &PlaySongArea::slotFav);
 
     // 快捷键设置
     connect(m_quitWindow, &QShortcut::activated, this, &Widget::slotClose);
@@ -755,7 +755,7 @@ void Widget::initGSettings()//初始化GSettings
     //只有非标准字号的控件才需要绑定
     connect(this,&Widget::signalSetFontSize,musicListTable,&TableOne::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,playSongArea,&PlaySongArea::slotLableSetFontSize);
-    connect(this,&Widget::signalSetFontSize,m_miniWidget,&miniWidget::slotLableSetFontSize);
+    connect(this,&Widget::signalSetFontSize,m_miniWidget,&MiniWidget::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,historyListTable,&TableHistory::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,m_titleBar->menumodule,&menuModule::slotLableSetFontSize);
     connect(this,&Widget::signalSetFontSize,sideBarWid->newSonglistPup,&PopupDialog::slotLableSetFontSize);

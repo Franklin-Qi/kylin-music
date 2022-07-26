@@ -67,11 +67,6 @@ private:
 
 
 private:
-    //歌曲列表 QToolButton
-    //MyToolButton *playListBtn;
-    //我喜欢 QToolButton
-//    MyToolButton *loveBun;
-
     QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
     double m_transparency = 1.0;  // 透明度
 

@@ -2,42 +2,61 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="bo_CN">
 <context>
-    <name>AllPupWindow</name>
+    <name>CustomToolButton</name>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">གཏོང་བ་ </translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">བསྐྱར་དུ་མིང་བཏགས་པ་ </translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">སུབ་པ་ </translation>
+    </message>
+    <message>
+        <source>Song List</source>
+        <translation type="unfinished">གླུ་གཞས་རེའུ་མིག་ </translation>
+    </message>
+    <message>
+        <source>I Love</source>
+        <translation type="unfinished">ང་དགའ་པོ་ཡོད། </translation>
+    </message>
+</context>
+<context>
+    <name>MiniWidget</name>
     <message>
         <source>Music Player</source>
-        <translation>རོལ་དབྱངས། </translation>
+        <translation type="unfinished">རོལ་དབྱངས། </translation>
     </message>
     <message>
-        <source>Please enter the title of the playlist:</source>
-        <translation type="vanished">གཞས་རྐྱང་གི་ཁ་བྱང་འབྲི་རོགས། </translation>
+        <source>Loop</source>
+        <translation type="unfinished">རེའུ་མིག་རྒྱུན་འཁོར། </translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>མེད་པར་བཟོ་བ་ </translation>
+        <source>Random</source>
+        <translation type="unfinished">སྐབས་བསྟུན་ཁྱབ་གཏོང་ </translation>
     </message>
     <message>
-        <source>Confirm</source>
-        <translation>ངོས་འཛིན་ </translation>
-    </message>
-    <message>
-        <source>Prompt information</source>
-        <translation>གསལ་འདེབས་ཆ་འཕྲིན། </translation>
-    </message>
-    <message>
-        <source>Font limit exceeded</source>
-        <translation type="vanished">ཡིག་གྲངས་ཀྱི་ཚད་བཀག་ལས་བརྒལ་བ་ </translation>
-    </message>
-    <message>
-        <source>Reached upper character limit</source>
+        <source>Sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Please input playlist name:</source>
-        <translation type="unfinished"></translation>
+        <source>00:00/00:00</source>
+        <translation type="unfinished">00/00：00 </translation>
     </message>
     <message>
-        <source>Could not contain characters:  / : * ? &quot; &amp; &lt; &gt; |</source>
-        <translation type="unfinished"></translation>
+        <source>CurrentItemInLoop</source>
+        <translation type="unfinished">རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
+    </message>
+    <message>
+        <source>I Love</source>
+        <translation type="unfinished">ང་དགའ་པོ་ཡོད། </translation>
     </message>
 </context>
 <context>
@@ -126,33 +145,6 @@
     </message>
 </context>
 <context>
-    <name>MyToolButton</name>
-    <message>
-        <source>Play</source>
-        <translation>གཏོང་བ་ </translation>
-    </message>
-    <message>
-        <source>Pause</source>
-        <translation>གནས་སྐབས་མཚམས་འཇོག་ </translation>
-    </message>
-    <message>
-        <source>Song List</source>
-        <translation>གླུ་གཞས་རེའུ་མིག་ </translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation>སུབ་པ་ </translation>
-    </message>
-    <message>
-        <source>I Love</source>
-        <translation>ང་དགའ་པོ་ཡོད། </translation>
-    </message>
-    <message>
-        <source>Rename</source>
-        <translation>བསྐྱར་དུ་མིང་བཏགས་པ་ </translation>
-    </message>
-</context>
-<context>
     <name>PlayBackModeWidget</name>
     <message>
         <source>Loop</source>
@@ -216,6 +208,37 @@
     <message>
         <source>CurrentItemInLoop</source>
         <translation>རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
+    </message>
+</context>
+<context>
+    <name>PopupDialog</name>
+    <message>
+        <source>Prompt information</source>
+        <translation type="unfinished">གསལ་འདེབས་ཆ་འཕྲིན། </translation>
+    </message>
+    <message>
+        <source>Could not contain characters:  / : * ? &quot; &amp; &lt; &gt; |</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reached upper character limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Music Player</source>
+        <translation type="unfinished">རོལ་དབྱངས། </translation>
+    </message>
+    <message>
+        <source>Confirm</source>
+        <translation type="unfinished">ངོས་འཛིན་ </translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">མེད་པར་བཟོ་བ་ </translation>
+    </message>
+    <message>
+        <source>Please input playlist name:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -574,49 +597,6 @@
     </message>
     <message>
         <source>Menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>miniWidget</name>
-    <message>
-        <source>Loop</source>
-        <translation>རེའུ་མིག་རྒྱུན་འཁོར། </translation>
-    </message>
-    <message>
-        <source>Music Player</source>
-        <translation>རོལ་དབྱངས། </translation>
-    </message>
-    <message>
-        <source>00:00/00:00</source>
-        <translation>00/00：00 </translation>
-    </message>
-    <message>
-        <source>I Love</source>
-        <translation>ང་དགའ་པོ་ཡོད། </translation>
-    </message>
-    <message>
-        <source>Random</source>
-        <translation>སྐབས་བསྟུན་ཁྱབ་གཏོང་ </translation>
-    </message>
-    <message>
-        <source>CurrentItemInLoop</source>
-        <translation>རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
-    </message>
-    <message>
-        <source>列表循环</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>随机播放</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>顺序播放</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>单曲循环</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

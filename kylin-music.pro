@@ -83,7 +83,7 @@ SOURCES += \
     UI/base/widgetstyle.cpp \
     UI/dbusadapter.cpp \
     UI/mainwidget.cpp \
-    UI/player/miniwidget.cpp \
+    UI/player/miniWidget.cpp \
     UI/player/musicslider.cpp \
     UI/player/playbackmodewidget.cpp \
     UI/player/playsongarea.cpp \
@@ -122,7 +122,7 @@ HEADERS += \
     UI/base/widgetstyle.h \
     UI/dbusadapter.h \
     UI/mainwidget.h \
-    UI/player/miniwidget.h \
+    UI/player/miniWidget.h \
     UI/player/musicslider.h \
     UI/player/playbackmodewidget.h \
     UI/player/playsongarea.h \

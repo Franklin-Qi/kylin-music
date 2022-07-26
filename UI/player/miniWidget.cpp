@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "miniwidget.h"
+#include "miniWidget.h"
 #include "UI/base/widgetstyle.h"
 #include "UI/mainwidget.h"
 #include <QDebug>
 
 #define PT_9 9
 
-miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
+MiniWidget::MiniWidget(QWidget *parent) : QFrame(parent)
 {
     setFixedSize(300,60);
     this->setObjectName("miniWidget");
@@ -31,7 +31,6 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
     setWindowFlags(Qt::WindowStaysOnTopHint);
 //    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool|Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);     //窗体透明
-//    this->setWindowTitle(tr("音乐"));
     this->setWindowTitle(tr("Music Player"));
 
     setMouseTracking(true);
@@ -45,13 +44,13 @@ miniWidget::miniWidget(QWidget *parent) : QFrame(parent)
     initStyle();
 }
 
-void miniWidget::initAction()
+void MiniWidget::initAction()
 {
-    playModeMenu = new QMenu(tr("列表循环"),this);
-    playMode_Loop_Action = new QAction(QIcon(":/img/default/listloop.png"), tr("列表循环"), playModeMenu);
-    playMode_Random_Action = new QAction(QIcon(":/img/default/random.png"), tr("随机播放"), playModeMenu);
-    playMode_Sequential_Action = new QAction(QIcon(":/img/default/sequence.png"), tr("顺序播放"), playModeMenu);
-    playMode_CurrentItemInLoop_Action = new QAction(QIcon(":/img/default/oneloop.png"), tr("单曲循环"), playModeMenu);
+    playModeMenu = new QMenu(tr("Loop"),this);
+    playMode_Loop_Action = new QAction(QIcon(":/img/default/listloop.png"), tr("Loop"), playModeMenu);
+    playMode_Random_Action = new QAction(QIcon(":/img/default/random.png"), tr("Random"), playModeMenu);
+    playMode_Sequential_Action = new QAction(QIcon(":/img/default/sequence.png"), tr("Sequence"), playModeMenu);
+    playMode_CurrentItemInLoop_Action = new QAction(QIcon(":/img/default/oneloop.png"), tr("CurrentItemInLoop"), playModeMenu);
     playModeMenu->addAction(playMode_Loop_Action);
     playModeMenu->addAction(playMode_Random_Action);
     playModeMenu->addAction(playMode_Sequential_Action);
@@ -59,30 +58,29 @@ void miniWidget::initAction()
     playModeMenu->addMenu(playModeMenu);
 }
 
-void miniWidget::mousePressEvent(QMouseEvent *event)
+void MiniWidget::mousePressEvent(QMouseEvent *event)
 {
     m_WindowPos = this->pos();
-    if(QRect(0,0,width(),height()).contains(event->pos()) && event->button() == Qt::LeftButton)
-    {
+
+    if(QRect(0,0,width(),height()).contains(event->pos()) && event->button() == Qt::LeftButton) {
         m_MousePos = event->globalPos();
         m_mouseState = true;
     }
 }
 
-void miniWidget::mouseMoveEvent(QMouseEvent *event)
+void MiniWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_mouseState)
-    {
+    if (m_mouseState) {
         move(m_WindowPos + (event->globalPos() - m_MousePos));
     }
 }
 
-void miniWidget::mouseReleaseEvent(QMouseEvent *)
+void MiniWidget::mouseReleaseEvent(QMouseEvent *)
 {
     m_mouseState = false;
 }
 
-void miniWidget::enterEvent(QEvent *)
+void MiniWidget::enterEvent(QEvent *)
 {
     m_songNameLab->setVisible(false);
     m_timeLab->setVisible(false);
@@ -91,7 +89,7 @@ void miniWidget::enterEvent(QEvent *)
     this->setFixedWidth(328);
 }
 
-void miniWidget::leaveEvent(QEvent *)
+void MiniWidget::leaveEvent(QEvent *)
 {
     m_songNameLab->setVisible(true);
     m_timeLab->setVisible(true);
@@ -101,7 +99,7 @@ void miniWidget::leaveEvent(QEvent *)
 
 }
 
-void miniWidget::keyPressEvent(QKeyEvent *event)
+void MiniWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space)
     {
@@ -155,7 +153,7 @@ void miniWidget::keyPressEvent(QKeyEvent *event)
     QWidget::keyPressEvent(event);
 }
 
-void miniWidget::minicolor()
+void MiniWidget::minicolor()
 {
     if(WidgetStyle::themeColor == 1)
     {
@@ -253,7 +251,7 @@ void miniWidget::minicolor()
     }
 }
 
-void miniWidget::init_miniWidget()
+void MiniWidget::init_miniWidget()
 {
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
@@ -296,8 +294,6 @@ void miniWidget::init_miniWidget()
         m_timeLab->setText(tr("00:00/00:00"));
     }
 
-//    m_vInfoLayout->setMargin(3);
-//    m_vInfoLayout->setSpacing(3);
     QWidget *vWidget = new QWidget(this);
     vWidget->setFixedHeight(44);
     m_vInfoLayout->addStretch();
@@ -389,7 +385,7 @@ void miniWidget::init_miniWidget()
     m_closeBtn->setIconSize(QSize(18, 18));
     m_closeBtn->setStyleSheet("QPushButton{background:transparent;}");
 
-    connect(m_closeBtn,&QPushButton::clicked,this,&miniWidget::close);
+    connect(m_closeBtn,&QPushButton::clicked,this,&MiniWidget::close);
     //just hide not close
 
     m_recoveryWinBtn = new QPushButton;
@@ -442,7 +438,7 @@ void miniWidget::init_miniWidget()
 //    m_mainFrame->setStyleSheet("border-radius:12px;");
 }
 
-void miniWidget::slotLableSetFontSize(int size)
+void MiniWidget::slotLableSetFontSize(int size)
 {
     //默认大小12px,换算成pt为9
     double lableBaseFontSize = PT_9;//魔鬼数字，自行处理
@@ -453,7 +449,7 @@ void miniWidget::slotLableSetFontSize(int size)
 }
 
 //初始化样式
-void miniWidget::initStyle()
+void MiniWidget::initStyle()
 {
     //不接受焦点高亮。解决点击后有蓝框的问题
     QList<QPushButton*> list = this->findChildren<QPushButton*>();
@@ -461,17 +457,17 @@ void miniWidget::initStyle()
         btn->setFocusPolicy(Qt::NoFocus);
 }
 
-void miniWidget::initConnect()
+void MiniWidget::initConnect()
 {
-    connect(&playController::getInstance(),&playController::playerStateChange,this,&miniWidget::playerStateChange);
-    connect(&playController::getInstance(),&playController::singalChangePath,this,&miniWidget::slotSongInfo);
-    connect(m_loveBtn,&QPushButton::clicked,this,&miniWidget::slotFav);
-    connect(m_orderBtn,&QPushButton::clicked,this,&miniWidget::slotPlayModeClicked);
-    connect(&playController::getInstance(),&playController::signalPlayMode,this,&miniWidget::setPlayMode);
-    connect(&playController::getInstance(),&playController::signalNotPlaying,this,&miniWidget::slotNotPlaying);
+    connect(&playController::getInstance(),&playController::playerStateChange,this,&MiniWidget::playerStateChange);
+    connect(&playController::getInstance(),&playController::singalChangePath,this,&MiniWidget::slotSongInfo);
+    connect(m_loveBtn,&QPushButton::clicked,this,&MiniWidget::slotFav);
+    connect(m_orderBtn,&QPushButton::clicked,this,&MiniWidget::slotPlayModeClicked);
+    connect(&playController::getInstance(),&playController::signalPlayMode,this,&MiniWidget::setPlayMode);
+    connect(&playController::getInstance(),&playController::signalNotPlaying,this,&MiniWidget::slotNotPlaying);
 }
 
-void miniWidget::playerStateChange(playController::PlayState newState)
+void MiniWidget::playerStateChange(playController::PlayState newState)
 {
     if(newState == playController::PlayState::PLAY_STATE)
     {
@@ -493,7 +489,7 @@ void miniWidget::playerStateChange(playController::PlayState newState)
     }
 }
 
-void miniWidget::slotSongInfo(QString path)
+void MiniWidget::slotSongInfo(QString path)
 {
     filePath = path.remove("file://");
     QPixmap pix = MusicFileInformation::getInstance().getCoverPhotoPixmap(filePath);
@@ -510,12 +506,12 @@ void miniWidget::slotSongInfo(QString path)
     slotFavExixts();
 }
 
-void miniWidget::slotText(QString btnText)
+void MiniWidget::slotText(QString btnText)
 {
     listName = btnText;
 }
 
-void miniWidget::slotFav()
+void MiniWidget::slotFav()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
@@ -560,7 +556,7 @@ void miniWidget::slotFav()
 
 }
 
-void miniWidget::slotFavExixts()
+void MiniWidget::slotFavExixts()
 {
     if (g_db->checkSongIsInFav(filePath)) {
         m_loveBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
@@ -573,7 +569,7 @@ void miniWidget::slotFavExixts()
     Q_EMIT signalFavBtnChange(filePath);
 }
 
-void miniWidget::slotFavExixtsDark()
+void MiniWidget::slotFavExixtsDark()
 {
     if(g_db->checkSongIsInFav(filePath))
     {
@@ -588,7 +584,7 @@ void miniWidget::slotFavExixtsDark()
     Q_EMIT signalFavBtnChange(filePath);
 }
 
-void miniWidget::slotFavIsExixts(QString filePaths)
+void MiniWidget::slotFavIsExixts(QString filePaths)
 {
     if(g_db->checkSongIsInFav(filePaths))
     {
@@ -620,7 +616,7 @@ void miniWidget::slotFavIsExixts(QString filePaths)
  * @param pixmap
  * @return
  */
-QPixmap miniWidget::setCoverPhotoPixmapRadius(QPixmap pixmap)
+QPixmap MiniWidget::setCoverPhotoPixmapRadius(QPixmap pixmap)
 {
     int width = m_coverLabel->width();
     int height = m_coverLabel->height();
@@ -642,7 +638,7 @@ QPixmap miniWidget::setCoverPhotoPixmapRadius(QPixmap pixmap)
 
 }
 
-void miniWidget::slotFavBtnChange(QString filePath)
+void MiniWidget::slotFavBtnChange(QString filePath)
 {
     if(g_db->checkSongIsInFav(filePath))
     {
@@ -656,7 +652,7 @@ void miniWidget::slotFavBtnChange(QString filePath)
     }
 }
 
-void miniWidget::songInfo(QString path)
+void MiniWidget::songInfo(QString path)
 {
     QString filepath = path.remove("file://");
 
@@ -686,7 +682,7 @@ void miniWidget::songInfo(QString path)
     }
 }
 
-void miniWidget::slotPositionChanged(qint64 position)
+void MiniWidget::slotPositionChanged(qint64 position)
 {
     QString str_time;
     int pos = position / 1000;
@@ -714,17 +710,17 @@ void miniWidget::slotPositionChanged(qint64 position)
     }
 }
 
-void miniWidget::slotPlayingLab(QString playing)
+void MiniWidget::slotPlayingLab(QString playing)
 {
     m_songNameLab->setText(playing);
 }
 
-void miniWidget::slotTimeLab(QString time)
+void MiniWidget::slotTimeLab(QString time)
 {
     m_timeLab->setText(time);
 }
 
-void miniWidget::slotPlayModeClicked()
+void MiniWidget::slotPlayModeClicked()
 {
     int playMode = playController::getInstance().playmode();
     switch (playMode)
@@ -745,7 +741,7 @@ void miniWidget::slotPlayModeClicked()
     playController::getInstance().setMode(static_cast<playController::PlayMode>(playMode));
 }
 
-void miniWidget::setPlayMode(int playModel)
+void MiniWidget::setPlayMode(int playModel)
 {
     switch (playModel) {
     case 1:
@@ -770,13 +766,13 @@ void miniWidget::setPlayMode(int playModel)
     playController::getInstance().setMode(static_cast<playController::PlayMode>(playModel));
 }
 
-void miniWidget::slotNotPlaying()
+void MiniWidget::slotNotPlaying()
 {
     m_songNameLab->setText(tr("Music Player"));
     m_timeLab->setText("00:00/00:00");
 }
 
-void miniWidget::songText(QString songName)
+void MiniWidget::songText(QString songName)
 {
     QString show_songName = "";
     if(songName.length() > 10)

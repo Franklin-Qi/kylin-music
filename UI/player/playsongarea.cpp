@@ -31,13 +31,11 @@ void PlaySongArea::initWidget()
     playBtn = new QPushButton(this);
     playBtn->setFixedSize(36,36);
     playBtn->setCursor(Qt::PointingHandCursor);
-//    playBtn->setToolTip("播放");
 //    playBtn->setToolTip(tr("play"));
 
     nextBtn = new QPushButton;
     nextBtn->setFixedSize(18,18);
     nextBtn->setCursor(Qt::PointingHandCursor);
-//    nextBtn->setToolTip("下一首");
     nextBtn->setToolTip(tr("Next"));
 
     volumeBtn = new QPushButton(this);

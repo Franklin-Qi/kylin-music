@@ -41,11 +41,11 @@ const QString miniMainColor = "QFrame{background:#FFFFFF;}";
 #pragma pack(push)
 #pragma pack(1)
 
-class miniWidget : public QFrame
+class MiniWidget : public QFrame
 {
     Q_OBJECT
 public:
-    explicit miniWidget(QWidget *parent = nullptr);
+    explicit MiniWidget(QWidget *parent = nullptr);
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
