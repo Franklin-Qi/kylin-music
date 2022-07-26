@@ -188,8 +188,8 @@ void TableOne::initUI()
     n_addDirMusicButton = new QPushButton(this);
     n_addMusicButton = new QPushButton(this);
 
-    n_addDirMusicButton->setFixedSize(110,36);
-    n_addMusicButton->setFixedSize(110,36);
+//    n_addDirMusicButton->setFixedSize(110,36);
+//    n_addMusicButton->setFixedSize(110,36);
     nullPageTextLabel->setText(tr("There are no songs!"));
     nullPageTextLabel->setStyleSheet("color:#8F9399;");
     n_addMusicButton->setText(tr("Open File"));
