@@ -45,3 +45,19 @@ You can switch the Mini window for better user experience.
 
 ![Fig.6 Mini](image/mini.png)
 
+### Keyboard Shortcut
+
+![Fig.7 Songs List-big](image/list.png)
+
+The following shortcut keys are provided to enable users to have a  better operation experience.
+
+| Function Description | Keyboard Shortcut |
+| :-- | :-- |
+| Switch play and pause state | Space |
+| Previous song | Ctrl + Left |
+| Next song | Ctrl + Right |
+| Volume increase | Ctrl + Up |
+| Volume reduce | Ctrl + Down |
+| Switch mini and complete mode  | Ctrl + M |
+| Increase and cancel song to 'I Love' songlist | Ctrl + L |
+
