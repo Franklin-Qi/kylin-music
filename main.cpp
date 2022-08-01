@@ -147,10 +147,14 @@ int main(int argc, char *argv[])
         a.installTranslator(&qtTranslator);
     }
 
-    if (!peonyTranslator.load("/usr/share/libpeony-qt/libpeony-qt_"+ locale)){
-        qDebug() << "Load translation file："<< "/usr/share/libpeony-qt/libpeony-qt_" + locale + ".qm from" << qtTranslationDirectory << "failed!";
-    } else {
-        a.installTranslator(&peonyTranslator);
+    QString peonyTranslatorFilePath = "/usr/share/libpeony-qt_" + locale;
+    QFile peonyTranslatorFile(peonyTranslatorFilePath);
+    if (peonyTranslatorFile.exists()) {
+        if (!peonyTranslator.load(peonyTranslatorFilePath)){
+            qDebug() << "Load translation file："<<  peonyTranslatorFilePath;
+        } else {
+            a.installTranslator(&peonyTranslator);
+        }
     }
 
     ///////////////////////////////////// 多語言支持 end

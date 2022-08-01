@@ -917,10 +917,19 @@ void TableOne::setHightLightAndSelect()
     }
 }
 
+/**
+ * @brief TableOne::changeNumber 更改歌曲数字
+ */
 void TableOne::changeNumber()
 {
     int num = m_model->count();
-    listTotalNumLabel->setText(QString::number(num) + tr(" songs"));
+
+    if (num == 1) {
+        listTotalNumLabel->setText(QString::number(num) + tr(" song"));
+    } else {
+        listTotalNumLabel->setText(QString::number(num) + tr(" songs"));
+    }
+
     if(num == 0) {
         tableView->hide();
         nullPageWidget->show();
@@ -993,6 +1002,7 @@ void TableOne::selectListChanged(QString listname)
     } else {
         nowListName = listname;
     }
+
     getMusicList();
     changeNumber();
     showTitleText(listname);
