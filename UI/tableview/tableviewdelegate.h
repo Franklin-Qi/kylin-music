@@ -34,11 +34,11 @@ private:
     QScopedPointer<QPushButton> m_pOpenButton;
     QScopedPointer<QPushButton> m_pDeleteButton;
     QStringList m_list;
+
     int m_nSpacing;  // 按钮之间的间距
     int m_nWidth;  // 按钮宽度
     int m_nHeight;  // 按钮高度
     int m_nType;  // 按钮状态-1：划过 2：按下
-
     int m_hoverrow;
 };
 

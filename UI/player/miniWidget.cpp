@@ -763,16 +763,15 @@ void MiniWidget::slotNotPlaying()
 
 void MiniWidget::songText(QString songName)
 {
-    QString show_songName = "";
-    if(songName.length() > 10)
-    {
+    QString show_songName;
+
+    if(songName.length() > 10) {
         show_songName = songName.mid(0,9);
         show_songName.append("...");
         m_songNameLab->setText(show_songName);
         m_songNameLab->setToolTip(songName);
-    }
-    else
-    {
+    } else {
+        show_songName = "";
         m_songNameLab->setText(songName);
         m_songNameLab->setToolTip(songName);
     }

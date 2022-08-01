@@ -210,18 +210,13 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
                          preHandle(fileData.time));
             bool setVTableRes = addSongToIndexTable.exec(addSongIndex);
 
-            if(true == (queryRes&setRes&setVTableRes))
-            {
+            if(queryRes && setRes && setVTableRes) {
                 return DB_OP_SUCC;
-            }
-            else
-            {
+            } else {
                 qDebug() << "数据库操作失败，添加失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                 return DB_OP_ADD_FAILED;
             }
-        }
-        else
-        {
+        } else {
             return DB_UNCONNECT;
         }
 
@@ -233,60 +228,46 @@ int MusicDataBase::addMusicToLocalMusic(const musicDataStruct &fileData)
 
 int MusicDataBase::delMusicFromLocalMusic(const QString& filePath)
 {
-    bool queryRes = true;
-
-    if(filePath.isEmpty())
-    {
+    if(filePath.isEmpty()) {
         qDebug() << "无效入参" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
-    }
-    else
-    {
-        if(true == m_database.isValid())
-        {
+    } else {
+        if(true == m_database.isValid()) {
             int checkRes = checkIfSongExistsInLocalMusic(filePath);
-            if(checkRes == DB_OP_SUCC)
-            {
+
+            if(checkRes == DB_OP_SUCC) {
                 QSqlQuery delSongFromLocal(m_database);
                 QString delSongString = QString("delete from %1 where filepath = '%2'").
                         arg(ALLMUSIC).
                         arg(inPutStringHandle(filePath));
+
+                bool queryRes = true;
                 queryRes = delSongFromLocal.exec(delSongString);
 
-                if(true == queryRes)
-                {
+                if(true == queryRes) {
                     return DB_OP_SUCC;
-                }
-                else
-                {
+                } else {
                     qDebug() << "数据库打开，删除失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                     return DB_OP_DEL_FAILED;
                 }
-            }
-            else
-            {
+            } else {
                 return INVALID_INPUT;
             }
-        }
-        else
-        {
+        } else {
             qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
             return DB_UNCONNECT;
         }
-
     }
 }
 
 int MusicDataBase::createNewPlayList(const QString& playListName)
 {
-    if(playListName.isEmpty())
-    {
+    if(playListName.isEmpty()) {
         qDebug() << "无效入参" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
 
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool createRes = true;
 
 //        QMutexLocker lockData( &m_mutex);  //加锁，函数执行完后自动解锁
@@ -314,35 +295,25 @@ int MusicDataBase::createNewPlayList(const QString& playListName)
                 arg(inPutStringHandle(playListName));
         createRes &= addPlayListToList.exec(addPlayListToListString);
 
-        if(true == createRes)
-        {
+        if(true == createRes) {
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             qDebug() << "创建新歌单失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
             return CREATE_TABLE_FAILED;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_UNCONNECT;
     }
-
 }
 
 int MusicDataBase::delPlayList(const QString& playListName)
 {
-    //入参检查
-    if(playListName.isEmpty() || playListName == FAV)
-    {
+    if(playListName.isEmpty() || playListName == FAV) {
         qDebug() << "无效入参" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
 
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool delRes = true;
         QSqlQuery delPlayListFromList(m_database);
         QString delPlayListFromListString = QString("delete from ListOfPlayList where title = '%1'").
@@ -354,34 +325,24 @@ int MusicDataBase::delPlayList(const QString& playListName)
                                     ).arg(inPutStringHandle(playListName));
         delRes &= delPlayList.exec(delPlayListString);
 
-        if(true == delRes)
-        {
+        if(true == delRes) {
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             return DEL_TABLE_FAILED;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_UNCONNECT;
     }
-
 }
 
 int MusicDataBase::getSongInfoFromLocalMusic(const QString& filePath, musicDataStruct &fileData)
 {
-
     if(filePath.isEmpty())
-    {
-        qDebug() << "入参无效" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+    { qDebug() << "入参无效" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
 
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool getRes = true;
         QSqlQuery getSongFromLocalMusic(m_database);
         QString getSongString = QString("select %1 from %2 where filepath = '%3'")
@@ -390,10 +351,8 @@ int MusicDataBase::getSongInfoFromLocalMusic(const QString& filePath, musicDataS
                 .arg(inPutStringHandle(filePath));
         getRes = getSongFromLocalMusic.exec(getSongString);
 
-        if(true == getRes)
-        {
-            if(getSongFromLocalMusic.next())
-            {
+        if(true == getRes) {
+            if(getSongFromLocalMusic.next()) {
                 fileData.filepath    = outPutStringHandle(getSongFromLocalMusic.value(0).toString());
                 fileData.title       = outPutStringHandle(getSongFromLocalMusic.value(1).toString());
                 fileData.singer      = outPutStringHandle(getSongFromLocalMusic.value(2).toString());
@@ -401,104 +360,85 @@ int MusicDataBase::getSongInfoFromLocalMusic(const QString& filePath, musicDataS
                 fileData.filetype    = outPutStringHandle(getSongFromLocalMusic.value(4).toString());
                 fileData.size        = outPutStringHandle(getSongFromLocalMusic.value(5).toString());
                 fileData.time        = outPutStringHandle(getSongFromLocalMusic.value(6).toString());
-            }
-            else
-            {
+            } else {
                 qDebug() << "数据库中查无此歌！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                 return DB_DISORDERD;
             }
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             return DB_OP_GET_FAILED;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_DISORDERD;
     }
 }
 
 int MusicDataBase::getSongInfoListFromLocalMusic(QList<musicDataStruct>& resList)
 {
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool getRes = true;
 
         QSqlQuery getSongListFromLocalMusic(m_database);
         QString getSongListString = QString("select filepath from %1 order by idIndex").arg(ALLMUSIC);//按index排序返回给前端，而非添加歌曲时的顺序
         getRes = getSongListFromLocalMusic.exec(getSongListString);
 
-        if(true == getRes)
-        {
-            while(getSongListFromLocalMusic.next())
-            {
+        if(true == getRes) {
+            while (getSongListFromLocalMusic.next()) {
                 musicDataStruct temp;
                 temp.filepath = outPutStringHandle(getSongListFromLocalMusic.value(0).toString());
                 int curRes = getSongInfoFromLocalMusic(temp.filepath, temp);
 
-                if(DB_OP_SUCC == curRes)
-                {
+                if(DB_OP_SUCC == curRes) {
                     resList.append(temp);
-                }
-                else
-                {
+                } else {
                     return curRes;
                 }
             }
 
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             return DB_OP_GET_FAILED;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_DISORDERD;
     }
 }
 
 int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, const QString& destinationFilePath)
 {
-    //入参检查
-    if(selectFilePath.isEmpty() || destinationFilePath.isEmpty())
-    {
+    if(selectFilePath.isEmpty() || destinationFilePath.isEmpty()) {
         qDebug() << "入参为空" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;//入参为空
     }
-    if(DB_OP_SUCC != checkIfSongExistsInLocalMusic(selectFilePath) || DB_OP_SUCC != checkIfSongExistsInLocalMusic(destinationFilePath))
-    {
+
+    if(DB_OP_SUCC != checkIfSongExistsInLocalMusic(selectFilePath) || DB_OP_SUCC != checkIfSongExistsInLocalMusic(destinationFilePath)) {
         qDebug() << "歌曲在歌曲总表中不存在" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;//歌曲在歌曲总表中不存在
     }
-    if(selectFilePath == destinationFilePath)//位置没变化
-    {
+
+    //位置没变化
+    if(selectFilePath == destinationFilePath) {
         qDebug() << "位置没变化，不用处理" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return DB_OP_SUCC;//位置没变化，不用处理
     }
+
     //获取歌曲的index信息
     int oldIndex = 0, newIndex = 0;
     int getRes1 = getSongIndexFromLocalMusic(selectFilePath, oldIndex);
     int getRes2 = getSongIndexFromLocalMusic(destinationFilePath, newIndex);
 
-    if(getRes1 != DB_OP_SUCC)
-    {
+    if(getRes1 != DB_OP_SUCC) {
         qDebug() << "歌曲原INDEX获取失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return getRes1;
     }
-    if(getRes2 != DB_OP_SUCC)
-    {
+
+    if(getRes2 != DB_OP_SUCC) {
         qDebug() << "目标歌曲INDEX获取失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return getRes2;
     }
 
-    if(oldIndex < newIndex)//靠前的位置拖拽到了靠后的位置
-    {
+    //靠前的位置拖拽到了靠后的位置
+    if(oldIndex < newIndex) {
         bool setRes = true;
         QSqlQuery setSongIndexFromLocal(m_database);
         QString setIndex = QString("update %1 set idIndex=0 WHERE filepath='%2'")
@@ -506,8 +446,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                     .arg(inPutStringHandle(selectFilePath));
         setRes &= setSongIndexFromLocal.exec(setIndex);
 
-        if(true == setRes)
-        {
+        if(true == setRes) {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
             QString setIndexs = QString("select idIndex,filepath from %1 WHERE idIndex between '%2' and '%3'")
@@ -516,11 +455,10 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                         .arg(newIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
-            if(true == getRes)
-            {
+            if(true == getRes) {
                 bool updateIndexRes = true;
-                while(getBetweenSongIndexFromLocal.next())
-                {
+
+                while(getBetweenSongIndexFromLocal.next()) {
                     int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
                     QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
@@ -532,8 +470,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                     updateIndexRes &= updateSongIndexFromLocal.exec(updateIndex);
                 }
 
-                if(true == updateIndexRes)
-                {
+                if(true == updateIndexRes) {
                     bool setRes2 = true;
                     QSqlQuery setSongIndexFromLocal2(m_database);
                     QString setIndex2 = QString("update %1 set idIndex='%2' WHERE filepath='%3'")
@@ -542,24 +479,19 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                                 .arg(inPutStringHandle(selectFilePath));
                     setRes2 &= setSongIndexFromLocal2.exec(setIndex2);
 
-                    if(true == setRes2)
-                    {
+                    if(true == setRes2) {
                         return DB_OP_SUCC;
-                    }
-                    else
-                    {
+                    } else {
                         return LIST_REORDER_ERR;
                     }
-                }
-                else
-                {
+                } else {
                     return LIST_REORDER_ERR;
                 }
             }
         }
-    }
-    else if(oldIndex > newIndex)//靠后的位置拖拽到了靠前的位置
-    {
+    } else if(oldIndex > newIndex) {
+        //靠后的位置拖拽到了靠前的位置
+
         bool setRes = true;
         QSqlQuery setSongIndexFromLocal(m_database);
         QString setIndex = QString("update %1 set idIndex=0 WHERE filepath='%2'")
@@ -567,8 +499,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                     .arg(inPutStringHandle(selectFilePath));
         setRes &= setSongIndexFromLocal.exec(setIndex);
 
-        if(true == setRes)
-        {
+        if(true == setRes) {
             bool getRes = true;
             QSqlQuery getBetweenSongIndexFromLocal(m_database);
             QString setIndexs = QString("select idIndex,filepath from %1 WHERE idIndex between '%2' and '%3' order by idIndex desc")
@@ -577,11 +508,10 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                         .arg(oldIndex);
             getRes &= getBetweenSongIndexFromLocal.exec(setIndexs);
 
-            if(true == getRes)
-            {
+            if(true == getRes) {
                 bool updateIndexRes = true;
-                while(getBetweenSongIndexFromLocal.next())
-                {
+
+                while(getBetweenSongIndexFromLocal.next()) {
                     int tempIndex           = getBetweenSongIndexFromLocal.value(0).toInt();
                     QString tempFilepath    = outPutStringHandle(getBetweenSongIndexFromLocal.value(1).toString());
 
@@ -593,8 +523,7 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                     updateIndexRes &= updateSongIndexFromLocal.exec(updateIndex);
                 }
 
-                if(true == updateIndexRes)
-                {
+                if(true == updateIndexRes) {
                     bool setRes2 = true;
                     QSqlQuery setSongIndexFromLocal2(m_database);
                     QString setIndex2 = QString("update %1 set idIndex='%2' WHERE filepath='%3'")
@@ -603,24 +532,18 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
                                                 .arg(inPutStringHandle(selectFilePath));
                     setRes2 &= setSongIndexFromLocal2.exec(setIndex2);
 
-                    if(true == setRes2)
-                    {
+                    if(true == setRes2) {
                         return DB_OP_SUCC;
-                    }
-                    else
-                    {
+                    } else {
                         return LIST_REORDER_ERR;
                     }
-                }
-                else
-                {
+                } else {
                     return LIST_REORDER_ERR;
                 }
             }
         }
-    }
-    else//位置没变
-    {
+    } else {
+        //位置没变
         return DB_OP_SUCC;
     }
 }
@@ -628,13 +551,12 @@ int MusicDataBase::changeSongOrderInLocalMusic(const QString& selectFilePath, co
 int MusicDataBase::getSongInfoListFromLocalMusicByKeyword(QList<musicDataStruct> &resList, const QString &keyword)
 {
     // ph-code
-    if(true == keyword.isEmpty())
-    {
+    if(true == keyword.isEmpty()) {
         // 空keyword不处理
         return INVALID_INPUT;
     }
-    if(true == m_database.isValid())
-    {
+
+    if(true == m_database.isValid()) {
         bool getRes = true;
 
         QSqlQuery getSongListFromLocalMusicByKeyword(m_database);
@@ -1186,31 +1108,58 @@ int MusicDataBase::changeSongOrderInPlayList(const QString& selectFilePath, cons
 
 int MusicDataBase::addMusicToHistoryMusic(const QString& filePath)
 {
-    if(filePath.isEmpty())
-    {
+    if(filePath.isEmpty()) {
         return INVALID_INPUT;
     }
-    else
-    {
 
-        musicDataStruct temp;
-        if(true == m_database.isValid())
-        {
-            bool queryRes = true;
-            //检查歌曲在总表中是否存在
-            int checkLocalRes = getSongInfoFromLocalMusic(filePath, temp);
+    musicDataStruct temp;
 
-            if(DB_OP_SUCC != checkLocalRes)
-            {
-                return checkLocalRes;
+    if(true == m_database.isValid()) {
+        bool queryRes = true;
+        //检查歌曲在总表中是否存在
+        int checkLocalRes = getSongInfoFromLocalMusic(filePath, temp);
+
+        if(DB_OP_SUCC != checkLocalRes) {
+            return checkLocalRes;
+        }
+
+        //查询历史列表中是否已有该歌曲，已有的话，返回添加失败
+        int checkHistoryRes = checkIfSongExistsInHistoryMusic(filePath);
+
+        //历史列表中没有这首歌，直接添加
+        if(SONG_NOT_FOUND == checkHistoryRes) {
+            //历史列表中不存在该歌曲，添加该歌曲
+            QSqlQuery addSongToHistory(m_database);
+            QString addSongString = QString("insert into %1 (%2) values('%3','%4','%5','%6','%7','%8','%9')").
+                    arg(HISTORY).
+                    arg(SHOWCONTEXTS).
+                    arg(inPutStringHandle(temp.filepath)).
+                    arg(inPutStringHandle(temp.title)).
+                    arg(inPutStringHandle(temp.singer)).
+                    arg(inPutStringHandle(temp.album)).
+                    arg(inPutStringHandle(temp.filetype)).
+                    arg(inPutStringHandle(temp.size)).
+                    arg(inPutStringHandle(temp.time));
+            queryRes = addSongToHistory.exec(addSongString);
+            //插入歌曲时自增id和idIndex无法赋值，插入后取得自增id，给idIndex赋值
+            int tempIndex = addSongToHistory.lastInsertId().toInt();
+            bool setRes = true;
+            QSqlQuery setSongIDFromLocal(m_database);
+            QString setIndex = QString("update %1 set idIndex='%2' WHERE filepath='%3'").
+                    arg(HISTORY).arg(tempIndex).arg(inPutStringHandle(temp.filepath));
+            setRes &= setSongIDFromLocal.exec(setIndex);
+
+            if(queryRes && setRes) {
+                return DB_OP_SUCC;
+            } else {
+                qDebug() << "数据库打开，添加失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+                return DB_OP_ADD_FAILED;
             }
+        } else {
+            //历史列表中已存在该，歌曲，需要先删除再添加
+            int delHistoryRes = delMusicFromHistoryMusic(filePath);
 
-            //查询历史列表中是否已有该歌曲，已有的话，返回添加失败
-            int checkHistoryRes = checkIfSongExistsInHistoryMusic(filePath);
-
-            //历史列表中没有这首歌，直接添加
-            if(SONG_NOT_FOUND == checkHistoryRes)
-            {
+            if(DB_OP_SUCC == delHistoryRes) {
                 //历史列表中不存在该歌曲，添加该歌曲
                 QSqlQuery addSongToHistory(m_database);
                 QString addSongString = QString("insert into %1 (%2) values('%3','%4','%5','%6','%7','%8','%9')").
@@ -1229,71 +1178,24 @@ int MusicDataBase::addMusicToHistoryMusic(const QString& filePath)
                 bool setRes = true;
                 QSqlQuery setSongIDFromLocal(m_database);
                 QString setIndex = QString("update %1 set idIndex='%2' WHERE filepath='%3'").
-                        arg(HISTORY).arg(tempIndex).arg(inPutStringHandle(temp.filepath));
+                        arg(HISTORY).
+                        arg(tempIndex).
+                        arg(inPutStringHandle(temp.filepath));
                 setRes &= setSongIDFromLocal.exec(setIndex);
 
-                if(true == (queryRes&setRes))
-                {
+                if(queryRes && setRes) {
                     return DB_OP_SUCC;
-                }
-                else
-                {
+                } else {
                     qDebug() << "数据库打开，添加失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                     return DB_OP_ADD_FAILED;
                 }
+            } else {
+                return delHistoryRes;
             }
-            else//历史列表中已存在该，歌曲，需要先删除再添加
-            {
-                int delHistoryRes = delMusicFromHistoryMusic(filePath);
-                if(DB_OP_SUCC == delHistoryRes)
-                {
-                    //历史列表中不存在该歌曲，添加该歌曲
-                    QSqlQuery addSongToHistory(m_database);
-                    QString addSongString = QString("insert into %1 (%2) values('%3','%4','%5','%6','%7','%8','%9')").
-                            arg(HISTORY).
-                            arg(SHOWCONTEXTS).
-                            arg(inPutStringHandle(temp.filepath)).
-                            arg(inPutStringHandle(temp.title)).
-                            arg(inPutStringHandle(temp.singer)).
-                            arg(inPutStringHandle(temp.album)).
-                            arg(inPutStringHandle(temp.filetype)).
-                            arg(inPutStringHandle(temp.size)).
-                            arg(inPutStringHandle(temp.time));
-                    queryRes = addSongToHistory.exec(addSongString);
-                    //插入歌曲时自增id和idIndex无法赋值，插入后取得自增id，给idIndex赋值
-                    int tempIndex = addSongToHistory.lastInsertId().toInt();
-                    bool setRes = true;
-                    QSqlQuery setSongIDFromLocal(m_database);
-                    QString setIndex = QString("update %1 set idIndex='%2' WHERE filepath='%3'").
-                                                arg(HISTORY).
-                                                arg(tempIndex).
-                                                arg(inPutStringHandle(temp.filepath));
-                    setRes &= setSongIDFromLocal.exec(setIndex);
-
-                    if(true == (queryRes&setRes))
-                    {
-                        return DB_OP_SUCC;
-                    }
-                    else
-                    {
-                        qDebug() << "数据库打开，添加失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
-                        return DB_OP_ADD_FAILED;
-                    }
-                }
-                else
-                {
-                    return delHistoryRes;
-                }
-            }
-
-
         }
-        else
-        {
-            qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
-            return DB_UNCONNECT;
-        }
-
+    } else {
+        qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
+        return DB_UNCONNECT;
     }
 }
 
@@ -1410,103 +1312,79 @@ int MusicDataBase::getSongInfoFromHistoryMusic(const QString& filePath, musicDat
 //使用歌曲的path值，查询歌曲信息(因为所有歌曲都在本地歌单，所以只用歌曲路径)
 int MusicDataBase::getSongInfoFromDB(const QString& filePath, musicDataStruct &fileData)
 {
-    bool getRes = true;
-
-    if(filePath.isEmpty())
-    {
+    if(filePath.isEmpty()) {
         qDebug() << "入参错误" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
-    else
-    {
-        getRes = getSongInfoFromLocalMusic(filePath, fileData);
 
-        return getRes;
-    }
+    bool getRes = true;
+
+    getRes = getSongInfoFromLocalMusic(filePath, fileData);
+
+    return getRes;
 }
 
 int MusicDataBase::getSongInfoListFromDB(QList<musicDataStruct>& resList,const QString& playListName)
 {
-    bool getRes = true;
 
-    if(playListName.isEmpty())
-    {
+    if(playListName.isEmpty()) {
         qDebug() << "输入歌单名为空" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
-    else
-    {
-        if(ALLMUSIC == playListName)
-        {
-            getRes = getSongInfoListFromLocalMusic(resList);
-        }
-        else if(HISTORY == playListName)
-        {
-            getRes = getSongInfoListFromHistoryMusic(resList);
-        }
-        else if(FAV == playListName)
-        {
-            getRes = getSongInfoListFromPlayList(resList,FAV);
-        }
-        else
-        {
-            getRes = getSongInfoListFromPlayList(resList,playListName);
-        }
-        return getRes;
+
+    bool getRes = true;
+
+    if(ALLMUSIC == playListName) {
+        getRes = getSongInfoListFromLocalMusic(resList);
+    } else if(HISTORY == playListName) {
+        getRes = getSongInfoListFromHistoryMusic(resList);
+    } else if(FAV == playListName) {
+        getRes = getSongInfoListFromPlayList(resList,FAV);
+    } else {
+        getRes = getSongInfoListFromPlayList(resList,playListName);
     }
+
+    return getRes;
 }
 
 bool MusicDataBase::checkSongIsInFav(const QString& filePath)
 {
     int isExist = OUT_OF_RESULT;
     isExist = checkIfSongExistsInPlayList(filePath, FAV);
-    if(isExist == DB_OP_SUCC)
-    {
+
+    if(isExist == DB_OP_SUCC) {
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
 
 int MusicDataBase::getSongInfoListFromHistoryMusic(QList<musicDataStruct>& resList)
 {
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool getRes = true;
         QSqlQuery getSongListFromHistoryMusic(m_database);
         QString getSongListString = QString("select filepath from %1 order by idIndex desc").arg(HISTORY);
         getRes = getSongListFromHistoryMusic.exec(getSongListString);
 
-        if(true == getRes)
-        {
-            while(getSongListFromHistoryMusic.next())
-            {
+        if(true == getRes) {
+            while(getSongListFromHistoryMusic.next()) {
                 musicDataStruct temp;
                 temp.filepath = outPutStringHandle(getSongListFromHistoryMusic.value(0).toString());
                 int curRes = getSongInfoFromHistoryMusic(temp.filepath, temp);
 
-                if(DB_OP_SUCC == curRes)
-                {
+                if(DB_OP_SUCC == curRes) {
                     resList.append(temp);
-                }
-                else
-                {
+                } else {
                     return curRes;
                 }
             }
 
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             return DB_OP_GET_FAILED;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_DISORDERD;
     }
 }
@@ -1638,24 +1516,18 @@ int MusicDataBase::checkIfSongExistsInPlayList(const QString& filePath, const QS
         QString getSongString = QString("select id from 'playlist_%1' where filepath = '%2'").arg(playListNameHash).arg(filePathHash);
         queryRes = getSongFromPlayListMusic.exec(getSongString);
 
-        if(false == queryRes)
-        {
+        if(false == queryRes) {
             return DB_OP_GET_FAILED;
         }
 
         //判断歌曲列表中是否存在此歌曲，不存在返回错误！
-        if(getSongFromPlayListMusic.next())
-        {
+        if(getSongFromPlayListMusic.next()) {
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             //歌曲不存在
             return SONG_NOT_FOUND;
         }
-    }
-    else
-    {
+    } else {
         return checkRes;
     }
 
@@ -1663,30 +1535,26 @@ int MusicDataBase::checkIfSongExistsInPlayList(const QString& filePath, const QS
 
 int MusicDataBase::getPlayList(QStringList& playListNameList)
 {
-    bool getRes = true;
 
     if(true == m_database.isValid())
     {
 //        QMutexLocker lockData( &m_mutex);  //加锁，函数执行完后自动解锁
 
+        bool getRes = true;
         QSqlQuery getplayListFromLocalMusic(m_database);
         QString getplayListFromLocalMusicString = QString("select title from ListOfPlayList");
         getRes = getplayListFromLocalMusic.exec(getplayListFromLocalMusicString);
 
-        if(false == getRes)
-        {
+        if(false == getRes) {
             return DB_OP_GET_FAILED;
         }
 
-        while(getplayListFromLocalMusic.next())
-        {
+        while(getplayListFromLocalMusic.next()) {
             playListNameList.append(outPutStringHandle(getplayListFromLocalMusic.value(0).toString()));
         }
 
         return DB_OP_SUCC;
-    }
-    else
-    {
+    } else {
         return DB_DISORDERD;
     }
 }
@@ -1762,12 +1630,9 @@ int MusicDataBase::renamePlayList(const QString& oldPlayListName, const QString&
 
 int MusicDataBase::checkPlayListExist(const QString& playListName)
 {
-    bool getRes = true;
-
-    QStringList playListNameList;
-
-    if(m_database.isValid())
-    {
+    if(m_database.isValid()) {
+        bool getRes = true;
+        QStringList playListNameList;
         QSqlQuery getplayListFromLocalMusic(m_database);
         QString getplayListFromLocalMusicString = QString("select title from ListOfPlayList");
         getRes = getplayListFromLocalMusic.exec(getplayListFromLocalMusicString);
@@ -1778,24 +1643,17 @@ int MusicDataBase::checkPlayListExist(const QString& playListName)
         }
 
         playListNameList.clear();
-        while(getplayListFromLocalMusic.next())
-        {
+        while(getplayListFromLocalMusic.next()) {
             playListNameList.append(outPutStringHandle(getplayListFromLocalMusic.value(0).toString()));
         }
 
-        if(playListNameList.contains(playListName))
-        {
+        if(playListNameList.contains(playListName)) {
             return DB_OP_SUCC;
-        }
-        else
-        {
+        } else {
             //该列表不存在
             return LIST_NOT_FOUND;
         }
-
-    }
-    else
-    {
+    } else {
         return DB_DISORDERD;
     }
 }
@@ -1803,20 +1661,17 @@ int MusicDataBase::checkPlayListExist(const QString& playListName)
 //添加歌曲到新建歌单，使用歌曲的歌名值,歌单名值，输入数据必须有效，
 int MusicDataBase::addMusicToPlayList(const QString& filePath,const QString& playListName)
 {
-    if(filePath.isEmpty() || playListName.isEmpty())
-    {
+    if(filePath.isEmpty() || playListName.isEmpty()) {
         return INVALID_INPUT;
     }
 
     int checkRes;
     checkRes = checkPlayListExist(playListName);
 
-    if(DB_OP_SUCC == checkRes)
-    {
+    if(DB_OP_SUCC == checkRes) {
         int checkLocalRes = checkIfSongExistsInLocalMusic(filePath);
 
-        if(DB_OP_SUCC == checkLocalRes)
-        {
+        if(DB_OP_SUCC == checkLocalRes) {
             musicDataStruct temp;
             if(true == m_database.isValid())
             {
@@ -1859,124 +1714,111 @@ int MusicDataBase::addMusicToPlayList(const QString& filePath,const QString& pla
                         arg(inPutStringHandle(playListName)).arg(tempIndex).arg(inPutStringHandle(temp.filepath));
                 setRes &= setSongIDFromLocal.exec(setIndex);
 
-                if(true == (addRes&setRes))
-                {
+                if(addRes && setRes) {
                     return DB_OP_SUCC;
-                }
-                else
-                {
+                } else {
                     qDebug() << "数据库打开，添加失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                     return DB_OP_ADD_FAILED;
                 }
-
-            }
-            else
-            {
+            } else {
                 qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                 return DB_UNCONNECT;
             }
 
-        }
-        else
-        {
+        } else {
             //本地歌单中检查该歌曲失败
             return checkLocalRes;
         }
-    }
-    else
-    {
+    } else {
         //该歌单检查是否存在失败
         return checkRes;
     }
 
 }
-//从歌单中添加歌曲到新建歌单，如果本地歌单中没有，同样插入本地歌单，使用musicDataStruct结构,输入数据必须有效，
+
+
+/**
+ * @brief MusicDataBase::addNewSongToPlayList
+ * 歌单中添加歌曲到新建歌单，如果本地歌单中没有，同样插入本地歌单，使用musicDataStruct结构,输入数据必须有效，
+ *
+ * @param fileData
+ * @param playListName
+ * @return
+ */
 int MusicDataBase::addNewSongToPlayList(const musicDataStruct& fileData,const QString& playListName)
 {
-    if(playListName.isEmpty())
-    {
+    if(playListName.isEmpty()) {
         return INVALID_INPUT;
     }
-    if(fileData.title.isEmpty() || fileData.filepath.isEmpty())
-    {
+
+    if(fileData.title.isEmpty() || fileData.filepath.isEmpty()) {
         qDebug() << "无效入参" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return INVALID_INPUT;
     }
 
     int checkListRes = checkIfSongExistsInPlayList(fileData.filepath,playListName);
-    if(SONG_NOT_FOUND != checkListRes)
-    {
-        if(DB_OP_SUCC == checkListRes)
-        {
+    if(SONG_NOT_FOUND != checkListRes) {
+        if(DB_OP_SUCC == checkListRes) {
             qDebug() << "歌曲重复添加";
             return DB_OP_ADD_REPEAT;
-        }
-        else
-        {
+        } else {
             qDebug() << "检查歌曲是否存在失败，失败码为：" << checkListRes;
             return checkListRes;
         }
-    }
-    else
-    {
+    } else {
         int checkLocalRes = checkIfSongExistsInLocalMusic(fileData.filepath);
-        if(checkLocalRes == SONG_NOT_FOUND)
-        {
+        if(checkLocalRes == SONG_NOT_FOUND) {
             int addLocalRes;
             addLocalRes = addMusicToLocalMusic(fileData);
-            if(DB_OP_SUCC == addLocalRes)
-            {
+
+            if(DB_OP_SUCC == addLocalRes) {
                 int addListRes;
                 addListRes = addMusicToPlayList(fileData.filepath,playListName);
                 return addListRes;
-            }
-            else
-            {
+            } else {
                 return addLocalRes;
             }
-        }
-        else if(checkLocalRes == DB_OP_SUCC)
-        {
+        } else if(checkLocalRes == DB_OP_SUCC) {
             int addListRes;
             addListRes = addMusicToPlayList(fileData.filepath,playListName);
             return addListRes;
-        }
-        else
-        {
+        } else {
             return checkLocalRes;
         }
     }
-
-
-
 }
-//从新建歌单中删除歌曲，使用歌曲的路径值,输入数据必须有效，
+
+/**
+ * @brief MusicDataBase::delMusicFromPlayList
+ * 从新建歌单中删除歌曲，使用歌曲的路径值,输入数据必须有效，
+ *
+ * @param filePath
+ * @param playListName
+ * @return
+ */
 int MusicDataBase::delMusicFromPlayList(const QString& filePath,const QString& playListName)
 {
-    if(filePath.isEmpty() || playListName.isEmpty())
-    {
+    if(filePath.isEmpty() || playListName.isEmpty()) {
         return INVALID_INPUT;
     }
 
     int checkRes;
     checkRes = checkPlayListExist(playListName);
 
-    if(DB_OP_SUCC == checkRes)
-    {
+    if(DB_OP_SUCC == checkRes) {
         //暂时把歌单和本地歌曲分离
 //        int checkLocalRes = checkIfSongExistsInLocalMusic(filePath);
 
 //        if(DB_OP_SUCC == checkLocalRes)
 //        {
-            if(m_database.isValid())
-            {
+            if(m_database.isValid()) {
                 //查询歌单列表中是否已有该歌曲，没有的话，返回删除失败
                 int checkPlayListRes = checkIfSongExistsInPlayList(filePath,playListName);
 
                 //歌单列表中已经有这首歌，可以删除
-                if(DB_OP_SUCC == checkPlayListRes)
-                {
+                if(DB_OP_SUCC == checkPlayListRes) {
                     bool delRes;
+
                     //歌单列表中存在该歌曲，删除该歌曲
                     QSqlQuery delSongToHistory(m_database);
                     QString delSongString = QString("delete from 'playlist_%1' where filepath = '%2'").
@@ -1984,38 +1826,20 @@ int MusicDataBase::delMusicFromPlayList(const QString& filePath,const QString& p
                             arg(inPutStringHandle(filePath));
                     delRes = delSongToHistory.exec(delSongString);
 
-                    if(true == delRes)
-                    {
+                    if(true == delRes) {
                         return DB_OP_SUCC;
-                    }
-                    else
-                    {
+                    } else {
                         qDebug() << "数据库打开， 删除失败！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                         return DB_OP_DEL_FAILED;
                     }
-                }
-                else
-                {
+                } else {
                     return DB_OP_DEL_FAILED;
                 }
-
-
-            }
-            else
-            {
+            } else {
                 qDebug() << "数据库无法打开，请重试！！！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                 return DB_UNCONNECT;
             }
-
-//        }
-//        else
-//        {
-//            //本地歌单中检查该歌曲失败
-//            return checkLocalRes;
-//        }
-    }
-    else
-    {
+    } else {
         //该歌单检查是否存在失败
         return checkRes;
     }
@@ -2023,13 +1847,11 @@ int MusicDataBase::delMusicFromPlayList(const QString& filePath,const QString& p
 
 int MusicDataBase::getSongIndexFromLocalMusic(const QString& filePath, int &songIndex)
 {
-    if(filePath.isEmpty())
-    {
+    if(filePath.isEmpty()) {
         return INVALID_INPUT;
     }
 
-    if(true == m_database.isValid())
-    {
+    if(true == m_database.isValid()) {
         bool getRes = true;
         QSqlQuery getSongFromLocalMusic(m_database);
         QString getSongString = QString("select idIndex from %1 where filepath = '%2'")
@@ -2291,46 +2113,36 @@ int MusicDataBase::delMultiSongs(const QString &playListName, const QStringList 
 
 int MusicDataBase::checkIfPlayListIsEmpty(const QString& playListName)
 {
-    if(playListName.isEmpty())
-    {
+    if(playListName.isEmpty()) {
         return INVALID_INPUT;
     }
+
     int playListCheckRes = checkPlayListExist(playListName);
-    if(DB_OP_SUCC != playListCheckRes)
-    {
+
+    if(DB_OP_SUCC != playListCheckRes) {
         return playListCheckRes;
-    }
-    else
-    {
-        if(true == m_database.isValid())
-        {
+    } else {
+        if(m_database.isValid()) {
             bool getRes = true;
-            int count = 0;
             QSqlQuery getSongFromPlayList(m_database);
             QString getSongString = QString("select count(title) from 'playlist_%1'").arg(inPutStringHandle(playListName));
             getRes = getSongFromPlayList.exec(getSongString);
-            if(true == getRes)
-            {
-                if(getSongFromPlayList.next())
-                {
+
+            if(getRes) {
+                if(getSongFromPlayList.next()) {
+                    int count = 0;
                     count = getSongFromPlayList.value(0).toInt();
-                    if(count > 0)
-                    {
+
+                    if(count > 0) {
                         return LIST_NOT_EMPTY;
-                    }
-                    else
-                    {
+                    } else {
                         return LIST_IS_EMPTY;
                     }
-                }
-                else
-                {
+                } else {
                     qDebug() << "数据库中查无此歌！" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
                     return DB_DISORDERD;
                 }
-            }
-            else
-            {
+            } else {
                 return DB_OP_GET_FAILED;
             }
         }

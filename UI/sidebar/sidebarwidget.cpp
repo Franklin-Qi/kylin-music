@@ -397,45 +397,41 @@ void SideBarWidget::removePlayList(QString text)
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
     CustomToolButton *tmp = nullptr;
 
-     for(auto i = list.begin();i < list.end();i++)
-     {
-         if((*i)->text() == text)
-         {
-             if(i+1 == list.end())
-             {
+     for(auto i = list.begin();i < list.end();i++) {
+         if((*i)->text() == text) {
+             if(i+1 == list.end()) {
                 tmp = *(i-1);
                 tmp->click();
-             }
-             else
-             {
+             } else {
                  tmp = *(i+1);
                  tmp->click();
              }
+
              //删除歌单时，删除改播放歌单的所有media
              int ret;
              QList<musicDataStruct> musicDateList;
              ret = g_db->getSongInfoListFromPlayList(musicDateList,text);
-             if(ret == DB_OP_SUCC)
-             {
-                 for(int i = 0; i < musicDateList.size(); i++)
-                 {
+
+             if(ret == DB_OP_SUCC) {
+                 for(int j=0; j<musicDateList.size(); j++) {
                      playController::getInstance().removeSongFromCurList(text, 0);
                  }
              }
+
              (*i)->deleteLater();
              g_db->delPlayList(text);
              playListName.removeOne(text);
          }
      }
-    Q_EMIT playListRemoved(text);
-//    promptSongListPup->pupDialog->hide();
+
+     Q_EMIT playListRemoved(text);
 }
 
 void SideBarWidget::slotListSearch()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
-    for(CustomToolButton *tmp : list)
-    {
+
+    for(CustomToolButton *tmp : list) {
         tmp->setStatusTip("");
         tmp->buttonListName = "";
         tmp->defaultStyle();

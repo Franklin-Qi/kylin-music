@@ -2,7 +2,9 @@
 #include "UI/base/widgetstyle.h"
 #include "UIControl/player/player.h"
 
-MusicSlider::MusicSlider(QWidget *parent):QSlider(parent),m_isPlaying(false)
+MusicSlider::MusicSlider(QWidget *parent):
+    QSlider(parent),
+    m_isPlaying(false)
 {
     //现在进度条样式已基本符合要求，但是两端稍微有点瑕疵，暂搁置
     //逻辑也稍微有点问题，如果不选择歌曲，进度条应该禁止操作

@@ -15,6 +15,7 @@ TableViewDelegate::TableViewDelegate(QWidget *parent)
       m_nSpacing(5),
       m_nWidth(25),
       m_nHeight(20),
+      m_nType(-1),
       m_hoverrow(-1)
 {
 }

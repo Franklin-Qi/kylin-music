@@ -49,6 +49,7 @@ class Widget : public QWidget
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.ukui.kylin_music.play")
+
 public:
     Widget(QStringList str, QWidget *parent = nullptr);
     ~Widget();

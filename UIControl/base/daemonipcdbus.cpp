@@ -24,8 +24,10 @@ int DaemonIpcDbus::daemonIsNotRunning()
     memset(service_name, 0, SERVICE_NAME_SIZE);
     snprintf(service_name, SERVICE_NAME_SIZE, "%s_%d",KYLIN_USER_GUIDE_SERVICE,getuid());
     QDBusConnection conn = QDBusConnection::sessionBus();
-    if (!conn.isConnected())
+
+    if (!conn.isConnected()) {
         return -1;
+    }
 
     QDBusReply<QString> reply = conn.interface()->call("GetNameOwner", service_name);
     return reply.value() == "";
@@ -34,7 +36,6 @@ int DaemonIpcDbus::daemonIsNotRunning()
 void DaemonIpcDbus::showGuide(QString appName)
 {
     qDebug() << Q_FUNC_INFO << appName;
-    bool bRet  = false;
 
     char service_name[SERVICE_NAME_SIZE];
     memset(service_name, 0, SERVICE_NAME_SIZE);
@@ -48,13 +49,11 @@ void DaemonIpcDbus::showGuide(QString appName)
 
     // 发送Message
     QDBusMessage response = QDBusConnection::sessionBus().call(m);
+
     // 判断Method是否被正确返回
-    if (response.type()== QDBusMessage::ReplyMessage)
-    {
+    if (response.type()== QDBusMessage::ReplyMessage) {
         // QDBusMessage的arguments不仅可以用来存储发送的参数，也用来存储返回值;
-//        bRet = response.arguments().at(0).toBool();
-    }
-    else {
+    } else {
         qDebug()<<"showGuide In fail!\n";
     }
 }

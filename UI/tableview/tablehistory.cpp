@@ -282,7 +282,6 @@ void TableHistory::initRightMenu()
     connect(removeRow,&QAction::triggered,this,&TableHistory::deleteSongs);
     connect(playNextRow,&QAction::triggered,this,&TableHistory::playNextRowClicked);
 
-//    m_tableHistory->installEventFilter(this);
 }
 void TableHistory::showRightMenu(const QPoint &pos)
 {
@@ -296,27 +295,34 @@ void TableHistory::showRightMenu(const QPoint &pos)
 void TableHistory::playSongs()
 {
     int index = m_tableHistory->currentIndex().row();
-    musicDataStruct date = m_model->getItem(index);
     QStringList pathList;
+
+    m_model->getItem(index);
     pathList = m_model->getPathList(nowListName);
+
     playController::getInstance().setCurPlaylist(nowListName,pathList);
     playController::getInstance().play(nowListName,index);
+
     Q_EMIT signalHistoryPlaying();
 }
 void TableHistory::deleteSongs()
 {
     int index = m_tableHistory->currentIndex().row();
+
 //    if(index == nowPlayIndex && nowPlayListName != HISTORY) {
 //        QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("歌曲列表或歌单中正在播放此歌曲，无法删除~"));
 //        return;
 //    }
+
     musicDataStruct date = m_model->getItem(index);
 //    g_db->delMusicFromPlayList(date.filepath,nowListName);
     playController::getInstance().removeSongFromCurList(nowListName,index);
     g_db->delMusicFromHistoryMusic(date.filepath);
+
     if(index == nowPlayIndex && nowPlayListName != HISTORY) {
         nowPlayIndex = -1;
     }
+
     refreshHistoryTable();
 }
 

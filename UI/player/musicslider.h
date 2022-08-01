@@ -11,10 +11,12 @@
 class MusicSlider : public QSlider
 {
     Q_OBJECT
+
 public:
-    MusicSlider(QWidget *parent);
+    MusicSlider(QWidget *parent = nullptr);
     void isPlaying(bool isPlaying);
     void initStyle();
+
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -22,7 +24,6 @@ protected:
     void enterEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
     void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
-private:
 
 private:
     bool m_isPlaying;

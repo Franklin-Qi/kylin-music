@@ -117,9 +117,6 @@ musicDataStruct MusicListModel::getItem(int i)
         QModelIndex index1 = m_model.index(i, 1, QModelIndex());
         QModelIndex index2 = m_model.index(i, 2, QModelIndex());
         QModelIndex index3 = m_model.index(i, 3, QModelIndex());
-//        QModelIndex index4 = m_model.index(i, 4, QModelIndex());
-//        QModelIndex index5 = m_model.index(i, 5, QModelIndex());
-//        QModelIndex index6 = m_model.index(i, 6, QModelIndex());
 
         QVariant v0 = index0.data(Qt::DisplayRole);
         QVariant v1 = index1.data(Qt::DisplayRole);

@@ -9,12 +9,14 @@ menuModule::menuModule(QWidget *parent = nullptr) : QWidget(parent)
     init();
 }
 
-void menuModule::init(){
+void menuModule::init()
+{
     initAction();
     setStyle();
 }
 
-void menuModule::initAction(){
+void menuModule::initAction()
+{
     aboutWindow = new QWidget();
     aboutWindow->setAutoFillBackground(true);
     aboutWindow->setBackgroundRole(QPalette::Base);
@@ -43,12 +45,9 @@ void menuModule::initAction(){
     actionHelp->setText(tr("Help"));
     QAction *actionAbout = new QAction(m_menu);
     actionAbout->setText(tr("About"));
-    QAction *actionQuit = new QAction(m_menu);
-//    actionQuit->setText(tr("Quit"));
-//    actions<<actionTheme<<actionHelp<<actionAbout<<actionQuit;
-//    actions<<actionTheme<<actionHelp<<actionAbout;    //隐藏关于主题颜色的设置，默认跟随主题，不随着用户操作更改。
     actions<<actionHelp<<actionAbout;
     m_menu->addActions(actions);
+
 //    互斥按钮组
     QMenu *themeMenu = new QMenu;
     QActionGroup *themeMenuGroup = new QActionGroup(this);
@@ -59,17 +58,12 @@ void menuModule::initAction(){
     autoTheme->setCheckable(true);
     QAction *lightTheme = new QAction(tr("Light"),this);
     lightTheme->setObjectName("Light");//用TEXT判断有风险
-//    themeMenuGroup->addAction(lightTheme);
-//    themeMenu->addAction(lightTheme);
     lightTheme->setCheckable(true);
     QAction *darkTheme = new QAction(tr("Dark"),this);
     darkTheme->setObjectName("Dark");//用TEXT判断有风险
-//    themeMenuGroup->addAction(darkTheme);
-//    themeMenu->addAction(darkTheme);
     darkTheme->setCheckable(true);
     QList<QAction* > themeActions;
     themeActions<<autoTheme<<lightTheme<<darkTheme;
-//    autoTheme->setChecked(true);
     actionTheme->setMenu(themeMenu);
 
     menuButton->setMenu(m_menu);
@@ -81,16 +75,6 @@ void menuModule::initAction(){
 
     //键盘F1响应唤出用户手册绑定
     connect(Widget::mutual,&Widget::signalShowGuide,this,&menuModule::helpAction);
-    //限制应用字体不随着主题变化
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    m_menu->setFont(sizeFont);
-//    bodyAppName->setFont(sizeFont);
-//    titleText->setFont(sizeFont);
-//    bodyAppVersion->setFont(sizeFont);
-//    bodyAppDescribe->setFont(sizeFont);
-//    bodySupport->setFont(sizeFont);
-
 }
 
 void menuModule::setThemeFromLocalThemeSetting(QList<QAction* > themeActions)
@@ -102,56 +86,51 @@ void menuModule::setThemeFromLocalThemeSetting(QList<QAction* > themeActions)
     if(!m_pGsettingThemeStatus){
     	qDebug()<<"系统对应的gsetting字段未正确配置";
     }
+
     QString appConf = m_pGsettingThemeStatus->get("thememode").toString();
-    if("lightonly" == appConf){
+    if ("lightonly" == appConf){
         themeStatus = themeLightOnly;
         themeActions[1]->setChecked(true);   //程序gsetting中为浅色only的时候就给浅色按钮设置checked
-    }else if("darkonly" == appConf){
+    } else if ("darkonly" == appConf){
         themeStatus = themeBlackOnly;
         themeActions[2]->setChecked(true);
-    }else{
+    } else {
         themeStatus = themeAuto;
         themeActions[0]->setChecked(true);
     }
 }
 
-void menuModule::themeUpdate(){
-//    if(themeStatus == themeLightOnly)
-//    {
-//        setThemeLight();
-//    }else if(themeStatus == themeBlackOnly){
-//        setThemeDark();
-//    }else{
-//        setStyleByThemeGsetting();
-//    }
+void menuModule::themeUpdate()
+{
       setStyleByThemeGsetting();   //应用颜色更新只跟随主题
-
 }
 
-void menuModule::setStyleByThemeGsetting(){
+void menuModule::setStyleByThemeGsetting()
+{
     QString nowThemeStyle = m_pGsettingThemeData->get("styleName").toString();
-    if("ukui-dark" == nowThemeStyle || "ukui-black" == nowThemeStyle)
-    {
+
+    if("ukui-dark" == nowThemeStyle || "ukui-black" == nowThemeStyle) {
         setThemeDark();
-    }else{
+    } else {
         setThemeLight();
     }
 }
 
-void menuModule::triggerMenu(QAction *act){
-
-
+void menuModule::triggerMenu(QAction *act)
+{
     QString str = act->text();
-    if(tr("Quit") == str){
+
+    if (tr("Quit") == str){
         Q_EMIT menuModuleClose();
-    }else if(tr("About") == str){
+    } else if (tr("About") == str){
         aboutAction();
-    }else if(tr("Help") == str){
+    } else if (tr("Help") == str){
         helpAction();
     }
 }
 
-void menuModule::triggerThemeMenu(QAction *act){
+void menuModule::triggerThemeMenu(QAction *act)
+{
     if(!m_pGsettingThemeStatus)
     {
         m_pGsettingThemeStatus = new QGSettings(confPath.toLocal8Bit());  //m_pGsettingThemeStatus指针重复使用避免占用栈空间
@@ -177,13 +156,21 @@ void menuModule::triggerThemeMenu(QAction *act){
     }
 }
 
-void menuModule::aboutAction(){
-//    关于点击事件处理
+/**
+ * @brief menuModule::aboutAction
+ * 关于点击事件处理
+ */
+void menuModule::aboutAction()
+{
     initAbout();
 }
 
-void menuModule::helpAction(){
-//    帮助点击事件处理
+/**
+ * @brief menuModule::helpAction
+ * 帮助点击事件处理
+ */
+void menuModule::helpAction()
+{
 #if DEBUG_MENUMODULE
     appName = "tools/kylin-music";
 #endif
@@ -197,7 +184,8 @@ void menuModule::helpAction(){
     }
 }
 
-void menuModule::initAbout(){
+void menuModule::initAbout()
+{
     aboutWindow->setWindowModality(Qt::ApplicationModal);
     aboutWindow->setWindowFlag(Qt::Tool);
     MotifWmHints hints;
@@ -223,19 +211,17 @@ void menuModule::initAbout(){
     aboutWindow->show();
 }
 
-QHBoxLayout* menuModule::initTitleBar(){
+QHBoxLayout* menuModule::initTitleBar()
+{
     QPushButton* titleIcon = new QPushButton();
     QPushButton *titleBtnClose = new QPushButton;
     titleIcon->setFixedSize(24,24);
     titleIcon->setIconSize(QSize(25,25));
-    //TODO：直接从主题调图标，不会QIcon转qpixmap所以暂时从本地拿
-//    titleIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
     titleIcon->setIcon(QIcon::fromTheme("kylin-music"));
     titleIcon->setStyleSheet("QPushButton{border:0px;background:transparent;}"
                              "QPushButton::hover{border:0px;background:transparent;}"
                              "QPushButton::pressed{border:0px;background:transparent;}");
 
-//    titleIcon->setScaledContents(true);
     titleBtnClose->setFixedSize(30,30);
     titleBtnClose->setIcon(QIcon::fromTheme("window-close-symbolic"));
     titleBtnClose->setProperty("isWindowButton",0x2);
@@ -244,7 +230,6 @@ QHBoxLayout* menuModule::initTitleBar(){
     connect(titleBtnClose,&QPushButton::clicked,[=](){aboutWindow->close();});
     QHBoxLayout *hlyt = new QHBoxLayout;
     titleText->setText(tr("Music Player"));
-//    titleText->setStyleSheet("font-size:14px;");
     hlyt->setSpacing(0);
     hlyt->setMargin(4);
     hlyt->addSpacing(4);
@@ -266,11 +251,9 @@ void menuModule::slotLableSetFontSize(int size)
     bodyAppName->setFont(font);
 }
 
-QVBoxLayout* menuModule::initBody(){
+QVBoxLayout* menuModule::initBody()
+{
     QPushButton* bodyIcon = new QPushButton();
-//    bodyIcon->setPixmap(QPixmap::fromImage(QImage(iconPath)));
-//    bodyIcon->setStyleSheet("font-size:14px;");
-//    bodyIcon->setScaledContents(true);
     bodyIcon->setFixedSize(96,94);
     bodyIcon->setIconSize(QSize(96,94));
     bodyIcon->setIcon(QIcon::fromTheme("kylin-music"));
@@ -280,28 +263,18 @@ QVBoxLayout* menuModule::initBody(){
 
     bodyAppDescribe->setText(tr("Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple."));
     bodyAppDescribe->setFixedSize(380, 86);
-//    bodyAppDescribe->setFixedHeight();
-//    bodyAppDescribe->setStyleSheet("font-size:14px;");
     bodyAppDescribe->setWordWrap(true);
-//    bodyAppName->setFixedHeight(28);
     bodyAppName->setText(tr("Music Player"));
 
-//    bodyAppName->setStyleSheet("font-size:18px;");
-//    bodyAppVersion->setFixedHeight(24);
     bodyAppVersion->setText(tr("Version: ") + appVersion);
     bodyAppVersion->setAlignment(Qt::AlignLeft);
-//    bodyAppVersion->setStyleSheet("font-size:14px;");
 
     connect(bodySupport,&QLabel::linkActivated,this,[=](const QString url){
         QDesktopServices::openUrl(QUrl(url));
     });
     bodySupport->setContextMenuPolicy(Qt::NoContextMenu);
     bodySupport->setFixedHeight(30);
-//    bodySupport->setStyleSheet("font-size:14px;");
     QVBoxLayout *vlyt = new QVBoxLayout;
-//    vlyt->setMargin(0);
-//    vlyt->setSpacing(0);
-//    vlyt->addSpacing(20);
     vlyt->addWidget(bodyIcon,0,Qt::AlignHCenter);
     vlyt->addSpacing(5);
     vlyt->addWidget(bodyAppName,0,Qt::AlignHCenter);
@@ -311,39 +284,42 @@ QVBoxLayout* menuModule::initBody(){
     vlyt->addWidget(bodyAppDescribe,0,Qt::AlignLeft);
     vlyt->addSpacing(5);
     vlyt->addWidget(bodySupport,0,Qt::AlignLeft);
-//    vlyt->addStretch();
     vlyt->setContentsMargins(20,10,20,10);
     return vlyt;
 }
 
-void menuModule::setStyle(){
+void menuModule::setStyle()
+{
 //    menuButton->setStyleSheet("QPushButton::menu-indicator{image:None;}");
 }
 
-void menuModule::initGsetting(){
+void menuModule::initGsetting()
+{
     if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS)){
         m_pGsettingThemeData = new QGSettings(FITTHEMEWINDOWS);
         connect(m_pGsettingThemeData,&QGSettings::changed,this,&menuModule::dealSystemGsettingChange);
     }
-
 }
 
-void menuModule::dealSystemGsettingChange(const QString key){
+void menuModule::dealSystemGsettingChange(const QString key)
+{
     if(key == "styleName"){
         refreshThemeBySystemConf();
     }
 }
 
-void menuModule::refreshThemeBySystemConf(){
+void menuModule::refreshThemeBySystemConf()
+{
     QString themeNow = m_pGsettingThemeData->get("styleName").toString();
-    if("ukui-dark" == themeNow || "ukui-black" == themeNow){
+    if ("ukui-dark" == themeNow || "ukui-black" == themeNow){
         setThemeDark();
-    }else{
+    } else {
         setThemeLight();
     }
 }
 
-void menuModule::setThemeDark(){
+void menuModule::setThemeDark()
+{
     Q_EMIT menuModuleSetThemeStyle("dark-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""
@@ -351,7 +327,8 @@ void menuModule::setThemeDark(){
                          "support@kylinos.cn</a>");
 }
 
-void menuModule::setThemeLight(){
+void menuModule::setThemeLight()
+{
     Q_EMIT menuModuleSetThemeStyle("light-theme");
     bodySupport->setText(tr("Service & Support: ") +
                          "<a href=\"mailto://support@kylinos.cn\""

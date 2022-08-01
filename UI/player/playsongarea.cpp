@@ -379,75 +379,41 @@ void PlaySongArea::slotText(QString btnText)
 
 void PlaySongArea::slotFav()
 {
-    if(g_db->checkSongIsInFav(filePath))
-    {
+    if(g_db->checkSongIsInFav(filePath)) {
         QList<musicDataStruct> resList;
         int ref = g_db->getSongInfoListFromDB(resList, FAV);
         int ret = g_db->delMusicFromPlayList(filePath,FAV);
-        if(ref == DB_OP_SUCC)
-        {
-//            Q_EMIT signalAddFromFavButton("我喜欢");
-            //根据歌单名title值查询对应歌单列表
-//            int ref = g_db->getSongInfoListFromDB(resList, "我喜欢");
-            if(ret == DB_OP_SUCC)
-            {
-                for(int i = 0; i < resList.size(); i++)
-                {
-                    if(resList.at(i).filepath == filePath)
-                    {
-                        playController::getInstance().removeSongFromCurList(FAV, i);
-                        //刷新我喜欢界面
-                        if(listName == tr("I Love"))
-                        {
-                            Q_EMIT signalRefreshFav(FAV);
-                        }
-                        break;
+
+        if(ref == DB_OP_SUCC && ret == DB_OP_SUCC) {
+            for(int i = 0; i < resList.size(); i++) {
+                if(resList.at(i).filepath == filePath) {
+                    playController::getInstance().removeSongFromCurList(FAV, i);
+
+                    //刷新我喜欢界面
+                    if(listName == tr("I Love")) {
+                        Q_EMIT signalRefreshFav(FAV);
                     }
+                    break;
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         int ref = g_db->addMusicToPlayList(filePath,FAV);
-        if(ref == DB_OP_SUCC)
-        {
+
+        if(ref == DB_OP_SUCC) {
             playController::getInstance().addSongToCurList(FAV, filePath);
-//            Q_EMIT signalDelFromFavButton("我喜欢");
-            if(listName == tr("I Love"))
-            {
+            if(listName == tr("I Love")) {
                 Q_EMIT signalRefreshFav(FAV);
             }
         }
-//        Q_EMIT signalRefreshFav("我喜欢");
     }
-    slotFavExixts();
-//    if(favBtn->isVisible())
-//    {
-////        favBtn->setStyleSheet("QPushButton{border-image:url(:/img/clicked/love1.png);}");
-//        favBtn->setIcon(QIcon(":/img/clicked/love1.png"));
-//    }
-//    else
-//    {
-//        favBtn->setIcon(QIcon(":/img/default/loveblack2.png"));
-//    }
 
-////    favBtn->setIcon(QIcon(":/img/clicked/love1.png"));
+    slotFavExixts();
 }
 
 void PlaySongArea::slotPlayBackModeChanged()
 {
     movePlayMenu();
-//    if(m_playBackModeWid->isVisible())
-//    {
-//        m_playBackModeWid->hide();
-//    }
-//    else
-//    {
-//        movePlayModeWid();
-//        m_playBackModeWid->show();
-//        m_playBackModeWid->raise();
-//    }
 }
 
 void PlaySongArea::slotLoopClicked()
@@ -737,12 +703,9 @@ void PlaySongArea::slotPlayClicked()
                 .arg("slotPlayCliked: ")
                 .arg(playController::getInstance().getPlayer()->state());
 
-    if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState)
-    {
+    if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PlayingState) {
         playController::getInstance().getPlayer()->pause();
-    }
-    else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PausedState)
-    {
+    } else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::PausedState) {
         playController::getInstance().getPlayer()->play();
 
         int currentVolume = playController::getInstance().getVolume();
@@ -751,9 +714,7 @@ void PlaySongArea::slotPlayClicked()
 
         delayMsecond(100);
         playController::getInstance().setVolume(currentVolume);
-    }
-    else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::StoppedState)
-    {
+    } else if(playController::getInstance().getPlayer()->state() == MMediaPlayer::StoppedState) {
         playMeta();
 
         int currentVolume = playController::getInstance().getVolume();
@@ -771,45 +732,42 @@ void PlaySongArea::playMeta()
     QString playPath = playController::getInstance().getPath();
     QList<musicDataStruct> resList;
     QStringList filePaths;
-    int index;
+
     int ret = g_db->getSongInfoListFromDB(resList, playListName);
-    if(playPath != "")
-    {
-        if(ret == DB_OP_SUCC)
-        {
-            if(resList.size() == 0)
-            {
+
+    if(playPath != "") {
+        if(ret == DB_OP_SUCC) {
+            if(resList.size() == 0) {
                 return;
             }
-            for(int i = 0; i < resList.size(); i++)
-            {
+
+            int index;
+            for(int i = 0; i < resList.size(); i++) {
                 filePaths << resList.at(i).filepath;
-                if(resList.at(i).filepath == playPath)
-                {
+                if(resList.at(i).filepath == playPath) {
                     index = i;
                 }
             }
+
             playController::getInstance().setCurPlaylist(playListName, filePaths);
             playController::getInstance().play(playListName, index);
         }
-    }
-    else
-    {
-        QList<musicDataStruct> resList;
-        int ref = g_db->getSongInfoListFromDB(resList,ALLMUSIC);
-        if(ref == DB_OP_SUCC)
-        {
-            if(resList.size() == 0)
-            {
+    } else {
+        QList<musicDataStruct> resMusicList;
+        int ref = g_db->getSongInfoListFromDB(resMusicList,ALLMUSIC);
+
+        if(ref == DB_OP_SUCC) {
+            if(resMusicList.size() == 0) {
                 return;
             }
-            if(resList.size() >= 1)
-            {
+
+            if(resMusicList.size() >= 1) {
                 QStringList paths;
-                for(int i = 0; i < resList.size(); i++)
-                {
-                    paths << resList.at(i).filepath;
+
+                for(int i = 0; i < resMusicList.size(); i++) {
+                    paths << resMusicList.at(i).filepath;
                 }
+
                 playController::getInstance().setCurPlaylist(ALLMUSIC,paths);
                 playController::getInstance().play(ALLMUSIC,0);
             }
@@ -854,16 +812,14 @@ void PlaySongArea::slotFavExixts()
 
 void PlaySongArea::slotFavExixtsDark()
 {
-    if(g_db->checkSongIsInFav(filePath))
-    {
+    if(g_db->checkSongIsInFav(filePath)) {
         favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
-    }
-    else
-    {
+    } else {
         favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }
+
     Q_EMIT signalFavBtnChange(filePath);
 }
 void PlaySongArea::slotHistoryBtnChecked(bool checked)
@@ -872,27 +828,24 @@ void PlaySongArea::slotHistoryBtnChecked(bool checked)
 }
 void PlaySongArea::slotFavIsExixts(QString filePaths)
 {
-    if(g_db->checkSongIsInFav(filePaths))
-    {
-        if(playingLabel->text() == tr("Music Player"))
-        {
+    if(g_db->checkSongIsInFav(filePaths)) {
+        if(playingLabel->text() == tr("Music Player")) {
             return;
         }
+
         //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
-        if(filePath != filePaths)
-        {
+        if(filePath != filePaths) {
             return;
         }
+
         favBtn->setIcon(QIcon::fromTheme("favorite-new-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x4);
-    }
-    else
-    {
+    } else {
         //用于判断添加到我喜欢的歌曲是否是当前播放的歌曲， 如果是刷新， 如果不是不做操作
-        if(filePath != filePaths)
-        {
+        if(filePath != filePaths) {
             return;
         }
+
         favBtn->setIcon(QIcon::fromTheme("ukui-love-symbolic"));
         favBtn->setProperty("useIconHighlightEffect", 0x2);
     }

@@ -405,47 +405,45 @@ void TableOne::isDeleteLocalSongs()
 void TableOne::deleteSongs()
 {
     QMap<int,QString> map1 = getSelectedTaskIdList();
+
     while (!map1.empty()) {
         QMap<int,QString>::iterator iter;
         iter = map1.end();
         iter--;
         int ret;
         int index = -1;
+
         if(nowListName != nowPlayListName && nowListName == ALLMUSIC) {
             index = MusicFileInformation::getInstance().findIndexFromPlayList(nowPlayListName,iter.value());
         }
-        if(nowListName != ALLMUSIC)
-        {
+
+        if(nowListName != ALLMUSIC) {
            ret = g_db->delMusicFromPlayList(iter.value(),nowListName);
-        }
-        else
-        {
+        } else {
            ret = g_db->delSongFromEveryWhere(iter.value());
         }
-        if(ret == 0)
-        {
+
+        if(ret == 0) {
 //            m_model->remove(iter.key());
             if((nowListName != nowPlayListName) && nowListName == ALLMUSIC && index != -1) {
                 playController::getInstance().removeSongFromCurList(nowPlayListName,index);
             } else {
                 playController::getInstance().removeSongFromCurList(nowListName,iter.key());
             }
-//            if(nowListName == tr("I Love"))
 
             if(nowListName == FAV)
             {
                 Q_EMIT removeILoveFilepathSignal(iter.value());
             }
-//            Q_EMIT countChanges();
 
             map1.remove(iter.key());
-        }
-        else
-        {
+        } else {
             qDebug() << "delete failed" << iter.value();
         }
     }
+
     selectListChanged(nowListName);
+
     Q_EMIT refreshHistoryListSignal();
 }
 
@@ -555,16 +553,19 @@ void TableOne::deleteLocalSongs()
 void TableOne::playSongs()
 {
     int index = tableView->currentIndex().row();
-    musicDataStruct date = m_model->getItem(index);
+
+    m_model->getItem(index);
+
     playMusicforIndex(nowListName,index);
 }
+
 void TableOne::playMusicforIndex(QString listName, int index)
 {
     QStringList pathList;
     pathList = m_model->getPathList(listName);
+
     playController::getInstance().setCurPlaylist(listName,pathList);
     playController::getInstance().play(listName,index);
-
     playController::getInstance().delayMsecondSetVolume();
 }
 void TableOne::showInfo()
@@ -572,8 +573,10 @@ void TableOne::showInfo()
     int index = tableView->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     infoDialog = new MusicInfoDialog(date);
+
 //    connect(infoDialog,&MusicInfoDialog::accepted,infoDialog,&MusicInfoDialog::deleteLater);
 //    connect(infoDialog,&MusicInfoDialog::rejected,infoDialog,&MusicInfoDialog::deleteLater);
+
     //将弹窗应用居中显示
     QRect availableGeometry = this->parentWidget()->parentWidget()->geometry();
     infoDialog->move(availableGeometry.center() - infoDialog->rect().center());
@@ -610,6 +613,8 @@ void TableOne::addToOtherList(QAction *listNameAction)
     }
     importFailed(successCount, failCount, allCount);
 }
+
+
 void TableOne::addMusicSlot()
 {
     KyInfo() << "addMusicSlot";
@@ -1040,16 +1045,16 @@ void TableOne::playAllButtonClicked()
 void TableOne::slotReturnText(QString text)
 {
     int ret = g_db->checkPlayListExist(SEARCH);
-    if(ret == DB_OP_SUCC)
-    {
+
+    if(ret == DB_OP_SUCC) {
         m_model->clear();
-        int ret;
+
+        int retSongInfo;
         QList<musicDataStruct> musicDateList;
-        ret = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
-        if(ret == DB_OP_SUCC)
-        {
-            for(int i = 0; i < musicDateList.size(); i++)
-            {
+        retSongInfo = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
+
+        if(retSongInfo == DB_OP_SUCC) {
+            for(int i = 0; i < musicDateList.size(); i++) {
                 playController::getInstance().removeSongFromCurList(SEARCH, 0);
             }
         }
@@ -1058,8 +1063,7 @@ void TableOne::slotReturnText(QString text)
     }
 
     int ref = g_db->createNewPlayList(SEARCH);
-    if(ref != DB_OP_SUCC)
-    {
+    if(ref != DB_OP_SUCC) {
         qDebug() << "创建搜索歌单失败";
         return;
     }
@@ -1155,16 +1159,16 @@ void TableOne::slotSongListByAlbum(QString album)
 void TableOne::clearSearchList()
 {
     int ret = g_db->checkPlayListExist(SEARCH);
-    if(ret == DB_OP_SUCC)
-    {
+
+    if(ret == DB_OP_SUCC) {
         m_model->clear();
-        int ret;
+
+        int retSongInfo;
         QList<musicDataStruct> musicDateList;
-        ret = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
-        if(ret == DB_OP_SUCC)
-        {
-            for(int i = 0; i < musicDateList.size(); i++)
-            {
+        retSongInfo = g_db->getSongInfoListFromPlayList(musicDateList, SEARCH);
+
+        if(retSongInfo == DB_OP_SUCC) {
+            for(int i = 0; i < musicDateList.size(); i++) {
                 playController::getInstance().removeSongFromCurList(SEARCH, 0);
             }
         }
@@ -1173,8 +1177,7 @@ void TableOne::clearSearchList()
     }
 
     int ref = g_db->createNewPlayList(SEARCH);
-    if(ref != DB_OP_SUCC)
-    {
+    if(ref != DB_OP_SUCC) {
         qDebug() << "创建搜索歌单失败";
         return;
     }
