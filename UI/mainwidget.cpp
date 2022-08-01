@@ -257,6 +257,9 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
 
     if(!m_miniWidget->isActiveWindow()) {
         KWindowSystem::forceActiveWindow(m_miniWidget->winId());
+
+        QRect screenGeometry = qApp->primaryScreen()->availableGeometry();
+        m_miniWidget->move(screenGeometry.width()-40-m_miniWidget->width(), 40);
     }
 
     if(isFirstObject&&!QFileInfo::exists(cmd1)) {
