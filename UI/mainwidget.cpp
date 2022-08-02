@@ -1211,8 +1211,6 @@ void Widget::changeDarkTheme()
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
     historyListTable->noRefreshHistory();
-
-
 }
 
 //切换浅色主题

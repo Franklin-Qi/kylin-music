@@ -71,6 +71,10 @@ void SideBarWidget::initWidget()
     myPlayListLabel->setText(tr("My PlayList"));
     myPlayListLabel->setFixedHeight(28);
     myPlayListBtn->setFixedSize(20,20);
+    if (WidgetStyle::themeColor == 1) {
+
+
+    }
     myPlayListBtn->setIcon(QIcon::fromTheme("list-add-symbolic"));
     myPlayListBtn->setProperty("isWindowButton", 0x1);
     myPlayListBtn->setProperty("useIconHighlightEffect", 0x2);

@@ -43,29 +43,22 @@ void PlaySongArea::initWidget()
     volumeBtn->setCursor(Qt::PointingHandCursor);
     volumeBtn->setToolTip(tr("Volume"));    //音量
     int volume = playController::getInstance().getVolume();
-    if(volume == 0)
-    {
+    if(volume == 0) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
         volumeBtn->setProperty("isWindowButton", 0x1);
         volumeBtn->setProperty("useIconHighlightEffect", 0x2);
         volumeBtn->setFlat(true);
-    }
-    else if(volume > 0 && volume <= 33)
-    {
+    } else if(volume > 0 && volume <= 33) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-low-symbolic"));
         volumeBtn->setProperty("isWindowButton", 0x1);
         volumeBtn->setProperty("useIconHighlightEffect", 0x2);
         volumeBtn->setFlat(true);
-    }
-    else if(volume > 33 && volume <= 77)
-    {
+    } else if(volume > 33 && volume <= 77) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-medium-symbolic"));
         volumeBtn->setProperty("isWindowButton", 0x1);
         volumeBtn->setProperty("useIconHighlightEffect", 0x2);
         volumeBtn->setFlat(true);
-    }
-    else
-    {
+    } else {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
         volumeBtn->setProperty("isWindowButton", 0x1);
         volumeBtn->setProperty("useIconHighlightEffect", 0x2);
@@ -73,11 +66,13 @@ void PlaySongArea::initWidget()
     }
 
     m_volSliderWid = new SliderWidget(this);
+#if 1
     MotifWmHints hint;
     hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hint.functions = MWM_FUNC_ALL;
     hint.decorations = MWM_DECOR_BORDER;
     XAtomHelper::getInstance()->setWindowMotifHint(m_volSliderWid->winId(), hint);
+#endif
     m_volSliderWid->hide();
 
     m_playBackModeWid = new PlayBackModeWidget(this);
@@ -312,20 +307,13 @@ void PlaySongArea::slotVolumeChanged(int values)
     int volume = playController::getInstance().getVolume();
     KyInfo() << "volume = " << volume;
 
-    if(volume == 0)
-    {
+    if(volume == 0) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-muted-symbolic"));
-    }
-    else if(volume > 0 && volume <= 33)
-    {
+    } else if(volume > 0 && volume <= 33) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-low-symbolic"));
-    }
-    else if(volume > 33 && volume <= 77)
-    {
+    } else if(volume > 33 && volume <= 77) {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-medium-symbolic"));
-    }
-    else
-    {
+    } else {
         volumeBtn->setIcon(QIcon::fromTheme("audio-volume-high-symbolic"));
     }
 }
@@ -333,6 +321,7 @@ void PlaySongArea::slotVolumeChanged(int values)
 void PlaySongArea::volumeIncrease()
 {
     int value = m_volSliderWid->vSlider->value() + VOLUME;
+
     if(value > 100)
         value = 100;
     m_volSliderWid->vSlider->setValue(value);
@@ -341,6 +330,7 @@ void PlaySongArea::volumeIncrease()
 void PlaySongArea::volumeReduce()
 {
     int value = m_volSliderWid->vSlider->value() - VOLUME;
+
     if(value < 0)
         value = 0;
     m_volSliderWid->vSlider->setValue(value);
@@ -348,12 +338,9 @@ void PlaySongArea::volumeReduce()
 
 void PlaySongArea::slotVolSliderWidget()
 {
-    if(m_volSliderWid->isVisible())
-    {
+    if(m_volSliderWid->isVisible()) {
         m_volSliderWid->hide();
-    }
-    else
-    {
+    } else {
         moveVolSliderWid();
         m_volSliderWid->show();
         m_volSliderWid->raise();
