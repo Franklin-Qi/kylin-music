@@ -7,14 +7,47 @@
 
 SideBarWidget::SideBarWidget(QWidget *parent) : LeftsiderbarWidget(parent)
 {
-//    setFixedSize(210, 640);
-    resize(210, 640);
+    this->resize(210, 640);
     this->setObjectName("SideBarWidget");
-    initWidget(); //初始化侧边栏界面
-    initConnect(); //建立connect
-    sidecolor();   //初始化样式
+
+    initWidget();
+    initConnect();
+    sidecolor();
 
     getPlayListName();
+}
+
+void SideBarWidget::initAddButton()
+{
+    if (myPlayListBtn == nullptr) {
+        return;
+    }
+
+
+    if (WidgetStyle::themeColor == 1) {
+//        myPlayListBtn->setIcon(QIcon(":/img/list-add-symbolic/list-add-symbolic-default-white.png"));
+
+#if 1
+        myPlayListBtn->setStyleSheet("QPushButton{border-image: url(:/img/list-add-symbolic/list-add-symbolic-default-white.png);}"
+                                     "QPushButton:hover{border-image: url(:/img/list-add-symbolic/list-add-symbolic-hover-white.png);}"
+                                     "QPushButton:pressed{border-image: url(:/img/list-add-symbolic/list-add-symbolic-click-white.png);}"
+                                     );
+#endif
+
+
+    } else {
+//    myPlayListBtn->setIcon(QIcon(":/img/list-add-symbolic/list-add-symbolic-default-black.png"));
+#if 1
+        myPlayListBtn->setStyleSheet("QPushButton{border-image: url(:/img/list-add-symbolic/list-add-symbolic-default-black.png);}"
+                                     "QPushButton:hover{border-image: url(:/img/list-add-symbolic/list-add-symbolic-hover-black.png);}"
+                                     "QPushButton:pressed{border-image: url(:/img/list-add-symbolic/list-add-symbolic-click-black.png);}"
+                                     );
+#endif
+
+    }
+
+//    myPlayListBtn->setIconSize(QSize(20, 20));
+
 }
 
 void SideBarWidget::initWidget()
@@ -65,20 +98,19 @@ void SideBarWidget::initWidget()
     connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
     //我的歌单
-    QHBoxLayout *myPlayListLayout = new QHBoxLayout();
+    QHBoxLayout *myPlayListLayout = new QHBoxLayout;
     myPlayListLabel = new QLabel(this);
     myPlayListBtn = new QPushButton(this);
+
+    initAddButton();
     myPlayListLabel->setText(tr("My PlayList"));
     myPlayListLabel->setFixedHeight(28);
-    myPlayListBtn->setFixedSize(20,20);
-    if (WidgetStyle::themeColor == 1) {
+    myPlayListBtn->setFixedSize(36, 36);
 
-
-    }
-    myPlayListBtn->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    myPlayListBtn->setProperty("isWindowButton", 0x1);
-    myPlayListBtn->setProperty("useIconHighlightEffect", 0x2);
-    myPlayListBtn->setFlat(true);
+//    myPlayListBtn->setIcon(QIcon::fromTheme("list-add-symbolic"));
+//    myPlayListBtn->setProperty("isWindowButton", 0x1);
+//    myPlayListBtn->setProperty("useIconHighlightEffect", 0x2);
+//    myPlayListBtn->setFlat(true);
 
     myPlayListLayout->addWidget(myPlayListLabel);
     myPlayListLayout->addStretch();
@@ -174,36 +206,37 @@ void SideBarWidget::sidecolor()
     myPlayListLabel->setStyleSheet("line-height: 14px;");
     libraryLabel->setStyleSheet("line-height: 14px;");
 
-    if(WidgetStyle::themeColor == 1)
-    {
-        // 黑色主题，跟随主题切换，否则paintevent主题切换不生效
+    initAddButton();
+
+    if(WidgetStyle::themeColor == 1) {
         QPalette pal(palette());
         pal.setColor(QPalette::Background, QColor(38, 38, 38));
         setAutoFillBackground(true);
         setPalette(pal);
 
         QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
-        for(CustomToolButton *tmp : list)
-        {
+
+        for(CustomToolButton *tmp : list) {
             tmp->defaultStyle();
         }
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
+    } else if(WidgetStyle::themeColor == 0) {
         QPalette pal(palette());
         pal.setColor(QPalette::Background, QColor(255, 255, 255));
         setAutoFillBackground(true);
         setPalette(pal);
 
         QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
-        for(CustomToolButton *tmp : list)
-        {
+
+        for(CustomToolButton *tmp : list) {
             tmp->defaultStyle();
         }
     }
 }
 
 
+/**
+ * @brief SideBarWidget::getPlayListName 获取歌单名称
+ */
 void SideBarWidget::getPlayListName()
 {
     int ret = g_db->getPlayList(playListName);
@@ -255,6 +288,9 @@ void SideBarWidget::getPlayListName()
     }
 }
 
+/**
+ * @brief SideBarWidget::addPlayList 添加歌单弹窗输入框
+ */
 void SideBarWidget::addPlayList()
 {
     newSonglistPup->enterLineEdit->clear();
@@ -262,6 +298,9 @@ void SideBarWidget::addPlayList()
     newSonglistPup->enterLineEdit->setFocus();
 }
 
+/**
+ * @brief SideBarWidget::addItemToSongList 添加歌单
+ */
 void SideBarWidget::addItemToSongList()
 {
     CustomToolButton *newBtn = new CustomToolButton();
@@ -305,6 +344,7 @@ void SideBarWidget::addItemToSongList()
         g_db->createNewPlayList(listName);
         Q_EMIT playListAdded(listName);
     }
+
     connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
     connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
@@ -312,6 +352,11 @@ void SideBarWidget::addItemToSongList()
 
 }
 
+
+/**
+ * @brief SideBarWidget::newPlayListName 输入为空添加歌单
+ * @return
+ */
 QString SideBarWidget::newPlayListName()
 {
     QMap<QString, QString> exitsName;
@@ -339,6 +384,10 @@ QString SideBarWidget::newPlayListName()
 }
 
 
+/**
+ * @brief SideBarWidget::playAll 歌单播放
+ * @param btnText
+ */
 void SideBarWidget::playAll(QString btnText)
 {
     Q_EMIT signalPlayAll(btnText);
@@ -352,6 +401,10 @@ void SideBarWidget::rename(QString text)
     renameSongListPup->enterLineEdit->setFocus();
 }
 
+
+/**
+ * @brief SideBarWidget::renamePlayList 歌单重命名
+ */
 void SideBarWidget::renamePlayList()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
@@ -396,6 +449,11 @@ void SideBarWidget::renamePlayList()
     }
 }
 
+
+/**
+ * @brief SideBarWidget::removePlayList 删除歌单
+ * @param text
+ */
 void SideBarWidget::removePlayList(QString text)
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
@@ -431,6 +489,10 @@ void SideBarWidget::removePlayList(QString text)
      Q_EMIT playListRemoved(text);
 }
 
+
+/**
+ * @brief SideBarWidget::slotListSearch 取消侧边栏所有按钮的选中状态
+ */
 void SideBarWidget::slotListSearch()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
@@ -442,6 +504,10 @@ void SideBarWidget::slotListSearch()
     }
 }
 
+
+/**
+ * @brief SideBarWidget::slotSongListHigh 高亮歌曲列表按钮
+ */
 void SideBarWidget::slotSongListHigh()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();

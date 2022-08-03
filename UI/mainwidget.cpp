@@ -622,7 +622,7 @@ void Widget::initAllComponent()
     mainVBoxLayout->addWidget(musicListTable);
     mainVBoxLayout->addWidget(playSongArea,0,Qt::AlignBottom);
     mainHBoxLayout = new QHBoxLayout();
-    sideBarWid = new SideBarWidget(this);
+    sideBarWid = new SideBarWidget();
     sideBarWid->setFixedWidth(210);
     mainHBoxLayout->addWidget(sideBarWid);
     mainHBoxLayout->addWidget(rightVWidget);

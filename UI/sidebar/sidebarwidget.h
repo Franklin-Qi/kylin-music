@@ -19,36 +19,35 @@
 #include "customToolButton.h"
 #include "leftsiderbarwidget.h"
 
+
 class SideBarWidget : public LeftsiderbarWidget
 {
     Q_OBJECT
-public:
-    explicit SideBarWidget(QWidget *parent = nullptr);
-public:
-    void sidecolor();
 
 public:
-    //新建歌单弹窗界面
-    PopupDialog *newSonglistPup = nullptr;
-    //重命名歌单弹窗界面
-    PopupDialog *renameSongListPup = nullptr;
+    explicit SideBarWidget(QWidget *parent = nullptr);
+
+    PopupDialog *newSonglistPup = nullptr; //新建歌单弹窗界面
+    PopupDialog *renameSongListPup = nullptr; //重命名歌单弹窗界面
     CustomToolButton *playListBtn = nullptr;
+
+    void initAddButton();
+    void sidecolor();
+    void initWidget();
+    void initConnect();
+    void getPlayListName();
+    QString newPlayListName();
+
 public Q_SLOTS:
-    //添加歌单弹窗输入框
     void addPlayList();
-    //添加歌单
     void addItemToSongList();
-    //歌单播放
     void playAll(QString btnText);
     void rename(QString btnText);
-    //歌单重命名
     void renamePlayList();
-    //删除歌单
     void removePlayList(QString text);
-    //取消侧边栏所有按钮的选中状态
     void slotListSearch();
-    //高亮歌曲列表按钮
     void slotSongListHigh();
+
 Q_SIGNALS:
     void playListBtnClicked(QString listname);
     void playListRemoved(QString listname);
@@ -58,38 +57,23 @@ Q_SIGNALS:
     void signalPlayAll(QString listName);
 
 private:
-    void initWidget();
-    void initConnect();
-    //获取歌单名称
-    void getPlayListName();
-    //输入为空添加歌单
-    QString newPlayListName();
-
-
-private:
     QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
     double m_transparency = 1.0;  // 透明度
 
-    //添加歌单按钮
-    QPushButton *myPlayListBtn = nullptr;
-    //新建歌单按钮界面(包含我喜欢在内)
-    CustomSiderBarScrollArea *scrollArea;
+    QPushButton *myPlayListBtn = nullptr; //添加歌单按钮
+
+    CustomSiderBarScrollArea *scrollArea; //新建歌单按钮界面(包含我喜欢在内)
 
     QWidget *newPlayListWidget = nullptr;
     QWidget *logoWid = nullptr;
     QWidget *mainWid = nullptr;
 //    QWidget *sideWid = nullptr;
     QVBoxLayout *newPlayListLayout = nullptr;
-    //歌单名
-    QStringList playListName;
-    //音乐库label
-    QLabel *libraryLabel = nullptr;
-    //我的歌单label
-    QLabel *myPlayListLabel = nullptr;
-    //获取歌单名
-    QString btnText;
-    //保存程序关闭之前歌单按钮
-    CustomToolButton *m_lastBtn = nullptr;
+    QStringList playListName; //歌单名
+    QLabel *libraryLabel = nullptr; //音乐库label
+    QLabel *myPlayListLabel = nullptr; //我的歌单label
+    QString btnText; //获取歌单名
+    CustomToolButton *m_lastBtn = nullptr; //保存程序关闭之前歌单按钮
 };
 
 #endif // SIDEBARWIDGET_H

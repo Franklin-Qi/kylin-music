@@ -41,7 +41,10 @@
 #include "UI/base/customLabel.h"
 #include "UI/base/newSonglistLineEdit.h"
 
-class PopupDialog :public QDialog
+#include "kdialog.h"
+using namespace kdk;
+
+class PopupDialog :public KDialog
 {
     Q_OBJECT
 public:
@@ -67,10 +70,13 @@ public Q_SLOTS:
     void closeDialog();
     void slotTextChanged(QString text);
     void slotLableSetFontSize(int size);
+
 private:
     void inpupdialog();
 
 };
+
+
 class  MusicInfoDialog : public QDialog
 {
     Q_OBJECT
@@ -79,9 +85,13 @@ public:
     explicit MusicInfoDialog(musicDataStruct date);
     ~MusicInfoDialog();
     musicDataStruct musicDate;
+
+    void initStyle();
+
 public Q_SLOTS:
     //字体
     void slotLableSetFontSize(int size);
+
 private:
     CustomLabel *songNameLabel = nullptr;
     CustomLabel *singerLabel = nullptr;
@@ -100,7 +110,6 @@ private:
     QPushButton *cancelBtn = nullptr;
     QPushButton *confirmBtn = nullptr;
 
-    void initStyle();
 };
 
 #endif // POPUPDIALOG_H

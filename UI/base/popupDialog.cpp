@@ -26,7 +26,7 @@
 
 QRegExp gInvalidName("[\\\\/:\\*\\?\\\"&<>\\|]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、&、<、>、|  */
 
-PopupDialog::PopupDialog(QWidget *parent) : QDialog(parent)
+PopupDialog::PopupDialog(QWidget *parent) : KDialog(parent)
 {
     inpupdialog();
     dlgcolor();
@@ -60,19 +60,13 @@ void PopupDialog::slotTextChanged(QString text)
 void PopupDialog::inpupdialog()
 {
     this->setWindowTitle(tr("Music Player"));
+    this->setWindowIcon("kylin-music");
     this->setFixedSize(376, 222);
-//    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-//    MotifWmHints hints;
-//    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-//    hints.functions = MWM_FUNC_ALL;
-//    hints.decorations = MWM_DECOR_BORDER;
-//    XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
 
     this->setWindowModality(Qt::ApplicationModal); //弹出自定义对话框时主界面不可操作
-//    pupDialog->setModal(true);
     testLayout = new QVBoxLayout();
-    this->setLayout(testLayout);
+
+
     titleLayout = new QHBoxLayout();
     titleLab = new QLabel(this);
     closeBtn = new QToolButton(this);
@@ -83,7 +77,6 @@ void PopupDialog::inpupdialog()
     closeBtn->setAutoRaise(true);
     closeBtn->hide();
 
-//    titleLab->setText("提示信息");
     titleLab->setText(tr("Prompt information"));
     titleLab->setFixedHeight(28);
 
@@ -111,11 +104,10 @@ void PopupDialog::inpupdialog()
     stackWid->addWidget(enterLineEdit);
 
     stackWid->setFixedSize(312,40);
-//    confirmBtn->setText("确认");
     confirmBtn->setText(tr("Confirm"));
     confirmBtn->setFixedSize(105,36);
     confirmBtn->setProperty("isImportant", true);
-//    cancelBtn->setText("取消");
+
     cancelBtn->setText(tr("Cancel"));
     cancelBtn->setFixedSize(105,36);
 
@@ -124,7 +116,6 @@ void PopupDialog::inpupdialog()
     btnLayout->setSpacing(20);
     btnLayout->setMargin(0);
 
-    enterLineEdit->setPlaceholderText("请输入歌单标题：");
     enterLineEdit->setPlaceholderText(tr("Please input playlist name:"));
 
     testLayout->setMargin(0);
@@ -138,21 +129,13 @@ void PopupDialog::inpupdialog()
     testLayout->addLayout(btnLayout);
     testLayout->setContentsMargins(32, 16, 32, 24);
 
-    this->setAutoFillBackground(true);
-    this->setBackgroundRole(QPalette::Base);
+    this->mainWidget()->setLayout(testLayout);
+
 
 //    connect(addSongListBtn, SIGNAL(clicked(bool)), this, SLOT(addSongList()));
     connect(enterLineEdit,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
     connect(closeBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
     connect(cancelBtn,SIGNAL(clicked(bool)),this,SLOT(closeDialog()));
-
-    //限制应用内字体固定大小
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    confirmBtn->setFont(sizeFont);
-//    cancelBtn->setFont(sizeFont);
-//    titleLab->setFont(sizeFont);
-//    enterLineEdit->setFont(sizeFont);
 
 }
 
@@ -168,10 +151,13 @@ void PopupDialog::slotLableSetFontSize(int size)
 
 void PopupDialog::dlgcolor()
 {
+    return;
+
     if(WidgetStyle::themeColor == 1 ) {
+        this->setStyleSheet("#TitleBar{background-color:#252526;}");
 
     } else if(WidgetStyle::themeColor == 0) {
-
+        this->setStyleSheet("#TitleBar{background-color:#FFFFFF;}");
     }
 }
 
@@ -190,6 +176,7 @@ MusicInfoDialog::MusicInfoDialog(musicDataStruct date)
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
     this->setWindowTitle(tr("Music Player"));
+
     musicDate = date;
     initStyle();
 }

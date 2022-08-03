@@ -146,5 +146,12 @@
         <file>img/default/defaultIconLight.png</file>
         <file>img/lightshow/maximize.svg</file>
         <file>img/lightshow/close.svg</file>
+        <file>img/list-add-symbolic/list-add-symbolic-hover-white.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic-hover-black.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic-default-white.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic-default-black.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic-click-white.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic-click-black.png</file>
+        <file>img/list-add-symbolic/list-add-symbolic.svg</file>
     </qresource>
 </RCC>
