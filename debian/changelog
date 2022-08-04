@@ -1,4 +1,4 @@
-kylin-music (1.1.0-52) v101 urgency=medium
+kylin-music (1.1.0-52) v101; urgency=medium
 
   * [BUG]
   - #130998，解决字体设置为最大时，“打开文件夹”显示不全问题

@@ -1,7 +1,8 @@
 Source: kylin-music
 Section: utils
 Priority: optional
-Maintainer: liujialin <liujialin@kylinos.cn>
+Maintainer: yushuoqi <yushuoqi@kylinos.cn>,
+            liujialin <liujialin@kylinos.cn>
 Build-Depends: debhelper,
             gcc,
             cmake,

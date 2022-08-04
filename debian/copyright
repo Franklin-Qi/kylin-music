@@ -1,6 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: kylin-music
-Upstream-Contact: Kylin Development Team <liujialin@kylinos.cn>
+Upstream-Contact: Kylin Development Team <yushuoqi@kylinos.cn>
+				  Kylin Development Team <liujialin@kylinos.cn>
 				  Kylin Development Team <fengyongfan@kylinos.cn>
 Source: https://github.com/UbuntuKylin/kylin-music
 
@@ -10,7 +11,8 @@ Copyright: 2020, KylinSoft Co., Ltd
 License: GPL-3
 
 Files: debian/*
-Copyright: 2020 liujialin <liujialin@kylinos.cn>
+Copyright: 2020 yushuoqi <yushuoqi@kylinos.cn>
+           2020 liujialin <liujialin@kylinos.cn>
            2020 fengyongfan <fengyongfan@kylinos.cn>
 License: GPL-3.0+
 
