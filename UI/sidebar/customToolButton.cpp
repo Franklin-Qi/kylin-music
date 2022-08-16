@@ -1,26 +1,25 @@
 #include "customToolButton.h"
 #include "UI/base/widgetstyle.h"
 #include "UIControl/base/musicDataBase.h"
+#include "UI/base/widgetstyle.h"
 #include <QDebug>
+#include <QPixmap>
+#include <QImage>
 
-CustomToolButton::CustomToolButton()
+CustomToolButton::CustomToolButton(QWidget *parent): QToolButton(parent),
+    m_iconLable(new QLabel()),
+    m_textLabel(new QLabel()),
+    m_hboxLayout(new QHBoxLayout())
 {
-    //在按钮没有默认选中时，实例化时先调用（故注释）
-//    defaultStyle();
-    this->setFixedSize(162,32);
-    //文字在图标旁边
-    this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    this->setIconSize(QSize(16,16));
-    connect(this,&CustomToolButton::clicked,this,&CustomToolButton::selectChanged);
+    initLayout();
 
+//    this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon); //文字在图标旁边
+    this->setIconSize(QSize(16,16));
     this->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this,&CustomToolButton::clicked,this,&CustomToolButton::selectChanged);
     connect(this,&CustomToolButton::customContextMenuRequested,this,&CustomToolButton::selectChanged);
     connect(this,&CustomToolButton::customContextMenuRequested,this,&CustomToolButton::requestCustomContextMenu);
-
-    //限制应用内字体固定大小
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    this->setFont(sizeFont);
 
 }
 
@@ -29,82 +28,122 @@ CustomToolButton::~CustomToolButton()
 
 }
 
+void CustomToolButton::initLayout()
+{
+    this->setFixedSize(180, 36);
+
+    m_iconLable->setFixedSize(16, 16);
+//    QPalette pe;
+//    //设置黑底红字
+//    pe.setColor(QPalette::Background,Qt::black);
+//    m_iconLable->setPalette(pe);
+//    m_iconLable->setStyleSheet("background-color: #2b5612;");
+
+//    setLablePixmap(":/img/default/ukui-folder-music-symbolic.svg");
+
+    m_hboxLayout->setSpacing(0);
+    m_hboxLayout->addWidget(m_iconLable);
+    m_hboxLayout->addSpacing(8);
+    m_hboxLayout->addWidget(m_textLabel);
+    m_hboxLayout->setContentsMargins(16, 8, 16, 8);
+
+    this->setLayout(m_hboxLayout);
+}
+
+void CustomToolButton::setLablePixmap(QString img)
+{
+    QImage Image;
+    Image.load(img);
+
+    QPixmap pixmap = QPixmap::fromImage(Image);
+    int with = m_iconLable->width();
+    int height = m_iconLable->height();
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation); // 饱满填充
+    m_iconLable->setPixmap(fitpixmap);
+
+}
+
+void CustomToolButton::setLableText(QString text)
+{
+    m_textLabel->setText(text);
+}
+
+QString CustomToolButton::getLableText()
+{
+    return m_textLabel->text();
+}
+
+void CustomToolButton::setSelectedAndHoverdStyle()
+{
+    if(buttonListName == ALLMUSIC) {
+        setLablePixmap(":/img/clicked/ukui-folder-music-symbolic.svg");
+    } else if(buttonListName == FAV) {
+        setLablePixmap(":/img/clicked/ukui-play-love-symbolic.svg");
+    } else {
+        setLablePixmap(":/img/clicked/audio-card-symbolic.svg");
+    }
+
+    m_textLabel->setStyleSheet("color: #FFFFFF;");
+    this->setChecked(true);
+
+
+}
+
 void CustomToolButton::selectChanged()
 {
-    if(this->statusTip() == IS_SELECT)
-    {
-        Q_EMIT selectButtonChanged(this->text());
+    if(this->statusTip() == IS_SELECT) {
+        Q_EMIT selectButtonChanged(m_textLabel->text());
         return;
     }
-    Q_EMIT selectButtonChanged(this->text());
+
+    Q_EMIT selectButtonChanged(m_textLabel->text());
+
     QList<CustomToolButton *> list = this->parent()->parent()->parent()->findChildren<CustomToolButton *>();
-    for(CustomToolButton *tmp : list)
-    {
-        if(tmp->statusTip() == IS_SELECT)
-        {
+    for(CustomToolButton *tmp : list) {
+        if(tmp->statusTip() == IS_SELECT) {
             tmp->setStatusTip("");
             tmp->defaultStyle();
         }
     }
+
     this->setStatusTip(IS_SELECT);
     this->defaultStyle();
 }
 
 void CustomToolButton::defaultStyle()
 {
-    if(this->statusTip() == IS_SELECT)
-    {
-        this->setStyleSheet("QToolButton{background-color:#3790FA;padding-left:14px;color:#FFFFFF;border-radius: 6px;}");
-        if(buttonListName == ALLMUSIC)
-        {
-            this->setIcon(QIcon(":/img/clicked/ukui-folder-music-symbolic.svg"));
-        }
-        else if(buttonListName == FAV)
-        {
-            this->setIcon(QIcon(":/img/clicked/ukui-play-love-symbolic.svg"));
-        }
-        else
-        {
-            this->setIcon(QIcon(":/img/clicked/audio-card-symbolic.svg"));
-        }
-        return;
-    }
-    else if(this->statusTip() != IS_SELECT)
-    {
-        if(WidgetStyle::themeColor == 0)
-        {
-            //padding-left:15px;  左内边距
-            this->setStyleSheet("QToolButton{padding-left:14px; background-color:#FFFFFF;color:#303133;border-radius:4px;}"
-                                "QToolButton::hover{background-color:#EEEEEE;border-radius:4px;}");
-            if(buttonListName == ALLMUSIC)
-            {
-                this->setIcon(QIcon(":/img/default/ukui-folder-music-symbolic.svg"));
-            }
-            else if(buttonListName == FAV)
-            {
-                this->setIcon(QIcon(":/img/default/ukui-play-love-symbolic.svg"));
-            }
-            else
-            {
-                this->setIcon(QIcon(":/img/default/audio-card-symbolic.svg"));
-            }
+    if(this->statusTip() == IS_SELECT) {
+        if(buttonListName == ALLMUSIC) {
+            setLablePixmap(":/img/clicked/ukui-folder-music-symbolic.svg");
+        } else if(buttonListName == FAV) {
+            setLablePixmap(":/img/clicked/ukui-play-love-symbolic.svg");
+        } else {
+            setLablePixmap(":/img/clicked/audio-card-symbolic.svg");
         }
 
-        else if(WidgetStyle::themeColor == 1)
-        {
-            this->setStyleSheet("QToolButton{padding-left:14px;background-color:#252526;color:#f9f9f9;border-radius:4px;}"
-                                "QToolButton::hover{background-color:#303032;border-radius:4px;}");
-            if(buttonListName == ALLMUSIC)
-            {
-                this->setIcon(QIcon(":/img/dark/ukui-folder-music-symbolic.svg"));
+        m_textLabel->setStyleSheet("color: #FFFFFF;");
+        this->setChecked(true);
+
+        return;
+
+    } else if(this->statusTip() != IS_SELECT) {
+        m_textLabel->setStyleSheet("color: #000000;");
+        this->setChecked(false);
+        if(WidgetStyle::themeColor == 0) {
+            if(buttonListName == ALLMUSIC) {
+                setLablePixmap(":/img/default/ukui-folder-music-symbolic.svg");
+            } else if(buttonListName == FAV) {
+                setLablePixmap(":/img/default/ukui-play-love-symbolic.svg");
+            } else {
+                setLablePixmap(":/img/default/audio-card-symbolic.svg");
             }
-            else if(buttonListName == FAV)
-            {
-                this->setIcon(QIcon(":/img/dark/ukui-play-love-symbolic.svg"));
-            }
-            else
-            {
-                this->setIcon(QIcon(":/img/dark/audio-card-symbolic.svg"));
+        } else if(WidgetStyle::themeColor == 1) {
+            if(buttonListName == ALLMUSIC) {
+                setLablePixmap(":/img/dark/ukui-folder-music-symbolic.svg");
+            } else if(buttonListName == FAV) {
+                setLablePixmap(":/img/dark/ukui-play-love-symbolic.svg");
+            } else {
+                setLablePixmap(":/img/dark/audio-card-symbolic.svg");
             }
         }
     }
@@ -112,12 +151,8 @@ void CustomToolButton::defaultStyle()
 
 void CustomToolButton::requestCustomContextMenu(const QPoint &pos)
 {
-    // 不用this，因此可以使用主题的QMenu
     QMenu *menu = new QMenu();
 
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    menu->setFont(sizeFont);
     QAction *playAct = new QAction(this);
     QAction *pauseAct = new QAction(this);
     renameAct = new QAction(this);
@@ -127,41 +162,50 @@ void CustomToolButton::requestCustomContextMenu(const QPoint &pos)
     renameAct->setText(tr("Rename"));
     deleteAct->setText(tr("Delete"));
     menu->addAction(playAct);
-//    menu->addAction(pauseAct);
 
-    QString text = this->text();
+    QString text = m_textLabel->text();
     QString btnText = text;
 
-    connect(menu,&QMenu::triggered,this,[ = ](QAction * action)
-    {
-
-        if(action->text() == tr("Play"))
-        {
+    connect(menu,&QMenu::triggered,this,[ = ](QAction * action) {
+        if(action->text() == tr("Play")) {
             Q_EMIT playall(text);
-        }
-        else if(action->text() == tr("Pause"))
-        {
-//            Q_EMIT
-        }
-        else if(action->text() == tr("Rename"))
-        {
+        } else if(action->text() == tr("Pause")) {
+        } else if(action->text() == tr("Rename")) {
             Q_EMIT renamePlayList(text);
-        }
-        else if(action->text() == tr("Delete"))
-        {
+        } else if(action->text() == tr("Delete")) {
             Q_EMIT removePlayList(text);
         }
     });
 
-    if(btnText != tr("Song List") && btnText != tr("I Love"))
-    {
+    if(btnText != tr("Song List") && btnText != tr("I Love")) {
         menu->addAction(renameAct);
         menu->addAction(deleteAct);
     }
+
     menu->exec(mapToGlobal(pos));
+
     delete menu;
     delete playAct;
     delete renameAct;
     delete deleteAct;
+}
+
+void CustomToolButton::enterEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+
+    m_isEnter = true;
+
+    setSelectedAndHoverdStyle();
+
+}
+
+void CustomToolButton::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+
+    m_isEnter = false;
+    defaultStyle();
+
 }
 

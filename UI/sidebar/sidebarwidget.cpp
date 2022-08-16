@@ -23,30 +23,20 @@ void SideBarWidget::initAddButton()
         return;
     }
 
-
     if (WidgetStyle::themeColor == 1) {
-//        myPlayListBtn->setIcon(QIcon(":/img/list-add-symbolic/list-add-symbolic-default-white.png"));
-
-#if 1
         myPlayListBtn->setStyleSheet("QPushButton{border-image: url(:/img/list-add-symbolic/list-add-symbolic-default-white.png);}"
                                      "QPushButton:hover{border-image: url(:/img/list-add-symbolic/list-add-symbolic-hover-white.png);}"
                                      "QPushButton:pressed{border-image: url(:/img/list-add-symbolic/list-add-symbolic-click-white.png);}"
                                      );
-#endif
 
 
     } else {
-//    myPlayListBtn->setIcon(QIcon(":/img/list-add-symbolic/list-add-symbolic-default-black.png"));
-#if 1
         myPlayListBtn->setStyleSheet("QPushButton{border-image: url(:/img/list-add-symbolic/list-add-symbolic-default-black.png);}"
                                      "QPushButton:hover{border-image: url(:/img/list-add-symbolic/list-add-symbolic-hover-black.png);}"
                                      "QPushButton:pressed{border-image: url(:/img/list-add-symbolic/list-add-symbolic-click-black.png);}"
                                      );
-#endif
 
     }
-
-//    myPlayListBtn->setIconSize(QSize(20, 20));
 
 }
 
@@ -83,18 +73,16 @@ void SideBarWidget::initWidget()
     libraryLabel->setFixedHeight(28);
 //    libraryLabel->setFixedSize(80,30);
     libraryLayout->addWidget(libraryLabel);
-    libraryLayout->setContentsMargins(38,0,38,0);
+    libraryLayout->setContentsMargins(38-10,0,38-10,0);
 
     //歌曲列表
     QHBoxLayout *playListBtnLayout = new QHBoxLayout();
     playListBtn = new CustomToolButton;
-    playListBtn->setText(tr("Song List"));
-//    playListBtn->setIcon(QIcon::fromTheme("ukui-folder-music-symbolic"));
+    playListBtn->setLableText(tr("Song List"));
     playListBtn->setStatusTip(IS_SELECT);
     playListBtn->buttonListName = ALLMUSIC;
     playListBtn->defaultStyle();
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
-//    playListBtnLayout->setContentsMargins(24,0,24,0);
     connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
     //我的歌单
@@ -107,15 +95,11 @@ void SideBarWidget::initWidget()
     myPlayListLabel->setFixedHeight(28);
     myPlayListBtn->setFixedSize(36, 36);
 
-//    myPlayListBtn->setIcon(QIcon::fromTheme("list-add-symbolic"));
-//    myPlayListBtn->setProperty("isWindowButton", 0x1);
-//    myPlayListBtn->setProperty("useIconHighlightEffect", 0x2);
-//    myPlayListBtn->setFlat(true);
 
     myPlayListLayout->addWidget(myPlayListLabel);
     myPlayListLayout->addStretch();
     myPlayListLayout->addWidget(myPlayListBtn);
-    myPlayListLayout->setContentsMargins(38,0,38,0);
+    myPlayListLayout->setContentsMargins(38-10,0,38-10,0);
 
     scrollArea = new CustomSiderBarScrollArea(this);
     scrollArea->setFrameStyle(0);
@@ -132,7 +116,7 @@ void SideBarWidget::initWidget()
 
     newPlayListLayout->setAlignment(Qt::AlignTop);
     newPlayListWidget->setLayout(newPlayListLayout);
-    newPlayListLayout->setContentsMargins(24,0,24,0);
+    newPlayListLayout->setContentsMargins(10, 0, 10, 0);
 
     mainLayout->addLayout(libraryLayout);
     mainLayout->addSpacing(6);
@@ -240,50 +224,47 @@ void SideBarWidget::sidecolor()
 void SideBarWidget::getPlayListName()
 {
     int ret = g_db->getPlayList(playListName);
-    if(ret != DB_OP_SUCC)
-    {
+
+    if(ret != DB_OP_SUCC) {
         qDebug() << "获取歌单名信息失败" <<__FILE__<< ","<<__FUNCTION__<<","<<__LINE__;
         return;
     }
+
     QString listName;
-    for(int i = 0; i < playListName.size();i++)
-    {
+
+    for(int i = 0; i < playListName.size();i++) {
         listName = playListName.at(i);
-        if(listName == SEARCH)
-        {
+        if(listName == SEARCH) {
             continue;
         }
         CustomToolButton *newBtn = new CustomToolButton;
         newPlayListLayout->setAlignment(Qt::AlignTop);
         newPlayListLayout->addWidget(newBtn);
-    //    newPlayListLayout->setContentsMargins(24,0,24,0);
         newPlayListLayout->setSpacing(6);
 
-        if(listName == FAV)
-        {
-            newBtn->setText(tr("I Love"));
+        if(listName == FAV) {
+            newBtn->setLableText(tr("I Love"));
             newBtn->buttonListName = FAV;
             newBtn->defaultStyle();
-        }
-        else
-        {
-            newBtn->setText(listName);
+        } else {
+            newBtn->setLableText(listName);
             newBtn->buttonListName = "";
             newBtn->defaultStyle();
         }
+
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
         connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
 
         QString name = playController::getInstance().getPlayListName();
-        if(listName == name )
-        {
+
+        if(listName == name ) {
             m_lastBtn = newBtn;
         }
     }
-    if(m_lastBtn != nullptr)
-    {
+
+    if(m_lastBtn != nullptr) {
         m_lastBtn->clicked();
     }
 }
@@ -308,34 +289,31 @@ void SideBarWidget::addItemToSongList()
     newPlayListLayout->setSpacing(6);
 
     QString text = newSonglistPup->enterLineEdit->text();
+    qDebug() << "添加歌单： " << text;
 
 //    QString showText = fm.elidedText(text, Qt::ElideRight, 200);
 
-    if(text != "")
-    {
-        for(int i = 0;i< playListName.size();i++)
-        {
-            if(playListName.at(i) == text)
-            {
+    if(text != "") {
+        for(int i = 0;i< playListName.size();i++) {
+            if(playListName.at(i) == text) {
                 newSonglistPup->hide();
                 QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                 return ;
             }
         }
 
-        newBtn->setText(text);
+        newBtn->setLableText(text);
         newBtn->buttonListName = "";
         newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
         playListName.append(text);
         newSonglistPup->hide();
+
         g_db->createNewPlayList(text);
         Q_EMIT playListAdded(text);
-    }
-    else
-    {
+    } else {
         QString listName = newPlayListName();
-        newBtn->setText(listName);
+        newBtn->setLableText(listName);
         newBtn->buttonListName = "";
         newBtn->defaultStyle();
         newPlayListLayout->addWidget(newBtn);
@@ -408,40 +386,34 @@ void SideBarWidget::rename(QString text)
 void SideBarWidget::renamePlayList()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
-    for(CustomToolButton *tmp : list)
-    {
-        if(tmp->text() ==  btnText)
-        {
+
+    for(CustomToolButton *tmp : list) {
+        if(tmp->getLableText() ==  btnText) {
             QString text = renameSongListPup->enterLineEdit->text();
-            if(text != "")
-            {
-                for(int i = 0;i< playListName.size();i++)
-                {
-                    if(playListName.at(i) == text)
-                    {
+
+            if(text != "") {
+                for(int i = 0;i< playListName.size();i++) {
+                    if(playListName.at(i) == text) {
                         renameSongListPup->hide();
                         QMessageBox::warning(Widget::mutual,tr("Prompt information"),tr("Single song name already exists!!!"),QMessageBox::Ok);
                         return ;
                     }
                 }
 
-                tmp->setText(text);
+                tmp->setLableText(text);
                 playController::getInstance().setCurList(text);
-                for(int i = 0; i < playListName.size();i++)
-                {
-                    if(btnText == playListName[i])
-                    {
+
+                for(int i = 0; i < playListName.size();i++) {
+                    if(btnText == playListName[i]) {
                         playListName[i] = text;
                     }
                 }
                 g_db->renamePlayList(btnText,text); // 从数据库中重命名
                 Q_EMIT playListRenamed(btnText,text);   //fff
                 renameSongListPup->hide();
-            }
-            else
-            {
+            } else {
                 QString listName = btnText;
-                tmp->setText(listName);
+                tmp->setLableText(listName);
                 playController::getInstance().setCurList(listName);
                 renameSongListPup->hide();
             }
@@ -460,7 +432,7 @@ void SideBarWidget::removePlayList(QString text)
     CustomToolButton *tmp = nullptr;
 
      for(auto i = list.begin();i < list.end();i++) {
-         if((*i)->text() == text) {
+         if((*i)->getLableText() == text) {
              if(i+1 == list.end()) {
                 tmp = *(i-1);
                 tmp->click();
@@ -511,12 +483,13 @@ void SideBarWidget::slotListSearch()
 void SideBarWidget::slotSongListHigh()
 {
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
-    for(CustomToolButton *tmp : list)
-    {
+
+    for(CustomToolButton *tmp : list) {
         tmp->setStatusTip("");
         tmp->buttonListName = "";
         tmp->defaultStyle();
     }
+
     playListBtn->setStatusTip(IS_SELECT);
     playListBtn->buttonListName = ALLMUSIC;
     playListBtn->defaultStyle();

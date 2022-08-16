@@ -13,7 +13,7 @@ Widget::Widget(QStringList str, QWidget *parent)
 {
     mutual = this;
 
-    Single(str);
+//    Single(str);
 
     stateMusicFile(str);
 
