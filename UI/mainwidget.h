@@ -45,6 +45,11 @@
 #include "UI/player/miniWidget.h"
 #include "UIControl/base/daemonipcdbus.h"
 
+#define THEME_QT_SCHEMA "org.ukui.style"
+#define MODE_QT_KEY "style-name"
+#define FONT_SIZE "system-font-size"
+#define THEME_QT_TRANS "org.ukui.control-center.personalise"
+
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -56,9 +61,7 @@ public:
     //计算播放历史
     void movePlayHistoryWid();
 
-    // 毛玻璃
-//    void paintEvent(QPaintEvent *event);
-    void transparencyChange();
+    void initOpacityGSettings();
 
     static Widget *mutual;          //指针类型静态成员变量
     QProcess *process;
@@ -124,7 +127,9 @@ private Q_SLOTS:
     void client_get(QString str);
     void inputDevice_get(QString str);
     void slotPrepareForSwitchuser();
+
 protected:
+    void paintEvent(QPaintEvent *eventjk) override;
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -169,7 +174,14 @@ private:
     QStringList getPath(QString playListName);
     //初始化音乐
     void initMusic();
+
+
 private:
+
+    // QGSettings
+    QGSettings *m_gsTransOpacity = nullptr;
+    qreal m_curTransOpacity = 1;
+
     QDBusInterface *interface;
     quint32 m_inhibitValue = 0;             // 阻止锁屏cookie
 
@@ -178,6 +190,7 @@ private:
     TableOne *musicListTable = nullptr;
     TableHistory *historyListTable = nullptr;
     QGSettings *themeData = nullptr;
+    QGSettings *themeColor = nullptr;
     SideBarWidget *sideBarWid = nullptr;
     PlaySongArea *playSongArea = nullptr;
     TitleBar *m_titleBar = nullptr;

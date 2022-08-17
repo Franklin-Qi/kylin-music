@@ -18,9 +18,12 @@
 #include "customSiderBarScrollArea.h"
 #include "customToolButton.h"
 #include "leftsiderbarwidget.h"
+#include "knavigationbar.h"
+
+using namespace kdk;
 
 
-class SideBarWidget : public LeftsiderbarWidget
+class SideBarWidget : public QWidget
 {
     Q_OBJECT
 
@@ -38,6 +41,11 @@ public:
     void getPlayListName();
     QString newPlayListName();
 
+protected:
+    void paintEvent(QPaintEvent *event);
+private:
+    int transparency = 0;
+
 public Q_SLOTS:
     void addPlayList();
     void addItemToSongList();
@@ -48,6 +56,12 @@ public Q_SLOTS:
     void slotListSearch();
     void slotSongListHigh();
 
+    /**
+     * @brief slotButtonClicked
+     * @param listname 点击按钮的名称
+     */
+    void slotButtonClicked(QString listname);
+
 Q_SIGNALS:
     void playListBtnClicked(QString listname);
     void playListRemoved(QString listname);
@@ -57,11 +71,7 @@ Q_SIGNALS:
     void signalPlayAll(QString listName);
 
 private:
-    QGSettings *m_transparencyGSettings = nullptr; // 控制面板透明度
-    double m_transparency = 1.0;  // 透明度
-
     QPushButton *myPlayListBtn = nullptr; //添加歌单按钮
-
     CustomSiderBarScrollArea *scrollArea; //新建歌单按钮界面(包含我喜欢在内)
 
     QWidget *newPlayListWidget = nullptr;

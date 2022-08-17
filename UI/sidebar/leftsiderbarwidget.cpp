@@ -48,4 +48,7 @@ void LeftsiderbarWidget::paintEvent(QPaintEvent *event)
     p.setBrush(brush);
     p.drawRoundedRect(opt.rect,0,0);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    QWidget::paintEvent(event);
+
 }

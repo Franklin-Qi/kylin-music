@@ -5,11 +5,12 @@
 #include "UI/mainwidget.h"
 #include <ukui-log4qt.h>
 
-SideBarWidget::SideBarWidget(QWidget *parent) : LeftsiderbarWidget(parent)
-{
-    this->resize(210, 640);
-    this->setObjectName("SideBarWidget");
+#define PERSONALSIE_SCHEMA     "org.ukui.control-center.personalise"
+#define PERSONALSIE_TRAN_KEY   "transparency"
+#define CONTAIN_PERSONALSIE_TRAN_KEY   "transparency"
 
+SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
+{
     initWidget();
     initConnect();
     sidecolor();
@@ -42,8 +43,10 @@ void SideBarWidget::initAddButton()
 
 void SideBarWidget::initWidget()
 {
+    this->resize(210, 640);
+    this->setObjectName("SideBarWidget");
     this->setProperty("useSystemStyleBlur", true);
-    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setAttribute(Qt::WA_TranslucentBackground);
 
     //侧边栏界面样式
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -80,10 +83,12 @@ void SideBarWidget::initWidget()
     playListBtn = new CustomToolButton;
     playListBtn->setLableText(tr("Song List"));
     playListBtn->setStatusTip(IS_SELECT);
+    playListBtn->setChecked(true);
+    playListBtn->setProperty("isImportant", true);
     playListBtn->buttonListName = ALLMUSIC;
     playListBtn->defaultStyle();
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
-    connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+    connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::slotButtonClicked);
 
     //我的歌单
     QHBoxLayout *myPlayListLayout = new QHBoxLayout;
@@ -106,6 +111,7 @@ void SideBarWidget::initWidget()
 
     //歌单界面
     newPlayListWidget = new QWidget();
+    newPlayListWidget->setAttribute(Qt::WA_TranslucentBackground);
     newPlayListLayout = new QVBoxLayout();
 
     scrollArea->setWidgetResizable(true);
@@ -160,17 +166,6 @@ void SideBarWidget::initWidget()
 
     this->setAutoFillBackground(true);
 
-//    // 真正的主widget
-//    sideWid = new QWidget(this);
-//    sideWid->setLayout(scrollLayout);
-//    sideWid->setObjectName("sideWid");
-
-//    QVBoxLayout *sideLayout = new QVBoxLayout(this);
-//    sideLayout->addWidget(sideWid);
-//    sideLayout->setMargin(0);
-//    sideLayout->setSpacing(0);
-
-
 }
 
 void SideBarWidget::initConnect()
@@ -182,6 +177,21 @@ void SideBarWidget::initConnect()
 
     connect(renameSongListPup->confirmBtn,SIGNAL(clicked(bool)),this,SLOT(renamePlayList()));
     connect(renameSongListPup->enterLineEdit,SIGNAL(returnPressed()),this,SLOT(renamePlayList()));
+
+    QGSettings *personalQgsettings = nullptr;
+    if (QGSettings::isSchemaInstalled(PERSONALSIE_SCHEMA)) {
+        personalQgsettings = new QGSettings(PERSONALSIE_SCHEMA, QByteArray(), this);
+        transparency = personalQgsettings->get(PERSONALSIE_TRAN_KEY).toDouble() * 255;
+        connect(personalQgsettings,&QGSettings::changed,this,[=](QString changedKey) {  //监听透明度变化
+                        if (changedKey == CONTAIN_PERSONALSIE_TRAN_KEY) {
+                           transparency = personalQgsettings->get(PERSONALSIE_TRAN_KEY).toDouble() * 255;
+                           this->repaint();
+                        }
+                });
+    } else {
+        personalQgsettings = nullptr;
+        qDebug()<<PERSONALSIE_SCHEMA<<" not installed";
+    }
 
 }
 
@@ -255,7 +265,7 @@ void SideBarWidget::getPlayListName()
         connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
         connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
         connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-        connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+        connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::slotButtonClicked);
 
         QString name = playController::getInstance().getPlayListName();
 
@@ -359,6 +369,27 @@ QString SideBarWidget::newPlayListName()
         }
     }
     return QString("%1 %2").arg(name).arg(i);
+}
+
+void SideBarWidget::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+    QColor color = palette().color(QPalette::Window);
+    color.setAlpha(transparency);
+    QPalette pal(this->palette());
+    pal.setColor(QPalette::Window,QColor(color));
+    this->setPalette(pal);
+    QBrush brush =QBrush(color);
+    p.setBrush(brush);
+    p.drawRoundedRect(opt.rect,0,0);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    QWidget::paintEvent(event);
+
+
 }
 
 
@@ -491,6 +522,24 @@ void SideBarWidget::slotSongListHigh()
     }
 
     playListBtn->setStatusTip(IS_SELECT);
+    playListBtn->setChecked(true);
+    playListBtn->setProperty("isImportant", true);
     playListBtn->buttonListName = ALLMUSIC;
     playListBtn->defaultStyle();
+}
+
+void SideBarWidget::slotButtonClicked(QString listname)
+{
+    QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
+
+    for(CustomToolButton *tmp : list) {
+        if (tmp->getLableText() == listname) {
+            tmp->setChecked(true);
+        } else {
+            tmp->setChecked(false);
+        }
+    }
+
+    emit playListBtnClicked(listname);
+
 }

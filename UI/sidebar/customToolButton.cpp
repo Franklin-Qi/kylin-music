@@ -11,9 +11,12 @@ CustomToolButton::CustomToolButton(QWidget *parent): QToolButton(parent),
     m_textLabel(new QLabel()),
     m_hboxLayout(new QHBoxLayout())
 {
-    initLayout();
 
-//    this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon); //文字在图标旁边
+    initGsettings();
+    initLayout();
+    setCheckable(true);
+    setProperty("isImportant", true);
+
     this->setIconSize(QSize(16,16));
     this->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -28,18 +31,45 @@ CustomToolButton::~CustomToolButton()
 
 }
 
+/**
+ * @brief CustomToolButton::initGsettings
+ * 需要自行获取hover和click的状态，参看控制面板`shell/mainwindow.cpp`
+ */
+void CustomToolButton::initGsettings()
+{
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        QGSettings *qtSettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        if (qtSettings->keys().contains("styleName")) {
+            hoverColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), true);
+            clickColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), false);
+            if (!this->isChecked())
+                this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
+                                            "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
+        }
+
+        connect(qtSettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "styleName") {
+                hoverColor = this->pluginBtnHoverColor(qtSettings->get("style-name").toString(), true);
+                clickColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), false);
+                if (!this->isChecked())
+                    this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
+                                                "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
+            } else if (key == "themeColor" && this->isChecked()) {
+                this->toggled(true);
+            }
+
+        });
+    }
+
+
+
+}
+
 void CustomToolButton::initLayout()
 {
     this->setFixedSize(180, 36);
 
     m_iconLable->setFixedSize(16, 16);
-//    QPalette pe;
-//    //设置黑底红字
-//    pe.setColor(QPalette::Background,Qt::black);
-//    m_iconLable->setPalette(pe);
-//    m_iconLable->setStyleSheet("background-color: #2b5612;");
-
-//    setLablePixmap(":/img/default/ukui-folder-music-symbolic.svg");
 
     m_hboxLayout->setSpacing(0);
     m_hboxLayout->addWidget(m_iconLable);
@@ -75,6 +105,7 @@ QString CustomToolButton::getLableText()
 
 void CustomToolButton::setSelectedAndHoverdStyle()
 {
+#if 0
     if(buttonListName == ALLMUSIC) {
         setLablePixmap(":/img/clicked/ukui-folder-music-symbolic.svg");
     } else if(buttonListName == FAV) {
@@ -84,8 +115,12 @@ void CustomToolButton::setSelectedAndHoverdStyle()
     }
 
     m_textLabel->setStyleSheet("color: #FFFFFF;");
-    this->setChecked(true);
+#endif
 
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window, QColor(0, 255, 0, 30));
+    this->setPalette(pal);
+    setAutoFillBackground(true);
 
 }
 
@@ -110,9 +145,16 @@ void CustomToolButton::selectChanged()
     this->defaultStyle();
 }
 
+/**
+ * @brief CustomToolButton::defaultStyle
+ * 由于主题或者SDK不能实现效果，因此需要自定义hover和click的样式
+ */
 void CustomToolButton::defaultStyle()
 {
     if(this->statusTip() == IS_SELECT) {
+        this->setStyleSheet("QToolButton:checked{background-color: palette(highlight); border-radius: 6px;}");
+        m_textLabel->setStyleSheet("color: white;");
+
         if(buttonListName == ALLMUSIC) {
             setLablePixmap(":/img/clicked/ukui-folder-music-symbolic.svg");
         } else if(buttonListName == FAV) {
@@ -121,15 +163,15 @@ void CustomToolButton::defaultStyle()
             setLablePixmap(":/img/clicked/audio-card-symbolic.svg");
         }
 
-        m_textLabel->setStyleSheet("color: #FFFFFF;");
-        this->setChecked(true);
 
         return;
 
     } else if(this->statusTip() != IS_SELECT) {
-        m_textLabel->setStyleSheet("color: #000000;");
-        this->setChecked(false);
+        this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
+                                    "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
+
         if(WidgetStyle::themeColor == 0) {
+            m_textLabel->setStyleSheet("color: palette(windowText);");
             if(buttonListName == ALLMUSIC) {
                 setLablePixmap(":/img/default/ukui-folder-music-symbolic.svg");
             } else if(buttonListName == FAV) {
@@ -138,6 +180,7 @@ void CustomToolButton::defaultStyle()
                 setLablePixmap(":/img/default/audio-card-symbolic.svg");
             }
         } else if(WidgetStyle::themeColor == 1) {
+            m_textLabel->setStyleSheet("color: white;");
             if(buttonListName == ALLMUSIC) {
                 setLablePixmap(":/img/dark/ukui-folder-music-symbolic.svg");
             } else if(buttonListName == FAV) {
@@ -190,22 +233,30 @@ void CustomToolButton::requestCustomContextMenu(const QPoint &pos)
     delete deleteAct;
 }
 
-void CustomToolButton::enterEvent(QEvent *event)
+QString CustomToolButton::pluginBtnHoverColor(QString styleName, bool hoverFlag)
 {
-    Q_UNUSED(event);
-
-    m_isEnter = true;
-
-    setSelectedAndHoverdStyle();
+    QColor color1 = palette().color(QPalette::Active, QPalette::Button);
+    QColor color2 = palette().color(QPalette::Active, QPalette::BrightText);
+    QColor color;
+    qreal r,g,b,a;
+    QString hoverColor;
+    if (((styleName.contains("dark") || styleName.contains("black")) && hoverFlag) ||
+        ((!styleName.contains("dark") && !styleName.contains("black")) && !hoverFlag)) {
+        r = color1.redF() * 0.8 + color2.redF() * 0.2;
+        g = color1.greenF() * 0.8 + color2.greenF() * 0.2;
+        b = color1.blueF() * 0.8 + color2.blueF() * 0.2;
+        a = color1.alphaF() * 0.8 + color2.alphaF() * 0.2;
+    } else {
+        r = color1.redF() * 0.95 + color2.redF() * 0.05;
+        g = color1.greenF() * 0.95 + color2.greenF() * 0.05;
+        b = color1.blueF() * 0.95 + color2.blueF() * 0.05;
+        a = color1.alphaF() * 0.95 + color2.alphaF() * 0.05;
+    }
+    color = QColor::fromRgbF(r, g, b, a);
+    hoverColor = QString("rgba(%1, %2, %3, %4)").arg(color.red())
+                                                .arg(color.green())
+                                                .arg(color.blue())
+                                                .arg(color.alpha());
+    return hoverColor;
 
 }
-
-void CustomToolButton::leaveEvent(QEvent *event)
-{
-    Q_UNUSED(event);
-
-    m_isEnter = false;
-    defaultStyle();
-
-}
-

@@ -25,6 +25,7 @@ Widget::Widget(QStringList str, QWidget *parent)
     }
     qDebug() << "数据库加载成功";
 
+    initOpacityGSettings();
     initAllComponent();
     initGSettings();
     allConnect();
@@ -52,6 +53,11 @@ Widget::Widget(QStringList str, QWidget *parent)
 
 Widget::~Widget()
 {
+    if (m_gsTransOpacity) {
+        delete m_gsTransOpacity;
+        m_gsTransOpacity = nullptr;
+    }
+
     m_miniWidget->deleteLater();
 }
 
@@ -564,10 +570,33 @@ void Widget::initMusic()
     historyListTable->refreshHistoryTable();
 }
 
+void Widget::paintEvent(QPaintEvent *event)
+{
+    return;
+
+    QPainterPath path;
+
+    QPainter painter(this);
+    painter.setOpacity(m_curTransOpacity);
+    painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    painter.setClipping(true);
+    painter.setPen(Qt::transparent);
+
+    path.addRect(this->rect());
+    path.setFillRule(Qt::WindingFill);
+    painter.setBrush(this->palette().window());
+    painter.setPen(Qt::transparent);
+
+    painter.drawPath(path);
+
+    QWidget::paintEvent(event);
+
+}
+
 void Widget::initAllComponent()
 {
 
-    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setAttribute(Qt::WA_TranslucentBackground);
 
     setMinimumSize(960,640);
     this->setWindowTitle(tr("Music Player"));
@@ -745,18 +774,9 @@ void Widget::initGSettings()//初始化GSettings
     if (QGSettings::isSchemaInstalled(FITCONTROLTRANS)) {
         m_transparencyGSettings = new QGSettings(FITCONTROLTRANS);
     }
-//    if (m_transparencyGSettings != nullptr) {
-//        connect(m_transparencyGSettings, &QGSettings::changed, this, [=](const QString &key) {
-//            if (key == "transparency") {
-//                transparencyChange();
-//            }
-//        });
-//        transparencyChange();
-//    }
 
 
-    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS))
-    {
+    if(QGSettings::isSchemaInstalled(FITTHEMEWINDOWS)) {
         themeData = new QGSettings(FITTHEMEWINDOWS);
         if(themeData->get("style-name").toString() == "ukui-dark" || themeData->get("style-name").toString() == "ukui-black"){
             WidgetStyle::themeColor = 1;
@@ -854,64 +874,37 @@ void Widget::movePlayHistoryWid()
     historyListTable->move(historyPos);
 }
 
-#if 0
-void Widget::paintEvent(QPaintEvent *event)
+
+
+void Widget::initOpacityGSettings()
 {
-//    return QWidget::paintEvent(event);
-    Q_UNUSED(event);
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-    QPainterPath rectPath;
-    rectPath.addRoundedRect(this->rect(), 0, 0);
-    QStyleOption opt;
-    opt.init(this);
-
-    QColor mainColor;
-//    KyInfo() << opt.palette.color(QPalette::Base);
-
-    if (QColor(255,255,255) == opt.palette.color(QPalette::Base)
-            || QColor(248,248,248) == opt.palette.color(QPalette::Base)
-            || QColor(245, 245, 245) == opt.palette.color(QPalette::Base)) {
-        mainColor = QColor(242, 242, 242, m_transparency);
-    } else {
-        mainColor = QColor(20, 20, 20, m_transparency);
+    const QByteArray idtrans(THEME_QT_TRANS);
+    if(QGSettings::isSchemaInstalled(idtrans)) {
+        m_gsTransOpacity = new QGSettings(idtrans);
     }
 
-    p.fillPath(rectPath,QBrush(mainColor));
+    if (!m_gsTransOpacity) {
+        m_curTransOpacity = 1;
+        return;
+    }
 
-#if 0
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    p.setPen(Qt::NoPen);
+    connect(m_gsTransOpacity, &QGSettings::changed, this, [=](const QString &key) {
+        if (key == "transparency") {
+            QStringList keys = m_gsTransOpacity->keys();
+            if (keys.contains("transparency")) {
+                m_curTransOpacity = m_gsTransOpacity->get("transparency").toString().toDouble();
+                qDebug() << "透明度： " << m_curTransOpacity;
+                repaint();
+            }
+        }
+    });
 
-//    KyInfo() << "transparency = " << m_transparencyGSettings->get("transparency").toDouble()
-//             << "m_transparency = " << m_transparency;
+    QStringList keys = m_gsTransOpacity->keys();
+    if(keys.contains("transparency")) {
+        m_curTransOpacity = m_gsTransOpacity->get("transparency").toString().toDouble();
+        qDebug() << "透明度： " << m_curTransOpacity;
+    }
 
-    QColor color;
-
-    color = palette().color(QPalette::Window);
-    color.setAlpha(m_transparency);
-
-
-    QPalette pal(this->palette());
-    pal.setColor(QPalette::Window,QColor(color));
-    this->setPalette(pal);
-    QBrush brush =QBrush(color);
-    p.setBrush(brush);
-    p.drawRoundedRect(opt.rect,0,0);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-
-    return QWidget::paintEvent(event);
-#endif
-
-}
-#endif
-
-void Widget::transparencyChange()
-{
-//    m_transparency = m_transparencyGSettings->get("transparency").toDouble() * 255;
-    //    this->update();
 }
 
 void Widget::keyPressEvent(QKeyEvent *event)

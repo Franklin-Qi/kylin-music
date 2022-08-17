@@ -20,6 +20,7 @@ public:
      CustomToolButton(QWidget *parent = 0);
     ~CustomToolButton();
 
+     void initGsettings();
      void initLayout();
      void setLablePixmap(QString img);
      void setLableText(QString text);
@@ -29,8 +30,8 @@ public:
      void defaultStyle();
      void requestCustomContextMenu(const QPoint &pos);
 
-     void enterEvent(QEvent *event);
-     void leaveEvent(QEvent *event);
+     QString pluginBtnHoverColor(QString styleName, bool hoverFlag);
+
 
 public:
     QAction *deleteAct = nullptr;
@@ -49,6 +50,9 @@ private:
     QLabel *m_iconLable = nullptr;
     QLabel *m_textLabel = nullptr;
     QHBoxLayout *m_hboxLayout = nullptr;
+
+    QString hoverColor;
+    QString clickColor;
 
 };
 
