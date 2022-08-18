@@ -133,6 +133,7 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+//    void changeEvent(QEvent *event);
 
 Q_SIGNALS:
     // Space 控制播放/暂停

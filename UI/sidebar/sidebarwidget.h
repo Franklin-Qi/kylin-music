@@ -23,7 +23,7 @@
 using namespace kdk;
 
 
-class SideBarWidget : public QWidget
+class SideBarWidget : public LeftsiderbarWidget
 {
     Q_OBJECT
 
@@ -42,9 +42,10 @@ public:
     QString newPlayListName();
 
 protected:
-    void paintEvent(QPaintEvent *event);
-private:
-    int transparency = 0;
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+//private:
+//    int transparency = 1.0;
 
 public Q_SLOTS:
     void addPlayList();
@@ -61,6 +62,7 @@ public Q_SLOTS:
      * @param listname 点击按钮的名称
      */
     void slotButtonClicked(QString listname);
+    void setButtonStyle(QString listname);
 
 Q_SIGNALS:
     void playListBtnClicked(QString listname);

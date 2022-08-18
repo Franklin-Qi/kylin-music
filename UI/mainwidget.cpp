@@ -3,6 +3,7 @@
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
 #include <ukui-log4qt.h>
+#include <KWindowEffects>
 
 #define UKUI_FONT_SIZE "systemFontSize"
 #define UKUI_THEME_COLOR "themeColor"
@@ -259,6 +260,7 @@ int Widget::kylin_music_play_request(QString cmd1, QString cmd2, QString cmd3)
     //无参数，单例触发
     if(!this->isActiveWindow()) {
         KWindowSystem::forceActiveWindow(this->winId());
+        sideBarWid->repaint();
     }
 
     if(!m_miniWidget->isActiveWindow()) {
@@ -572,8 +574,25 @@ void Widget::initMusic()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
-    return;
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+    QColor color = palette().color(QPalette::Base);
+    color.setAlpha(m_curTransOpacity);
+    QPalette pal(this->palette());
+    pal.setColor(QPalette::Base,QColor(color));
+    this->setPalette(pal);
+    QBrush brush =QBrush(color);
+    p.setBrush(brush);
+    p.drawRoundedRect(opt.rect,0,0);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 
+    QWidget::paintEvent(event);
+
+
+#if 0
+    // 先前绘制情况
     QPainterPath path;
 
     QPainter painter(this);
@@ -584,12 +603,13 @@ void Widget::paintEvent(QPaintEvent *event)
 
     path.addRect(this->rect());
     path.setFillRule(Qt::WindingFill);
-    painter.setBrush(this->palette().window());
+    painter.setBrush(this->palette().base());
     painter.setPen(Qt::transparent);
 
     painter.drawPath(path);
 
     QWidget::paintEvent(event);
+#endif
 
 }
 
@@ -635,6 +655,7 @@ void Widget::initAllComponent()
     hintt.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hintt.functions = MWM_FUNC_ALL;
     hintt.decorations = MWM_DECOR_BORDER;
+//    KWindowEffects::enableBlurBehind(this->winId(), true);
     XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hintt);
 
     m_miniWidget = new MiniWidget();
@@ -642,6 +663,7 @@ void Widget::initAllComponent()
     hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hints.functions = MWM_FUNC_ALL;
     hints.decorations = MWM_DECOR_BORDER;
+//    KWindowEffects::enableBlurBehind(m_miniWidget->winId(), true);
     XAtomHelper::getInstance()->setWindowMotifHint(m_miniWidget->winId(), hints);
 
 
@@ -667,6 +689,7 @@ void Widget::initAllComponent()
     hint.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
     hint.functions = MWM_FUNC_ALL;
     hint.decorations = MWM_DECOR_BORDER;
+//    KWindowEffects::enableBlurBehind(historyListTable->winId(), true);
     XAtomHelper::getInstance()->setWindowMotifHint(historyListTable->winId(), hint);
     historyListTable->hide();
 
@@ -962,8 +985,19 @@ void Widget::mousePressEvent(QMouseEvent *event)
         this->setFocus();
     }
 
-//    return Widget::mousePressEvent(event);
+    sideBarWid->repaint();
+
+    QWidget::mousePressEvent(event);
 }
+
+//void Widget::changeEvent(QEvent *event)
+//{
+//    QWidget::changeEvent(event);
+
+//    if (this->isActiveWindow()) {
+//        sideBarWid->repaint();
+//    }
+//}
 
 void Widget::slotShowMiniWidget()
 {

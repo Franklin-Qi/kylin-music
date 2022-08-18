@@ -38,31 +38,34 @@ CustomToolButton::~CustomToolButton()
 void CustomToolButton::initGsettings()
 {
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        QGSettings *qtSettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        if (qtSettings == nullptr) {
+            qtSettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        }
         if (qtSettings->keys().contains("styleName")) {
             hoverColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), true);
             clickColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), false);
-            if (!this->isChecked())
+            if (!this->isChecked()) {
+
                 this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
                                             "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
+            }
         }
 
         connect(qtSettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "styleName") {
                 hoverColor = this->pluginBtnHoverColor(qtSettings->get("style-name").toString(), true);
                 clickColor = pluginBtnHoverColor(qtSettings->get("style-name").toString(), false);
-                if (!this->isChecked())
+                if (!this->isChecked()) {
                     this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
                                                 "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
+
+                }
             } else if (key == "themeColor" && this->isChecked()) {
                 this->toggled(true);
             }
 
         });
     }
-
-
-
 }
 
 void CustomToolButton::initLayout()
@@ -167,7 +170,8 @@ void CustomToolButton::defaultStyle()
         return;
 
     } else if(this->statusTip() != IS_SELECT) {
-        this->setStyleSheet(QString("QToolButton:hover{background-color:%1;border-radius: 6px;}"
+        this->setStyleSheet(QString("QToolButton:checked{background-color: palette(highlight); border-radius: 6px;}"
+                                    "QToolButton:hover{background-color:%1;border-radius: 6px;}"
                                     "QToolButton:pressed{background-color:%2;border-radius: 6px;}").arg(hoverColor).arg(clickColor));
 
         if(WidgetStyle::themeColor == 0) {

@@ -5,11 +5,8 @@
 #include "UI/mainwidget.h"
 #include <ukui-log4qt.h>
 
-#define PERSONALSIE_SCHEMA     "org.ukui.control-center.personalise"
-#define PERSONALSIE_TRAN_KEY   "transparency"
-#define CONTAIN_PERSONALSIE_TRAN_KEY   "transparency"
 
-SideBarWidget::SideBarWidget(QWidget *parent) : QWidget(parent)
+SideBarWidget::SideBarWidget(QWidget *parent) : LeftsiderbarWidget(parent)
 {
     initWidget();
     initConnect();
@@ -43,21 +40,22 @@ void SideBarWidget::initAddButton()
 
 void SideBarWidget::initWidget()
 {
-    this->resize(210, 640);
+    this->resize(200, 640);
     this->setObjectName("SideBarWidget");
     this->setProperty("useSystemStyleBlur", true);
     this->setAttribute(Qt::WA_TranslucentBackground);
+//    KWindowEffects::enableBlurBehind(this->winId(), true);
 
     //侧边栏界面样式
     QVBoxLayout *mainLayout = new QVBoxLayout();
 
     //logo
     QHBoxLayout *logoLayout = new QHBoxLayout();
-    QLabel *logoNameLabel = new QLabel(this);
+    QLabel *logoNameLabel = new QLabel();
     logoNameLabel->setText(tr("Music Player"));
     logoNameLabel->setFixedHeight(28);
 
-    QLabel *logoIconLabel = new QLabel(this);
+    QLabel *logoIconLabel = new QLabel();
     logoIconLabel->setFixedSize(QSize(25, 25));
     logoIconLabel->setPixmap(QIcon::fromTheme("kylin-music").pixmap(logoIconLabel->size()));
 
@@ -71,15 +69,13 @@ void SideBarWidget::initWidget()
 
     //音乐库
     QHBoxLayout *libraryLayout = new QHBoxLayout();
-    libraryLabel = new QLabel(this);
+    libraryLabel = new QLabel();
     libraryLabel->setText(tr("Library"));
     libraryLabel->setFixedHeight(28);
-//    libraryLabel->setFixedSize(80,30);
     libraryLayout->addWidget(libraryLabel);
     libraryLayout->setContentsMargins(38-10,0,38-10,0);
 
     //歌曲列表
-    QHBoxLayout *playListBtnLayout = new QHBoxLayout();
     playListBtn = new CustomToolButton;
     playListBtn->setLableText(tr("Song List"));
     playListBtn->setStatusTip(IS_SELECT);
@@ -87,7 +83,14 @@ void SideBarWidget::initWidget()
     playListBtn->setProperty("isImportant", true);
     playListBtn->buttonListName = ALLMUSIC;
     playListBtn->defaultStyle();
+
+    QHBoxLayout *playListBtnLayout = new QHBoxLayout();
+    playListBtnLayout->setSpacing(0);
+    playListBtnLayout->addSpacing(10);
     playListBtnLayout->addWidget(playListBtn,Qt::AlignCenter);
+    playListBtnLayout->addStretch();
+    playListBtnLayout->setContentsMargins(0, 0, 10, 0);
+
     connect(playListBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::slotButtonClicked);
 
     //我的歌单
@@ -106,26 +109,16 @@ void SideBarWidget::initWidget()
     myPlayListLayout->addWidget(myPlayListBtn);
     myPlayListLayout->setContentsMargins(38-10,0,38-10,0);
 
-    scrollArea = new CustomSiderBarScrollArea(this);
-    scrollArea->setFrameStyle(0);
-
     //歌单界面
     newPlayListWidget = new QWidget();
     newPlayListWidget->setAttribute(Qt::WA_TranslucentBackground);
     newPlayListLayout = new QVBoxLayout();
-
-    scrollArea->setWidgetResizable(true);
-//    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-
-
     newPlayListLayout->setAlignment(Qt::AlignTop);
     newPlayListWidget->setLayout(newPlayListLayout);
     newPlayListLayout->setContentsMargins(10, 0, 10, 0);
 
-    mainLayout->addLayout(libraryLayout);
-    mainLayout->addSpacing(6);
+//    mainLayout->addLayout(libraryLayout);
+//    mainLayout->addSpacing(6);
     mainLayout->addLayout(playListBtnLayout);
     mainLayout->addSpacing(16);
     mainLayout->addLayout(myPlayListLayout);
@@ -145,16 +138,26 @@ void SideBarWidget::initWidget()
 
     //侧边栏界面 嵌套 widget
     mainWid = new QWidget(this);
-    mainWid->setLayout(mainLayout);
     mainWid->setObjectName("mainWid");
-    scrollArea->setWidget(mainWid);
+    mainWid->setLayout(mainLayout);
+    mainWid->setFixedWidth(200);
+
+    // 设置滑动条
+    scrollArea = new CustomSiderBarScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+    scrollArea->setFrameStyle(0);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setWidget(mainWid);
 
     logoWid = new QWidget(this);
     logoWid->setFixedHeight(40);
     logoWid->setLayout(logoLayout);
     logoWid->setObjectName("logoWid");
-    //放置活动条
+
+    // 放置活动条
     QVBoxLayout *scrollLayout = new QVBoxLayout(this);
     scrollLayout->addWidget(logoWid);
     scrollLayout->addSpacing(16);
@@ -177,21 +180,6 @@ void SideBarWidget::initConnect()
 
     connect(renameSongListPup->confirmBtn,SIGNAL(clicked(bool)),this,SLOT(renamePlayList()));
     connect(renameSongListPup->enterLineEdit,SIGNAL(returnPressed()),this,SLOT(renamePlayList()));
-
-    QGSettings *personalQgsettings = nullptr;
-    if (QGSettings::isSchemaInstalled(PERSONALSIE_SCHEMA)) {
-        personalQgsettings = new QGSettings(PERSONALSIE_SCHEMA, QByteArray(), this);
-        transparency = personalQgsettings->get(PERSONALSIE_TRAN_KEY).toDouble() * 255;
-        connect(personalQgsettings,&QGSettings::changed,this,[=](QString changedKey) {  //监听透明度变化
-                        if (changedKey == CONTAIN_PERSONALSIE_TRAN_KEY) {
-                           transparency = personalQgsettings->get(PERSONALSIE_TRAN_KEY).toDouble() * 255;
-                           this->repaint();
-                        }
-                });
-    } else {
-        personalQgsettings = nullptr;
-        qDebug()<<PERSONALSIE_SCHEMA<<" not installed";
-    }
 
 }
 
@@ -290,7 +278,8 @@ void SideBarWidget::addPlayList()
 }
 
 /**
- * @brief SideBarWidget::addItemToSongList 添加歌单
+ * @brief SideBarWidget::addItemToSongList 新建歌单
+ * 添加歌单到侧边栏
  */
 void SideBarWidget::addItemToSongList()
 {
@@ -299,7 +288,7 @@ void SideBarWidget::addItemToSongList()
     newPlayListLayout->setSpacing(6);
 
     QString text = newSonglistPup->enterLineEdit->text();
-    qDebug() << "添加歌单： " << text;
+    qDebug() << "新建歌单： " << text;
 
 //    QString showText = fm.elidedText(text, Qt::ElideRight, 200);
 
@@ -336,7 +325,7 @@ void SideBarWidget::addItemToSongList()
     connect(newBtn,SIGNAL(playall(QString)),this,SLOT(playAll(QString)));
     connect(newBtn,SIGNAL(renamePlayList(QString)),this,SLOT(rename(QString)));
     connect(newBtn,SIGNAL(removePlayList(QString)),this,SLOT(removePlayList(QString)));
-    connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::playListBtnClicked);
+    connect(newBtn,&CustomToolButton::selectButtonChanged,this,&SideBarWidget::slotButtonClicked);
 
 }
 
@@ -371,24 +360,28 @@ QString SideBarWidget::newPlayListName()
     return QString("%1 %2").arg(name).arg(i);
 }
 
-void SideBarWidget::paintEvent(QPaintEvent *event)
+/**
+ * @brief SideBarWidget::mousePressEvent 设置按钮点击时的样式
+ * 鼠标点击侧边栏控件时，控件重绘。否则会出现菜单栏和其他的不匹配问题。
+ *
+ * @param event
+ */
+void SideBarWidget::mousePressEvent(QMouseEvent *event)
 {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    p.setPen(Qt::NoPen);
-    QColor color = palette().color(QPalette::Window);
-    color.setAlpha(transparency);
-    QPalette pal(this->palette());
-    pal.setColor(QPalette::Window,QColor(color));
-    this->setPalette(pal);
-    QBrush brush =QBrush(color);
-    p.setBrush(brush);
-    p.drawRoundedRect(opt.rect,0,0);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    this->repaint();
+    QWidget::mousePressEvent(event);
 
-    QWidget::paintEvent(event);
+}
 
+/**
+ * @brief SideBarWidget::mouseMoveEvent
+ * 鼠标划过侧边栏控件时，控件重绘。否则会出现菜单栏和其他的不匹配问题。
+ * @param event
+ */
+void SideBarWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    this->repaint();
+    QWidget::mouseMoveEvent(event);
 
 }
 
@@ -530,6 +523,17 @@ void SideBarWidget::slotSongListHigh()
 
 void SideBarWidget::slotButtonClicked(QString listname)
 {
+    setButtonStyle(listname);
+
+    emit playListBtnClicked(listname);
+}
+
+/**
+ * @brief SideBarWidget::setButtonStyle 设置当前点击按钮和其他按钮的样式
+ * @param listname 当前选中按钮的文本
+ */
+void SideBarWidget::setButtonStyle(QString listname)
+{
     QList<CustomToolButton *> list = this->findChildren<CustomToolButton *>();
 
     for(CustomToolButton *tmp : list) {
@@ -539,7 +543,4 @@ void SideBarWidget::slotButtonClicked(QString listname)
             tmp->setChecked(false);
         }
     }
-
-    emit playListBtnClicked(listname);
-
 }

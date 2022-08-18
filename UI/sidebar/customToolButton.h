@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QtWidgets>
 #include <QEvent>
+#include <QGSettings>
 
 const QString IS_SELECT = "IS_SELECT";
 class CustomToolButton : public QToolButton
@@ -46,6 +47,7 @@ Q_SIGNALS:
 
 private:
     bool m_isEnter = false;
+    QGSettings *qtSettings = nullptr;
 
     QLabel *m_iconLable = nullptr;
     QLabel *m_textLabel = nullptr;
