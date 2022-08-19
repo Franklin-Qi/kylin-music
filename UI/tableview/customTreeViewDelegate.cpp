@@ -1,14 +1,16 @@
-﻿#include "tableviewdelegate.h"
+﻿#include "customTreeViewDelegate.h"
 #include "UI/base/widgetstyle.h"
 #include "UIControl/player/player.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UI/search/musicsearchlistview.h"
-#include "UI/tableview/tablebaseview.h"
+#include "UI/tableview/customTreeView.h"
 
 #include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
+#include <QPalette>
+#include <QDebug>
 
-TableViewDelegate::TableViewDelegate(QWidget *parent)
+CustomTreeViewDelegate::CustomTreeViewDelegate(bool isHistory, QWidget *parent)
     : QStyledItemDelegate(parent),
       m_pOpenButton(new QPushButton()),
       m_pDeleteButton(new QPushButton()),
@@ -18,17 +20,25 @@ TableViewDelegate::TableViewDelegate(QWidget *parent)
       m_nType(-1),
       m_hoverrow(-1)
 {
+    setIsHistory(isHistory);
+    //    initGsettings();
 }
 
-TableViewDelegate::~TableViewDelegate()
+
+
+CustomTreeViewDelegate::~CustomTreeViewDelegate()
 {
 
 }
 
 // 绘制按钮
-void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void CustomTreeViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    const TableBaseView *tableview = qobject_cast<const TableBaseView *>(option.widget);
+    return QStyledItemDelegate::paint(painter, option, index);
+
+
+
+    const CustomTreeView *tableview = qobject_cast<const CustomTreeView *>(option.widget);
     QString listName = tableview->getNowPlayListName();
 
     QStyleOptionViewItem opt = option;
@@ -37,13 +47,17 @@ void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     } else {
         opt.state &= ~QStyle::State_MouseOver;
     }
-    //字体高亮颜色
+
+    //字体高亮颜色,更确切说是每一行的背景高亮颜色
+#if 0
     opt.palette.setColor(QPalette::HighlightedText,index.data(Qt::ForegroundRole).value<QColor>());
     if (WidgetStyle::themeColor == 0) {
-        opt.palette.setColor(QPalette::Highlight,QColor(240,240,240));
+//        opt.palette.setColor(QPalette::Highlight,QColor(240,240,240));
+        opt.palette.setColor(QPalette::Highlight,QColor(0 ,255,0));
     } else {
         opt.palette.setColor(QPalette::Highlight,QColor(54,54,55));
     }
+#endif
 
     QString playListName = tableview->getSearchListName();
     if (listName != playListName || playListName == "") {
@@ -140,18 +154,41 @@ void TableViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 }
 
 
-void TableViewDelegate::onHoverIndexChanged(const QModelIndex& index)
+void CustomTreeViewDelegate::onHoverIndexChanged(const QModelIndex& index)
 {
     m_hoverrow = index.row();
 }
-void TableViewDelegate::onLeaveFromItemEvent()
+
+void CustomTreeViewDelegate::onHoverColorChanged(QString hoverColor)
+{
+    hoverColor = hoverColor;
+}
+void CustomTreeViewDelegate::onLeaveFromItemEvent()
 {
     m_hoverrow = -1;
 }
 
-QSize TableViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize CustomTreeViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(690, 40);
+
+    if (isHistory) {
+        // 历史列表宽度和高度
+        return QSize(288, 36);
+    }
+
+    return QSize(690, 36);
 }
+
+void CustomTreeViewDelegate::initGsettings()
+{
+    return;
+
+}
+
+void CustomTreeViewDelegate::setIsHistory(bool isHistory)
+{
+    isHistory = isHistory;
+}
+

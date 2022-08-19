@@ -14,7 +14,7 @@ Widget::Widget(QStringList str, QWidget *parent)
 {
     mutual = this;
 
-//    Single(str);
+    Single(str);
 
     stateMusicFile(str);
 
@@ -574,6 +574,7 @@ void Widget::initMusic()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
+
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
@@ -588,7 +589,7 @@ void Widget::paintEvent(QPaintEvent *event)
     p.drawRoundedRect(opt.rect,0,0);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 
-    QWidget::paintEvent(event);
+    return QWidget::paintEvent(event);
 
 
 #if 0
@@ -884,7 +885,8 @@ void Widget::resizeEvent(QResizeEvent *event)
 
 void Widget::movePlayHistoryWid()
 {
-    historyListTable->setFixedSize(320,this->height() - playSongArea->height());
+    // 为了紧贴右上角，还需要减去4px
+    historyListTable->setFixedSize(320,this->height() - playSongArea->height() -4);
 
     QPoint historyPos = playSongArea->listBtn->mapToGlobal(playSongArea->listBtn->rect().topRight());
     QSize size = historyListTable->size();
@@ -1232,8 +1234,8 @@ void Widget::changeDarkTheme()
     musicListTable->initStyle();
     historyListTable->initStyle();
 //    historyListTable->noRefreshHistory();
-    musicListTable->tableView->setAlternatingRowColors(false);
-    musicListTable->tableView->setShowGrid(false);
+    musicListTable->m_view->setAlternatingRowColors(false);
+//    musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();
@@ -1257,8 +1259,8 @@ void Widget::changeLightTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
-    musicListTable->tableView->setAlternatingRowColors(false);
-    musicListTable->tableView->setShowGrid(false);
+    musicListTable->m_view->setAlternatingRowColors(false);
+//    musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();
     playSongArea->m_playBackModeWid->playModecolor();
     historyListTable->initStyle();

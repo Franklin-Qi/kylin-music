@@ -28,21 +28,20 @@
 class PlaySongArea : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit PlaySongArea(QWidget *parent = nullptr);
-public:
-//    static PlaySongArea& getInstance()
-//    {
-//        static PlaySongArea instance;
-//        return instance;
-//    }
-public:
-     void playcolor();
-public:
-      SliderWidget *m_volSliderWid = nullptr;
-      PlayBackModeWidget *m_playBackModeWid = nullptr;
-      //播放列表
-      QPushButton *listBtn = nullptr;
+
+    SliderWidget *m_volSliderWid = nullptr;
+    PlayBackModeWidget *m_playBackModeWid = nullptr;
+
+    QPushButton *listBtn = nullptr; //播放列表
+
+    void playcolor();
+
+protected:
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+
 Q_SIGNALS:
     void showHistoryListBtnClicked();
     //发送信号播放区我喜欢按钮改变
@@ -57,6 +56,7 @@ Q_SIGNALS:
 //    void signalAddFromFavButton(QString listName);
 //    //按钮从我喜欢删除刷新界面
 //    void signalDelFromFavButton(QString listName);
+
 public Q_SLOTS:
     //上一首
     void slotPrevious();
@@ -118,8 +118,7 @@ public Q_SLOTS:
     void slotHistoryBtnChecked(bool checked);
     //字体
     void slotLableSetFontSize(int size);
-protected:
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+
 private:
     void initWidget();
     void initConnect();
@@ -131,41 +130,28 @@ private:
     void movePlayMenu();
     void listBtnClicked();
     void playMeta();
+
 private:
 
     QHBoxLayout *m_mainLayout = nullptr;
-    //上一首
-    QPushButton *preBtn = nullptr;
-    //播放/暂停
-    QPushButton *playBtn = nullptr;
-    //下一首
-    QPushButton *nextBtn = nullptr;
-    //音量
-    QPushButton *volumeBtn = nullptr;
-    //我喜欢
-    QPushButton *favBtn = nullptr;
-    //播放模式
-    //QPushButton *playModeBtn;
-    QToolButton *playModeBtn = nullptr;
-    //歌词
-    QPushButton *lyricBtn = nullptr;
 
-    //封面
-    QLabel *coverPhotoLabel = nullptr;
-    //正在播放
-    CustomLabel *playingLabel = nullptr;
-    //时长
-    QLabel *timeLabel = nullptr;
-    //播放滑动条
-    MusicSlider *hSlider = nullptr;
-    //保存库解析总时间
-    QString m_time = nullptr;
-    //路径
-    QString filePath = nullptr;
-    //歌单名
-    QString listName = nullptr;
-    //播放模式菜单
-    QMenu *m_playMode = nullptr;
+    QPushButton *preBtn = nullptr;  //上一首
+    QPushButton *playBtn = nullptr; //播放/暂停
+    QPushButton *nextBtn = nullptr; //下一首
+    QPushButton *volumeBtn = nullptr; //音量
+    QPushButton *favBtn = nullptr; //我喜欢
+    QToolButton *playModeBtn = nullptr; //播放模式
+    QPushButton *lyricBtn = nullptr; //歌词
+
+    QLabel *coverPhotoLabel = nullptr; //封面
+    CustomLabel *playingLabel = nullptr; //正在播放
+    QLabel *timeLabel = nullptr; //时长
+    MusicSlider *hSlider = nullptr; //播放滑动条
+    QString m_time = nullptr; //保存库解析总时间
+    QString filePath = nullptr; //路径
+    QString listName = nullptr; //歌单名
+
+    QMenu *m_playMode = nullptr; //播放模式菜单
     QAction *loopAct = nullptr;
     QAction *randomAct = nullptr;
     QAction *currentItemInLoopAct = nullptr;

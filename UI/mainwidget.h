@@ -36,7 +36,7 @@
 #include "UIControl/base/musicDataBase.h"
 #include "UI/tableview/tableone.h"
 #include "UIControl/tableview/musiclistmodel.h"
-#include "UI/tableview/tablebaseview.h"
+#include "UI/tableview/customTreeView.h"
 #include "UI/base/widgetstyle.h"
 #include "UI/sidebar/sidebarwidget.h"
 #include "UI/player/playsongarea.h"

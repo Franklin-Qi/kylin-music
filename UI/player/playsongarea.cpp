@@ -149,7 +149,7 @@ void PlaySongArea::initWidget()
     //历史播放列表
     listBtn = new QPushButton;
     listBtn->setFixedSize(36, 36);
-    listBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击
+//    listBtn->setCheckable(true); //按钮是否是可点击状态，默认不点击 fix: #114350, 历史播放列表图标点击弹出列表后是没有焦点区域
 //    listBtn->setChecked(false);    //只可检查按钮是否是点击状态，保存点击的状态
     listBtn->setCursor(Qt::PointingHandCursor);
     listBtn->setIcon(QIcon::fromTheme("ukui-play-list-symbolic"));

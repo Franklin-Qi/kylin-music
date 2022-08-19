@@ -98,10 +98,10 @@ SOURCES += \
     UI/sidebar/customToolButton.cpp \
     UI/sidebar/leftsiderbarwidget.cpp \
     UI/sidebar/sidebarwidget.cpp \
-    UI/tableview/tablebaseview.cpp \
+    UI/tableview/customTreeView.cpp \
+    UI/tableview/customTreeViewDelegate.cpp \
     UI/tableview/tablehistory.cpp \
     UI/tableview/tableone.cpp \
-    UI/tableview/tableviewdelegate.cpp \
     UI/titlebar/menumodule.cpp \
     UI/titlebar/titlebar.cpp \
     UIControl/base/daemonipcdbus.cpp \
@@ -137,10 +137,10 @@ HEADERS += \
     UI/sidebar/customToolButton.h \
     UI/sidebar/leftsiderbarwidget.h \
     UI/sidebar/sidebarwidget.h \
-    UI/tableview/tablebaseview.h \
+    UI/tableview/customTreeView.h \
+    UI/tableview/customTreeViewDelegate.h \
     UI/tableview/tablehistory.h \
     UI/tableview/tableone.h \
-    UI/tableview/tableviewdelegate.h \
     UI/titlebar/menumodule.h \
     UI/titlebar/titlebar.h \
     UIControl/base/daemonipcdbus.h \

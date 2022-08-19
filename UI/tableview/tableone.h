@@ -24,8 +24,8 @@
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/player/player.h"
-#include "tableviewdelegate.h"
-#include "tablebaseview.h"
+#include "customTreeViewDelegate.h"
+#include "customTreeView.h"
 #include "UIControl/base/musicfileinformation.h"
 #include "UI/base/customLabel.h"
 #include "UI/base/widgetstyle.h"
@@ -37,27 +37,61 @@ class TableOne : public QWidget
 public:
     explicit TableOne(QString listName,QWidget *parent = nullptr);
     ~TableOne();
-public:
-    /// 基于MVC设计模式设计的, C(controllor)控制在Qt中被弱化，与View合并到一起。
-    /// 表格视图控件 V(TableBaseView)，需要和 M(MusicListModel), 配套使用
-    MusicListModel *m_model = nullptr; // 数据模型，不能单独显示出来
-    TableBaseView *tableView = nullptr; // 视图，要来显示数据模型MusicListModel， 歌单列表，包括歌单标题和内容
+
+    /**
+     * 经验一(Tip1)：基于MVC设计模式设计的, C(controllor)控制在Qt中被弱化，与View合并到一起。
+     *
+     * 只有一个数据集 `MusicListModel`，和一个显示视图 `CustomTreeView`；
+     * 但有2种显示方式，分别是在  `tableone.cpp` 和 `tablehistory.cpp`
+     * 2种实现方式是通过设置 `CustomTreeView` 的不同属性来实现的，具体差异可看这两个个文件。
+     *
+     * 其中，`CustomTreeView` 又通过 `CustomTreeViewDelegate` 来设置不同的行宽。
+     */
+    MusicListModel *m_model = nullptr; // 数据模型，不能单独显示出来。可以设置数据文本对齐方式
+    CustomTreeView *m_view = nullptr; // 视图，要来显示数据模型 `MusicListModel`， 歌单列表，包括歌单标题和内容
 
     QLabel *listTitleLabel = nullptr; // 歌单名称
     QString nowListName;
     MusicInfoDialog *infoDialog = nullptr;
+
+    void initStyle();
+    void initUI();
+    void initConnect();
+    void initRightMenu();
+    void showRightMenu(const QPoint &pos);
+
+    void tableViewDoubleClicked();
     void changeNumber();
     void initTableViewStyle();
     void setHightLightAndSelect();
-
     void getMusicList();
-
     void playMusicforIndex(QString listName,int index);
-    //通过列表名和索引值播放相应歌曲
     void showTitleText(QString listName);
 
-    void initStyle();
+    void importFinished(int successCount, int failCount, int allCount);
+    void importFailed(int successCount, int failCount, int allCount);
+
+    void isDeleteSongs();
+    void isDeleteLocalSongs();
+    void deleteSongs();
+    void deleteLocalSongs();
+    void clearSearchList();
+
+    void playSongs();
+    void showInfo();
+
     void addMusicToDatebase(QStringList fileNames);
+    void addToOtherList(QAction *listNameAction);
+    void addMusicSlot();
+    void addDirMusicSlot();
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event)Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+
 public Q_SLOTS:
     void slotSearchTexts(QString text);
     void slotSearchReturnPressed(QString listName);
@@ -65,39 +99,27 @@ public Q_SLOTS:
     void slotFilePath(QString path);
     void slotSongListBySinger(QString singer);
     void slotSongListByAlbum(QString album);
+
+    void selectListChanged(QString listname);
+    void playListRenamed(QString oldName,QString newName);
+    void getHightLightIndex(int index, QString listName);
+
+    void playAll(QString listName);
+    void playAllButtonClicked();
+    void slotReturnText(QString text);
+
+Q_SIGNALS:
+    void sendPathToPlayer(QString fp);
+    void countChanges();
+    void hoverIndexChanged(QModelIndex index);
+    void refreshHistoryListSignal();
+    void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
+    void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
+    void signalListSearch();    //取消侧边栏所有按钮的选中状态
+    void signalSongListHigh();  //高亮左侧歌曲列表按钮
+
+
 private:
-    void initUI();  //初始化ui
-    void initConnect();  //信号绑定
-    void initRightMenu();  //初始化右键菜单
-    void tableViewDoubleClicked();  //双击播放
-
-//    static void deleteImage(const QString &savepath);
-
-    //成功添加多少首歌曲
-    void importFinished(int successCount, int failCount, int allCount);
-    //导入失败
-    void importFailed(int successCount, int failCount, int allCount);
-
-    void showRightMenu(const QPoint &pos);
-
-    void isDeleteSongs(); //是否从歌单中删除歌曲
-    void isDeleteLocalSongs(); //是否从本地删除歌曲
-    void deleteSongs();  //从歌单中删除歌曲
-    void deleteLocalSongs(); //从本地以及歌单中删除歌曲
-
-    void playSongs();
-    void showInfo();
-
-    void addToOtherList(QAction *listNameAction);
-
-    void addMusicSlot(); // 添加歌曲文件槽函数
-    void addDirMusicSlot();  //添加文件夹槽函数
-//    void addMusicToDatebase(QStringList fileNames);
-
-//    void importSongs(QString path);
-
-    void clearSearchList();
-
     QMenu *m_menu = nullptr;  //新建一个Menu属性
     QSqlQueryModel *tableModel = nullptr;
 
@@ -112,7 +134,7 @@ private:
     QAction *addMusicFileAction = nullptr;
     QAction *addDirMusicAction = nullptr;
 
-    TableViewDelegate *delegate = nullptr;
+    CustomTreeViewDelegate *delegate = nullptr;
 
     QHBoxLayout *listTitleHBoxLayout = nullptr;
     QToolButton *addMusicButton = nullptr;  //添加歌曲按钮
@@ -121,33 +143,10 @@ private:
     QLabel *listTotalNumLabel = nullptr; // 统计歌单中歌曲总数
     int heightLightIndex = -1;
     QString nowPlayListName;  //后端播放器中正在播放的列表名
-Q_SIGNALS:
-    void sendPathToPlayer(QString fp);
-    void countChanges();
-    void hoverIndexChanged(QModelIndex index);
-    void refreshHistoryListSignal();
-//    void heightIndexChanged(int index);
-    void addILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中添加歌曲的信号
-    void removeILoveFilepathSignal(QString filePath);  //传递我喜欢歌单中删除歌曲的信号
-    void signalListSearch();    //取消侧边栏所有按钮的选中状态
-    void signalSongListHigh();  //高亮左侧歌曲列表按钮
-public Q_SLOTS:
-    void selectListChanged(QString listname);  //切换歌单
-    void playListRenamed(QString oldName,QString newName);  //歌单重命名
-    void getHightLightIndex(int index, QString listName); //获得正在播放的歌曲索引和歌单名
 
-    void playAll(QString listName);  //播放全部歌曲
-    void playAllButtonClicked();
-    void slotReturnText(QString text);
-protected:
-    void dragEnterEvent(QDragEnterEvent *event)Q_DECL_OVERRIDE;
-    void dropEvent(QDropEvent *event)Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QMouseEvent *event)Q_DECL_OVERRIDE;
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
-    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-private:
-    QWidget *m_musicWidget = nullptr;
-    QVBoxLayout *m_historyLayout = nullptr;
+
+    QWidget *titleWid = nullptr;
+
     QWidget *nullPageWidget = nullptr;
     QVBoxLayout *nullPageVLayout = nullptr;
     QHBoxLayout *nullPageHLayout = nullptr;
@@ -156,8 +155,16 @@ private:
     QLabel *nullPageIconLabel = nullptr;
     QLabel *nullPageTextLabel = nullptr;
 
-    QHeaderView *horizonHeader = nullptr; // 表头内容
-    QWidget *titleWid = nullptr;
+    /**
+     * @brief musicWidget 存放音乐列表treeview的布局，并可根据主题设置样式
+     *
+     * 经验二(Tip2)：当想把一个m_view控件放到一个layout布局中，直接设置layout，可能会出现背景和设计图不符情况。
+     * 这时，可以通过构造一个中间widget来设置layout，这个中间widget可以设置设计师要求的样式，
+     * 并将这个widget添加到主要的布局mainlayout中。
+     */
+    QWidget *musicWidget = nullptr;
+    QVBoxLayout *m_historyLayout = nullptr;
+
 
     int showScrollbarNumber = 10;
     QString m_text;

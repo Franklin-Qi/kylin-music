@@ -23,7 +23,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QHeaderView>
 
-#include "tablebaseview.h"
+#include "customTreeView.h"
 #include "UIControl/tableview/musiclistmodel.h"
 #include "UIControl/base/musicDataBase.h"
 #include "UIControl/player/player.h"
@@ -32,42 +32,50 @@
 class TableHistory : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit TableHistory(QWidget *parent = nullptr);
-    TableBaseView *m_tableHistory = nullptr;
+
     MusicListModel *m_model = nullptr;
-    void changeNumber();
-    void setHighlight(int index);
+    CustomTreeView *m_view = nullptr;
+
+    bool isHightLight = false;
+
+    void initRightMenu();
+    void initSetModel();
+    void initConnect();
     void initStyle();
     void initTableStyle();
-    bool isHightLight = false;
+
+    void changeNumber();
+    void setHighlight(int index);
     void refreshHistoryTable();
     void noRefreshHistory();
     void deleteAllClicked();
     void changePlayHistoryPos(int posX, int posY, int width, int height);
-public Q_SLOTS:
-    void showHistroryPlayList();
-//    void addMusicToHistoryListSlot();
-    void slotPlayIndexChanged(int index, QString listname);
-    void slotPlayPathChanged(QString songPath);
-    //字体
-    void slotLableSetFontSize(int size);
+
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-Q_SIGNALS:
-    void signalHistoryPlaying();
-    void signalHistoryBtnChecked(bool checked);
-private Q_SLOTS:
+
+public Q_SLOTS:
+    void showHistroryPlayList();
+    void slotPlayIndexChanged(int index, QString listname);
+    void slotPlayPathChanged(QString songPath);
+    void slotLableSetFontSize(int size);
+    void playSongsDoubleClicked(QModelIndex index);
     void playSongs();
     void deleteSongs();
     void playNextRowClicked();
     void showRightMenu(const QPoint &pos);
+
+
+Q_SIGNALS:
+    void signalHistoryPlaying();
+    void signalHistoryBtnChecked(bool checked);
+
 private:
-    void initRightMenu();
     QVBoxLayout *mainVLayout = nullptr;
     QHBoxLayout *titleHBoxLayout = nullptr;
-    void initSetModel();
-    void initConnect();
     QLabel *listCountLabel = nullptr;
     QLabel *historyTitileLabel = nullptr;
     QToolButton *deleteAllBtn = nullptr;
@@ -81,12 +89,16 @@ private:
     QString nowPlayListName = "";
     int nowPlayIndex = -1;
 
+
     QWidget *nullPageWidget = nullptr;
     QVBoxLayout *nullPageLayout = nullptr;
     QLabel *nullIconLabel = nullptr;
     QLabel *nullTextLabel = nullptr;
+
     QHeaderView *horizonHeader = nullptr;
-private:
+    QWidget *tableWidget = nullptr; // 歌曲列表Widget,用来包含tableHBoxLayout
+    QHBoxLayout *tableHBoxLayout = nullptr; // 用来包含m_tableHistory
+
     int playHistoryPosX;
     int playHistoryPosY;
     int playHistoryPosWidth;

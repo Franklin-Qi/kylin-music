@@ -15,8 +15,7 @@ TableOne::TableOne(QString listName, QWidget *parent) : QWidget(parent)
     initUI();
     initRightMenu();
     initConnect();
-    initStyle();
-    tableView->setAlternatingRowColors(false);
+//    initStyle();
     qDebug() << "歌曲列表初始化完成";
 }
 
@@ -30,91 +29,81 @@ void TableOne::initStyle()
     listTitleLabel->setStyleSheet("font-weight: 600; line-height: 24px;");
     listTotalNumLabel->setStyleSheet("font-weight: 400;color:#8C8C8C; border:none; line-height: 14px;");
 
-    tableView->setAlternatingRowColors(false);
+    m_view->setAlternatingRowColors(false);
 
-    if (WidgetStyle::themeColor == 1)
-    {
+    if (WidgetStyle::themeColor == 1) {
         nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
         this->setStyleSheet("#TableOne{background:#252526;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#252526;}");
+        musicWidget->setStyleSheet("#musicWidget{background:#252526;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
-        tableView->setStyleSheet("#tableView{background:#252526;border:none;}");
-        //tableView->setAlternatingRowColors(false);
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
+        m_view->setStyleSheet("#tableView{background:#252526;border:none;}"); // 去掉treeview边框
+    } else if(WidgetStyle::themeColor == 0) {
         nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
         this->setStyleSheet("#TableOne{background:#FFFFFF;border:none;}");
         titleWid->setStyleSheet("#titleWid{background:#FFFFFF;}");
+        musicWidget->setStyleSheet("#musicWidget{background:#FFFFFF;}");
         nullPageWidget->setStyleSheet("#nullPageWidget{background:#FFFFFF;}");
-        tableView->setStyleSheet("#tableView{background:#FFFFFF;border:none;}");
-//        // 整个表格样式
-//        tableView->setStyleSheet("#tableView{color: white;  "
-//                                 "background-color: #FFFFFF; alternate-background-color: #FFFFFF; "
-//                                 "selection-color: white; selection-background-color: rgb(77, 77, 77); "
-//                                 "border: 0px groove gray; border-radius: 0px; padding: 10px 2px 10px 2px;"
-//                                 "margin: 10px; }");
+        m_view->setStyleSheet("#tableView{background:#FFFFFF;border:none;}");
     }
 }
 
 void TableOne::initTableViewStyle()
 {
-    if (!tableView->horizontalHeader()->length()) {
+    if (!m_view->header()->length()) {
         return;
     }
-    tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableView->setColumnWidth(3, 80);
-    tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    tableView->verticalHeader()->setVisible(false);// 垂直不可见
-    tableView->verticalHeader()->setDefaultSectionSize(40);
-
-    tableView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-    tableView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-    tableView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
-//    tableView->horizontalHeader()->setSectionResizeMode(3,QHeaderView::setFixedWidth(25));
-    tableView->setAlternatingRowColors(false); // 奇偶行颜色变化
+    m_view->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_view->setColumnWidth(0, 276);
+    m_view->setColumnWidth(1, 138);
+    m_view->setColumnWidth(2, 138);
+    m_view->setColumnWidth(3, 138);
+    m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_view->header()->setEnabled(false); // 设置表头不可用
+//    tableView->header()->setHighlightSections(false);
+    m_view->header()->setFixedHeight(36);
 
 
-    horizonHeader = tableView->horizontalHeader();
-    horizonHeader->setEnabled(false);
-    //m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
-    horizonHeader->setHighlightSections(false);
-    horizonHeader->setFixedHeight(36);
 
-    // 表头内容样式
+    m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
+
+    // 表头内容样式，满足设计图
+#if 1
     if(WidgetStyle::themeColor == 0) {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 25px; \
+        m_view->header()->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left: 5px; \
                                                                 border: none ;border-bottom: 1px solid white;\
                                                                 border-right: 1px solid white;border-bottom: 1px transparent;\
                                                                 background-color:white;color:#8F9399;}");
     } else {
-        horizonHeader->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left:25px; \
+        m_view->header()->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left:5px; \
                                                         border: none;border-bottom: 1px solid #252526;\
                                                         border-right: 1px solid #252526;border-bottom: 1px transparent;\
                                                         background-color:#252526;color:#8F9399;}");
     }
 
-    horizonHeader->setDefaultAlignment(Qt::AlignLeft);
+    m_view->header()->setDefaultAlignment(Qt::AlignLeft);
+#endif
 
     m_model->m_model.setHorizontalHeaderLabels(m_model->titleList);
     //列表刷新，时长右对齐需加到默认表头左对齐之后
     m_model->m_model.horizontalHeaderItem(m_model->titleList.length()-1)->setTextAlignment(Qt::AlignRight);
 
-    tableView->verticalScrollBar()->setStyleSheet("width:25px;");
-    tableView->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+    m_view->verticalScrollBar()->setStyleSheet("width:15px;");
+    m_view->verticalScrollBar()->setProperty("drawScrollBarGroove",false);
+
+#if 0
+    // 由于已经设置了，
     if (m_model->count() <= showScrollbarNumber) {
-        tableView->verticalScrollBar()->setVisible(false);
+        m_view->verticalScrollBar()->setVisible(false);
     } else {
-        tableView->verticalScrollBar()->setVisible(true);
+        m_view->verticalScrollBar()->setVisible(true);
     }
+#endif
 }
 
 void TableOne::initUI()
 {
-    //QVBoxLayout *tableLayout = new QVBoxLayout();
-    //this->setLayout(tableLayout);
-
     listTitleLabel = new QLabel(this);
     listTitleLabel->setAlignment(Qt::AlignBottom);
     listTitleLabel->setMaximumWidth(192);
@@ -140,7 +129,7 @@ void TableOne::initUI()
     listTitleHBoxLayout->addWidget(addMusicButton, 1, Qt::AlignRight);
     listTitleHBoxLayout->addSpacing(16);
     listTitleHBoxLayout->addWidget(playAllButton, 0, Qt::AlignRight);
-    listTitleHBoxLayout->setContentsMargins(25,20,25,30);
+    listTitleHBoxLayout->setContentsMargins(30,20,30,30);
     titleWid->setFixedHeight(95);
 
     playAllButton->setText(tr("Play All"));
@@ -161,22 +150,32 @@ void TableOne::initUI()
     addMusicButton->setMenu(add_menu);
 
 
-    tableView = new TableBaseView();
-    tableView->setObjectName("tableView"); // 可以通过 #tableView 设置样式表
-    tableView->setFocusPolicy(Qt::NoFocus);
-    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers); // 使用右键菜单，需启用该属性
-    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
-    tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
+    m_view = new CustomTreeView(false);
+    m_view->setObjectName("tableView"); // 可以通过 #tableView 设置样式表
+    m_view->setFocusPolicy(Qt::NoFocus);
+    m_view->setEditTriggers(QAbstractItemView::NoEditTriggers); // 使用右键菜单，需启用该属性
+    m_view->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
+    m_view->setSelectionMode(QAbstractItemView::ExtendedSelection);//设置按ctrl键选中多个
     QList<musicDataStruct> resList;
     int ret;
     ret = g_db->getSongInfoListFromDB(resList,nowListName);
-    if(ret == DB_OP_SUCC)
-    {
+    if(ret == DB_OP_SUCC) {
         m_model = new MusicListModel;
         m_model->add(resList);
-        m_model->setView(*tableView);
+        m_model->setView(*m_view);
     }
 
+
+    // 将treeview 放到一个布局中，这样可以调整间隔
+    QHBoxLayout *tableHBoxLayout = new QHBoxLayout();
+    tableHBoxLayout->setSpacing(0);
+    tableHBoxLayout->addWidget(m_view);
+    tableHBoxLayout->setContentsMargins(30, 0, 30, 0);
+
+    // 将布局放到一个widget中，然后可以设置该widget的背景，否则光一个layout会出现其他地方透明
+    musicWidget = new QWidget(this);
+    musicWidget->setObjectName("musicWidget");
+    musicWidget->setLayout(tableHBoxLayout);
 
     nullPageWidget = new QWidget(this);
     nullPageWidget->setObjectName("nullPageWidget");
@@ -222,19 +221,21 @@ void TableOne::initUI()
     nullPageVLayout->setSpacing(0);
     nullPageVLayout->setMargin(0);
 
+
+    initTableViewStyle();
+    listTotalNumLabel->setFixedWidth(120);
+//    listTitleLabel->setFixedWidth(120);
+    showTitleText(nowListName);
+    changeNumber();
+
     QVBoxLayout *tableLayout = new QVBoxLayout();
     tableLayout->addWidget(titleWid, Qt::AlignTop);
-    tableLayout->addWidget(tableView);
+    tableLayout->addWidget(musicWidget);
     tableLayout->addWidget(nullPageWidget);
     tableLayout->setMargin(0);
     tableLayout->setSpacing(0);
     this->setLayout(tableLayout);
 
-    initTableViewStyle();
-//    listTitleLabel->setFixedWidth(120);
-    listTotalNumLabel->setFixedWidth(120);
-    showTitleText(nowListName);
-    changeNumber();
 }
 
 void TableOne::slotLableSetFontSize(int size)
@@ -253,6 +254,11 @@ void TableOne::slotLableSetFontSize(int size)
     }
 }
 
+
+/**
+ * @brief TableOne::showTitleText 通过列表名和索引值播放相应歌曲
+ * @param listName
+ */
 void TableOne::showTitleText(QString listName)
 {
     QFontMetrics fontWidth(listTitleLabel->font());//得到每个字符的宽度
@@ -275,8 +281,9 @@ void TableOne::showTitleText(QString listName)
 }
 void TableOne::initConnect()
 {
-    connect(tableView,&TableBaseView::doubleClicked,this,&TableOne::playSongs);
-    connect(tableView,&TableBaseView::customContextMenuRequested,this,&TableOne::showRightMenu);
+    connect(m_view,&CustomTreeView::doubleClicked,this,&TableOne::playSongs);
+    connect(m_view,&CustomTreeView::doubleClickedSignal,this,&TableOne::playSongs);
+    connect(m_view,&CustomTreeView::customContextMenuRequested,this,&TableOne::showRightMenu);
     connect(addMusicFileAction,&QAction::triggered,this,&TableOne::addMusicSlot);
     connect(addDirMusicAction,&QAction::triggered,this,&TableOne::addDirMusicSlot);
     connect(this,&TableOne::countChanges,this,&TableOne::changeNumber);
@@ -288,7 +295,7 @@ void TableOne::initConnect()
 
 void TableOne::initRightMenu()
 {
-    m_menu = new QMenu(tableView);
+    m_menu = new QMenu(m_view);
 
     playRow = new QAction(tr("Play"));
     removeRow = new QAction(tr("Delete from list"));
@@ -301,18 +308,12 @@ void TableOne::initRightMenu()
     connect(showInfoRow,&QAction::triggered,this,&TableOne::showInfo);
     connect(addToOtherListMenu,&QMenu::triggered,this,&TableOne::addToOtherList);
 
-    //限制应用字体不随着主题变化
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    m_menu->setFont(sizeFont);
-//    addToOtherListMenu->setFont(sizeFont);
-
-    tableView->installEventFilter(this);
+    m_view->installEventFilter(this);
 }
 
 void TableOne::showRightMenu(const QPoint &pos)
 {
-    QModelIndex index = tableView->indexAt(pos);
+    QModelIndex index = m_view->indexAt(pos);
     if(index.row() < 0) {
         return;
     }
@@ -327,43 +328,45 @@ void TableOne::showRightMenu(const QPoint &pos)
     addToOtherListMenu->clear();
     QStringList allList;
     int ret = g_db->getPlayList(allList);
-    if(ret == 0)
-    {
-        for(int i = 0 ;i < allList.size() ;i++)
-        {
-            if(allList[i] == SEARCH)
-            {
+    if(ret == 0) {
+        for(int i = 0 ;i < allList.size() ;i++) {
+            if(allList[i] == SEARCH) {
                 continue;
             }
+
             QAction *listNameAct = new QAction;
             addToOtherListMenu->addAction(listNameAct);
-            if(allList[i] != FAV)
-            {
+            if(allList[i] != FAV) {
                 listNameAct->setText(allList[i]);
-            }
-            else
-            {
+            } else {
                 listNameAct->setText(tr("I Love"));
             }
         }
-    }
-    else
-    {
+    } else {
         qDebug() << "获取所有歌单失败";
     }
-    if(map1.size() > 1)
-    {
+
+    if(map1.size() > 1) {
         m_menu->removeAction(playRow);
         m_menu->removeAction(showInfoRow);
     }
-    if(nowListName == SEARCH)
-    {
+
+    if(nowListName == SEARCH) {
         m_menu->removeAction(removeRow);
         m_menu->removeAction(removeLocalRow);
     }
     m_menu->exec(QCursor::pos());
 }
 
+void TableOne::tableViewDoubleClicked()
+{
+
+}
+
+
+/**
+ * @brief TableOne::isDeleteSongs  是否从歌单中删除歌曲
+ */
 void TableOne::isDeleteSongs()
 {
     //确认将选中的歌曲从歌单中删除？
@@ -383,6 +386,10 @@ void TableOne::isDeleteSongs()
     }
 }
 
+
+/**
+ * @brief TableOne::isDeleteLocalSongs 是否从本地删除歌曲
+ */
 void TableOne::isDeleteLocalSongs()
 {
     //歌曲从本地删除后不可恢复，是否确定删除？
@@ -402,6 +409,10 @@ void TableOne::isDeleteLocalSongs()
 //    }
 }
 
+
+/**
+ * @brief TableOne::deleteSongs  从歌单中删除歌曲
+ */
 void TableOne::deleteSongs()
 {
     QMap<int,QString> map1 = getSelectedTaskIdList();
@@ -447,6 +458,10 @@ void TableOne::deleteSongs()
     Q_EMIT refreshHistoryListSignal();
 }
 
+
+/**
+ * @brief TableOne::deleteLocalSongs 从本地以及歌单中删除歌曲
+ */
 void TableOne::deleteLocalSongs()
 {
     m_map = getSelectedTaskIdList();
@@ -552,7 +567,7 @@ void TableOne::deleteLocalSongs()
 
 void TableOne::playSongs()
 {
-    int index = tableView->currentIndex().row();
+    int index = m_view->currentIndex().row();
 
     m_model->getItem(index);
 
@@ -570,7 +585,7 @@ void TableOne::playMusicforIndex(QString listName, int index)
 }
 void TableOne::showInfo()
 {
-    int index = tableView->currentIndex().row();
+    int index = m_view->currentIndex().row();
     musicDataStruct date = m_model->getItem(index);
     infoDialog = new MusicInfoDialog(date);
 
@@ -615,6 +630,9 @@ void TableOne::addToOtherList(QAction *listNameAction)
 }
 
 
+/**
+ * @brief TableOne::addMusicSlot  添加歌曲文件槽函数
+ */
 void TableOne::addMusicSlot()
 {
     KyInfo() << "addMusicSlot";
@@ -664,6 +682,7 @@ void TableOne::addMusicSlot()
         lists << QUrl(homePath);
         fileDialog->setSidebarUrls(lists);
     });
+
     fileDialog->setSidebarUrls(list + mntUrlList);
     QString setFilter = tr("Audio File") + (" (%1) ");
     setFilter = setFilter.arg(MusicFileInformation::getInstance().getMusicType().join(" "));
@@ -674,22 +693,22 @@ void TableOne::addMusicSlot()
     fileDialog->setFileMode(QFileDialog::ExistingFiles);
     fileDialog->setOption(QFileDialog::HideNameFilterDetails);
     QStringList songFiles;
-    if(QFileDialog::Accepted == fileDialog->exec())
-    {
+    if(QFileDialog::Accepted == fileDialog->exec()) {
         songFiles = fileDialog->selectedFiles();
-    }
-    else
-    {
+    } else {
         return;
     }
 
-    for( int i = 0; i < songFiles.length(); i++ )
-    {
+    for( int i = 0; i < songFiles.length(); i++ ) {
         songFiles.at(i);
     }
     addMusicToDatebase(songFiles);
 }
 
+
+/**
+ * @brief TableOne::addDirMusicSlot   添加文件夹
+ */
 void TableOne::addDirMusicSlot()
 {
     KyInfo() << "addDirMusicSlot";
@@ -809,6 +828,13 @@ void TableOne::addMusicToDatebase(QStringList fileNames)
     qDebug() << "failCount = " << failCount;
 }
 
+
+/**
+ * @brief TableOne::importFinished 成功添加多少首歌曲
+ * @param successCount
+ * @param m_failCount
+ * @param allCount
+ */
 void TableOne::importFinished(int successCount, int m_failCount, int allCount)
 {
 
@@ -839,6 +865,13 @@ void TableOne::importFinished(int successCount, int m_failCount, int allCount)
     }
 }
 
+
+/**
+ * @brief TableOne::importFailed 导入失败
+ * @param successCount
+ * @param m_failCount
+ * @param allCount
+ */
 void TableOne::importFailed(int successCount, int m_failCount, int allCount)
 {
     qDebug() << "allCount = " << allCount;
@@ -858,7 +891,7 @@ void TableOne::importFailed(int successCount, int m_failCount, int allCount)
 
 QMap<int,QString> TableOne::getSelectedTaskIdList()
 {
-    QTableView *m_pTableView = tableView;
+    QTreeView *m_pTableView = m_view;
     QModelIndexList selected = m_pTableView->selectionModel()->selectedRows();
 //    QList<int> rows;
     QMap<int,QString> map1;
@@ -931,7 +964,7 @@ void TableOne::changeNumber()
     }
 
     if(num == 0) {
-        tableView->hide();
+        musicWidget->hide();
         nullPageWidget->show();
 
         //搜索结果为空界面时，添加按钮设置为hide，在这里需要重新处理
@@ -944,7 +977,7 @@ void TableOne::changeNumber()
         addMusicButton->hide();
         playAllButton->hide();
     } else {
-        tableView->show();
+        musicWidget->show();
         nullPageWidget->hide();
         addMusicButton->show();
         playAllButton->show();
@@ -987,9 +1020,14 @@ void TableOne::getMusicList()
     }
 }
 
+
+/**
+ * @brief TableOne::selectListChanged   切换歌单
+ * @param listname
+ */
 void TableOne::selectListChanged(QString listname)
 {
-    tableView->setNowPlayListName(listname);
+    m_view->setNowPlayListName(listname);
     m_model->clear();
     if(listname == tr("Song List")) {
         nowListName = ALLMUSIC;
@@ -1009,6 +1047,12 @@ void TableOne::selectListChanged(QString listname)
     setHightLightAndSelect();
 }
 
+
+/**
+ * @brief TableOne::playListRenamed   歌单重命名
+ * @param oldName
+ * @param newName
+ */
 void TableOne::playListRenamed(QString oldName, QString newName)
 {
     if(listTitleLabel->text() == oldName)
@@ -1018,6 +1062,12 @@ void TableOne::playListRenamed(QString oldName, QString newName)
     }
 }
 
+
+/**
+ * @brief TableOne::getHightLightIndex  获得正在播放的歌曲索引和歌单名
+ * @param index
+ * @param listName
+ */
 void TableOne::getHightLightIndex(int index, QString listName)
 {
     nowPlayListName = listName;
@@ -1031,6 +1081,11 @@ void TableOne::getHightLightIndex(int index, QString listName)
     }
 }
 
+
+/**
+ * @brief TableOne::playAll   播放全部歌曲
+ * @param listName
+ */
 void TableOne::playAll(QString listName)
 {
     if(listName == tr("Song List")) {
@@ -1226,7 +1281,7 @@ void TableOne::dropEvent(QDropEvent *event)
 
 void TableOne::mouseMoveEvent(QMouseEvent *event)
 {
-    QModelIndex index = tableView->indexAt(event->pos());
+    QModelIndex index = m_view->indexAt(event->pos());
 
     Q_EMIT hoverIndexChanged(index);
 }
@@ -1234,7 +1289,7 @@ void TableOne::mouseMoveEvent(QMouseEvent *event)
 void TableOne::resizeEvent(QResizeEvent *event)
 {
     // 使用变量保存tableView一页最多可以完全显示多少条目，实时刷新，实现滑动条的显示和隐藏
-    showScrollbarNumber = tableView->height()/42;
+    showScrollbarNumber = m_view->height()/42;
     initTableViewStyle();
 
     QWidget::resizeEvent(event);
@@ -1252,11 +1307,11 @@ void TableOne::keyPressEvent(QKeyEvent *event)
 //搜索结果关键字通过LineEdit传参得到
 void TableOne::slotSearchTexts(QString text)
 {
-    tableView->setSearchText(text);
+    m_view->setSearchText(text);
 }
 
 //搜索歌单通过LineEdit传参得到
 void TableOne::slotSearchReturnPressed(QString listName)
 {
-    tableView->setSearchListName(listName);
+    m_view->setSearchListName(listName);
 }
