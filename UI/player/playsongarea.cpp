@@ -214,13 +214,14 @@ void PlaySongArea::initWidget()
     playLayout->setMargin(0);
 
     QHBoxLayout *rightLayout = new QHBoxLayout(rightWid);
+    rightLayout->setSpacing(0);
     rightLayout->addStretch(0);
     rightLayout->addWidget(volumeBtn,Qt::AlignRight);
-    rightLayout->addSpacing(8);
+    rightLayout->addSpacing(2);
     rightLayout->addWidget(favBtn,Qt::AlignRight);
-    rightLayout->addSpacing(8);
+    rightLayout->addSpacing(2);
     rightLayout->addWidget(playModeBtn,Qt::AlignRight);
-    rightLayout->addSpacing(8);
+    rightLayout->addSpacing(2);
     rightLayout->addWidget(listBtn,Qt::AlignRight);
     rightLayout->setContentsMargins(0,14,30,14);
     rightLayout->setMargin(0);
