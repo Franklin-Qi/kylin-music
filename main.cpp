@@ -162,7 +162,11 @@ int main(int argc, char *argv[])
 
     int retCmd = handleCmdList(strList, argv);
     if (retCmd == -1) {
-        return -1;
+        // 参数不符合，也应该可以打开应用
+        Widget w(QStringList() << "kylin-music  ");
+        w.show();
+        w.creartFinish();
+        return a.exec();
     } else if (retCmd == 2) {
         return 0;
     }

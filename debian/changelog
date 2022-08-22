@@ -1,3 +1,18 @@
+kylin-music (1.1.0-54) v101; urgency=medium
+
+  * [BUG]
+  - #134726，解决手机助手分类目录下的音乐中的文件无法打开问题
+
+
+  * 需求号： 无
+
+  * 其他改动说明：无
+
+  * 其他改动影响域：无
+
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Mon, 22 Aug 2022 15:27:04 +0800
+
 kylin-music (1.1.0-53) v101; urgency=medium
 
   * [BUG]
