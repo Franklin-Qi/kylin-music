@@ -5,74 +5,74 @@
     <name>CustomToolButton</name>
     <message>
         <source>Play</source>
-        <translation type="unfinished">གཏོང་བ་ </translation>
+        <translation>རྩེད་མོ་རྩེ་བ།</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
+        <translation>མཚམས་འཇོག་པ།</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="unfinished">བསྐྱར་དུ་མིང་བཏགས་པ་ </translation>
+        <translation>མིང་བསྒྱུར་བ།</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">སུབ་པ་ </translation>
+        <translation>བསུབ་པ།</translation>
     </message>
     <message>
         <source>Song List</source>
-        <translation type="unfinished">གླུ་གཞས་རེའུ་མིག་ </translation>
+        <translation>གླུ་གཞས་རེའུ་མིག་</translation>
     </message>
     <message>
         <source>I Love</source>
-        <translation type="unfinished">ང་དགའ་པོ་ཡོད། </translation>
+        <translation>ང་དགའ་པོ་ཡོད།</translation>
     </message>
 </context>
 <context>
     <name>MiniWidget</name>
     <message>
         <source>Music Player</source>
-        <translation type="unfinished">རོལ་དབྱངས། </translation>
+        <translation>རོལ་དབྱངས།</translation>
     </message>
     <message>
         <source>Loop</source>
-        <translation type="unfinished">རེའུ་མིག་རྒྱུན་འཁོར། </translation>
+        <translation>རེའུ་མིག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
         <source>Random</source>
-        <translation type="unfinished">སྐབས་བསྟུན་ཁྱབ་གཏོང་ </translation>
+        <translation>སྐབས་བསྟུན་རང་བཞིན།</translation>
     </message>
     <message>
         <source>Sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>གོ་རིམ།</translation>
     </message>
     <message>
         <source>00:00/00:00</source>
-        <translation type="unfinished">00/00：00 </translation>
+        <translation>00:00/00:00</translation>
     </message>
     <message>
         <source>CurrentItemInLoop</source>
-        <translation type="unfinished">རྐྱང་འཁྱོག་རྒྱུན་འཁོར། </translation>
+        <translation>རྐྱང་འཁྱོག་རྒྱུན་འཁོར།</translation>
     </message>
     <message>
         <source>I Love</source>
-        <translation type="unfinished">ང་དགའ་པོ་ཡོད། </translation>
+        <translation>ང་དགའ་པོ་ཡོད།</translation>
     </message>
     <message>
         <source>Play</source>
-        <translation type="unfinished">གཏོང་བ་ </translation>
+        <translation>རྩེད་མོ་རྩེ་བ།</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
+        <translation>མཚམས་འཇོག་པ།</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>སྒོ་རྒྱག་པ།</translation>
     </message>
     <message>
         <source>Maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>ཚད་གཞི་མཐོ་ཤོས་ཀྱི་སྒོ་ནས</translation>
     </message>
 </context>
 <context>
@@ -227,42 +227,42 @@
     </message>
     <message>
         <source>Play</source>
-        <translation type="unfinished">གཏོང་བ་ </translation>
+        <translation>རྩེད་མོ་རྩེ་བ།</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="unfinished">གནས་སྐབས་མཚམས་འཇོག་ </translation>
+        <translation>མཚམས་འཇོག་པ།</translation>
     </message>
 </context>
 <context>
     <name>PopupDialog</name>
     <message>
         <source>Prompt information</source>
-        <translation type="unfinished">གསལ་འདེབས་ཆ་འཕྲིན། </translation>
+        <translation>མགྱོགས་མྱུར་གྱི་ཆ་འཕྲིན།</translation>
     </message>
     <message>
         <source>Could not contain characters:  / : * ? &quot; &amp; &lt; &gt; |</source>
-        <translation type="unfinished"></translation>
+        <translation>ཡི་གེ་འདུས་མི་ཐུབ་པ། / * &quot; &amp; &lt; &gt; |</translation>
     </message>
     <message>
         <source>Reached upper character limit</source>
-        <translation type="unfinished"></translation>
+        <translation>སྟེང་གི་མི་སྣའི་ཚད་ལ་སླེབས་པ།</translation>
     </message>
     <message>
         <source>Music Player</source>
-        <translation type="unfinished">རོལ་དབྱངས། </translation>
+        <translation>རོལ་དབྱངས།</translation>
     </message>
     <message>
         <source>Confirm</source>
-        <translation type="unfinished">ངོས་འཛིན་ </translation>
+        <translation>གཏན་འཁེལ་བྱ་དགོས།</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">མེད་པར་བཟོ་བ་ </translation>
+        <translation>མེད་པར་བཟོ་བ</translation>
     </message>
     <message>
         <source>Please input playlist name:</source>
-        <translation type="unfinished"></translation>
+        <translation>མིང་ཐོ་འགོད་རོགས།</translation>
     </message>
 </context>
 <context>
@@ -377,7 +377,7 @@
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>ལོ་རྒྱུས།</translation>
     </message>
 </context>
 <context>
@@ -504,19 +504,19 @@
     </message>
     <message>
         <source>Add Music</source>
-        <translation type="unfinished"></translation>
+        <translation>རོལ་དབྱངས་ཁ་སྣོན་བྱས</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>ཁ་ཕྱེ་བའི་ཡིག་ཆ།</translation>
     </message>
     <message>
         <source>Open Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>ཁ་ཕྱེ་བའི་ཡིག་སྣོད</translation>
     </message>
     <message>
         <source> song</source>
-        <translation type="unfinished"></translation>
+        <translation> གླུ་དབྱངས།</translation>
     </message>
 </context>
 <context>
@@ -570,7 +570,7 @@
     </message>
     <message>
         <source>Prompt information</source>
-        <translation type="unfinished">གསལ་འདེབས་ཆ་འཕྲིན། </translation>
+        <translation>གསལ་འདེབས་ཆ་འཕྲིན། </translation>
     </message>
 </context>
 <context>
@@ -621,11 +621,11 @@
     </message>
     <message>
         <source>Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple.</source>
-        <translation type="unfinished"></translation>
+        <translation>རོལ་མོ་དཀྲོལ་མཁན་ནི་སྨྱན་མང་གཟུགས་ཀྱི་ཕྱིར་ལྡོག་མཉེན་ཆས་ཤིག་ཡིན། རོལ་མོའི་རྣམ་གཞག་སྣ་ཚོགས་ཀྱི་རོལ་རྩེད་ཕྱིར་ལྡོག་ཡོ་བྱད་ལ་ཁེབས་པར་བྱ་དགོས།</translation>
     </message>
     <message>
         <source>Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>ཟས་ཐོ།</translation>
     </message>
 </context>
 </TS>
