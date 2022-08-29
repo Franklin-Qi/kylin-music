@@ -500,7 +500,7 @@
     </message>
     <message>
         <source>This format file is not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>རྣམ་གཞག་གི་ཡིག་ཆ་འདི་ལ་རྒྱབ་སྐྱོར་མི་བྱེད།</translation>
     </message>
     <message>
         <source>Add Music</source>
