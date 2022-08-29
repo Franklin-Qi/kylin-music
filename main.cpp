@@ -128,6 +128,13 @@ int main(int argc, char *argv[])
         }
     }
 
+    // 增加sdk藏文翻译
+    if(locale == "bo_CN") {
+        if(kdkTranslator.load(":/translations/gui_bo_CN.qm")) {
+            a.installTranslator(&kdkTranslator);
+        }
+    }
+
     if (QDir("/usr/share/kylin-music/translations").exists()) {
          appTranslationDirectory = "/usr/share/kylin-music/translations";
     } else {
