@@ -1,3 +1,15 @@
+kylin-music (1.1.3-2) jammy; urgency=medium
+
+  * 任务
+  - 109714，音乐fortify代码更改
+
+  * [BUG] 无
+  * 需求号： 无
+  * 其他改动说明： 无
+  * 其他改动影响域：无 
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Tue, 06 Sep 2022 18:04:20 +0800
+
 kylin-music (1.1.3-1) jammy; urgency=medium
 
   *  商业版的代码更新到Debian分支做为2204
