@@ -2,7 +2,7 @@
 
 make clean
 
-rm -rf kylin-music-plugins-simple/build/ \
+rm -rf third_party/build/ \
     kylin-music.pro.user \
     debian/files \
     .qmake.stash \
