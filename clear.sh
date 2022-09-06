@@ -14,4 +14,4 @@ rm -rf .qmake.stash \
 	debian/kylin-music.substvars \
 	debian/kylin-music/ \
 	kylin-music \
-	kylin-music-plugins-simple/build/
+	third_party/build/
