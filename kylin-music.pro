@@ -36,10 +36,10 @@ schemes.files += \
     data/org.ukui.log4qt.kylin-music.gschema.xml
 schemes.path = /usr/share/glib-2.0/schemas/
 
-simple.files = $$PWD/kylin-music-plugins-simple/build/src/libsimple.so
+simple.files = $$PWD/third_party/build/src/libsimple.so
 simple.path = /usr/share/kylin-music
 
-dict.files +=$$PWD/kylin-music-plugins-simple/build/cppjieba/dict
+dict.files +=$$PWD/third_party/build/cppjieba/dict
 dict.path = /usr/bin/
 
 qm_files.files = translations/*.qm
