@@ -16,6 +16,7 @@ public:
     MusicSlider(QWidget *parent = nullptr);
     void isPlaying(bool isPlaying);
     void initStyle();
+    void changeStyleColor();
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

@@ -18,6 +18,7 @@ SliderWidget::SliderWidget(QWidget *parent) : QDialog(parent)
     initUi();
 }
 
+
 void SliderWidget::initUi()
 {
     setFixedSize(30,90);

@@ -1,38 +1,55 @@
 #include "musicslider.h"
 #include "UI/base/widgetstyle.h"
 #include "UIControl/player/player.h"
+#include <QApplication>
 
 MusicSlider::MusicSlider(QWidget *parent):
     QSlider(parent),
     m_isPlaying(false)
 {
-    //现在进度条样式已基本符合要求，但是两端稍微有点瑕疵，暂搁置
-    //逻辑也稍微有点问题，如果不选择歌曲，进度条应该禁止操作
-    //所以将音乐播放进度条独立出来，方便协作和扩展
-
 //    this->installEventFilter(this);
     initStyle();//初始化样式
 }
 
+
+/**
+ * @brief MusicSlider::initStyle
+ * 如果不选择歌曲，进度条应该禁止操作
+ * 所以将音乐播放进度条独立出来，方便协作和扩展
+ */
 void MusicSlider::initStyle()
 {
     this->setFixedHeight(22);
     this->setOrientation(Qt::Horizontal);
 //    this->setMinimum(0);
 //    this->setMaximum(1000);
-    if(WidgetStyle::themeColor == 1) {
-        this->setStyleSheet("QSlider::groove:horizontal{left:0px;right:0px;height: 2px;background: transparent;}"
-                            "QSlider::sub-page:horizontal{background:#3790FA;}"
-                            "QSlider::add-page:horizontal{background:#4D4D4D;}"
-                            );
-    }
-    else if(WidgetStyle::themeColor == 0) {
-        this->setStyleSheet("QSlider::groove:horizontal{left:0px;right:0px;height: 2px;background: transparent;}"
-                            "QSlider::sub-page:horizontal{background:#3790FA;}"
-                            "QSlider::add-page:horizontal{background:#ECEEF5;}"
-                            );
-    }
 
+    changeStyleColor();
+}
+
+void MusicSlider::changeStyleColor()
+{
+    QColor highlight = QApplication::palette().highlight().color();
+    QColor shadow = QApplication::palette().midlight().color();
+    QString highlightStr = QString("#%1%2%3").arg(highlight.red(),2,16,QChar('0')).arg(highlight.green(),2,16,QChar('0')).arg(highlight.blue(),2,16,QChar('0'));
+    QString shadowStr = QString("#%1%2%3").arg(shadow.red(),2,16,QChar('0')).arg(shadow.green(),2,16,QChar('0')).arg(shadow.blue(),2,16,QChar('0'));
+
+//    qDebug() << "highlightStr: " << highlightStr
+//             << "shadowStr: " << shadowStr;
+
+    QString style;
+    if (WidgetStyle::themeColor == 1) {
+        style = QString("QSlider::handle:horizontal{height:6px;background-color:transparent;}"
+                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
+                                "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
+                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr); // //设置滑块已滑过部分
+    } else {
+        style = QString("QSlider::handle:horizontal{height:6px;background-color:transparent;}"
+                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
+                                "QSlider::add-page:horizontal{background:%2;}"
+                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr);
+    }
+    this->setStyleSheet(style);
 }
 
 void MusicSlider::isPlaying(bool isPlaying)
@@ -94,38 +111,29 @@ void MusicSlider::mouseReleaseEvent(QMouseEvent *event)
 
 void MusicSlider::enterEvent(QEvent *event)
 {
-    if(WidgetStyle::themeColor == 1)
-    {
-        this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:0px;right:0px;position: absolute;height: 2px;background: transparent;}"
-                    "QSlider::sub-page:horizontal{background:#3790FA;}"
-                    "QSlider::add-page:horizontal{background:#4D4D4D;}"
-                    "QSlider::handle:horizontal {\
-                            width:12px;\
-                            height:12px;\
-                            margin-top: -5px;\
-                            margin-left: 0px;\
-                            margin-bottom: -5px;\
-                            margin-right: 0px;\
-                            border-image:url(:/img/default/point.png);\
-                    }");
+    QColor highlight = QApplication::palette().highlight().color();
+    QColor shadow = QApplication::palette().midlight().color();
+    QString highlightStr = QString("#%1%2%3").arg(highlight.red(),2,16,QChar('0')).arg(highlight.green(),2,16,QChar('0')).arg(highlight.blue(),2,16,QChar('0'));
+    QString shadowStr = QString("#%1%2%3").arg(shadow.red(),2,16,QChar('0')).arg(shadow.green(),2,16,QChar('0')).arg(shadow.blue(),2,16,QChar('0'));
+
+    QString imageUrl;
+    imageUrl =  QString(":/img/default/point.png)"); // 只用蓝色纯色图片，也可实现不同主题色，很奇特
+
+    QString style;
+    if(WidgetStyle::themeColor == 1) {
+        style = QString("QSlider::handle:horizontal{width:12px; height:12px; margin-top: -5px; margin-left: 0px; margin-bottom: -5px; margin-right: 0px; border-image:url(%3);}"
+                                "QSlider::groove:horizontal{left:0px;right:0px;position:absolute; height:2px;background-color:transparent;}"
+                                "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
+                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
     } else if (WidgetStyle::themeColor == 0){
-        this->setStyleSheet(
-                    "QSlider::groove:horizontal{left:0px;right:0px;position: absolute;height: 2px;background: transparent;}"
-                    "QSlider::sub-page:horizontal{background:#3790FA;}"
-                    "QSlider::add-page:horizontal{background:#ECEEF5;}"
-                    "QSlider::handle:horizontal {\
-                            width:12px;\
-                            height:12px;\
-                            margin-top: -5px;\
-                            margin-left: 0px;\
-                            margin-bottom: -5px;\
-                            margin-right: 0px;\
-                            border-image:url(:/img/default/point.png);\
-                    }"
-                    );
+        style = QString("QSlider::handle:horizontal{width:12px; height:12px; margin-top: -5px; margin-left: 0px; margin-bottom: -5px; margin-right: 0px; border-image:url(%3);}"
+                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:transparent;}"
+                                "QSlider::add-page:horizontal{background:%2;}"
+                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
     }
-//    QSlider::enterEvent(event);
+    this->setStyleSheet(style);
+
+    QSlider::enterEvent(event);
 }
 
 void MusicSlider::leaveEvent(QEvent *event)

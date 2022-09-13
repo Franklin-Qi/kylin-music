@@ -16,7 +16,7 @@ TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
 void TableHistory::initSetModel()
 {
     //禁用界面拖拽
-    this->setProperty("useStyleWindowManager", false);
+//    this->setProperty("useStyleWindowManager", false);
     this->setFixedWidth(320);
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Base);
