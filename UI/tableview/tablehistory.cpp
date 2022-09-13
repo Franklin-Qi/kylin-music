@@ -1,6 +1,8 @@
 #include "tablehistory.h"
 #include "UI/mainwidget.h"
 
+#include <QApplication>
+
 #define PT_15 15
 
 TableHistory::TableHistory(QWidget *parent) : QDialog(parent)
@@ -370,6 +372,12 @@ void TableHistory::changePlayHistoryPos(int posX, int posY, int width, int heigh
     playHistoryPosHeight = height;
 }
 
+
+/**
+ * @brief TableHistory::setHighlight 高亮显示已选择的列表项
+ * 采用高亮显示： QApplication::palette().highlight().color())
+ * @param index
+ */
 void TableHistory::setHighlight(int index)
 {
     if (WidgetStyle::themeColor == 1) {
@@ -384,6 +392,8 @@ void TableHistory::setHighlight(int index)
         return;
     }
 
+    QColor highlightColor(QApplication::palette().highlight().color());
+
     if(WidgetStyle::themeColor == 0) {
         for (int i = 0 ;i<4 ;i++ ) {
             for(int j = 0; j < m_model->count() ; j++) {
@@ -394,7 +404,7 @@ void TableHistory::setHighlight(int index)
 
         if(index != -1) {
             for (int i = 0 ; i<4 ;i++ ) {
-                m_model->m_model.item(index,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+                m_model->m_model.item(index,i)->setData(QBrush(highlightColor),Qt::ForegroundRole);
             }
         }
 
@@ -410,8 +420,7 @@ void TableHistory::setHighlight(int index)
 
         if(index != -1) {
             for (int i = 0 ; i<4 ;i++ ) {
-//                m_model->m_model.item(heightLightIndex,i)->setForeground(QBrush(QColor(55,144,250)));
-                m_model->m_model.item(index,i)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+                m_model->m_model.item(index,i)->setData(QBrush(highlightColor),Qt::ForegroundRole);
             }
         }
     }

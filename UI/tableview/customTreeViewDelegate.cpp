@@ -37,7 +37,6 @@ void CustomTreeViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     return QStyledItemDelegate::paint(painter, option, index);
 
 
-
     const CustomTreeView *tableview = qobject_cast<const CustomTreeView *>(option.widget);
     QString listName = tableview->getNowPlayListName();
 

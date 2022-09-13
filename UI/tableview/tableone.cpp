@@ -1,5 +1,7 @@
 #include <QMimeData>
 #include <QDirIterator>
+#include <QApplication>
+
 #include <peony-qt/file-operation-utils.h>
 #include <ukui-log4qt.h>
 #include "tableone.h"
@@ -904,6 +906,10 @@ QMap<int,QString> TableOne::getSelectedTaskIdList()
     return map1;
 }
 
+/**
+ * @brief TableOne::setHightLightAndSelect 高亮显示已选择的列表项
+ * 采用高亮显示： QApplication::palette().highlight().color())
+ */
 void TableOne::setHightLightAndSelect()
 {
     //列表中歌曲为空时，跳过高亮判断
@@ -942,7 +948,8 @@ void TableOne::setHightLightAndSelect()
             }
             if(heightLightIndex != -1 && nowListName == nowPlayListName) {
                 for (int j=0; j<4; j++) {
-                    m_model->m_model.item(heightLightIndex,j)->setData(QBrush(QColor(55,144,250)),Qt::ForegroundRole);
+                    // 高亮选择highlight
+                    m_model->m_model.item(heightLightIndex,j)->setData(QBrush( QApplication::palette().highlight().color()),Qt::ForegroundRole);
                     m_model->m_model.item(heightLightIndex,j)->setData(QString("heightLight"),Qt::StatusTipRole);
                 }
             }
