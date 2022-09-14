@@ -890,7 +890,7 @@ void PlaySongArea::initStyle()
     playerStateChange(playController::getInstance().getState());
 
     if(WidgetStyle::themeColor == 1) {
-        this->setStyleSheet("#PlaySongArea{background-color:#252526;}");
+        this->setStyleSheet("#PlaySongArea{background-color:#1d1d1d;}");
         preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/lastsong.png);}"
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");

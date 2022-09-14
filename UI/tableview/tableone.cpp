@@ -35,11 +35,11 @@ void TableOne::initStyle()
 
     if (WidgetStyle::themeColor == 1) {
         nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconDark.png").scaled(128, 128));
-        this->setStyleSheet("#TableOne{background:#252526;border:none;}");
-        titleWid->setStyleSheet("#titleWid{background:#252526;}");
-        musicWidget->setStyleSheet("#musicWidget{background:#252526;}");
-        nullPageWidget->setStyleSheet("#nullPageWidget{background:#252526;}");
-        m_view->setStyleSheet("#tableView{background:#252526;border:none;}"); // 去掉treeview边框
+        this->setStyleSheet("#TableOne{background:#1d1d1d;border:none;}");
+        titleWid->setStyleSheet("#titleWid{background:#1d1d1d;}");
+        musicWidget->setStyleSheet("#musicWidget{background:#1d1d1d;}");
+        nullPageWidget->setStyleSheet("#nullPageWidget{background:#1d1d1d;}");
+        m_view->setStyleSheet("#tableView{background:#1d1d1d;border:none;}"); // 去掉treeview边框
     } else if(WidgetStyle::themeColor == 0) {
         nullPageIconLabel->setPixmap(QPixmap(":/img/default/defaultIconLight.png").scaled(128, 128));
         this->setStyleSheet("#TableOne{background:#FFFFFF;border:none;}");
@@ -79,9 +79,9 @@ void TableOne::initTableViewStyle()
                                                                 background-color:white;color:#8F9399;}");
     } else {
         m_view->header()->setStyleSheet("QHeaderView::section,QTableCornerButton::section {padding-left:5px; \
-                                                        border: none;border-bottom: 1px solid #252526;\
-                                                        border-right: 1px solid #252526;border-bottom: 1px transparent;\
-                                                        background-color:#252526;color:#8F9399;}");
+                                                        border: none;border-bottom: 1px solid #1d1d1d;\
+                                                        border-right: 1px solid #1d1d1d;border-bottom: 1px transparent;\
+                                                        background-color:#1d1d1d;color:#8F9399;}");
     }
 
     m_view->header()->setDefaultAlignment(Qt::AlignLeft);
@@ -373,16 +373,11 @@ void TableOne::isDeleteSongs()
 {
     //确认将选中的歌曲从歌单中删除？
     QMessageBox *warn = new QMessageBox(QMessageBox::Warning,tr("Prompt information"),tr("Confirm that the selected song will be deleted from the song list?"),QMessageBox::Yes | QMessageBox::No);
-//    warn->button(QMessageBox::Yes)->setText("确定");
-//    warn->button(QMessageBox::No)->setText("取消");
     int result = warn->exec();
-    if(result == QMessageBox::Yes)
-    {
+    if(result == QMessageBox::Yes) {
         deleteSongs();
         qDebug() << "QMessageBox::Yes";
-    }
-    else
-    {
+    } else {
         qDebug() << "QMessageBox::No";
         return;
     }
