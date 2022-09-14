@@ -153,5 +153,11 @@
         <file>img/list-add-symbolic/list-add-symbolic-click-white.png</file>
         <file>img/list-add-symbolic/list-add-symbolic-click-black.png</file>
         <file>img/list-add-symbolic/list-add-symbolic.svg</file>
+        <file>img/default/media-playback-start-symbolic.svg</file>
+        <file>img/default/media-playback-pause-symbolic.svg</file>
+        <file>img/clicked/media-playback-start-symbolic.svg</file>
+        <file>img/clicked/media-playback-pause-symbolic.svg</file>
+        <file>img/hover/media-playback-start-symbolic.svg</file>
+        <file>img/hover/media-playback-pause-symbolic.svg</file>
     </qresource>
 </RCC>

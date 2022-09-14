@@ -1,4 +1,5 @@
 #include <ukui-log4qt.h>
+#include <QApplication>
 
 #include "playsongarea.h"
 #include "UI/base/widgetstyle.h"
@@ -14,7 +15,7 @@ PlaySongArea::PlaySongArea(QWidget *parent) : QWidget(parent)
     this->setObjectName("PlaySongArea");
     initWidget();
     initConnect();
-    playcolor();
+    initStyle();
 }
 
 void PlaySongArea::initWidget()
@@ -535,23 +536,35 @@ void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
     coverPhotoLabel->setPixmap(pixmap);
 }
 
+
+/**
+ * @brief PlaySongArea::playerStateChange 切换播放、暂停按钮样式
+ * 使用 background-color: palette(highlight); 来实现主题高亮色切换
+ * QApplication::palette().highlight().color() 也是实现主题高亮色切换的方式
+ * @param newState
+ */
 void PlaySongArea::playerStateChange(playController::PlayState newState)
 {
+
+    QString playDefaultIcon(":/img/default/media-playback-start-symbolic.svg");
+    QString playHoverIcon(":/img/hover/media-playback-start-symbolic.svg");
+    QString playClickedIcon(":/img/clicked/media-playback-start-symbolic.svg");
+
+    QString pauseDefaultIcon(":/img/default/media-playback-pause-symbolic.svg");
+    QString pauseHoverIcon(":/img/hover/media-playback-pause-symbolic.svg");
+    QString pauseClickedIcon(":/img/clicked/media-playback-pause-symbolic.svg");
+
     if(newState == playController::PlayState::PLAY_STATE) {
         playBtn->setToolTip(tr("Play"));
-        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
-                               "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
-                               "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-    } else if(newState == playController::PlayState::PAUSED_STATE) {
+        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;border-image:url(%1);}"
+                                       "QPushButton::hover{border-image:url(%2);}"
+                                       "QPushButton::pressed{border-image:url(%3);}").arg(pauseDefaultIcon).arg(pauseHoverIcon).arg(pauseClickedIcon));
+    } else if((newState == playController::PlayState::PAUSED_STATE)
+              ||(newState == playController::PlayState::STOP_STATE)) {
         playBtn->setToolTip(tr("Pause"));
-        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                            "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                             "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-    } else if(newState == playController::PlayState::STOP_STATE) {
-        playBtn->setToolTip(tr("Pause"));
-        playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                            "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                             "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
+        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;border-image:url(%1);}"
+                                       "QPushButton::hover{border-image:url(%2);}"
+                                       "QPushButton::pressed{border-image:url(%3);}").arg(playDefaultIcon).arg(playHoverIcon).arg(playClickedIcon));
     }
 }
 
@@ -857,31 +870,16 @@ void PlaySongArea::slotFavBtnChange(QString filePath)
     }
 }
 
-void PlaySongArea::playcolor()
+void PlaySongArea::initStyle()
 {
-    if(WidgetStyle::themeColor == 1)
-    {
+    playerStateChange(playController::getInstance().getState());
+
+    if(WidgetStyle::themeColor == 1) {
         this->setStyleSheet("#PlaySongArea{background-color:#252526;}");
         preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/lastsong.png);}"
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
-            playBtn->setToolTip(tr("Play"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
-                                   "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
-                                   "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
-            playBtn->setToolTip(tr("Pause"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                 "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
-            playBtn->setToolTip(tr("Pause"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                 "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
 
         nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/dark/nextsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
@@ -889,50 +887,23 @@ void PlaySongArea::playcolor()
 
         slotFavExixtsDark();
 
-//        listBtn->setIcon(QIcon(":/img/dark/icon_songlist_h@2x.png"));
-//        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/dark/icon_songlist_h@2x.png);}"
-//                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
-//                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
-
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 
         playingLabel->setStyleSheet("color:#F9F9F9;line-height:14px;");
 
         hSlider->initStyle();
-    }
-    else if(WidgetStyle::themeColor == 0)
-    {
+    } else if(WidgetStyle::themeColor == 0) {
         this->setStyleSheet("#PlaySongArea{background-color:#FFFFFF;}");
         preBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/lastsong.png);}"
                               "QPushButton::hover{border-image:url(:/img/hover/lastsong.png);}"
                               "QPushButton::pressed{border-image:url(:/img/clicked/lastsong.png);}");
 
-        if(playController::getInstance().getState() == playController::PlayState::PLAY_STATE) {
-            playBtn->setToolTip(tr("Play"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/pause2.png);}"
-                                   "QPushButton::hover{border-image:url(:/img/hover/pause2.png);}"
-                                   "QPushButton::pressed{border-image:url(:/img/clicked/pause2.png);}");
-        } else if(playController::getInstance().getState() == playController::PlayState::PAUSED_STATE) {
-            playBtn->setToolTip(tr("Pause"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                 "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        } else if(playController::getInstance().getState() == playController::PlayState::STOP_STATE) {
-            playBtn->setToolTip(tr("Pause"));
-            playBtn->setStyleSheet("QPushButton{border-radius:17px;border-image:url(:/img/default/play2.png);}"
-                                "QPushButton::hover{border-image:url(:/img/hover/play2.png);}"
-                                 "QPushButton::pressed{border-image:url(:/img/clicked/play2.png);}");
-        }
 
         nextBtn->setStyleSheet("QPushButton{background:transparent;border-radius:15px;border-image:url(:/img/default/nextsong.png);}"
                                "QPushButton::hover{border-image:url(:/img/hover/nextsong.png);}"
                                "QPushButton::pressed{border-image:url(:/img/clicked/nextsong.png);}");
 
         slotFavExixts();
-
-//        listBtn->setStyleSheet("QPushButton{background:transparent;border-image:url(:/img/default/songlist.png)}"
-//                               "QPushButton::hover{border-image:url(:/img/clicked/songlist.png);}"
-//                               "QPushButton::checked{border-image:url(:/img/clicked/songlist.png);}");
 
         coverPhotoLabel->setStyleSheet("background:transparent;border-image:url(:/img/fengmian.png);");
 

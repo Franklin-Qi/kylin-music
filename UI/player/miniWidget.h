@@ -87,7 +87,7 @@ private:
     void initAction();
     void initConnect();
     //初始化样式
-    void initStyle();
+    void initFocusStyle();
     //通过路径查询歌曲的title和时长
     void songInfo(QString path);
     //显示时长
@@ -134,7 +134,7 @@ public:
     CustomLabel *m_songNameLab = nullptr;
     QLabel *m_timeLab = nullptr;
 
-    void minicolor();
+    void initStyle();
 
     QMenu *playModeMenu = nullptr;
     QAction *playMode_Sequential_Action = nullptr;

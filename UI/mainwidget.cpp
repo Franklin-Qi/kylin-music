@@ -1226,8 +1226,8 @@ void Widget::changeDarkTheme()
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
-    playSongArea->playcolor();
-    m_miniWidget->minicolor();
+    playSongArea->initStyle();
+    m_miniWidget->initStyle();
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
@@ -1253,8 +1253,8 @@ void Widget::changeLightTheme()
     sideBarWid->newSonglistPup->dlgcolor();
     sideBarWid->renameSongListPup->dlgcolor();
     sideBarWid->sidecolor();
-    playSongArea->playcolor();
-    m_miniWidget->minicolor();
+    playSongArea->initStyle();
+    m_miniWidget->initStyle();
     m_titleBar->titlecolor();
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();

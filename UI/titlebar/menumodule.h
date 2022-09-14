@@ -21,8 +21,11 @@
 #include <QMetaEnum>
 #include <QDesktopServices>
 #include <QUrl>
+
 #include "UIControl/base/daemonipcdbus.h"
 #include "UI/base/widgetstyle.h"
+#include "kaboutdialog.h"
+
 class menuModule : public QWidget
 {
     Q_OBJECT
@@ -46,7 +49,7 @@ public:
 //    程序在实例化的时候需要传递的信息字段,打开debug开关后这些字段会被自动填充
     QString appName = "kylin-music"; //格式kylin-usb-creator
 //    QString appShowingName = tr("kylin music"); //格式kylin usb creator ,用来在前端展示
-    QString appVersion = "1.1.0";
+//    QString appVersion = "1.1.0";
     QString appDesc = "appDesc字段未填充";
     QString iconPath = ":/img/kylin-music.png";
     QString confPath = "org.kylin-music-data.settings";
@@ -56,16 +59,19 @@ private:
     QMenu *themeMenu = nullptr;
     QSize iconSize;
     QString appPath = "tools/kylin-music"; //拉起帮助菜单时使用appName字段
-    QWidget *aboutWindow = nullptr;
+
+    QString appShowingName = tr("kylin-music");
+    QString appVersion = qApp->applicationVersion();
+    kdk::KAboutDialog *m_aboutWindow = nullptr; // 关于界面
+
     QGSettings *m_pGsettingThemeData = nullptr;
     QGSettings *m_pGsettingThemeStatus = nullptr;
+
 public Q_SLOTS:
     void dealSystemGsettingChange(const QString);
     void slotLableSetFontSize(int size);
 private:
     void init();
-    QHBoxLayout* initTitleBar(); //关于窗口标题栏初始化
-    QVBoxLayout* initBody();    // 关于窗口body初始化
     void initGsetting();
     void initAction();
     void setStyle();

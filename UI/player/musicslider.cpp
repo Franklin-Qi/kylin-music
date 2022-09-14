@@ -40,14 +40,14 @@ void MusicSlider::changeStyleColor()
     QString style;
     if (WidgetStyle::themeColor == 1) {
         style = QString("QSlider::handle:horizontal{height:6px;background-color:transparent;}"
-                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
-                                "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
-                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr); // //设置滑块已滑过部分
+                        "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
+                        "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
+                        "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr); // //设置滑块已滑过部分
     } else {
         style = QString("QSlider::handle:horizontal{height:6px;background-color:transparent;}"
-                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
-                                "QSlider::add-page:horizontal{background:%2;}"
-                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr);
+                        "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:%2;}"
+                        "QSlider::add-page:horizontal{background:%2;}"
+                        "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr);
     }
     this->setStyleSheet(style);
 }
@@ -116,24 +116,23 @@ void MusicSlider::enterEvent(QEvent *event)
     QString highlightStr = QString("#%1%2%3").arg(highlight.red(),2,16,QChar('0')).arg(highlight.green(),2,16,QChar('0')).arg(highlight.blue(),2,16,QChar('0'));
     QString shadowStr = QString("#%1%2%3").arg(shadow.red(),2,16,QChar('0')).arg(shadow.green(),2,16,QChar('0')).arg(shadow.blue(),2,16,QChar('0'));
 
-    QString imageUrl;
-    imageUrl =  QString(":/img/default/point.png)"); // 只用蓝色纯色图片，也可实现不同主题色，很奇特
+    QString imageUrl(":/img/default/point.png)"); // 只用蓝色纯色图片，也可实现不同主题色，很奇特
 
     QString style;
     if(WidgetStyle::themeColor == 1) {
         style = QString("QSlider::handle:horizontal{width:12px; height:12px; margin-top: -5px; margin-left: 0px; margin-bottom: -5px; margin-right: 0px; border-image:url(%3);}"
-                                "QSlider::groove:horizontal{left:0px;right:0px;position:absolute; height:2px;background-color:transparent;}"
-                                "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
-                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
+                        "QSlider::groove:horizontal{left:0px;right:0px;position:absolute; height:2px;background-color:transparent;}"
+                        "QSlider::add-page:horizontal{background:%2;}" //设置滑块未滑过部分
+                        "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
     } else if (WidgetStyle::themeColor == 0){
         style = QString("QSlider::handle:horizontal{width:12px; height:12px; margin-top: -5px; margin-left: 0px; margin-bottom: -5px; margin-right: 0px; border-image:url(%3);}"
-                                "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:transparent;}"
-                                "QSlider::add-page:horizontal{background:%2;}"
-                                "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
+                        "QSlider::groove:horizontal{left:0px;right:0px;height:2px;background-color:transparent;}"
+                        "QSlider::add-page:horizontal{background:%2;}"
+                        "QSlider::sub-page:horizontal{background:%1;}").arg(highlightStr).arg(shadowStr).arg(imageUrl); // //设置滑块已滑过部分
     }
     this->setStyleSheet(style);
 
-    QSlider::enterEvent(event);
+//    QSlider::enterEvent(event);
 }
 
 void MusicSlider::leaveEvent(QEvent *event)

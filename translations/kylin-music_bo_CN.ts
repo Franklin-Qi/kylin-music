@@ -593,7 +593,7 @@
     </message>
     <message>
         <source>Music Player</source>
-        <translation>རོལ་དབྱངས། </translation>
+        <translation type="vanished">རོལ་དབྱངས། </translation>
     </message>
     <message>
         <source>About</source>
@@ -626,6 +626,10 @@
     <message>
         <source>Menu</source>
         <translation>ཟས་ཐོ།</translation>
+    </message>
+    <message>
+        <source>kylin-music</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -37,7 +37,7 @@ public:
 
     QPushButton *listBtn = nullptr; //播放列表
 
-    void playcolor();
+    void initStyle();
 
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;

@@ -17,9 +17,6 @@ void menuModule::init()
 
 void menuModule::initAction()
 {
-    aboutWindow = new QWidget();
-    aboutWindow->setAutoFillBackground(true);
-    aboutWindow->setBackgroundRole(QPalette::Base);
     titleText = new QLabel();
     bodyAppName = new QLabel();
     bodyAppVersion = new QLabel();
@@ -186,60 +183,16 @@ void menuModule::helpAction()
 
 void menuModule::initAbout()
 {
-    aboutWindow->setWindowModality(Qt::ApplicationModal);
-    aboutWindow->setWindowFlag(Qt::Tool);
-    MotifWmHints hints;
-    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-    hints.functions = MWM_FUNC_ALL;
-    hints.decorations = MWM_DECOR_BORDER;
-    XAtomHelper::getInstance()->setWindowMotifHint(aboutWindow->winId(), hints);
-    aboutWindow->setFixedSize(420,390);
-    QVBoxLayout *mainlyt = new QVBoxLayout();
-    QHBoxLayout *titleLyt = initTitleBar();
-    QVBoxLayout *bodylyt = initBody();
-    mainlyt->setMargin(0);
-    mainlyt->addLayout(titleLyt);
-    mainlyt->addLayout(bodylyt);
-    mainlyt->addStretch();
-    aboutWindow->setLayout(mainlyt);
-    //TODO:在屏幕中央显示
-//    QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
-//    aboutWindow->move((availableGeometry.width()-aboutWindow->width())/2,(availableGeometry.height()- aboutWindow->height())/2);
-    //弹窗位置应用居中
-    QRect availableGeometry = Widget::mutual->geometry();
-    aboutWindow->move(availableGeometry.center() - aboutWindow->rect().center());
-    aboutWindow->show();
+    m_aboutWindow = new kdk::KAboutDialog(this,QIcon::fromTheme("kylin-music"),tr(appShowingName.toLocal8Bit()),tr("Version: ") + APP_VERSION);
+    m_aboutWindow->setBodyText(tr("Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple."));
+    m_aboutWindow->setBodyTextVisiable(false);
+    m_aboutWindow->setWindowModality(Qt::WindowModal);
+    m_aboutWindow->setWindowModality(Qt::ApplicationModal);
+
+    m_aboutWindow->show();
+    m_aboutWindow->exec();
 }
 
-QHBoxLayout* menuModule::initTitleBar()
-{
-    QPushButton* titleIcon = new QPushButton();
-    QPushButton *titleBtnClose = new QPushButton;
-    titleIcon->setFixedSize(24,24);
-    titleIcon->setIconSize(QSize(25,25));
-    titleIcon->setIcon(QIcon::fromTheme("kylin-music"));
-    titleIcon->setStyleSheet("QPushButton{border:0px;background:transparent;}"
-                             "QPushButton::hover{border:0px;background:transparent;}"
-                             "QPushButton::pressed{border:0px;background:transparent;}");
-
-    titleBtnClose->setFixedSize(30,30);
-    titleBtnClose->setIcon(QIcon::fromTheme("window-close-symbolic"));
-    titleBtnClose->setProperty("isWindowButton",0x2);
-    titleBtnClose->setProperty("useIconHighlightEffect",0x8);
-    titleBtnClose->setFlat(true);
-    connect(titleBtnClose,&QPushButton::clicked,[=](){aboutWindow->close();});
-    QHBoxLayout *hlyt = new QHBoxLayout;
-    titleText->setText(tr("Music Player"));
-    hlyt->setSpacing(0);
-    hlyt->setMargin(4);
-    hlyt->addSpacing(4);
-    hlyt->addWidget(titleIcon,0,Qt::AlignBottom); //居下显示
-    hlyt->addSpacing(8);
-    hlyt->addWidget(titleText,0,Qt::AlignBottom);
-    hlyt->addStretch();
-    hlyt->addWidget(titleBtnClose,0,Qt::AlignBottom);
-    return hlyt;
-}
 
 void menuModule::slotLableSetFontSize(int size)
 {
@@ -251,42 +204,6 @@ void menuModule::slotLableSetFontSize(int size)
     bodyAppName->setFont(font);
 }
 
-QVBoxLayout* menuModule::initBody()
-{
-    QPushButton* bodyIcon = new QPushButton();
-    bodyIcon->setFixedSize(96,94);
-    bodyIcon->setIconSize(QSize(96,94));
-    bodyIcon->setIcon(QIcon::fromTheme("kylin-music"));
-    bodyIcon->setStyleSheet("QPushButton{border:0px;background:transparent;}"
-                            "QPushButton::hover{border:0px;background:transparent;}"
-                            "QPushButton::pressed{border:0px;background:transparent;}");
-
-    bodyAppDescribe->setText(tr("Music player is a multimedia playback software.Cover Various music formats Playback tools for,fast and simple."));
-    bodyAppDescribe->setFixedSize(380, 86);
-    bodyAppDescribe->setWordWrap(true);
-    bodyAppName->setText(tr("Music Player"));
-
-    bodyAppVersion->setText(tr("Version: ") + appVersion);
-    bodyAppVersion->setAlignment(Qt::AlignLeft);
-
-    connect(bodySupport,&QLabel::linkActivated,this,[=](const QString url){
-        QDesktopServices::openUrl(QUrl(url));
-    });
-    bodySupport->setContextMenuPolicy(Qt::NoContextMenu);
-    bodySupport->setFixedHeight(30);
-    QVBoxLayout *vlyt = new QVBoxLayout;
-    vlyt->addWidget(bodyIcon,0,Qt::AlignHCenter);
-    vlyt->addSpacing(5);
-    vlyt->addWidget(bodyAppName,0,Qt::AlignHCenter);
-    vlyt->addSpacing(5);
-    vlyt->addWidget(bodyAppVersion,0,Qt::AlignHCenter);
-    vlyt->addSpacing(5);
-    vlyt->addWidget(bodyAppDescribe,0,Qt::AlignLeft);
-    vlyt->addSpacing(5);
-    vlyt->addWidget(bodySupport,0,Qt::AlignLeft);
-    vlyt->setContentsMargins(20,10,20,10);
-    return vlyt;
-}
 
 void menuModule::setStyle()
 {

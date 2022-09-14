@@ -17,6 +17,10 @@ LIBS += -L/usr/lib/libukui-log4qt.so.1.0.0 -lukui-log4qt
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+# about widget version
+VERSION = 1.1.0-55
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
 TRANSLATIONS += \
             translations/kylin-music_zh_CN.ts \
             translations/kylin-music_bo_CN.ts
