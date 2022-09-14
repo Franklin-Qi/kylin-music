@@ -86,6 +86,7 @@ SOURCES += \
     UI/base/popupDialog.cpp \
     UI/base/widgetstyle.cpp \
     UI/dbusadapter.cpp \
+    UI/globalsignal.cpp \
     UI/mainwidget.cpp \
     UI/player/miniWidget.cpp \
     UI/player/musicslider.cpp \
@@ -125,6 +126,7 @@ HEADERS += \
     UI/base/popupDialog.h \
     UI/base/widgetstyle.h \
     UI/dbusadapter.h \
+    UI/globalsignal.h \
     UI/mainwidget.h \
     UI/player/miniWidget.h \
     UI/player/musicslider.h \

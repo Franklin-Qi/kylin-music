@@ -2,6 +2,7 @@
 #include <QDBusMessage>
 #include "mainwidget.h"
 #include "UI/base/xatom-helper.h"
+#include "UI/globalsignal.h"
 #include <ukui-log4qt.h>
 #include <KWindowEffects>
 
@@ -733,6 +734,7 @@ void Widget::allConnect()
     connect(m_titleBar->searchEdit,&SearchEdit::signalReturnPressed,musicListTable,&TableOne::slotSearchReturnPressed);
     connect(m_titleBar->miniBtn,&QPushButton::clicked,this,&Widget::slotShowMiniWidget);
     connect(m_titleBar->closeBtn,&QPushButton::clicked,this,&Widget::slotClose);
+    connect(g_user_signal, &GlobalUserSignal::sigExit, this, &Widget::slotClose);
     connect(m_titleBar->minimumBtn,&QPushButton::clicked,this,&Widget::slotShowMinimized);
     connect(m_titleBar->maximumBtn,&QPushButton::clicked,this,&Widget::slotShowMaximized);
 
@@ -1042,7 +1044,7 @@ void Widget::moveWidget(QString newWidth, QString newHeight)
 void Widget::slotClose()
 {
     interface->call("Uninhibit", m_inhibitValue);
-    this->close();
+    exit(0);
 }
 
 void Widget::slotShowMinimized()

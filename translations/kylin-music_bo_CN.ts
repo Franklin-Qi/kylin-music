@@ -589,7 +589,7 @@
     </message>
     <message>
         <source>Quit</source>
-        <translation>ཕྱིར་འབུད་ </translation>
+        <translation type="vanished">ཕྱིར་འབུད་ </translation>
     </message>
     <message>
         <source>Music Player</source>
@@ -613,7 +613,7 @@
     </message>
     <message>
         <source>Service &amp; Support: </source>
-        <translation>ཞབས་ཞུ་དང་རྒྱབ་སྐྱོར་ཚོགས་པ། </translation>
+        <translation type="vanished">ཞབས་ཞུ་དང་རྒྱབ་སྐྱོར་ཚོགས་པ། </translation>
     </message>
     <message>
         <source>Version: </source>
@@ -629,6 +629,10 @@
     </message>
     <message>
         <source>kylin-music</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

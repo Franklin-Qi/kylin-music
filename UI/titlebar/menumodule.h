@@ -40,8 +40,8 @@ public:
     } themeStatus;
 
 Q_SIGNALS:
-    void menuModuleClose();
     void menuModuleSetThemeStyle(QString);
+
 public:
     QToolButton *menuButton = nullptr;
 
@@ -85,13 +85,8 @@ private:
     void setThemeStyle();
     void setThemeLight();
     DaemonIpcDbus *ipcDbus;
+
     void setThemeDark();
-    QLabel* titleText = nullptr;
-    QLabel* bodyAppName = nullptr;
-    QLabel* bodyAppVersion = nullptr;
-    QLabel* bodyAppDescribe = nullptr;
-    QLabel* bodySupport = nullptr;
-//    void updateTheme(); //点击菜单中的主题设置后更新一次主题
     QVBoxLayout *mainlyt = nullptr;
 
     void refreshThemeBySystemConf();    //通过系统配置更改主题

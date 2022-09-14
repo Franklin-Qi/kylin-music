@@ -1,6 +1,7 @@
 #include "menumodule.h"
 #include "UI/mainwidget.h"
 #include "UI/base/xatom-helper.h"
+#include "UI/globalsignal.h"
 
 #define PT_14 14
 
@@ -17,12 +18,6 @@ void menuModule::init()
 
 void menuModule::initAction()
 {
-    titleText = new QLabel();
-    bodyAppName = new QLabel();
-    bodyAppVersion = new QLabel();
-    bodyAppDescribe = new QLabel();
-    bodySupport = new QLabel();
-
     menuButton = new QToolButton;
     menuButton->setToolTip(tr("Menu"));
     menuButton->setProperty("isWindowButton", 0x1);
@@ -42,34 +37,38 @@ void menuModule::initAction()
     actionHelp->setText(tr("Help"));
     QAction *actionAbout = new QAction(m_menu);
     actionAbout->setText(tr("About"));
-    actions<<actionHelp<<actionAbout;
+    QAction *actionExit = new QAction(m_menu);
+    actionExit->setText(tr("Exit"));
+
+    actions << actionHelp << actionAbout << actionExit;
     m_menu->addActions(actions);
 
 //    互斥按钮组
     QMenu *themeMenu = new QMenu;
     QActionGroup *themeMenuGroup = new QActionGroup(this);
     QAction *autoTheme = new QAction(tr("Auto"),this);
-    autoTheme->setObjectName("Auto");//用TEXT判断有风险
+    autoTheme->setObjectName("Auto");
     themeMenuGroup->addAction(autoTheme);
     themeMenu->addAction(autoTheme);
     autoTheme->setCheckable(true);
     QAction *lightTheme = new QAction(tr("Light"),this);
-    lightTheme->setObjectName("Light");//用TEXT判断有风险
+    lightTheme->setObjectName("Light");
     lightTheme->setCheckable(true);
     QAction *darkTheme = new QAction(tr("Dark"),this);
-    darkTheme->setObjectName("Dark");//用TEXT判断有风险
+    darkTheme->setObjectName("Dark");
     darkTheme->setCheckable(true);
     QList<QAction* > themeActions;
     themeActions<<autoTheme<<lightTheme<<darkTheme;
     actionTheme->setMenu(themeMenu);
 
     menuButton->setMenu(m_menu);
-    connect(m_menu,&QMenu::triggered,this,&menuModule::triggerMenu);
+
     initGsetting();
     setThemeFromLocalThemeSetting(themeActions);
     themeUpdate();
-    connect(themeMenu,&QMenu::triggered,this,&menuModule::triggerThemeMenu);
 
+    connect(m_menu,&QMenu::triggered,this,&menuModule::triggerMenu);
+    connect(themeMenu,&QMenu::triggered,this,&menuModule::triggerThemeMenu);
     //键盘F1响应唤出用户手册绑定
     connect(Widget::mutual,&Widget::signalShowGuide,this,&menuModule::helpAction);
 }
@@ -117,8 +116,8 @@ void menuModule::triggerMenu(QAction *act)
 {
     QString str = act->text();
 
-    if (tr("Quit") == str){
-        Q_EMIT menuModuleClose();
+    if (tr("Exit") == str){
+        emit g_user_signal->exitApp();
     } else if (tr("About") == str){
         aboutAction();
     } else if (tr("Help") == str){
@@ -201,7 +200,6 @@ void menuModule::slotLableSetFontSize(int size)
     double nowFontSize = lableBaseFontSize * double(size) / 11;//11为系统默认大小，魔鬼数字，自行处理
     QFont font;
     font.setPointSizeF(nowFontSize);
-    bodyAppName->setFont(font);
 }
 
 
@@ -238,18 +236,10 @@ void menuModule::refreshThemeBySystemConf()
 void menuModule::setThemeDark()
 {
     Q_EMIT menuModuleSetThemeStyle("dark-theme");
-    bodySupport->setText(tr("Service & Support: ") +
-                         "<a href=\"mailto://support@kylinos.cn\""
-                         "style=\"color:rgba(225,225,225,1)\">"
-                         "support@kylinos.cn</a>");
 }
 
 void menuModule::setThemeLight()
 {
     Q_EMIT menuModuleSetThemeStyle("light-theme");
-    bodySupport->setText(tr("Service & Support: ") +
-                         "<a href=\"mailto://support@kylinos.cn\""
-                         "style=\"color:rgba(0,0,0,1)\">"
-                         "support@kylinos.cn</a>");
 
 }
