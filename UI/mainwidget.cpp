@@ -1232,8 +1232,6 @@ void Widget::changeDarkTheme()
     musicListTable->initTableViewStyle();
     musicListTable->setHightLightAndSelect();
     musicListTable->initStyle();
-    historyListTable->initStyle();
-//    historyListTable->noRefreshHistory();
     musicListTable->m_view->setAlternatingRowColors(false);
 //    musicListTable->tableView->setShowGrid(false);
     playSongArea->m_volSliderWid->initColor();

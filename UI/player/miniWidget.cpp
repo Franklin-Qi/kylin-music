@@ -423,26 +423,41 @@ void MiniWidget::initConnect()
 
 void MiniWidget::playerStateChange(playController::PlayState newState)
 {
-    QString playDefaultIcon(":/img/default/play2.png");
-    QString playHoverIcon(":/img/hover/play2.png");
-    QString playClickedIcon(":/img/clicked/play2.png");
+    QString playDefaultIcon(":/img/default/media-playback-start-symbolic.svg");
+    QString pauseDefaultIcon(":/img/default/media-playback-pause-symbolic.svg");
 
-    QString pauseDefaultIcon(":/img/default/pause2.png");
-    QString pauseHoverIcon(":/img/hover/pause2.png");
-    QString pauseClickedIcon(":/img/clicked/pause2.png");
+    // 设置按钮高亮色的鼠标划过透明度
+    QColor highlightColor(QApplication::palette().highlight().color());
+    qreal r,g,b,a;
+    r = highlightColor.redF();
+    g = highlightColor.greenF();
+    b = highlightColor.blueF();
+    a = 0.8;
+    QColor color = QColor::fromRgbF(r, g, b, a);
+    QString hoverColor = QString("rgba(%1, %2, %3, %4)").arg(color.red()) .arg(color.green()) .arg(color.blue()) .arg(color.alpha());
 
     if(newState == playController::PlayState::PLAY_STATE) {
+        // 这两个图标一样大小，都是QSize(12, 16)，但不清楚 media-playback-start-symbolic.svg 会变形，因此可以通过QPixmap设置大小，而不是直接setStyleSheet设置背景
+        QPixmap pixmap(pauseDefaultIcon);
+        QPixmap fitpixmap = pixmap.scaled(30, 30, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        m_playStateBtn->setIcon(QIcon(fitpixmap));
+        m_playStateBtn->setIconSize(QSize(30, 30));
         m_playStateBtn->setToolTip(tr("Play"));
-        m_playStateBtn->setStyleSheet(QString("QPushButton{border-radius:17px;border-image:url(%1);}"
-                                              "QPushButton::hover{border-image:url(%2);}"
-                                              "QPushButton::pressed{border-image:url(%3);}").arg(pauseDefaultIcon).arg(pauseHoverIcon).arg(pauseClickedIcon));
+        m_playStateBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;}"
+                                       "QPushButton::hover{background-color: %1;}"
+                                       "QPushButton::pressed{background-color: palette(highlight);}").arg(hoverColor));
     } else if((newState == playController::PlayState::PAUSED_STATE)
               ||(newState == playController::PlayState::STOP_STATE)) {
+        QPixmap pixmap(playDefaultIcon);
+        QPixmap fitpixmap = pixmap.scaled(12 ,16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        m_playStateBtn->setIcon(QIcon(fitpixmap));
+        m_playStateBtn->setIconSize(QSize(12, 16));
         m_playStateBtn->setToolTip(tr("Pause"));
-        m_playStateBtn->setStyleSheet(QString("QPushButton{border-radius:17px;border-image:url(%1);}"
-                                              "QPushButton::hover{border-image:url(%2);}"
-                                              "QPushButton::pressed{border-image:url(%3);}").arg(playDefaultIcon).arg(playHoverIcon).arg(playClickedIcon));
+        m_playStateBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;}"
+                                       "QPushButton::hover{background-color: %1;}"
+                                       "QPushButton::pressed{background-color: palette(highlight);}").arg(hoverColor));
     }
+
 }
 
 void MiniWidget::slotSongInfo(QString path)

@@ -1,5 +1,6 @@
 #include <ukui-log4qt.h>
 #include <QApplication>
+#include <QPixmap>
 
 #include "playsongarea.h"
 #include "UI/base/widgetstyle.h"
@@ -31,6 +32,7 @@ void PlaySongArea::initWidget()
 
     playBtn = new QPushButton(this);
     playBtn->setFixedSize(36,36);
+    playBtn->setIconSize(QSize(12, 12));
     playBtn->setCursor(Qt::PointingHandCursor);
     playBtn->setToolTip(tr("Play"));
 
@@ -545,26 +547,39 @@ void PlaySongArea::setCoverPhotoPixmap(QPixmap pixmap)
  */
 void PlaySongArea::playerStateChange(playController::PlayState newState)
 {
-
     QString playDefaultIcon(":/img/default/media-playback-start-symbolic.svg");
-    QString playHoverIcon(":/img/hover/media-playback-start-symbolic.svg");
-    QString playClickedIcon(":/img/clicked/media-playback-start-symbolic.svg");
-
     QString pauseDefaultIcon(":/img/default/media-playback-pause-symbolic.svg");
-    QString pauseHoverIcon(":/img/hover/media-playback-pause-symbolic.svg");
-    QString pauseClickedIcon(":/img/clicked/media-playback-pause-symbolic.svg");
+
+    // 设置按钮高亮色的鼠标划过透明度
+    QColor highlightColor(QApplication::palette().highlight().color());
+    qreal r,g,b,a;
+    r = highlightColor.redF();
+    g = highlightColor.greenF();
+    b = highlightColor.blueF();
+    a = 0.8;
+    QColor color = QColor::fromRgbF(r, g, b, a);
+    QString hoverColor = QString("rgba(%1, %2, %3, %4)").arg(color.red()) .arg(color.green()) .arg(color.blue()) .arg(color.alpha());
 
     if(newState == playController::PlayState::PLAY_STATE) {
+        // 这两个图标一样大小，都是QSize(12, 16)，但不清楚 media-playback-start-symbolic.svg 会变形，因此可以通过QPixmap设置大小，而不是直接setStyleSheet设置背景
+        QPixmap pixmap(pauseDefaultIcon);
+        QPixmap fitpixmap = pixmap.scaled(30, 30, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        playBtn->setIcon(QIcon(fitpixmap));
+        playBtn->setIconSize(QSize(30, 30));
         playBtn->setToolTip(tr("Play"));
-        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;border-image:url(%1);}"
-                                       "QPushButton::hover{border-image:url(%2);}"
-                                       "QPushButton::pressed{border-image:url(%3);}").arg(pauseDefaultIcon).arg(pauseHoverIcon).arg(pauseClickedIcon));
+        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;}"
+                                       "QPushButton::hover{background-color: %1;}"
+                                       "QPushButton::pressed{background-color: palette(highlight);}").arg(hoverColor));
     } else if((newState == playController::PlayState::PAUSED_STATE)
               ||(newState == playController::PlayState::STOP_STATE)) {
+        QPixmap pixmap(playDefaultIcon);
+        QPixmap fitpixmap = pixmap.scaled(12 ,16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        playBtn->setIcon(QIcon(fitpixmap));
+        playBtn->setIconSize(QSize(12, 16));
         playBtn->setToolTip(tr("Pause"));
-        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;border-image:url(%1);}"
-                                       "QPushButton::hover{border-image:url(%2);}"
-                                       "QPushButton::pressed{border-image:url(%3);}").arg(playDefaultIcon).arg(playHoverIcon).arg(playClickedIcon));
+        playBtn->setStyleSheet(QString("QPushButton{background-color: palette(highlight); border-radius:17px;}"
+                                       "QPushButton::hover{background-color: %1;}"
+                                       "QPushButton::pressed{background-color: palette(highlight);}").arg(hoverColor));
     }
 }
 
