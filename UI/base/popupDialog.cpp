@@ -127,7 +127,7 @@ void PopupDialog::inpupdialog()
     testLayout->addWidget(tips);
     testLayout->addSpacing(14);
     testLayout->addLayout(btnLayout);
-    testLayout->setContentsMargins(32, 16, 32, 24);
+    testLayout->setContentsMargins(24, 16, 24, 24);
 
     this->mainWidget()->setLayout(testLayout);
 
@@ -189,8 +189,9 @@ MusicInfoDialog::~MusicInfoDialog()
 
 void MusicInfoDialog::initStyle()
 {
+    this->setFixedSize(376,370);
+
     mainVLayout = new QVBoxLayout(this);
-    this->setLayout(mainVLayout);
     songNameLabel = new CustomLabel(this);
     singerLabel = new CustomLabel(this);
     albumLabel = new CustomLabel(this);
@@ -218,21 +219,21 @@ void MusicInfoDialog::initStyle()
     connect(cancelBtn,&QPushButton::clicked,this,&MusicInfoDialog::close);
     connect(confirmBtn,&QPushButton::clicked,this,&MusicInfoDialog::close);
 
+
+
+    confirmBtn->setText(tr("Confirm"));
+    confirmBtn->setFixedSize(105,36);
+    cancelBtn->setText(tr("Cancel"));
+    cancelBtn->setFixedSize(105,36);
+    confirmBtn->setProperty("isImportant", true);
+
     btnWidget->setLayout(buttonLayout);
+
     buttonLayout->setAlignment(Qt::AlignRight);
     buttonLayout->addWidget(cancelBtn);
     buttonLayout->addWidget(confirmBtn);
     buttonLayout->setMargin(0);
     buttonLayout->setSpacing(16);
-
-
-    confirmBtn->setText(tr("Confirm"));
-    confirmBtn->setFixedSize(105,36);
-//    cancelBtn->setText("取消");s
-    cancelBtn->setText(tr("Cancel"));
-    cancelBtn->setFixedSize(105,36);
-//    confirmBtn->setStyleSheet("background: #3790FA;color:#FFFFFF");
-    confirmBtn->setProperty("isImportant", true);
 
     mainVLayout->setAlignment(Qt::AlignTop);
     mainVLayout->addWidget(musicInfoLabel);
@@ -248,7 +249,8 @@ void MusicInfoDialog::initStyle()
     mainVLayout->addWidget(btnWidget);
 
     mainVLayout->setSpacing(6);
-    mainVLayout->setContentsMargins(32,20,32,0);
+    mainVLayout->setContentsMargins(24,20,24,0); // 为了和主题qmessagebox间距一致，而不参照UI图间距
+    this->setLayout(mainVLayout);
 
     if(musicDate.title != "")
     {
@@ -261,22 +263,6 @@ void MusicInfoDialog::initStyle()
         filePathLabel->setText(tr("File Path : ") + musicDate.filepath);
 
     }
-    this->setFixedSize(376,370);
-
-    //限制应用内字体固定大小
-//    QFont sizeFont;
-//    sizeFont.setPixelSize(14);
-//    QFont titleFont;
-//    titleFont.setPixelSize(16);
-//    titleFont.setBold(true);
-//    songNameLabel->setFont(sizeFont);
-//    singerLabel->setFont(sizeFont);
-//    albumLabel->setFont(sizeFont);
-//    fileTypeLabel->setFont(sizeFont);
-//    fileSizeLable->setFont(sizeFont);
-//    fileTimeLabel->setFont(sizeFont);
-//    filePathLabel->setFont(sizeFont);
-//    musicInfoLabel->setFont(titleFont);
 
 }
 
