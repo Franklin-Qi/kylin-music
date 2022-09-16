@@ -38,6 +38,14 @@ public:
     QPushButton *listBtn = nullptr; //播放列表
 
     void initStyle();
+    void initWidget();
+    void initConnect();
+    //移动音量
+    void moveVolSliderWid();
+
+    //计算新的播放模式菜单
+    void listBtnClicked();
+    void playMeta();
 
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
@@ -85,15 +93,10 @@ public Q_SLOTS:
     void slotMute(bool mute);
     //我喜欢按钮
     void slotFav();
-    //改变播放模式弹窗
-    void slotPlayBackModeChanged();
+    //设置播放模式
+    void slotPlayModeClicked();
     //判断当前点击的按钮是否为我喜欢（歌单名）
     void slotText(QString btnText);
-
-    void slotLoopClicked();
-    void slotRandomClicked();
-    void slotSequentialClicked();
-    void slotCurrentItemInLoopClicked();
 
     void setPlayMode(int playModel);
     //获取当前播放歌曲的路径
@@ -119,17 +122,6 @@ public Q_SLOTS:
     //字体
     void slotLableSetFontSize(int size);
 
-private:
-    void initWidget();
-    void initConnect();
-    //移动音量
-    void moveVolSliderWid();
-    //计算新的播放模式
-    void movePlayModeWid();
-    //计算新的播放模式菜单
-    void movePlayMenu();
-    void listBtnClicked();
-    void playMeta();
 
 private:
 
@@ -138,9 +130,11 @@ private:
     QPushButton *preBtn = nullptr;  //上一首
     QPushButton *playBtn = nullptr; //播放/暂停
     QPushButton *nextBtn = nullptr; //下一首
+
     QPushButton *volumeBtn = nullptr; //音量
     QPushButton *favBtn = nullptr; //我喜欢
-    QToolButton *playModeBtn = nullptr; //播放模式
+    QPushButton *m_orderBtn = nullptr; // 播放模式
+
     QPushButton *lyricBtn = nullptr; //歌词
 
     QLabel *coverPhotoLabel = nullptr; //封面
@@ -152,9 +146,6 @@ private:
     QString listName = nullptr; //歌单名
 
     QMenu *m_playMode = nullptr; //播放模式菜单
-    QAction *loopAct = nullptr;
-    QAction *randomAct = nullptr;
-    QAction *currentItemInLoopAct = nullptr;
 };
 
 #endif // PLAYSONGAREA_H

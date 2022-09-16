@@ -1,3 +1,14 @@
+kylin-music (1.1.0-56) v101; urgency=medium
+
+  * [BUG]
+  - #114361, 解决播放模式切换未与迷你模式、影音统一问题
+
+  * 需求号： 无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- yushuoqi <yushuoqi@kylinos.cn>  Fri, 16 Sep 2022 16:37:22 +0800
+
 kylin-music (1.1.0-55) v101; urgency=medium
 
   * [BUG]

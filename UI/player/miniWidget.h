@@ -54,6 +54,15 @@ public:
     void leaveEvent(QEvent*);
 
     void songText(QString songName); //mini 正在播放
+    void initAction();
+    void initConnect();
+    //初始化样式
+    void initFocusStyle();
+    //通过路径查询歌曲的title和时长
+    void songInfo(QString path);
+    //显示时长
+    void slotPositionChanged(qint64 position);
+
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 Q_SIGNALS:
@@ -83,15 +92,6 @@ Q_SIGNALS:
     // Ctrl+L 将歌曲添加到喜欢歌单
     void loveSongKeySignal();
 
-private:
-    void initAction();
-    void initConnect();
-    //初始化样式
-    void initFocusStyle();
-    //通过路径查询歌曲的title和时长
-    void songInfo(QString path);
-    //显示时长
-    void slotPositionChanged(qint64 position);
 public Q_SLOTS:
     void playerStateChange(playController::PlayState newState);
     void slotFavExixts();
@@ -116,20 +116,20 @@ public Q_SLOTS:
     void slotText(QString btnText);
     //字体
     void slotLableSetFontSize(int size);
+
 public:
     QFrame *m_mainFrame = nullptr;
 
     QLabel *m_coverLabel = nullptr; // 封面图
-    QPushButton *m_loveBtn = nullptr;
-    QPushButton *m_volBtn = nullptr;
-    QPushButton *m_orderBtn = nullptr;
+    QPushButton *m_loveBtn = nullptr; // 收藏
+    QPushButton *m_orderBtn = nullptr; // 播放模式
 
     QPushButton *m_closeBtn = nullptr;
     QPushButton *m_recoveryWinBtn = nullptr;
 
-    QPushButton *m_preBtn = nullptr;
-    QPushButton *m_playStateBtn = nullptr;
-    QPushButton *m_nextBtn = nullptr;
+    QPushButton *m_preBtn = nullptr; // 上一首
+    QPushButton *m_playStateBtn = nullptr; // 播放状态
+    QPushButton *m_nextBtn = nullptr; // 下一首
 
     CustomLabel *m_songNameLab = nullptr;
     QLabel *m_timeLab = nullptr;

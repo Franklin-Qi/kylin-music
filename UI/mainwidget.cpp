@@ -887,7 +887,6 @@ void Widget::resizeEvent(QResizeEvent *event)
 
 void Widget::movePlayHistoryWid()
 {
-    // 为了紧贴右上角，还需要减去4px
     historyListTable->setFixedSize(320,this->height() - playSongArea->height() -4);
 
     QPoint historyPos = playSongArea->listBtn->mapToGlobal(playSongArea->listBtn->rect().topRight());
